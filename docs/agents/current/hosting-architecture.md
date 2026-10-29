@@ -40,11 +40,13 @@ manual CI recovery only
 
 Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
 
+Performance implementation and qualification are recorded in [`docs/dev/CI/README.md`](../../dev/CI/README.md). Candidate mechanisms there are not effective until merged; executable workflows and live exact-head evidence determine acceptance.
+
 ## Public GitHub Actions preflight
 
-`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. A dependency-free planning job allocates browser compute before runner start: zero runners for skip, one for focused, and eight independent public Linux runners for full/global work; every browser runner re-evaluates the same plan before npm/browser spend. Full work uses the repository timing scheduler with one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
+`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. A dependency-free planning job allocates browser compute before runner start: zero runners for skip, one for focused, and eight independent public Linux runners for full/global work; every browser runner re-evaluates the same plan before browser acceptance. Browser allocation waits for successful deterministic validation and its one static build. Consumers install dependencies, download that successful producer attempt from the same workflow run, and verify exact source/configuration/toolchain plus all output bytes before reuse. Full work uses the repository full-title timing scheduler with one Playwright worker per shard; the browser runtime is the digest-pinned lockfile-matched Playwright 1.63.0 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
 
-The 2026-09-15 scheduler qualification refreshed the current canonical suite to 197 Chromium identities and held the acceptance contract fixed while testing 4/6/8 shards. Runs `34986898313`, `34987545968`, and `34988052276` all covered 197/197 identities exactly once with retries=0; their maximum browser-step times were 138 s, 102 s, and 80 s, and workflow wall times were 209 s, 159 s, and 139 s. The frozen selection rule chooses the smallest shard count within 10% of the fastest result, so full/global work uses 8 shards. This evidence qualifies the required Public PR CI browser topology. Vercel remains separately required for exact-head provider build/deploy success, but it no longer reruns the browser matrix.
+The 2026-09-15 scheduler qualification refreshed the current canonical suite to 197 Chromium identities and held the acceptance contract fixed while testing 4/6/8 shards. Runs `34986898313`, `34987545968`, and `34988052276` all covered 197/197 identities exactly once with retries=0; their maximum browser-step times were 138 s, 102 s, and 80 s, and workflow wall times were 209 s, 159 s, and 139 s. The frozen selection rule chooses the smallest shard count within 10% of the fastest result, so full/global work uses 8 shards. This historical evidence selected the unchanged eight-runner topology for its then-current 197-test population; it does not measure the larger current suite. Current timing receipts, qualification and honest wall/runner comparisons live in the CI performance record linked above. Vercel remains separately required for exact-head provider build/deploy success, but it no longer reruns the browser matrix.
 
 ## Exact-head acceptance ownership
 
@@ -113,15 +115,17 @@ A still-required skip prefix is a silent compatibility safeguard until the exter
 ### Scientific figure cloud evidence lane
 
 `cloud-figure-visual-review.yml` runs the existing full `test:ui:all` population in
-four native Playwright shards per browser (Chromium and WebKit), with one worker
+four duration-balanced full-title selections per browser (Chromium and WebKit), with one worker
 per shard, no retry and the lockfile-matched immutable browser image. This follows
 a real 30-minute monolithic timeout; it does not reduce visual or reader budgets.
 The 71-route first-screen contract case has a 600-second execution budget while
 keeping its existing content, overflow and geometry assertions.
 
-The two final `cloud-figure-{browser}` jobs require all shards to succeed, compare
+A lightweight always-present preflight uses the shared risk planner. Full/global work and changes to browser selectors, figure evidence gates or timing receipts run both complete browser populations; pure docs allocate no browser runner, and bounded focused work remains with Public CI. Full work runs deterministic validation and one build before allocating the eight consumers.
+
+The two final `cloud-figure-{browser}` jobs require all allocated shards to succeed, compare
 the exact union against each shard's complete unsharded canonical list, reject
 skips/retries/duplicates/missing cases, verify same-head PNG/JSON identity and
 round-trip the final artifact bytes through upload/download. Raw failure traces
-remain downloadable for three days. Artifact integrity is not a visual verdict;
+remain downloadable for three days. An intentional non-full plan succeeds only when preflight succeeded and the unallocated matrix is skipped; failed/cancelled/missing preflight or an unknown plan fails the always-run gate. Artifact integrity is not a visual verdict;
 per-figure review and actual independent reader acceptance remain separate.

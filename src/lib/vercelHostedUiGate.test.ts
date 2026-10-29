@@ -163,6 +163,33 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['.github/runner/Dockerfile']).mode).toBe('full');
   });
 
+  it('preserves full Cloud Figure acceptance for every former path-filter owner', () => {
+    expect(planHostedUi([
+      'src/components/research/explainer/EnvironmentExplainers.tsx',
+      'tests/e2e/research-explainer-layout.spec.ts',
+    ]).mode).toBe('full');
+    for (const file of [
+      '.github/workflows/cloud-figure-visual-review.yml',
+      'src/components/research/AdvisorTenEvidenceVisual.astro',
+      'src/components/research/AdvisorTenConceptUI.astro',
+      'src/components/research/OpenEvoSdLoraScaling.astro',
+      'src/components/research/OpenEvoCheckpointCurve.astro',
+      'scripts/audit-sitewide-research-figure-widths.mjs',
+      'scripts/verify-cloud-figure-evidence.mjs',
+      'scripts/verify-cloud-figure-evidence.test.mjs',
+      'scripts/verify-cloud-figure-evidence-future.mjs',
+      'scripts/wait-for-cloud-figure-artifact.mjs',
+      'scripts/ci-ui-test-timings-20261029-figure.json',
+      'scripts/ci-ui-test-timings-20261029-public.json',
+      'tests/e2e/figure-evidence.ts',
+      'tests/e2e/sitewide-figure-width-scope.spec.ts',
+      'tests/e2e/site-reader-contracts.spec.ts',
+      'tests/e2e/sitewide-math-rendering.spec.ts',
+      'tests/fixtures/research-paper-table-values.json',
+      'package.json', 'package-lock.json',
+    ]) expect(planHostedUi([file]).mode, file).toBe('full');
+  });
+
   it('fails closed when a local source file cannot be mapped to one concrete route', () => {
     const plan = planHostedUi(['src/lib/some-local-helper.ts']);
     expect(plan.risk).toBe('local');
