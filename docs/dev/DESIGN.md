@@ -2,7 +2,7 @@
 
 Cross-project CI rules live in the shared [`.agents` CI Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/CI_STANDARD.md). Apply that contract before this document and the local workflow/provider owners below, which define BaseModel's workload-specific CI and hosting choices.
 
-The proposed transition from a public, high-frequency repository to a private, lower-frequency repository is documented in [`CI/README.md`](CI/README.md). This is a **candidate decision**, not an effective change to repository visibility, required GitHub checks, or Vercel configuration. The current public-PR-CI topology below stays authoritative until a replacement is qualified on the exact candidate.
+The proposed transition from a public, high-frequency repository to a private, lower-frequency repository is documented in [`CI/PRIVATE_REPOSITORY_STRATEGY.md`](CI/PRIVATE_REPOSITORY_STRATEGY.md). This is a **candidate decision**, not an effective change to repository visibility, required GitHub checks, or Vercel configuration. The current public-PR-CI topology below stays authoritative until a replacement is qualified on the exact candidate.
 
 ## Workload and acceptance
 

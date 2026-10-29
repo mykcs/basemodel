@@ -46,7 +46,8 @@ describe('hosting architecture ownership', () => {
     expect(macFallbackWorkflow).toContain('persist-credentials: false');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
     expect(ciUiGate).toContain("'scripts/ci-ui-test-list.mjs'");
-    expect(ciUiGate).toContain('--test-list');
+    expect(ciUiGate).toContain("'timed', 'test:ui', 'chromium'");
+    expect(ciUiGate).not.toContain("'--test-list'");
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');
     expect(ciUiGate).toContain('basemodel-playwright-transform-');

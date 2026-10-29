@@ -41,7 +41,7 @@ Cloudflare Pages     -> frozen legacy rollback snapshot; normal Builds = 0
 
 变更前必须核实：GitHub 私有仓库 Actions 额度和账单、Vercel 的私人 Git 仓库授权及当前套餐、现行 `public-ci-gate`／`Vercel` 必需检查如何交接、部署访问控制、旧公开 fork／历史副本、以及实际生成网站是否含个人身份信息。**仓库私有不等于已发布的网页、旧提交或既有公开副本自动私有。**
 
-详细决策、官方限额来源、迁移验收及回滚条件见 [`docs/dev/CI/README.md`](./docs/dev/CI/README.md)。当前真实部署架构仍以 [`hosting-architecture.md`](./docs/agents/current/hosting-architecture.md)、工作流、GitHub 规则与 Vercel 实际配置为准。
+详细决策、官方限额来源、迁移验收及回滚条件见 [`docs/dev/CI/PRIVATE_REPOSITORY_STRATEGY.md`](./docs/dev/CI/PRIVATE_REPOSITORY_STRATEGY.md)。当前真实部署架构仍以 [`hosting-architecture.md`](./docs/agents/current/hosting-architecture.md)、工作流、GitHub 规则与 Vercel 实际配置为准。
 
 ## 人物称谓与隐私
 

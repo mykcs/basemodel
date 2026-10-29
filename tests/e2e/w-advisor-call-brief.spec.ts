@@ -64,6 +64,7 @@ for (const viewport of [
       expect(targetResponse?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
       await expect(page.locator('[data-w-advisor-report] h1')).toHaveText('与 W 老师沟通｜科研判断准备稿');
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
       await expect(page.locator('.wcall-question')).toHaveCount(12);
       await expect(page.locator('.wcall-reactions > li')).toHaveCount(5);
       await expect(page.getByRole('navigation', { name: '快速定位十二道 W 老师可能追问' })).toBeVisible();
