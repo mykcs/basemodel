@@ -107,11 +107,11 @@ jobs:
         run: npm run build
 
       - name: Seal exact-head static artifact
-        if: steps.deterministic_plan.outputs.browser_total != '0' || contains(github.head_ref, 'typography')
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         run: node scripts/ci-build-artifact.mjs create
 
       - name: Upload exact-head static artifact
-        if: steps.deterministic_plan.outputs.browser_total != '0' || contains(github.head_ref, 'typography')
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: static-build-${{ github.run_id }}-${{ github.run_attempt }}
@@ -123,7 +123,7 @@ jobs:
           retention-days: 3
 
       - name: Validate built browser discovery contracts
-        if: steps.deterministic_plan.outputs.browser_total != '0' || contains(github.head_ref, 'typography')
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         run: node --test tests/ci-ui-test-list.test.mjs
 
   browser:
@@ -233,8 +233,8 @@ jobs:
   # Match the semantic branch name so a current-base successor PR keeps the
   # same browser contract without depending on historical PR numbers.
   typography_full_webkit:
-    needs: deterministic
-    if: needs.deterministic.result == 'success' && contains(github.head_ref, 'typography')
+    needs: [plan, deterministic]
+    if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.browser_total != '0' && contains(github.head_ref, 'typography')
     name: typography-full-webkit-${{ matrix.shard }}-of-4
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -320,11 +320,25 @@ jobs:
   typography_full_webkit_gate:
     if: always() && contains(github.head_ref, 'typography')
     name: typography-full-webkit-gate
-    needs: [typography_full_webkit]
+    needs: [plan, deterministic, typography_full_webkit]
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
       - name: Require all four full-suite WebKit shards
         env:
           WEBKIT_RESULT: ${{ needs.typography_full_webkit.result }}
-        run: test "$WEBKIT_RESULT" = success
+          PLAN_RESULT: ${{ needs.plan.result }}
+          DETERMINISTIC_RESULT: ${{ needs.deterministic.result }}
+          BROWSER_TOTAL: ${{ needs.plan.outputs.browser_total }}
+        run: |
+          set -euo pipefail
+          test "$PLAN_RESULT" = success
+          test "$DETERMINISTIC_RESULT" = success
+          if [ "$BROWSER_TOTAL" = 0 ]; then
+            test "$WEBKIT_RESULT" = skipped
+          else
+            case "$BROWSER_TOTAL" in
+              ''|*[!0-9]*|0*) exit 1 ;;
+            esac
+            test "$WEBKIT_RESULT" = success
+          fi
