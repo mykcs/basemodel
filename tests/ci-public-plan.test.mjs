@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
 import {
   browserAllocationForMode,
   resolveFullShardTotal,
@@ -18,6 +19,19 @@ test('draft heads already run and ready promotion does not repeat unchanged acce
   const deterministic = read('.github/workflows/public-pr-ci.yml').split('\n  deterministic:')[1].split('\n  browser:')[0];
   assert.match(deterministic, /id: deterministic_plan/);
   assert.match(deterministic, /Validate built browser discovery contracts\n        if: steps\.deterministic_plan\.outputs\.browser_total != '0'/);
+  for (const name of ['Seal exact-head static artifact', 'Upload exact-head static artifact', 'Validate built browser discovery contracts']) {
+    assert.ok(deterministic.includes(`- name: ${name}\n        if: steps.deterministic_plan.outputs.browser_total != '0' || contains(github.head_ref, 'typography')`));
+    const expression = deterministic.split(`- name: ${name}\n`)[1].match(/if: ([^\n]+)/)[1];
+    for (const [total, ref, expected] of [
+      ['0', 'docs/ordinary', false], ['0', 'docs/typography-closeout', true],
+      ['8', 'ci/ordinary', true], ['8', 'ci/typography-check', true],
+    ]) {
+      assert.equal(runInNewContext(expression, {
+        steps: { deterministic_plan: { outputs: { browser_total: total } } },
+        github: { head_ref: ref }, contains: (value, needle) => value.includes(needle),
+      }, { timeout: 100 }), expected, `${name}: ${total}/${ref}`);
+    }
+  }
   assert.match(deterministic, /run: npm run verify:deploy/);
   assert.match(deterministic, /run: npm run build/);
 });
