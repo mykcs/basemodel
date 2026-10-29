@@ -2,7 +2,7 @@
 
 ## 2026-10-29 Unified browser acceptance candidate
 
-The next CI candidate consolidates automatic browser acceptance into Public PR CI: one static build, Chromium 4 / WebKit 8 complete-population shards and seven distinct Public core/Lab cases. The former automatic Cloud graph becomes a manual wrapper. Original default-reading checks run before the expanded scientific evidence states, and exact source/population/byte validation binds all 4/8 shards. Typography's exhaustive failure collection and diagnostics remain. [The CI record](../dev/CI/README.md) owns qualification and actual measurements; this candidate is not a measured speed claim until hosted acceptance completes.
+The next CI candidate consolidates automatic browser acceptance into Public PR CI: one static build, Chromium 4 / WebKit 8 complete-population shards and seven distinct Public core/Lab cases. The former automatic Cloud graph becomes a manual wrapper. Original default-reading checks run before the expanded scientific evidence states, and exact source/population/byte validation binds all 4/8 shards. Typography's exhaustive failure collection and diagnostics remain. [The CI record](../dev/CI/README.md) owns qualification and measurements. A bounded pilot on baseline `9982005` and candidate `e9f44b5` passed the parameter-memory route on both source versions; 292 PNGs matched byte-for-byte and eight state regression cases passed in both engines. Its 2.1-second single-route difference is too small and uncontrolled to claim repeatable helper savings. Full PR qualification still needs to measure the unified topology.
 
 ## 2026-10-29 CI performance qualification
 
