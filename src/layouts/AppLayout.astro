@@ -28,7 +28,10 @@ const isPrivateProduction = process.env.VERCEL_ENV === 'production';
 const isVercelPreview = process.env.VERCEL_ENV === 'preview';
 const isCloudflarePreview = process.env.CF_PAGES === '1' && Boolean(process.env.CF_PAGES_BRANCH) && process.env.CF_PAGES_BRANCH !== 'main';
 const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled';
-const shouldNoIndex = isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview;
+// A direct-link admissions/call-preparation route must remain noindex even
+// outside Vercel's protected Production/Preview environments.
+const isSensitiveCallPreparation = /\/research\/seed-openevo\/study\/w-advisor-call\/?$/.test(Astro.url.pathname);
+const shouldNoIndex = isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview || isSensitiveCallPreparation;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
 const isTechnicalArticle = isTechnicalArticleRoute(localeNeutralPath);

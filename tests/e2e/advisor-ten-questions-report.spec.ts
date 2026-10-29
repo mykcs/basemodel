@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 const prefix='/research/seed-openevo/study/';
 const articles=[
   {slug:'openevo-methods',type:'methods',title:'OpenEVO 怎样保存和更新经验'},
-  {slug:'advisor-questions',type:'questions',title:'学长十问：OpenEVO 还有哪些问题需要回答'},
+  {slug:'advisor-questions',type:'questions',title:'L 学长十问：OpenEVO 还有哪些问题需要回答'},
   {slug:'parameter-memory-results',type:'results',title:'我们的回应实验：十个研究问题的证据'},
 ] as const;
 
@@ -20,7 +20,7 @@ for(const width of [390,768,1440]){
       await expect(navigation.locator('.evo-current[aria-current="page"]')).toHaveCount(1);
       const names=await navigation.locator('li').allTextContents();
       expect(names[0]).toContain('参数记忆方法');
-      expect(names[1]).toContain('学长十问');
+      expect(names[1]).toContain('L 学长十问');
       expect(names[2]).toContain('我们的回应实验');
       const toc=article.locator('.evo-article__toc a');
       expect(await toc.count()).toBeGreaterThanOrEqual(6);
@@ -233,7 +233,7 @@ test('meeting date and original RAW remain reachable after the scientific first 
   const lede=page.locator('[data-evo-blog="results"] .evo-article__lede');
   await expect(lede).toContainText('十个研究问题已经测到什么');
   const provenance=page.locator('[data-meeting-provenance]');
-  await expect(provenance).toContainText('2026 年 9 月 22 日，我们和学长开了一次');
+  await expect(provenance).toContainText('2026 年 9 月 22 日，我们和L 学长开了一次');
   const source=provenance.getByRole('link',{name:/会议原始逐字记录/});
   await expect(source).toBeVisible();
   await expect(source).toHaveAttribute('href',new RegExp('85ee773d04f9949db369c8dd928dbbae12c68c8d/.+'+rawPath));
