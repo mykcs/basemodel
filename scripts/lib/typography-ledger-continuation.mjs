@@ -96,7 +96,7 @@ export const reviewedPrivacyProofs = {
   },
   "src/components/research/OpenEvo7BStage2AnalysisMap.astro": {
     "before": "a717b5f46dc606c800b9ada0bd6f3eedbf0b289df22326b28915e2623b179cca",
-    "after": "8268c5acd695194555fa8811e9765a959ba63e66c794e5e8add299a6c7f8db4c"
+    "after": "d5bb89ebed8910d38b2e1696b83764b7801281db5067c241eeb9aafc0e36a690"
   },
   "src/components/research/SeedOpenEvoBriefingTechnicalNotes.astro": {
     "before": "c5cd004479c18968435423a7e0a9028da2edc2641d01a0d0cb37e23e2d154a2e",

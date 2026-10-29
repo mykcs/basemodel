@@ -64,6 +64,7 @@ for (const theme of ['light', 'dark'] as const) {
         await expect(page.locator('a[href*="wandb.ai/"]')).toHaveCount(0);
         const links = page.locator('a[href*="source-index.json"]');
         expect(await links.count()).toBeGreaterThan(0);
+        await expect(links.first()).toContainText(/来源索引|source index/i);
         for (const href of await links.evaluateAll(elements => elements.map(element => element.getAttribute('href')!))) {
           const id = new URL(href, 'https://basemodel-preview.vercel.app').hash.slice(1);
           expect(index.sources.some((source: { id: string }) => source.id === id), href).toBe(true);
