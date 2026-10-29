@@ -198,3 +198,28 @@ test('successor gateway retains the seven experiment design families with pinned
   await expect(firstDetails.locator('a').first()).toBeVisible();
   await assertNoPageOverflow(page);
 });
+
+for (const width of [440, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`organized content remains navigable without JavaScript ${width}/${theme}`, async ({ browser }, info) => {
+      const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: width === 440 ? 956 : 1000 } });
+      const page = await context.newPage();
+      try {
+        await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
+        await page.locator('html').evaluate((el, mode) => el.setAttribute('data-theme', mode), theme);
+        const detail = page.locator('[data-experiment-details="directapply-1p7b"]');
+        await detail.locator('summary').click();
+        await expect(detail.locator('a[href$="/sd-lora-equivalence/"]')).toBeVisible();
+        await expect(detail.locator('a[href$="/sd-lora-bounded-state/"]')).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+        await page.screenshot({ path: info.outputPath(`study-${width}-${theme}.png`), fullPage: true });
+        await page.goto('/research/seed-openevo/study/capability-exploration/', { waitUntil: 'domcontentloaded' });
+        await page.locator('html').evaluate((el, mode) => el.setAttribute('data-theme', mode), theme);
+        await expect(page.locator('[data-topic-group]')).toHaveCount(4);
+        await expect(page.locator('[data-topic-group="history"] a[href$="/archive/"]')).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+        await page.screenshot({ path: info.outputPath(`topics-${width}-${theme}.png`), fullPage: true });
+      } finally { await context.close(); }
+    });
+  }
+}

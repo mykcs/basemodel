@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
 import {
   browserAllocationForMode,
   resolveFullShardTotal,
@@ -18,6 +19,19 @@ test('draft heads already run and ready promotion does not repeat unchanged acce
   const deterministic = read('.github/workflows/public-pr-ci.yml').split('\n  deterministic:')[1].split('\n  browser:')[0];
   assert.match(deterministic, /id: deterministic_plan/);
   assert.match(deterministic, /Validate built browser discovery contracts\n        if: steps\.deterministic_plan\.outputs\.browser_total != '0'/);
+  for (const name of ['Seal exact-head static artifact', 'Upload exact-head static artifact', 'Validate built browser discovery contracts']) {
+    assert.ok(deterministic.includes(`- name: ${name}\n        if: steps.deterministic_plan.outputs.browser_total != '0'`));
+    const expression = deterministic.split(`- name: ${name}\n`)[1].match(/if: ([^\n]+)/)[1];
+    for (const [total, ref, expected] of [
+      ['0', 'docs/ordinary', false], ['0', 'docs/typography-closeout', false],
+      ['8', 'ci/ordinary', true], ['8', 'ci/typography-check', true],
+    ]) {
+      assert.equal(runInNewContext(expression, {
+        steps: { deterministic_plan: { outputs: { browser_total: total } } },
+        github: { head_ref: ref }, contains: (value, needle) => value.includes(needle),
+      }, { timeout: 100 }), expected, `${name}: ${total}/${ref}`);
+    }
+  }
   assert.match(deterministic, /run: npm run verify:deploy/);
   assert.match(deterministic, /run: npm run build/);
 });
@@ -146,4 +160,34 @@ test('figure risk routing keeps an always-present gate and rejects missing or fa
   }
   assert.notEqual(run('full', 'skipped'), 0);
   assert.notEqual(run('unknown', 'skipped'), 0);
+});
+
+test('typography consumers honor the same plan and their gate rejects failure, cancellation and missing allocation', () => {
+  const workflow = read('.github/workflows/public-pr-ci.yml');
+  const browser = workflow.split('\n  typography_full_webkit:')[1].split('\n  typography_full_webkit_gate:')[0];
+  assert.match(browser, /needs: \[plan, deterministic\]/);
+  const expression = browser.match(/    if: ([^\n]+)/)[1];
+  for (const [total, ref, expected] of [
+    ['0', 'docs/ordinary', false], ['0', 'docs/typography-closeout', false],
+    ['8', 'ci/ordinary', false], ['8', 'ci/typography-check', true],
+  ]) assert.equal(runInNewContext(expression, {
+    needs: { plan: { result: 'success', outputs: { browser_total: total } }, deterministic: { result: 'success' } },
+    github: { head_ref: ref }, contains: (value, needle) => value.includes(needle),
+  }, { timeout: 100 }), expected);
+  const gate = workflow.split('\n  typography_full_webkit_gate:')[1];
+  assert.match(gate, /if: always\(\) && contains/);
+  assert.match(gate, /needs: \[plan, deterministic, typography_full_webkit\]/);
+  const script = gate.split('        run: |\n')[1].split('\n').map(line => line.slice(10)).join('\n');
+  const run = (changes = {}) => spawnSync('/bin/bash', ['-c', script], {
+    env: { ...process.env, PLAN_RESULT: 'success', DETERMINISTIC_RESULT: 'success', BROWSER_TOTAL: '8', WEBKIT_RESULT: 'success', ...changes },
+  }).status;
+  assert.equal(run(), 0);
+  assert.equal(run({ BROWSER_TOTAL: '0', WEBKIT_RESULT: 'skipped' }), 0);
+  for (const value of ['failure', 'cancelled', 'skipped']) {
+    assert.notEqual(run({ PLAN_RESULT: value }), 0);
+    assert.notEqual(run({ DETERMINISTIC_RESULT: value }), 0);
+    assert.notEqual(run({ WEBKIT_RESULT: value }), 0);
+  }
+  assert.notEqual(run({ BROWSER_TOTAL: '', WEBKIT_RESULT: 'success' }), 0);
+  assert.notEqual(run({ BROWSER_TOTAL: '0', WEBKIT_RESULT: 'failure' }), 0);
 });
