@@ -11,6 +11,8 @@ This repository is frequently maintained by coding Agents through GitHub. This r
 
 ## Product wish authority
 
+**人物隐私硬规则：**本仓库及网站涉及特定导师／前辈时只使用 `W 老师` 和 `L 学长`，不得写出具体姓名或未经审查的可识别身份。唯一规则 owner 为 [`docs/agents/current/person-reference-privacy-standard.md`](docs/agents/current/person-reference-privacy-standard.md)，`npm run audit:person-privacy` 在 CI 和构建前失败即停止；图片、链接与历史仍须人工审查。
+
 Before any user-facing product, copy, navigation, information-architecture, page-role, or major interaction decision, read [`docs/wish/LATEST.md`](docs/wish/LATEST.md).
 
 - For homepage, navigation, information architecture, major route-role, interaction, or product-direction changes, also read [`docs/wish/DESIGN.md`](docs/wish/DESIGN.md).

@@ -78,7 +78,7 @@ for (const width of [390, 768, 1440]) {
       await page.goto(study, { waitUntil: 'domcontentloaded' });
       const meeting = page.locator('[data-advisor-meeting]');
       const stage1 = page.locator('[data-experiment-primary="stage1-learning-objectives"]');
-      await expect(meeting.locator('h2')).toHaveText('和学长开会');
+      await expect(meeting.locator('h2')).toHaveText('和L 学长开会');
       await expect(meeting.locator('time')).toHaveAttribute('datetime', '2026-09-22');
       await expect(meeting).toContainText('哪一种更适合训练 Stage2 的起始参数');
       await meeting.locator('summary').click();

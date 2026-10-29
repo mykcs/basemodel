@@ -71,10 +71,10 @@
 
 ## 全站姓名审查边界
 
-本轮按用户要求只检查发布源 `src/`、`public/` 中已知的私人教师／当事人姓名及变体；学术论文作者的必要正式引用、品牌、模型名称及研究账号路径不应未经判断一律删除。
+项目当前采用 [`人物称谓与姓名隐私规范`](../../agents/current/person-reference-privacy-standard.md) 作为唯一称谓 owner。当前分支的检查范围从发布源 `src/`、`public/` 扩展至整个仓库的可编辑文本；学术论文作者的必要正式引用、品牌、模型名称及研究账号路径仍需要逐项判断，不应未经判断一律删除。
 
 - 发现历史科研汇报页 `src/pages/research/seed-openevo/recent-challenges/index.astro` 仍出现一处旧导师称谓，本提案关联的最小修复替换为 **W 老师**，不动原研究数据或其他段落。
-- 新增 `src/lib/publicSitePersonaPrivacy.test.ts` 作为确定性回归，遍历生产源码／静态文件并阻止已知私人名称直接或 Unicode 转义形式重新出现；不保存未脱敏对话或当事人名单到公开站点。
+- `npm run audit:person-privacy` 执行已知私人姓名与角色称谓扫描；`scripts/lib/person-reference-privacy.test.mjs` 具备正反样例，`verify:deploy` 和 `build` 均在构建前运行。历史排版取样与历史路由清单只保留原有非姓名通用称谓，不授权现行页面继续沿用。
 - 正式私有化前仍须做**人工／语义复核**：自动字符串检查不能保证识别未知姓名、罗马化拼写、图片截图、可反查的昵称／账号或既有外部副本。尤其 `public/` 的 W&B 链接可能包含研究账号标识，这与真实个人姓名不同，但同样值得明确决定是否继续公开。
 
 ## 当前阶段不能做的事

@@ -28,6 +28,8 @@ When a task asks **what quality must be met or how its acceptance is proved**, c
 
 ## Task bundles
 
+**人物姓名／匿名化（全仓库）：**任何页面、报告、会议来源、申请材料或其他涉及具体导师／前辈的改动，先读 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md)；这是唯一称谓规则 owner，执行检查为 `npm run audit:person-privacy`。
+
 ### User-facing page, copy, navigation, explanation, or feature
 
 Always load the relevant combination of:

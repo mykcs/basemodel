@@ -17,8 +17,9 @@ Agent 交接与历史研究工作台上下文：[`docs/agent-context/`](./docs/a
 
 ```text
 GitHub = source of truth
-non-main branch / PR -> Vercel Preview
-main                 -> Vercel Production
+ordinary PR         -> GitHub Actions public-ci-gate
+final accepted PR   -> ci/vercel-gate-final -> Vercel Preview
+main                -> Vercel Production
 Production           -> https://basemodel-preview.vercel.app
 Cloudflare Pages     -> frozen legacy rollback snapshot; normal Builds = 0
 ```
@@ -42,6 +43,12 @@ Cloudflare Pages     -> frozen legacy rollback snapshot; normal Builds = 0
 
 详细决策、官方限额来源、迁移验收及回滚条件见 [`docs/dev/CI/README.md`](./docs/dev/CI/README.md)。当前真实部署架构仍以 [`hosting-architecture.md`](./docs/agents/current/hosting-architecture.md)、工作流、GitHub 规则与 Vercel 实际配置为准。
 
+## 人物称谓与隐私
+
+BaseModel 的公开科研沟通资料及可编辑仓库内容，只能用 **W 老师**、**L 学长** 指代对应的两位私人关系人物；其他具体个人不得直接写姓名、姓氏与头衔、可反查昵称或未获批准的个人识别信息。规则唯一权威为 [`人物称谓与姓名隐私规范`](./docs/agents/current/person-reference-privacy-standard.md)，从根 [`AGENTS.md`](./AGENTS.md) 和 Agent 导航均可找到。
+
+`npm run audit:person-privacy` 对仓库文本执行自动检测，并已纳入 `npm run verify:deploy` 与 `npm run build`；仍需要对图片、科研账号与外部 RAW 链接进行人工隐私审查。封存的旧版排版测量和两份历史路由清单保留当时原始通用称谓，不能据此认为现行网页允许不规范称呼，更不能把历史证据改写成新的测量。
+
 ## 本地运行与验证
 
 需要仓库声明的 Node.js 版本。
@@ -51,6 +58,7 @@ npm install
 npm run dev
 npm run verify:deploy
 npm run build
+npm run audit:person-privacy
 npm run test:e2e
 npm run test:ui
 npm run test:ui:all
