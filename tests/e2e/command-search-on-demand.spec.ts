@@ -37,7 +37,7 @@ test('research search reaches canonical questions, mechanisms and results', asyn
     ['L 学长十问', '/research/seed-openevo/study/advisor-questions/'],
     ['DirectApply', '/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/'],
     ['Stable Reduction', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/'],
-  ]) {
+  ] as const) {
     await input.fill(query);
     await expect(page.locator(`.command-results a[href="${path}"]`)).toHaveCount(1);
   }
