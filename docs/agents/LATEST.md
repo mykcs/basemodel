@@ -6,6 +6,8 @@
 
 ## 2026-10-29 人物称谓隐私：待合入的标准候选
 
+历史快照（#958 合并前）：下段保留当时的候选状态；该候选现已作为 `1ed126c` 合入 main。此状态更新不代表历史、图片或外部链接已完全匿名，既有剩余事项见 [#963](https://github.com/mykcs/basemodel/issues/963)。
+
 BaseModel 当前任务分支正在把公开科研沟通中的人物引用统一为 `W 老师` 与 `L 学长`，以 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 为唯一称谓 owner；根入口、`src/AGENTS.md`、站点 README、质量验收索引和 `npm run audit:person-privacy` 都指向/执行这一规则。当前源码对已知私人身份做失败即停止审查，正式发布仍须看 PR 精确 HEAD 的 CI / Vercel 及真实网页；此段是候选状态记录，不能当作已经合入 `main` 或撤回公共 Git 历史的证明。
 
 
