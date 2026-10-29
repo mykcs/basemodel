@@ -7,6 +7,8 @@ const hub = read("src/components/research/SeedOpenEvoResearchHub.astro");
 const training = read(
   "src/components/research/SeedOpenEvoTrainingDesignOverview.astro",
 );
+const comparisonData = read('src/data/seedOpenEvoIntelligenceComparison.ts');
+const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
 const disclosure = read(
   "src/components/research/ResearchTechnicalDisclosure.astro",
 );
@@ -37,17 +39,13 @@ describe("integrated SEED × OpenEvo training design", () => {
     expect(study).not.toContain("p('/research/seed-openevo/study/design/')");
   });
 
-  it("keeps the Stage-1 responsibility boundary and parameter protocol visible", () => {
-    for (const term of [
-      "Qwen2.5-3B-Instruct",
-      "Princeton WebShop",
-      "外部分析模型",
-      "只在任务结束后读取已保存的轨迹",
-      "不提供具体购物答案",
-    ]) {
-      expect(training).toContain(term);
+  it("keeps the Stage-1 operational boundary and parameter protocol visible", () => {
+    expect(missionHero).toContain('Qwen2.5-3B-Instruct');
+    for (const term of ['Qwen 自主采集 WebShop 任务轨迹', '外部高能力教师模型 API', '不在执行任务时替 Qwen 选动作', '监督微调（SFT）· 3 轮', '初始参数蒸馏（OPSD）']) {
+      expect(comparisonData).toContain(term);
     }
-    expect(training).not.toContain("GLM / Kimi / MiniMax");
+    expect(comparisonData).not.toContain('GLM / Kimi / MiniMax');
+    expect(comparisonData).toContain('本阶段不再调用 Stage 1 的外部高能力教师模型 API。');
     for (const term of [
       "temperature",
       "0.4",

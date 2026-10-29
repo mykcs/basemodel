@@ -65,17 +65,30 @@ test('legacy Stage-2 genealogy remains one connected ordered spine below desktop
   }
 });
 
-test('Stage-1 responsibility path does not lose the middle connector at tablet width', async ({ page }) => {
+test('SEED × OpenEVO stages stay connected and matched learning rows retain order at tablet width', async ({ page }) => {
   await setViewport(page, 768, 1024);
   await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
-  const flow = page.locator('.responsibility-flow');
-  await expect(flow).toBeVisible();
-  const items = flow.locator(':scope > li');
-  await expect(items).toHaveCount(6);
-  const boxes = await verticalOrder(page, '.responsibility-flow > li');
-  expect(boxes.every((box, index) => index === 0 || box.top > boxes[index - 1]!.top)).toBe(true);
-  const connectors = await items.evaluateAll((nodes) => nodes.slice(0, -1).map((node) => getComputedStyle(node, '::after').borderLeftWidth));
-  expect(connectors.every((value) => Number.parseFloat(value) > 0)).toBe(true);
+  const diagram = page.locator('[data-intelligence-comparison]');
+  const stage1 = diagram.locator('[data-stage="stage-1"]');
+  const stage2 = diagram.locator('[data-stage="stage-2"]');
+  await expect(stage1).toBeVisible();
+  await expect(stage2).toBeVisible();
+  await expect(stage1.locator('[data-axis]')).toHaveCount(4);
+  await expect(stage2.locator('[data-axis]')).toHaveCount(4);
+  const stages = await verticalOrder(page, '[data-intelligence-comparison] [data-stage]');
+  expect(stages[1]!.top).toBeGreaterThan(stages[0]!.top + stages[0]!.height);
+  const connector = await stage1.evaluate((node) => {
+    const line = getComputedStyle(node, '::after');
+    const head = getComputedStyle(node, '::before');
+    return { width: line.width, height: line.height, arrow: head.borderTopWidth };
+  });
+  expect(Number.parseFloat(connector.width)).toBeGreaterThan(0);
+  expect(Number.parseFloat(connector.height)).toBeGreaterThan(0);
+  expect(Number.parseFloat(connector.arrow)).toBeGreaterThan(0);
+  for (const stage of [stage1, stage2]) {
+    const rows = await stage.locator('[data-axis]').evaluateAll((nodes) => nodes.map((node) => ({ top: node.getBoundingClientRect().top, count: node.querySelectorAll('[data-framework]').length })));
+    expect(rows.every((row, index) => row.count === 2 && (index === 0 || row.top > rows[index - 1]!.top))).toBe(true);
+  }
 });
 
 test('experiment selector keeps all three transitions visible at tablet width', async ({ page }) => {
