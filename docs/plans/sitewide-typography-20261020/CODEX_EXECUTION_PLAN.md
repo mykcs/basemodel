@@ -191,7 +191,7 @@ git diff --check
 - [ ] **T2.03 | 长文科研排版**：安全 owner 中调整 `openevo-research-blogs.css`、`advisor-ten-approved-reader.css`、文章 title/section/subsection、正文/图注/阅读宽度；若与 #895 冲突先处理 T0.03。**PASS：**实际字号/行高/H1-H4/中英文阅读截图通过，没有把网页变双栏。
 - [ ] **T2.04 | Figure/Table 视觉与语义**：逐类检查 `research-booktabs.css`、`research-figure-readability.css` 与消费组件：图标题/Axis/Data label/Caption 不混级；单图适度紧凑、多面板允许较宽；三线表、右对齐数值、caption 的统计口径与 wrapper 局部滚动。**PASS：**每个修改对象有 before/after 同尺寸截图 + computed style 或 SVG 几何 JSON，不增逐行花哨表格线。
 - [ ] **T2.05 | 复杂机制图几何修复**：检查 `interactive-research-explainer-methods.css`、`interactive-research-explainer-core.css`、Flow/SEED/OpenEVO/WebShop/ALFWorld。对小而重要的解释文本提高可读性时同步改 `grid-template-areas`/容器/换行/连接线，保护 390px 手机布局。**PASS：**所有主要节点无真实重叠/裁切；固定 54/82px 特殊标签要么重构几何，要么保留列入有依据的 exception。
-- [ ] **T2.06 | 数学/数字/中英文规则**：真实公式保留 KaTeX 数学字体和符号；代码/SHA 保留 mono，普通科研数字/得分不使用装饰 serif/monospace 或排名自动加粗；核对 `font-variant-numeric` 与学长十问 plain-numeral owner。**PASS：**真实计算字体与两种语言截图无异常字形，科学数据逐项核对不变。
+- [ ] **T2.06 | 数学/数字/中英文规则**：真实公式保留 KaTeX 数学字体和符号；代码/SHA 保留 mono，普通科研数字/得分不使用装饰 serif/monospace 或排名自动加粗；核对 `font-variant-numeric` 与L 学长十问 plain-numeral owner。**PASS：**真实计算字体与两种语言截图无异常字形，科学数据逐项核对不变。
 - [ ] **T2.07 | 研究回归保护**：复用 `canonical-research-figures.spec.ts`、`seed-world4-q03-presentation.spec.ts`、`research-explainer-layout.spec.ts`，验证 Q03 点轴 bbox 间距、SVG `aria-label + desc`、无覆盖式 `title`、Figure C1 中英混排合理性与真 75px 窄栏负向失败。**PASS：**同 HEAD 相关 Chromium/WebKit 与科学事实测试通过。
 - [ ] **T2.08 | 保存研究视觉收据**：更新 Figure/Table 清单、真实受影响路由、截图/测量 Artifact 和未修复布局 blocker，向用户汇报。**PASS：**没有把 `CI passed` 当作人眼批准。
 

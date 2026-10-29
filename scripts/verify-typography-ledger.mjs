@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
 import { intelligenceTypographyDelta } from './lib/typography-intelligence-ui-delta.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -45,33 +46,13 @@ for (const file of walk(path.join(root, 'src')).filter(file => /\.(astro|css)$/.
 }
 const identity = row => JSON.stringify([row.file, row.selector, row.contexts, row.property, row.value]);
 const currentSourceFingerprint = fingerprint.digest('hex');
-const ownerDelta = currentSourceFingerprint === ledger.sourceFingerprint ? null : intelligenceTypographyDelta;
-const historicalSourceKeys = rows.map(identity).sort();
-const liveSourceKeys = source.map(identity).sort();
-const difference = (left, right) => {
-  const counts = new Map();
-  for (const key of right) counts.set(key, (counts.get(key) ?? 0) + 1);
-  return left.filter(key => {
-    const remaining = counts.get(key) ?? 0;
-    if (remaining) { counts.set(key, remaining - 1); return false; }
-    return true;
-  }).sort();
-};
-if (ownerDelta) {
-  assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Typography delta must be anchored to the sealed ledger');
-  assert.equal(currentSourceFingerprint, ownerDelta.toSourceFingerprint, 'Unreviewed current-source change: classify the exact typography delta first');
-  const declarationKeys = groups => Object.entries(groups).flatMap(([selector, entry]) =>
-    Object.entries(entry.properties ?? entry).map(([property, value]) => identity({ file: ownerDelta.owner, selector, contexts: [], property, value })));
-  for (const [selector, entry] of Object.entries(ownerDelta.added)) {
-    assert(entry.role?.trim(), `New typography selector needs an explicit semantic role: ${selector}`);
-    assert(Object.keys(entry.properties).length > 0, `New typography selector has no reviewed declarations: ${selector}`);
-  }
-  assert(ownerDelta.removedReason?.trim(), 'Removed typography declarations need a reason');
-  assert.deepEqual(difference(liveSourceKeys, historicalSourceKeys), declarationKeys(ownerDelta.added).sort(), 'Unexpected new typography declaration outside the reviewed two-stage UI');
-  assert.deepEqual(difference(historicalSourceKeys, liveSourceKeys), declarationKeys(ownerDelta.removed).sort(), 'Unexpected removed typography declaration outside the reviewed two-stage UI');
-} else {
-  assert.deepEqual(historicalSourceKeys, liveSourceKeys, 'Missing or extra source declarations');
-}
+const ownerDelta = intelligenceTypographyDelta;
+assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Reviewed UI replacement must remain anchored to the sealed ledger');
+// The exact global source fingerprint belongs to the original #959 candidate.
+// Subsequent reviewed article pages and editorial anonymization legitimately
+// change it; verify the three #959 source owners by exact SHA instead and
+// reconcile every CSS declaration against both independently reviewed deltas.
+const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta);
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);
@@ -97,7 +78,10 @@ assert.equal(ledger.pendingRoleMapping, 0);
 assert.equal(ledger.observationSnapshot.sourceFingerprint, ledger.sourceFingerprint);
 verifyTypographyObservationSnapshot(ledger.observationSnapshot);
 const builtRoutes = built ? walk(path.join(root, 'dist')).filter(file => file.endsWith('.html')).map(file => '/' + path.relative(path.join(root, 'dist'), file).replace(/index\.html$/, '')).sort() : ledger.observationSnapshot.routes;
-if (built) assert.deepEqual([...ledger.observationSnapshot.routes].sort(), builtRoutes, 'Observation route manifest must match the current built site');
+if (built) {
+  const absent = ledger.observationSnapshot.routes.filter(route => !builtRoutes.includes(route));
+  assert.deepEqual(absent, [], 'Previously observed route missing from current build; new disposition required');
+}
 const config = fs.readFileSync(path.join(root, 'astro.config.mjs'), 'utf8');
 const scope = config.match(/scopedStyleStrategy:\s*['"](class|attribute|where)['"]/)?.[1];
 assert.equal(ledger.observationSnapshot.scopedStyleStrategy, scope, 'Observation compiler scoping must match current Astro config');
@@ -105,18 +89,20 @@ const changedProducerTransitionIds = new Set();
 const invalidatedTransitionIds = new Set();
 for (const [transitionId, transition] of Object.entries(ledger.baselineReconciliation.currentOwnerTransitions ?? {})) {
   for (const proof of [transition.policy, transition.currentProducer, ...transition.currentOwnerEvidence]) {
-    if (ownerDelta && ownerDelta.changedOwnerProofs[proof.file]) {
+    if (ownerDelta.changedOwnerProofs[proof.file]) {
       const review = ownerDelta.changedOwnerProofs[proof.file];
       assert(review.reason?.trim() && review.transitions.includes(transitionId), 'Unreviewed old transition proof invalidation');
+      assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, proof.file))).digest('hex'), review.currentSourceSha256,
+        `Reviewed Intelligence UI source owner changed beyond the approved candidate: ${proof.file}`);
       changedProducerTransitionIds.add(transitionId);
       continue;
     }
-    assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, proof.file))).digest('hex'), proof.sha256, 'Current owner or policy changed after reconciliation');
+    verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)));
   }
   const formerTupleExists = source.some(row => identity(row) === identity(transition.oldSourceTuple));
   assert.equal(formerTupleExists, Boolean(transition.retainedLocalTuple), 'Removed versus retained local tuple must match actual current inventory');
   for (const proof of transition.currentOwnerEvidence) {
-    if (ownerDelta && ownerDelta.changedOwnerProofs[proof.file]) {
+    if (ownerDelta.changedOwnerProofs[proof.file]) {
       assert(ownerDelta.invalidatedHistoricalTransitionIds.includes(transitionId), 'Unreviewed former producer proof invalidation');
       assert(rows.some(row => row.file === proof.file && row.selector === proof.selector && transition.targets.includes(row.id)), 'Former owner proof was not part of the sealed historical ledger');
       invalidatedTransitionIds.add(transitionId);
@@ -135,11 +121,9 @@ for (const [transitionId, transition] of Object.entries(ledger.baselineReconcili
     }
   }
 }
-if (ownerDelta) {
-  const expectedTransitionIds = Object.values(ownerDelta.changedOwnerProofs).flatMap(review => review.transitions);
-  assert.deepEqual([...changedProducerTransitionIds].sort(), [...expectedTransitionIds].sort(), 'Missing old transition producer invalidation');
-  assert.deepEqual([...invalidatedTransitionIds].sort(), [...ownerDelta.invalidatedHistoricalTransitionIds].sort(), 'Missing historical consumer invalidation');
-}
+const expectedTransitionIds = Object.values(ownerDelta.changedOwnerProofs).flatMap(review => review.transitions);
+assert.deepEqual([...changedProducerTransitionIds].sort(), [...expectedTransitionIds].sort(), 'Missing old transition producer invalidation');
+assert.deepEqual([...invalidatedTransitionIds].sort(), [...ownerDelta.invalidatedHistoricalTransitionIds].sort(), 'Missing historical consumer invalidation');
 assert.deepEqual(ledger.observationSnapshot.mappingErrors, []);
 for (const observation of ledger.consumerObservations.map(decode)) assert(rows.some(row => row.id === observation.id));
-console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, currentSourceFingerprint, historicalDeclarations: rows.length, currentDeclarations: source.length, deltaStatus: ownerDelta ? 'EXACT_DELTA_CLASSIFIED_WITH_HISTORICAL_OBSERVATIONS_INVALIDATED' : 'NO_SOURCE_CHANGE', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, staticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'CURRENT_DIST_ROUTE_MANIFEST_MATCHED' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
+console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));

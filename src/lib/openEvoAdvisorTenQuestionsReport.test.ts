@@ -46,13 +46,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const intro = responses.match(/<p class="evo-article__lede" data-reader-purpose>([\s\S]*?)<\/p>/)?.[1] ?? '';
     const provenance = responses.match(/<p class="evo-article__note" data-meeting-provenance>([\s\S]*?)<\/p>/)?.[1] ?? '';
     expect(intro).toContain('这里先告诉你：十个研究问题已经测到什么');
-    expect(provenance).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
+    expect(provenance).toContain('2026 年 9 月 22 日，我们和L 学长开了一次 OpenEVO 研究讨论会');
     expect(provenance).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
     expect(provenance).toContain('会议原始逐字记录（RAW）');
     expect(responses).not.toContain('9 月 22 日会议的逐字记录见本文开头。');
     expect(provenance.indexOf('会议原始逐字记录')).toBeLessThan(provenance.indexOf('Q01–Q09'));
     expect(provenance).toContain('Q10');
-    expect(provenance).toContain('不是学长当时逐字提出的十句话');
+    expect(provenance).toContain('不是L 学长当时逐字提出的十句话');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
     expect(questions).toContain('后续分析（非 RAW）');
@@ -67,7 +67,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const positions=paths.map(p=>navigation.indexOf("path:'/research/seed-openevo/study/"+p));
     expect(positions.every(x=>x>=0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a,b)=>a-b));
-    expect(navigation).toContain('学长十问：问题与背景');
+    expect(navigation).toContain('L 学长十问：问题与背景');
     expect(navigation).toContain('我们的回应实验');
     for(const [id,route] of [
       ['study-openevo-methods','openevo-methods'],
@@ -170,7 +170,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('还没有足够证据确认 rank32');
     expect(responses).toContain('不是同一个测量');
     expect(responses).toContain('独立研究');
-    expect(questions).toContain('不能当作学长当时逐字提出的十句话');
+    expect(questions).toContain('不能当作L 学长当时逐字提出的十句话');
   });
   it('protects conversation-reference prose and unframed answer navigation',()=>{
     // Q01 is directly user-requoted; Q02-Q10 are historically discussed reference drafts.
@@ -225,7 +225,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
     expect(responses).toContain('十个研究问题的证据');
-    expect(responses).not.toContain('逐项回答学长十问');
+    expect(responses).not.toContain('逐项回答L 学长十问');
     const allReportTables=responses+capacity+read('src/components/research/OpenEvoSeedWorld4Reproduction.astro');
     for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜','表 5｜','表 6｜','表 7｜'])
       expect(allReportTables.split(label).length-1).toBe(1);
