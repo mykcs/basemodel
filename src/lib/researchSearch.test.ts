@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { researchSearchEntries } from './researchSearch';
+import { OPEN_EVO_WEBSHOP_NOTE_META, OPEN_EVO_WEBSHOP_PRIMER_IDS } from '../data/openEvoWebShopNoteMetadata';
 import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
 import { CAPABILITY_READER_ROUTES, CAPABILITY_ROUTE_ALIASES, CAPABILITY_TOPIC_GROUPS } from '../data/capabilityReaderRoutes';
 
@@ -12,6 +13,11 @@ describe('canonical content discovery', () => {
     for (const row of SITE_READER_CONTRACTS) {
       if (row.id === 'not-found' || row.redirectsTo || row.sourceRoute.includes('[') || Object.keys(CAPABILITY_ROUTE_ALIASES).some((alias) => row.samplePath === `${root}${alias}/`)) continue;
       expect(paths, row.id).toContain(row.samplePath);
+    }
+    for (const id of Object.keys(OPEN_EVO_WEBSHOP_NOTE_META)) {
+      const path = `/research/seed-openevo/study/results/${id}/`;
+      if (OPEN_EVO_WEBSHOP_PRIMER_IDS.has(id)) expect(paths).not.toContain(path);
+      else expect(paths).toContain(path);
     }
     expect(paths).toContain('/models/');
     expect(paths).toContain('/papers/');

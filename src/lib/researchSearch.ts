@@ -1,3 +1,4 @@
+import { OPEN_EVO_WEBSHOP_NOTE_META, OPEN_EVO_WEBSHOP_PRIMER_IDS } from '../data/openEvoWebShopNoteMetadata';
 import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
 import { CAPABILITY_READER_ROUTES, CAPABILITY_ROUTE_ALIASES } from '../data/capabilityReaderRoutes';
 
@@ -46,7 +47,7 @@ export function researchSearchEntries() {
   ]));
   const aliasPaths = new Set(Object.keys(CAPABILITY_ROUTE_ALIASES).map((route) => `${root}${route}/`));
   const seen = new Set<string>();
-  return SITE_READER_CONTRACTS.flatMap((row) => {
+  const fixed = SITE_READER_CONTRACTS.flatMap((row) => {
     // Collection records and compatibility URLs already have canonical owners.
     if (row.id === 'not-found' || row.redirectsTo || row.sourceRoute.includes('[') || aliasPaths.has(row.samplePath) || seen.has(row.samplePath)) return [];
     seen.add(row.samplePath);
@@ -59,4 +60,10 @@ export function researchSearchEntries() {
       path: row.samplePath,
     }];
   });
+  const notes = Object.entries(OPEN_EVO_WEBSHOP_NOTE_META).flatMap(([id, meta]) =>
+    OPEN_EVO_WEBSHOP_PRIMER_IDS.has(id) ? [] : [{
+      type: 'guide', id: `result-note-${id}`, title: meta.title,
+      subtitle: meta.description, aliases: [id], path: `/research/seed-openevo/study/results/${id}/`,
+    }]);
+  return [...fixed, ...notes];
 }

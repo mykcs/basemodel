@@ -88,6 +88,13 @@ assert.equal(ledger.observationSnapshot.scopedStyleStrategy, scope, 'Observation
 const changedProducerTransitionIds = new Set();
 const invalidatedTransitionIds = new Set();
 const contentReorganizationInvalidatedProofs = new Set();
+// Enforce every advertised exact-source identity, even without an old transition.
+for (const [file, review] of Object.entries(contentReorganizationProofs)) {
+  assert.match(review.priorSourceSha256, /^[a-f0-9]{64}$/, 'Prior source identity is provenance, not a new observation');
+  assert(review.reason?.trim(), 'Content reorganization requires a reason');
+  assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex'), review.currentSourceSha256,
+    `Content reorganization source changed beyond its reviewed identity: ${file}`);
+}
 for (const [transitionId, transition] of Object.entries(ledger.baselineReconciliation.currentOwnerTransitions ?? {})) {
   for (const proof of [transition.policy, transition.currentProducer, ...transition.currentOwnerEvidence]) {
     if (ownerDelta.changedOwnerProofs[proof.file]) {

@@ -3,7 +3,6 @@ import "../../styles/research-article.css";
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ResearchOrientation from './ResearchOrientation.astro';
-import ResearchTaskContext from './ResearchTaskContext.astro';
 import { CAPABILITY_READER_ROUTES, CAPABILITY_TOPIC_GROUPS } from '../../data/capabilityReaderRoutes';
 
 interface Props { locale: Locale }
@@ -37,7 +36,7 @@ const groups = CAPABILITY_TOPIC_GROUPS.map((group) => ({
       actionLabel={t('按时间查看实验', 'Browse experiments chronologically')}
     />
   </div>
-  <ResearchTaskContext locale={locale} />
+  <p class="map-lobby__archive" data-reader-context data-reader-task data-reader-purpose>{t('研究对象是模型执行搜索、点击和购买的 WebShop 模拟购物任务。', 'The research studies models searching, clicking, and buying in the WebShop shopping simulator.')} <a href={p('/research/seed-openevo/flow/webshop/')}>{t('WebShop 任务与评分', 'WebShop tasks and scoring')}</a></p>
   <nav class="map-lobby__archive" aria-label={t('研究主题', 'Research topics')} data-topic-navigation>
     <ul>{groups.map((group) => <li><a href={`#topic-${group.id}`}>{group.label[locale]}</a></li>)}</ul>
   </nav>

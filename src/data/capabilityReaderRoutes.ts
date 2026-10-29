@@ -2,7 +2,7 @@
 export const CAPABILITY_READER_ROUTES = [
   {
     "route": "",
-    "coverage": "rebuilt",
+    "coverage": "self-contained",
     "owner": "OpenEvoCapabilityMapLobby",
     "label": {
       "zh": "研究专题目录",
