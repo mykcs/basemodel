@@ -1132,7 +1132,12 @@ const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=
   }
 };
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
+  const routeWitnesses = scopedMigrationWitnesses.filter(row => row.route === route);
   test('confirmed scoped typography readers '+route, async ({page}, info)=>{
+    // Six viewport/theme passes over 120+ historical witnesses can exceed the
+    // normal 90s total test budget even when individual assertions succeed.
+    // Keep every witness and all six views; extend only the dense-route budget.
+    if (routeWitnesses.length >= 120) test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
@@ -1140,7 +1145,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
       await page.evaluate(()=>document.fonts.ready);
       const receipts=[];let faceNegative=false,weightNegative=false;
-      for(const row of scopedMigrationWitnesses.filter(row=>row.route===route&&(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
+      for(const row of routeWitnesses.filter(row=>(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
         const checksFace=row.ordinaryFace!==false && Boolean(row.faceOwner || row.ordinaryFace);
         const liveText=route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
         const node=page.locator(row.selector).filter({hasText:liveText}).first();

@@ -24,7 +24,7 @@ describe('advisor-facing ten-question first viewport', () => {
     expect(meetingProvenance).toContain('会议原始逐字记录（RAW）');
     expect(meetingProvenance).toContain('Q01–Q09');
     expect(meetingProvenance).toContain('独立复现问题 Q10 为会后新增');
-    expect(meetingProvenance).toContain('不是学长当时逐字提出的十句话');
+    expect(meetingProvenance).toContain('不是L 学长当时逐字提出的十句话');
   });
 
   it('puts scientific findings and next decisions before the color legend', () => {

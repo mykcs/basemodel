@@ -1,5 +1,10 @@
 # Latest Agent handoff
 
+## 2026-10-29 人物称谓隐私：待合入的标准候选
+
+BaseModel 当前任务分支正在把公开科研沟通中的人物引用统一为 `W 老师` 与 `L 学长`，以 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 为唯一称谓 owner；根入口、`src/AGENTS.md`、站点 README、质量验收索引和 `npm run audit:person-privacy` 都指向/执行这一规则。当前源码对已知私人身份做失败即停止审查，正式发布仍须看 PR 精确 HEAD 的 CI / Vercel 及真实网页；此段是候选状态记录，不能当作已经合入 `main` 或撤回公共 Git 历史的证明。
+
+
 ## 2026-10-24 Typography release and Production closeout
 
 PR [#949](https://github.com/mykcs/basemodel/pull/949) squash-merged the sitewide Typography system to `main@dbda56cb3ca12c1956f0fb0a1876a6a10541bc84`, including Q05 PR #948's discrete β teaching axis, formula fit, browser checks, workflow triggers and qualified 65-minute Cloud Figure timeout. Exact-head Public PR CI (run `40060099546`), full Cloud Figure Visual Review (run `40060098996`, eight browser shards plus artifact round-trip checks), local `npm run verify:deploy`, `npm run build`, and the 2,096-case Chromium/WebKit matrix passed. The exact-head Vercel Preview was READY; the `main` Production deployment `dpl_3M8R7Sy9hsWknow5o671aPTTELut` is READY on the same SHA. Production `/` and `/research/seed-openevo/study/parameter-memory-results/` returned HTTP 200; the five-point Q05 axis and `--type-plot-label` are present in served output. Production `noindex,follow` is intentional while access protection is active; canonical and hreflang use `https://basemodel-preview.vercel.app/`. The source ledger covers 5,491 declarations; ten new/inherited identities remain explicitly unobserved in the incremental snapshot, so no full-site visual observation is claimed. Older SHA receipts below are historical.
@@ -73,13 +78,13 @@ Q03 的独立单栏论文图改动来自已合入的 [PR #921](https://github.co
 
 ## 2026-10-14 三篇博客写作续接（科研测量暂停）
 
-BaseModel PR #851 仍按 **① OpenEVO 方法 → ② 学长十问 → ③ 我们的回应实验**。本轮只将已有科研证据补写第三篇和报告，不运行 GPU、checkpoint 或 WebShop。Q17 DirectApply R159 冻结64题开发成绩为 **60.1088/100、18/64 exact**，旧 M1 64×8 Success@k、D1 同模型32条训练 prefix 证据与128题三线终评、rank32/rank128 后段1024次比较均非同一测量。D1 #52/#65/#66 只到 PARTIAL；Q07 Bounded OFF 不能替代 DirectApply R159。实验 PR #703 未合并的 **39/78、核心9/9** 不等于实验 main 的旧 **38/78**；全体13份仅186/1014接纳格、0/13达78/78。权威交接：https://github.com/mykcs/openevo-experiment/blob/science/checkpoint13-cpu-evidence-followthrough-20261013/docs/science/webshop/program/OPEN_EVO_CHECKPOINT78_PAUSED_BASEMODEL_WRITING_HANDOFF_20261014.md
+BaseModel PR #851 仍按 **① OpenEVO 方法 → ② L 学长十问 → ③ 我们的回应实验**。本轮只将已有科研证据补写第三篇和报告，不运行 GPU、checkpoint 或 WebShop。Q17 DirectApply R159 冻结64题开发成绩为 **60.1088/100、18/64 exact**，旧 M1 64×8 Success@k、D1 同模型32条训练 prefix 证据与128题三线终评、rank32/rank128 后段1024次比较均非同一测量。D1 #52/#65/#66 只到 PARTIAL；Q07 Bounded OFF 不能替代 DirectApply R159。实验 PR #703 未合并的 **39/78、核心9/9** 不等于实验 main 的旧 **38/78**；全体13份仅186/1014接纳格、0/13达78/78。权威交接：https://github.com/mykcs/openevo-experiment/blob/science/checkpoint13-cpu-evidence-followthrough-20261013/docs/science/webshop/program/OPEN_EVO_CHECKPOINT78_PAUSED_BASEMODEL_WRITING_HANDOFF_20261014.md
 
 新文章提交需要**重新验收 PR #851 的 exact head**，旧 60da447 的 CI / Vercel Preview 通过只属历史；PR / Preview 不是 Production。
 
 ## 三篇 OpenEVO 技术博客的当前文章职责（2026-10-13）
 
-PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
+PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② L 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作L 学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
 
 未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head、CI 与 Vercel 的实时状态。
 
