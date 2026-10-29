@@ -73,7 +73,7 @@ export const seedOpenEvoIntelligenceComparison: ComparisonStage[] = [
         id: 'external-teacher',
         axis: copy('引入外部教师', 'Use an external teacher'),
         sharedAction: copy('外部高能力教师模型 API', 'External high-capability teacher-model API'),
-        similarity: 'same-role-different-mechanism',
+        similarity: 'same-operation',
         tone: 'experience',
         seed: {
           replaceableTeacher: copy('（GLM-5.2）', ' (GLM-5.2)'),

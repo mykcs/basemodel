@@ -41,6 +41,7 @@ describe('SEED and OpenEVO Intelligence UI comparison contract', () => {
   it('puts the role first and only the replaceable teacher implementation in parentheses', () => {
     const teacher = initialization.rows.find((row) => row.id === 'external-teacher');
     expect(teacher?.sharedAction.zh).toBe('外部高能力教师模型 API');
+    expect(teacher?.similarity).toBe('same-operation');
     expect(teacher?.seed.replaceableTeacher?.zh).toBe('（GLM-5.2）');
     expect(teacher?.openEvo.replaceableTeacher?.zh).toBe('（MiniMax-M3）');
     expect(teacher?.seed.explanation).toBe(teacher?.openEvo.explanation);
