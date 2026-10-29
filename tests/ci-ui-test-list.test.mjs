@@ -181,6 +181,25 @@ test('timed CLI refuses a filtered-list omission before execution and propagates
   assert.throws(() => runTimedCli(['unknown', ...args.slice(1)]), /Usage/);
 });
 
+test('timed max-failures defaults to one and exhaustive zero is explicit without retries', t => {
+  const { args } = timedCliFixture(t);
+  for (const [extra, expected] of [[[], '1'], [['0'], '0'], [['1'], '1']]) {
+    const calls = [];
+    const summary = runTimedCli([...args, ...extra], { spawn(command, argv, options) {
+      calls.push(argv);
+      assert.ok(argv.includes(`--max-failures=${expected}`));
+      assert.ok(argv.includes('--retries=0'));
+      writeFileSync(options.env.PLAYWRIGHT_JSON_OUTPUT_FILE, JSON.stringify(reportFixture(['a'], { executed: !argv.includes('--list') })));
+      return { status: 0 };
+    } });
+    assert.equal(calls.length, 2);
+    assert.equal(summary.maxFailures, Number(expected));
+  }
+  for (const invalid of ['-1', '2', 'many', '0.5', '']) {
+    assert.throws(() => runTimedCli([...args, invalid]), /max.failures|Usage/i);
+  }
+});
+
 test('timed grep discovers imported helper registrations through the original importer, including describe tags', t => {
   const require = createRequire(import.meta.url);
   const root = mkdtempSync(join(tmpdir(), 'timed-playwright-list-'));
@@ -224,7 +243,7 @@ test('timed current public and figure matrices retain every importing/helper reg
   for (const [suite, browser, total, receiptName, audit] of [
     ['test:ui', 'chromium', 8, 'public', false],
     ['test:ui:all', 'chromium', 4, 'figure', true],
-    ['test:ui:all', 'webkit', 4, 'figure', true],
+    ['test:ui:all', 'webkit', 8, 'figure', true],
   ]) {
     const canonical = list(suite, browser, undefined, audit);
     const receipt = JSON.parse(readFileSync(new URL(`../scripts/ci-ui-test-timings-20261029-${receiptName}.json`, import.meta.url)));
@@ -242,4 +261,26 @@ test('timed current public and figure matrices retain every importing/helper reg
       assert.equal(actual.filter(item => item.specFile.endsWith(helper)).length, canonical.filter(item => item.specFile.endsWith(helper)).length);
     }
   }
+});
+
+test('Public extras bridge unified Chromium and legacy Public populations without unrelated tests', t => {
+  const root = mkdtempSync(join(tmpdir(), 'public-extras-lists-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const listed = (command, args) => {
+    const path = join(root, 'list.json');
+    const result = spawnSync(command, args, { encoding: 'utf8', env: { ...process.env, CI: '1', PLAYWRIGHT_JSON_OUTPUT_FILE: path } });
+    assert.ifError(result.error);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    return canonicalJsonTests(JSON.parse(readFileSync(path, 'utf8')), { browser: 'chromium' });
+  };
+  const publicCases = listed('npm', ['run', 'test:ui', '--', '--list', '--reporter=json']);
+  const unified = listed('npm', ['run', 'test:ui:all', '--', '--project=chromium', '--list', '--reporter=json']);
+  const core = listed('npx', ['playwright', 'test', 'tests/e2e/core-research-visual-signatures.capture.spec.ts', '--project=chromium', '--list', '--reporter=json']);
+  const lab = listed('npx', ['playwright', 'test', '--config', 'tests/e2e/lab-playwright.config.ts', '--list', '--reporter=json']);
+  assert.equal(core.length, 1);
+  assert.equal(core[0].specFile, 'core-research-visual-signatures.capture.spec.ts');
+  assert.equal(lab.length, 6);
+  assert.ok(lab.every(item => item.specFile === 'lab-server-visual-qa.spec.ts'));
+  requireExactCases(publicCases, [...unified, ...core]);
+  assert.equal(new Set([...publicCases, ...lab].map(item => item.id)).size, publicCases.length + lab.length);
 });

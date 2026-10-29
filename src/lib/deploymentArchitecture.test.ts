@@ -12,21 +12,25 @@ const allowedWorkflowFiles = [
 const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
 const assertCloudFigureSafety = (source: string) => {
   const workflow = parse(source);
-  expect(Object.keys(workflow.on).sort()).toEqual(['pull_request', 'workflow_dispatch']);
+  expect(Object.keys(workflow.on).sort()).toEqual(['pull_request', 'workflow_call']);
   expect(workflow.permissions).toEqual({ contents: 'read' });
-  expect(Object.keys(workflow.jobs)).toEqual(['preflight', 'cloud-figure-browsers', 'cloud-figure-evidence']);
-  const job = workflow.jobs['cloud-figure-browsers'];
-  expect(job.needs).toBe('preflight');
-  expect(workflow.jobs.preflight.steps.some((step: { run?: string }) => step.run === 'npm run verify:deploy')).toBe(true);
-  expect(workflow.jobs.preflight.steps.some((step: { run?: string }) => step.run === 'npm run build')).toBe(true);
-  expect(job['runs-on']).toBe('ubuntu-24.04');
-  expect(job.permissions).toBeUndefined();
-  expect(job.environment).toBeUndefined();
-  expect(job.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
-  expect(job.strategy.matrix.shard).toEqual([1, 2, 3, 4]);
-  expect(job.outputs.sha).toBe('${{ steps.candidate.outputs.sha }}');
+  expect(Object.keys(workflow.jobs)).toEqual(['plan', 'deterministic', 'browser', 'full_browser', 'extras', 'cloud-figure-evidence', 'gate', 'typography_full_webkit_gate']);
+  const job = workflow.jobs.full_browser;
+  expect(job.needs).toEqual(['plan', 'deterministic']);
+  expect(job.strategy.matrix.include).toBe('${{ fromJSON(needs.plan.outputs.matrix_json) }}');
+  expect(job.outputs).toBeUndefined(); // no matrix-last producer owns source identity
+  expect(job.env.FIGURE_SOURCE_SHA).toBe('${{ needs.plan.outputs.sha }}');
+  expect(job.env.FIGURE_REQUIRE_BASELINE).toBe('1');
+  expect(job.env.FIGURE_SHARD_TOTAL).toBe('${{ matrix.total }}');
+  expect(job.env.CLOUD_FIGURE_AUDIT).toBe('1');
+  expect(job.env.PLAYWRIGHT_WORKERS).toBe('1');
+  const producer = workflow.jobs.deterministic;
+  expect(producer.needs).toBe('plan');
+  expect(producer.steps.some((step: { run?: string }) => step.run === 'npm run verify:deploy')).toBe(true);
+  expect(producer.steps.some((step: { run?: string }) => step.run === 'npm run build')).toBe(true);
+  expect(producer.container.image).toBe(job.container.image); // overflow preflight really launches Chromium
   const aggregate = workflow.jobs['cloud-figure-evidence'];
-  expect(aggregate.needs).toEqual(['preflight', 'cloud-figure-browsers']);
+  expect(aggregate.needs).toEqual(['plan', 'deterministic', 'full_browser']);
   expect(aggregate.if).toBe('always()');
   expect(aggregate.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
   expect(aggregate.steps.find((step: { name: string }) => step.name === 'Require every browser shard to succeed').run).toContain('full) test "$SHARD_RESULT" = success');
@@ -39,38 +43,52 @@ const assertCloudFigureSafety = (source: string) => {
   expect(aggregate.steps.indexOf(indexStep) + 1).toBe(aggregate.steps.indexOf(downloadStep));
   for (const [laneName, lane] of Object.entries(workflow.jobs) as [string, typeof job][]) {
     expect(lane['runs-on']).toBe('ubuntu-24.04');
-    if (laneName === 'cloud-figure-evidence') {
-      expect(lane.permissions).toEqual({ actions: 'read', contents: 'read' });
-    } else {
-      expect(lane.permissions).toBeUndefined();
-    }
+    const permissions = laneName === 'cloud-figure-evidence' ? { actions: 'read', contents: 'read' }
+      : laneName === 'plan' ? { contents: 'read', 'pull-requests': 'read' } : undefined;
+    expect(lane.permissions).toEqual(permissions);
     expect(lane.environment).toBeUndefined();
     for (const step of lane.steps) {
       if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
       if (step.uses?.startsWith('actions/checkout@')) expect(step.with['persist-credentials']).toBe(false);
       if (step.uses?.startsWith('actions/upload-artifact@')) {
-        expect(step.with['retention-days']).toBe(3);
-        expect(step.with['if-no-files-found']).toBe('error');
+        const retention = step.with['retention-days'];
+        if (typeof retention === 'number') expect(retention).toBe(3);
+        else expect(retention).toBe("${{ contains(needs.plan.outputs.head_ref, 'typography') && 7 || 3 }}");
+        if (laneName !== 'browser') expect(step.with['if-no-files-found']).toBe('error');
       }
     }
   }
-  expect(aggregate.steps.some((step: { run?: string }) => step.run === 'node scripts/verify-cloud-figure-evidence.mjs aggregate raw-shards accepted-evidence')).toBe(true);
-  expect(aggregate.steps.some((step: { run?: string }) => step.run === 'node scripts/verify-cloud-figure-evidence.mjs roundtrip artifact-roundtrip')).toBe(true);
+  for (const command of ['aggregate raw-shards accepted-evidence', 'roundtrip artifact-roundtrip']) {
+    const step = aggregate.steps.find((step: { run?: string }) => step.run === `node scripts/verify-cloud-figure-evidence.mjs ${command}`);
+    expect(step).toBeDefined();
+    expect(step.env.FIGURE_SOURCE_SHA).toBe('${{ needs.plan.outputs.sha }}');
+    expect(step.env.FIGURE_SHARD_TOTAL).toBe("${{ matrix.browser == 'webkit' && '8' || '4' }}");
+    expect(step.env.FIGURE_REQUIRE_BASELINE).toBe('1');
+  }
   const lock = readJson<{ packages: Record<string, { version: string }> }>('../../package-lock.json');
   expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test']!.version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
   const checkout = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
-  expect(checkout.with['persist-credentials']).toBe(false);
-  expect(checkout.with.ref).toBe('${{ steps.candidate.outputs.sha }}');
+  expect(checkout.with.ref).toBe('${{ needs.plan.outputs.sha }}');
   const upload = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@'));
   expect(upload.if).toBe('always()');
-  expect(upload.with['retention-days']).toBe(3);
-  expect(upload.with['if-no-files-found']).toBe('error');
-  for (const step of job.steps) {
-    if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
-  }
-  // Inspect parsed values: a comment cannot satisfy a permission/trigger assertion.
+  expect(upload.with.name).toContain('${{ needs.plan.outputs.sha }}');
+  const run = job.steps.find((step: { name: string }) => step.name === 'Run complete UI and research figure acceptance shard');
+  expect(run.env.MAX_FAILURES).toBe("${{ contains(needs.plan.outputs.head_ref, 'typography') && '0' || '1' }}");
   const executable = JSON.stringify(workflow);
-  expect(executable).not.toMatch(/secrets\.|write-all|contents:write|vercel deploy|target=production|git push/i);
+  expect(executable).not.toMatch(/secrets\.|write-all|vercel deploy|target=production|git push/i);
+};
+const assertManualFigureSafety = (source: string) => {
+  const workflow = parse(source);
+  expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
+  expect(workflow.permissions).toEqual({ contents: 'read', actions: 'read', 'pull-requests': 'read' });
+  expect(workflow.jobs.review.uses).toBe('./.github/workflows/public-pr-ci.yml');
+  expect(workflow.jobs.review.if).toBe("inputs.purpose == 'review'");
+  expect(workflow.jobs.review.with.force_full).toBe(true);
+  const pilot = workflow.jobs['performance-pilot'];
+  expect(pilot.if).toBe("inputs.purpose == 'performance-pilot'");
+  expect(pilot['runs-on']).toBe('ubuntu-24.04');
+  expect(pilot.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@')).with.name).toContain('diagnostic-webkit-pilot-');
+  expect(JSON.stringify(workflow)).not.toMatch(/secrets\.|write-all|figure-raw-|basemodel-figure-|public-ci-gate/);
 };
 
 describe('Vercel production deployment architecture', () => {
@@ -145,7 +163,9 @@ describe('Vercel production deployment architecture', () => {
 
   it('keeps the cloud figure workflow read-only, pinned and exact-head bound', () => {
     const cloud = readText('../../.github/workflows/cloud-figure-visual-review.yml');
-    assertCloudFigureSafety(cloud);
+    assertManualFigureSafety(cloud);
+    const unified = readText('../../.github/workflows/public-pr-ci.yml');
+    assertCloudFigureSafety(unified);
     for (const command of ['test:ui', 'test:ui:all']) {
       expect(packageJson.scripts[command]).toContain('tests/e2e/advisor-figure-paper-collision.spec.ts');
       expect(packageJson.scripts[command]).toContain('tests/e2e/q17-frontier-content-first.spec.ts');
@@ -153,15 +173,15 @@ describe('Vercel production deployment architecture', () => {
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q17-mobile-comparison-cell-collision');
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
     expect(packageJson.scripts['test:ui:all']).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
-    expect(cloud).toContain('node scripts/ci-ui-test-list.mjs timed test:ui:all ${{ matrix.browser }} ${{ matrix.shard }} 4');
-    expect(cloud).toContain('npm run ui:overflow-preflight');
-    expect(cloud).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
-    expect(cloud).toContain('figure-inventory/playwright-run.json');
-    expect(cloud).toContain('    timeout-minutes: 65');
-    expect(cloud).toContain('--list --reporter=json');
+    expect(unified).toContain('node scripts/ci-ui-test-list.mjs timed test:ui:all ${{ matrix.browser }} ${{ matrix.shard }} ${{ matrix.total }}');
+    expect(unified).toContain('npm run ui:overflow-preflight');
+    expect(unified).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
+    expect(unified).toContain('figure-inventory/playwright-run.json');
+    expect(unified).toContain('    timeout-minutes: 65');
+    expect(unified).toContain('--list --reporter=json');
     expect(readText('../../scripts/verify-cloud-figure-evidence.mjs')).toContain('Downloaded bytes differ:');
-    expect(cloud).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
-    expect(cloud).not.toMatch(/safe\.directory\s+['"]?\*/);
+    expect(unified).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
+    expect(unified).not.toMatch(/safe\.directory\s+['"]?\*/);
   });
 
   it('rejects missing coverage, skipped cases and corrupt downloaded evidence', () => {
@@ -174,7 +194,7 @@ describe('Vercel production deployment architecture', () => {
 
   it('rejects unknown workflows and unsafe cloud workflow mutations', () => {
     expect(() => assertWorkflowFiles([...allowedWorkflowFiles, 'unknown.yml'])).toThrow();
-    const source = readText('../../.github/workflows/cloud-figure-visual-review.yml');
+    const source = readText('../../.github/workflows/public-pr-ci.yml');
     for (const bad of [
       source.replace('  pull_request:', '  pull_request_target:'),
       source.replace('  contents: read', '  contents: write'),

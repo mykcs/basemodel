@@ -1,5 +1,9 @@
 # Latest Agent handoff
 
+## 2026-10-29 Unified browser acceptance candidate
+
+The next CI candidate consolidates automatic browser acceptance into Public PR CI: one static build, Chromium 4 / WebKit 8 complete-population shards and seven distinct Public core/Lab cases. The former automatic Cloud graph becomes a manual wrapper. Original default-reading checks run before the expanded scientific evidence states, and exact source/population/byte validation binds all 4/8 shards. Typography's exhaustive failure collection and diagnostics remain. [The CI record](../dev/CI/README.md) owns qualification and actual measurements; this candidate is not a measured speed claim until hosted acceptance completes.
+
 ## 2026-10-29 CI performance qualification
 
 [#814](https://github.com/mykcs/basemodel/pull/814) merged fail-early browser prerequisites, exact-source sealed static artifacts, duration-balanced full-title allocation and shared risk routing. [The CI implementation and measurement record](../dev/CI/README.md) owns behavior, positive/negative receipts, costs and rollback; hosting and release authority remain in the existing current owners. The sampled complete browser-workflow wait fell from 55.6 to 35.8 minutes, while summed Runner time rose 5.2%; no net full-run compute saving is claimed. [#962](https://github.com/mykcs/basemodel/pull/962) merged the typography consumer's shared-plan condition as `b2807e2`; current-base Public and complete Figure acceptance passed, including an explicitly recorded failed-only WebKit recovery. The independent #958 privacy work is preserved, including its merged auditor and existing image/external-identity follow-up. Scientific source/evidence and required check identities remain intact.
