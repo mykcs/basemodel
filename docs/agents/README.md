@@ -30,6 +30,8 @@ When a task asks **what quality must be met or how its acceptance is proved**, c
 
 ### User-facing page, copy, navigation, explanation, or feature
 
+**Exact visual-reference bundle:** If the owner asks to follow the “用实验回答学长十问” page (fonts, spacing, question index, reading width), first read [`current/sitewide-typography-standard.md`](current/sitewide-typography-standard.md), inspect [`parameter-memory-results/index.astro`](../../src/pages/research/seed-openevo/study/parameter-memory-results/index.astro), and reuse [`research-article.css`](../../src/styles/research-article.css) with [`advisor-ten-approved-reader.css`](../../src/styles/advisor-ten-approved-reader.css). The canonical standard stays at its current owner; this router only makes the required files findable. Use `current/ui-change-visual-acceptance-gate.md` for 440px / 1440px rendered acceptance.
+
 Always load the relevant combination of:
 
 - [`current/product-and-research-integrity.md`](current/product-and-research-integrity.md) — product/research truth and false-complete boundaries;

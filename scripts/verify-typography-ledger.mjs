@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
+import { verifyAppendOnlyArticleTypography } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -42,9 +43,11 @@ for (const file of walk(path.join(root, 'src')).filter(file => /\.(astro|css)$/.
   fingerprint.update(relative + '\0' + text + '\0');
   source.push(...(file.endsWith('.css') ? inventoryCSS(text, relative) : inventoryAstro(text, relative).entries));
 }
-assert.equal(fingerprint.digest('hex'), ledger.sourceFingerprint, 'Source fingerprint changed: refresh every affected disposition');
+const currentSourceFingerprint = fingerprint.digest('hex');
+const unchangedSource = currentSourceFingerprint === ledger.sourceFingerprint;
 const identity = row => JSON.stringify([row.file, row.selector, row.contexts, row.property, row.value]);
-assert.deepEqual(rows.map(identity).sort(), source.map(identity).sort(), 'Missing or extra source declarations');
+const appendOnly = verifyAppendOnlyArticleTypography(rows, source);
+if (unchangedSource) assert.equal(appendOnly.newTokenDeclarations, 0, 'Matching historical fingerprint must have no new declarations');
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);
@@ -62,7 +65,8 @@ for (const row of rows) {
   if (row.executionStatus === 'PLANNED_NOT_IMPLEMENTED') assert(row.plannedTarget);
   if (row.executionStatus === 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED') assert(row.plannedSplitTargets);
 }
-assert.equal(new Set(rows.map(row => row.id)).size, source.length);
+assert.equal(new Set(rows.map(row => row.id)).size, rows.length);
+assert.equal(source.length, rows.length + appendOnly.newTokenDeclarations, 'Current declarations must be fully accounted for by historical plus page-local token additions');
 const counts = Object.fromEntries(['MIGRATE', 'JUSTIFIED_EXCEPTION', 'DEAD_OR_SHADOWED'].map(decision => [decision, rows.filter(row => row.decision === decision).length]));
 assert.deepEqual(counts, ledger.counts);
 assert.deepEqual(executionCounts, ledger.executionCounts);
@@ -70,7 +74,10 @@ assert.equal(ledger.pendingRoleMapping, 0);
 assert.equal(ledger.observationSnapshot.sourceFingerprint, ledger.sourceFingerprint);
 verifyTypographyObservationSnapshot(ledger.observationSnapshot);
 const builtRoutes = built ? walk(path.join(root, 'dist')).filter(file => file.endsWith('.html')).map(file => '/' + path.relative(path.join(root, 'dist'), file).replace(/index\.html$/, '')).sort() : ledger.observationSnapshot.routes;
-if (built) assert.deepEqual([...ledger.observationSnapshot.routes].sort(), builtRoutes, 'Observation route manifest must match the current built site');
+if (built) {
+  const absent = ledger.observationSnapshot.routes.filter(route => !builtRoutes.includes(route));
+  assert.deepEqual(absent, [], 'Previously observed route missing from current build; new disposition required');
+}
 const config = fs.readFileSync(path.join(root, 'astro.config.mjs'), 'utf8');
 const scope = config.match(/scopedStyleStrategy:\s*['"](class|attribute|where)['"]/)?.[1];
 assert.equal(ledger.observationSnapshot.scopedStyleStrategy, scope, 'Observation compiler scoping must match current Astro config');
@@ -96,4 +103,4 @@ for (const transition of Object.values(ledger.baselineReconciliation.currentOwne
 }
 assert.deepEqual(ledger.observationSnapshot.mappingErrors, []);
 for (const observation of ledger.consumerObservations.map(decode)) assert(rows.some(row => row.id === observation.id));
-console.log(JSON.stringify({ sourceFingerprint: ledger.sourceFingerprint, declarations: rows.length, counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, staticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'CURRENT_DIST_ROUTE_MANIFEST_MATCHED' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
+console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, currentSourceFingerprint, historicalSourceMatch: unchangedSource, historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, appendOnly, counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_NEW_ROUTES_REQUIRE_NEW_BROWSER_EVIDENCE' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));

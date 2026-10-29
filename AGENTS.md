@@ -9,6 +9,8 @@ executable repository truth, or live provider state.
 
 This repository is frequently maintained by coding Agents through GitHub. This root `AGENTS.md` is the **unique repository-root Agent bootstrap authority** and the first repository file an Agent reads. Detailed topic policy belongs under `docs/agents/current/`; `docs/agents/README.md` is navigation-only and must not become a second mutable copy of Agent rules.
 
+**Visual-reference quick route — “用实验回答学长十问”:** Before editing a research article to match this reference page, load [`sitewide-typography-standard.md`](docs/agents/current/sitewide-typography-standard.md), inspect the reference [`parameter-memory-results/index.astro`](src/pages/research/seed-openevo/study/parameter-memory-results/index.astro), then reuse the actual CSS owners [`research-article.css`](src/styles/research-article.css) and [`advisor-ten-approved-reader.css`](src/styles/advisor-ten-approved-reader.css). This is a navigation pointer, not another typography policy. Verify the rendered candidate at 440px mobile / 1440px desktop in both themes. Do not replace the existing source of truth with an improvised second font/spacing system.
+
 ## Product wish authority
 
 Before any user-facing product, copy, navigation, information-architecture, page-role, or major interaction decision, read [`docs/wish/LATEST.md`](docs/wish/LATEST.md).

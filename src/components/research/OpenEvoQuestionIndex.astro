@@ -6,11 +6,13 @@ interface Question {
 }
 interface Props {
   questions: ReadonlyArray<Question>;
+  ariaLabel?: string;
+  heading?: string;
 }
-const { questions } = Astro.props;
+const { questions, ariaLabel = '快速定位十个实验回应', heading = '按问题定位实验回应' } = Astro.props;
 ---
-<nav class="advisor-question-index" id="response-index" aria-label="快速定位十个实验回应">
-  <p class="advisor-question-index__heading">按问题定位实验回应</p>
+<nav class="advisor-question-index" id="response-index" aria-label={ariaLabel}>
+  <p class="advisor-question-index__heading">{heading}</p>
   <ol>
     {questions.map((question) => (
       <li>

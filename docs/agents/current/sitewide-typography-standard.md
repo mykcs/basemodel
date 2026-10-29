@@ -37,6 +37,17 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 
 ## 全站实施与例外
 
+### “用实验回答学长十问”长文阅读样板
+
+当用户指定这一页面作为排版参考时，**以真实页面及其 CSS 为可执行的视觉标准**，不要只凭“参考博客风格”的印象重建：
+
+- 样板：`src/pages/research/seed-openevo/study/parameter-memory-results/index.astro`，复用 `.evo-blog.evo-article.evo-approved-reader`；
+- 纸张宽度、左右留白、正文、H1/H2/H3、明暗主题：`src/styles/research-article.css`；
+- 问题索引、问题编号、折叠目录和科研回应细节：`src/styles/advisor-ten-approved-reader.css` 与 `src/components/research/OpenEvoQuestionIndex.astro`；
+- 必须在 440×956 手机及 1440×1000 桌面上检查：纸张边界、中文长句换行、折叠回答、首屏可读性、明暗两套文本对比。见 `ui-change-visual-acceptance-gate.md`。
+
+此处只是引用已有代码作为样板，**不创建另一份字号或间距数值副本**。样板只适用于明确选用这一阅读模式的长文，不能把它全站强制套用到科研工作台、图表或其他页面。
+
 本规范在所有路由继承同一 token。具体 DOM 仍由 `site.css` / `editorial-hierarchy.css`、`openevo-research-blogs.css`、`research-booktabs.css` 及各科研组件负责。页面角色允许差异：Home Hero、PPT 演示、论文正文、工作台控件、公式、代码、Plot 坐标轴、状态标签；**每一处例外都应有读者任务理由**，不能用“这是历史 CSS”作理由。
 
 不可通过在根部新增一层 `!important` 覆盖修复局部细节。共享 CSS 风格收敛遵守 `docs/agents/current/css-architecture.md`；已有旧 CSS 中的硬编码值属于迁移债务，审计负责显式报告，不得宣布自动全消。不会为通过检查而把字体缩到难辨，也不会只放大总体字号而挤坏中文和图示。
@@ -44,6 +55,7 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 ## 验收与防止再次假绿色
 
 1. `npm run audit:typography`：在 `npm run build` 后遍历生成的全部 HTML 路由，检查角色 token、科研图存在、Q03 无遮挡型 SVG title，汇总全部 CSS 字体声明和剩余硬编码债务。审计不是视觉验收。
+   - 2026-10-22 的 5,491 条声明档案是历史收据，不是禁止未来新增页面的永久源码指纹。`verify-typography-ledger.mjs` 保证旧声明未被隐式删除或改值；新文章只允许追加使用既有语义字号 token 的局部声明。改动全站/共享 CSS、删除旧声明或引入新的硬编码字号仍需重新分类。新增页面没有继承历史截图验收，必须取得自己的浏览器证据。
 2. 浏览器实际覆盖 Home、Models、Papers、Research、Flow、Compare、Workspace 等代表性路径；iPhone 18 Pro Max 440px（唯一默认手机尺寸）与桌面 1440px、明暗主题、主要标题/正文/图注级别、无横向溢出。科研网页必须用生产形态访问，不能只读 Astro 源码。
 3. 对 Q03 回归做**旧坏例**和**修正例**：旧 SVG 标注距纵轴 13px 的重叠、原生 title 的遮挡必须判失败；新图在桌面和手机可读、图注不等于正文、数学与真实四点保留。Q01 相邻科研图也需检查；对合法的短方法标签/代码和必要的数学符号不误伤。
 4. 每次发布读取最终 Vercel artifact 并浏览器看真实图像。测试绿灯仅证明所检测的性质；读者能否快速理解还需独立冷读，未完成应标记 `NEEDS_READER`。
