@@ -4,10 +4,19 @@ import { shouldBuildForFiles } from './vercel-ignore-build.mjs';
 
 // This is a read-only GitHub mirror alarm. Canonical alias/READY acceptance still
 // requires a separate Vercel control-plane read; no deployment is created here.
+export function belongsToProductionProject(status) {
+  try {
+    const url = new URL(status?.environment_url);
+    return url.protocol === 'https:' && !url.username && !url.password && !url.port
+      && (url.hostname === 'basemodel-preview.vercel.app'
+        || /^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
+  } catch { return false; }
+}
+
 export function classifyProductionMirror(mainSha, deployment, status, filesSinceProduction) {
   if (!/^[a-f0-9]{40}$/.test(mainSha ?? '') || !deployment || !status) return 'UNKNOWN';
   if (deployment.environment !== 'Production' || deployment.creator?.id !== 35613825
-    || status.creator?.id !== 35613825 || status.state !== 'success') return 'UNKNOWN';
+    || status.creator?.id !== 35613825 || status.state !== 'success' || !belongsToProductionProject(status)) return 'UNKNOWN';
   if (!/^[a-f0-9]{40}$/.test(deployment.sha ?? '')) return 'UNKNOWN';
   if (deployment.sha === mainSha) return 'MIRROR_MATCH';
   if (Array.isArray(filesSinceProduction) && filesSinceProduction.length > 0
@@ -31,7 +40,7 @@ export async function inspectProductionMirror({ repository, token, fetcher = fet
   // Bound reads; absent evidence is UNKNOWN, never an old Preview or a green badge.
   for (const candidate of deployments.filter(d => d.environment === 'Production' && d.creator?.id === 35613825).slice(0, 10)) {
     const statuses = await api(`deployments/${candidate.id}/statuses?per_page=1`);
-    if (statuses[0]?.state === 'success' && statuses[0]?.creator?.id === 35613825) {
+    if (statuses[0]?.state === 'success' && statuses[0]?.creator?.id === 35613825 && belongsToProductionProject(statuses[0])) {
       production = candidate;
       status = statuses[0];
       break;
