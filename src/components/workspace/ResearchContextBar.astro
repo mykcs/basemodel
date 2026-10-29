@@ -26,9 +26,9 @@ const { labels, locale } = Astro.props;
   data-labels={JSON.stringify(labels)}
   hidden
 >
-  <div class="shell context-inner">
+  <div class="shell context-inner tw:flex tw:flex-wrap tw:items-center tw:gap-4">
     <span class="context-summary" data-context-summary>{labels.currentTask}</span>
-    <span class="context-counts" data-context-counts>{labels.candidates} 0 · {labels.compare} 0</span>
+    <span class="context-counts tw:dui-badge tw:dui-badge-ghost tw:h-auto tw:min-w-0 tw:max-w-full tw:shrink tw:whitespace-normal tw:text-control" data-context-counts>{labels.candidates} 0 · {labels.compare} 0</span>
     <a class="context-link" href={localePath(locale, '/workspace/')}>{labels.editConstraints}</a>
     <button type="button" class="context-clear" data-context-clear aria-label={labels.clearTask}>×</button>
   </div>

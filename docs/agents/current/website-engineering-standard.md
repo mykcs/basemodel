@@ -18,6 +18,8 @@ https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-engine
 
 BaseModel remains an Astro + React + TypeScript static-first site with Vitest/Playwright verification.
 
+The owner-authorized 2026-10-29 frontend-tool adoption retains that rendering model. Tailwind/daisyUI/shadcn style ownership and migration boundaries belong to [`css-architecture.md`](css-architecture.md); MDX continues through Starlight, and Lucide/Alpine/Motion must serve real existing interface behavior.
+
 Prefer static/server-rendered HTML and CSS for research content. Hydrate only interactions that need client state. Do not rewrite the application stack merely because CI/deployment ownership changes.
 
 Shared component/data owners outrank page-local overrides. BaseModel-specific CSS, theme, hydration, navigation and route ownership remain with their existing current contracts/tests.
