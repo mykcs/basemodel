@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { rmSync } from 'node:fs';
+import { mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -137,6 +137,7 @@ run('npx', installArgs);
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
+  || file === 'scripts/ci-build-artifact.mjs'
   || file === 'scripts/ci-public-plan.mjs'
   || file === 'scripts/ci-ui-test-list.mjs'
   || file === 'scripts/ci-ui-test-timings-202609061200.json'
@@ -189,27 +190,18 @@ if (plan.mode === 'focused') {
       VERCEL_CHANGED_ROUTES: plan.routes.join(','),
     },
   );
-} else if (shardTotal > 1) {
-  const testListPath = join(tmpdir(), `basemodel-playwright-tests-${head.replace(/[^A-Za-z0-9._-]/g, '_')}-${shardIndex}of${shardTotal}.txt`);
-  const primaryReserveSeconds = labRelevant ? 30 : 1;
-  run(
-    'node',
-    [
-      'scripts/ci-ui-test-list.mjs',
-      '--shard-index', String(shardIndex),
-      '--shard-total', String(shardTotal),
-      '--primary-reserve-seconds', String(primaryReserveSeconds),
-      '--output', testListPath,
-    ],
-    browserEnv,
-  );
-  run(
-    'npx',
-    ['playwright', 'test', '--project=chromium', '--max-failures=1', '--test-list', testListPath],
-    browserEnv,
-  );
 } else {
-  run('npm', ['run', 'test:ui'], browserEnv);
+  // Keep every importing spec. The timed runner proves its exact full-title
+  // selection against this unfiltered population before starting a browser.
+  mkdirSync('ci-browser-inventory', { recursive: true });
+  const canonical = `ci-browser-inventory/canonical-${shardIndex}.json`;
+  const report = `ci-browser-inventory/executed-${shardIndex}.json`;
+  run('npm', ['run', 'test:ui', '--', '--list', '--reporter=json'], {
+    ...browserEnv, PLAYWRIGHT_JSON_OUTPUT_FILE: canonical,
+  });
+  run('node', ['scripts/ci-ui-test-list.mjs', 'timed', 'test:ui', 'chromium',
+    String(shardIndex), String(shardTotal), canonical,
+    'scripts/ci-ui-test-timings-20261029-public.json', report], browserEnv);
 }
 
 if (labRelevant && primaryShard) {

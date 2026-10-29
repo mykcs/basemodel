@@ -17,6 +17,18 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 
 ---
 
+## TRIGGER: 私人人物称谓 / 姓名脱敏 / 对外科研沟通
+
+**Cues:** 页面、报告、申请材料、采访、会议记录、图表、链接文字或测试涉及可识别的导师／前辈／第三方；用户要求统一化名、审查姓名或准备将仓库设为私有。
+
+**Automatic response:**
+
+1. 先读 [`person-reference-privacy-standard.md`](person-reference-privacy-standard.md)，全仓库相关两位人物只用 `W 老师` 和 `L 学长`。
+2. 在源码、文档、元数据、测试和必要的引用标签上执行相同规则；跑 `npm run audit:person-privacy`，未通过前不交付可发布候选。
+3. 对图片、外链、账号、历史、PR diff 与实际部署另做人工检查；已封存科研证据不得靠字符串替换伪造历史。源码通过不等于历史/外部记录匿名。
+
+---
+
 ## TRIGGER: remembered plan or current doc may be stale
 
 **Cues:** an earlier plan conflicts with repository state; two current docs disagree; provider behavior changed; the user challenges an assumption; the task depends on fast-moving models/APIs/frameworks/hosting.
@@ -54,9 +66,26 @@ Re-scan when the task changes state: a blocker appears, an overlapping PR is dis
 3. Map the thought structure to semantic HTML. Same-page directories are navigation (`<nav><ol>`), object facts fit `<dl>`, and provenance-layer comparisons whose rows/columns carry meaning stay real `<table>`s. Do not default to a wall of equal-weight cards, decorative English eyebrows, or “how to read this page” narrator copy.
 4. Keep evidence provenance explicit when it changes scientific meaning: paper-reported settings, released-code defaults, and unknown/unpublished exact identities must not collapse into one neat-looking setting. Dated external metrics must keep their source and observation date.
 5. Reuse an existing semantic target for same-page anchors when possible. An extra wrapper added only to host an `id` can change direct-child selector, hydration, and sticky/fixed ownership; if a structural wrapper is genuinely required, treat it as a layout change and rerun the owner-sensitive browser checks.
-6. A locally scrollable wide table is not proven contained until the **document** also stays within the viewport. In grid/flex owners, inspect min-content propagation and make the owning track/item shrinkable (`minmax(0,1fr)` / `min-width:0`) rather than hiding root overflow. Verify at 390px, 768px, and desktop.
+6. A locally scrollable wide table is not proven contained until the **document** also stays within the viewport. In grid/flex owners, inspect min-content propagation and make the owning track/item shrinkable (`minmax(0,1fr)` / `min-width:0`) rather than hiding root overflow. Verify at iPhone 18 Pro Max portrait 440px (the one default phone width) and desktop; retain a narrower/tablet regression size only for a concrete known failure.
 7. At owner handoff, re-scan the Preview/Production trigger below and include the exact hosted route that was actually verified; a merged PR or READY badge is not a page-delivery handoff by itself.
 8. If this task creates or materially refines a reusable reader/preference rule, preserve the owner feedback through the central closeout and test transfer on at least one likely sibling plus one unrelated positive-control or route-role exception before calling the rule generalized. A valid Reader Contract or green copy/reader audit is structural coverage, not proof that older sibling pages already embody the same mental model.
+9. **Previously green, still confusing is a failed use-site outcome, not a disclaimer to append.** If the owner is confused by a result, title, date, Figure, or term already covered by a Rule/Reader Contract/audit: (a) preserve exactly what the owner observed, keeping the Agent's proposed cause labeled hypothesis; (b) name the exact previously-green grader/artifact and the missing observable behavior; (c) test a source-backed known-bad example that the new guard must reject, plus a correct example, a legitimate boundary example and at least one sibling; (d) run the same check on the final rendered route and protect the results with the relevant project test; (e) for semantic reader understanding freeze a blind independent reader rubric and require its result before claiming the person understands. Merely writing that CI is insufficient, adding a new principle without an example, or asserting an untested cause does **not** close the failure. Adopt the shared Project Report [falsification execution procedure](https://github.com/mykcs/myk-skills/blob/main/project-report/references/reader-falsification.md) when it is integrated on main; do not resurrect retired BaseModel HPL. Owner RAW: [RAW-20261017-954](https://github.com/mykcs/.agents/blob/main/docs/learning/raw/2026/2026-10-17-report-false-green-and-misattributed-confusion.md). The rule is scoped to owner-reported false-green events, not all minor copy edits.
+
+---
+
+## TRIGGER: source-backed technical explanation / “代码怎么写” / “数据从哪来” / “这个数怎么算的”
+
+**Cues:** a research page, briefing, or owner request asks how a mechanism is implemented, where a dataset/result came from, how a metric was calculated, asks to show source/raw evidence, or a technical claim materially depends on code/data/configuration rather than prose alone.
+
+**Automatic response:**
+
+1. Read `research-site-presentation-contract.md#71-when-a-reader-asks-where-did-this-come-from-show-the-actual-path` and the shared `HUMAN_EXPRESSION_STANDARD.md` evidence-addressable rule before authoring the claim.
+2. Resolve the closest primary source first: immutable commit + exact file/function/line range for code; raw dataset/task manifest/episode for data; analysis script/function + raw inputs/output for calculations; manifest/config for settings. Do not start from a secondary summary when primary evidence exists.
+3. Put the source action next to the claim, then show the **smallest useful raw excerpt** in a code/data/result block. Do not dump whole files or make the reader click away merely to discover which lines/fields matter.
+4. Explain the excerpt in human language. Use pseudocode, real LaTeX, a compact table, or a semantic diagram only when it reduces decoding cost; never let the explanatory representation replace the primary source identity.
+5. If the prose claims what executed code **did**, add runtime/result evidence such as a receipt, trace, raw episode, machine result, or test. Source code by itself proves implementation intent/structure, not that a particular run exercised it as described.
+6. State the evidence boundary beside the explanation. Keep restricted/private evidence labeled before the click and preserve privacy/secret boundaries; never make a private repository/provider public just to satisfy presentation convenience.
+7. Keep the evidence capsule claim-local and responsive. Avoid a detached reference-link wall; preserve direct GitHub/raw-artifact actions, keyboard access, and local overflow handling for long technical tokens.
 
 ---
 
@@ -370,7 +399,7 @@ Treat explicit live-page feedback as product/repository work when the owner aske
 3. For any public technical copy read `audience-centered-technical-copy.md`.
 4. For research/result copy also read `reader-first-copy-hierarchy.md` and `research-editorial-style.md`.
 5. For Chinese technical explainers add `layered-technical-explainer-copy.md`, but treat its layers as information-depth guidance rather than mandatory visible labels/blocks. The canonical website spec and newer live-human PREFERENCE cases outrank an older rigid display template.
-6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners. **Before writing or substantially rearranging public-page HTML, read `site-reader-attention-contract.md` and register/update that page in `src/data/siteReaderContracts.ts`: audience, one primary task, first-viewport goal, non-hideable boundary, next step, and attention mode. Do not start from a visual template.**
+6. For a visible page/structure change apply `human-thinking-web-expression-contract.md` and the relevant UI/knowledge-architecture owners. **Before writing copy or choosing a component, declare the medium choice in the Page Expression Brief: prose / table-chart / semantic diagram / interactive HTML / temporal media, plus the concrete comprehension or verification gain. Do not treat richer media as automatically better.** Before writing or substantially rearranging public-page HTML, read `site-reader-attention-contract.md` and register/update that page in `src/data/siteReaderContracts.ts`: audience, one primary task, first-viewport goal, non-hideable boundary, next step, and attention mode. Do not start from a visual template.
 7. Enter the subject directly; put decisive facts/conclusions/numbers before stage directions and long explanation; keep claim -> evidence -> inference -> boundary intact.
 8. Treat run IDs, SHAs, and campaign labels as provenance unless the reader genuinely needs them for orientation.
 9. Review the whole affected reading journey rather than patching one sentence into an incoherent page.

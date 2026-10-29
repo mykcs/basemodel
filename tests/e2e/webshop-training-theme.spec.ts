@@ -27,6 +27,7 @@ async function readCanonicalSurface(page: Page) {
       theme: document.documentElement.dataset.theme,
       bodyBackground: getComputedStyle(document.body).backgroundColor,
       bodyText: getComputedStyle(document.body).color,
+      articleText: getComputedStyle(root).color,
       heading: getComputedStyle(heading).color,
       lede: getComputedStyle(lede).color,
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
@@ -48,7 +49,7 @@ for (const viewport of viewports) {
           await expect(page.locator('.plain-detail__header h1')).toBeVisible();
           const audit = await readCanonicalSurface(page);
           expect(audit.overflow).toBe(false);
-          expect(audit.heading).toBe(audit.bodyText);
+          expect(audit.heading).toBe(audit.articleText);
           expect(audit.lede).not.toBe(audit.bodyBackground);
         });
       }

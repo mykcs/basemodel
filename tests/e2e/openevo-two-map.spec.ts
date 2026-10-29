@@ -21,21 +21,17 @@ async function assertNoPageOverflow(page: Page) {
 registerOpenEvoResearchDeepDiveTests();
 registerReaderJourneyTests();
 
-test('desktop lobby exposes exactly three primary maps and keeps archive secondary', async ({ page }) => {
+test('topic directory has four groups and one canonical location per research page', async ({ page }) => {
   const response = await page.goto(root, { waitUntil: 'domcontentloaded' });
   expect(response?.status()).toBe(200);
-  await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-  await expect(page.locator('[data-research-step="first-run"] summary')).toBeVisible();
-  await expect(page.locator('[data-research-step="redesign"] summary')).toBeVisible();
-  await page.locator('[data-research-step="first-run"] summary').click();
-  await page.locator('[data-research-step="redesign"] summary').click();
-  await expect(page.locator('[data-map-choice="first-run"]')).toBeVisible();
-  await expect(page.locator('[data-map-choice="redesign"]')).toBeVisible();
-  await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toHaveAttribute('href', mechanism);
-  await expect(page.locator('[data-map-choice="archive"]')).toHaveCount(0);
-  const archiveDepth = page.locator('[data-research-depth="history"]').last();
-  await archiveDepth.locator('summary').first().click();
-  await expect(page.locator('.map-lobby__archive')).toBeVisible();
+  await expect(page.locator('[data-topic-group]')).toHaveCount(4);
+  const paths = await page.locator('[data-topic-route] a').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+  expect(new Set(paths).size).toBe(paths.length);
+  expect(paths).toContain(mechanism);
+  expect(paths).toContain(archive);
+  expect(paths).toContain(report);
+  await expect(page.locator('[data-topic-group="history"] a[href="'+archive+'"]')).toBeVisible();
+  await expect(page.locator('[data-latest-evidence]')).toHaveCount(0);
   await assertNoPageOverflow(page);
 });
 
@@ -151,7 +147,7 @@ for (const path of [root]) {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await assertNoPageOverflow(page);
-    await expect(page.locator('[data-map-choice]')).toHaveCount(3);
+    await expect(page.locator('[data-topic-group]')).toHaveCount(4);
   });
 }
 

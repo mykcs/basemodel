@@ -95,7 +95,7 @@ describe('sitewide normalization first repair batch', () => {
   it('removes only the redundant SD-LoRA overview eyebrow and preserves child sequence metadata', () => {
     expect(sdLoraHistory).not.toContain('SD-LoRA 专题总览');
     expect(sdLoraHistory).not.toContain('SD-LoRA SERIES OVERVIEW');
-    expect(sdLoraHistory).toContain('!overview && <p class="series-page__eyebrow">');
+    expect(sdLoraHistory).toContain('!overview && <span class="evo-article__heading-number" aria-hidden="true">');
     expect(sdLoraHistory).toContain('`${item!.number} / 07`');
   });
 
@@ -154,7 +154,9 @@ describe('sitewide normalization first repair batch', () => {
     expect(benchmarkNote).not.toContain('class="two-column"');
 
     expect(ceilingStrategy).toContain('两版 Stage 2 更新规则');
-    expect(ceilingStrategy).toContain('<table>');
+    expect(ceilingStrategy).toContain('<ResearchPaperTable narrowRecords');
+    expect(ceilingStrategy).toContain('<thead>');
+    expect(ceilingStrategy).toContain('<tbody>');
     expect(ceilingStrategy).not.toContain('<section class="ceiling__section ceiling__compare">');
 
     expect(gdrDirectApply).toContain('旧 GDR-v1 与 DirectApply 每一步对照');
@@ -179,10 +181,11 @@ describe('sitewide normalization first repair batch', () => {
     expect(legacyStage2Journey).not.toContain("content:'→'");
     expect(legacyStage2Journey).not.toContain('grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline');
 
-    expect(trainingDesign).toContain('.responsibility-flow li:not(:last-child)::before');
-    expect(trainingDesign).toContain('@media(max-width:950px)');
-    expect(trainingDesign).toContain('.responsibility-flow{grid-template-columns:1fr;gap:.75rem}');
-    expect(trainingDesign).not.toContain("content:'↓'");
+    expect(trainingDesign).toContain('.intelligence-stage--stage-1::after');
+    expect(trainingDesign).toContain('.intelligence-stage--stage-1::before');
+    expect(trainingDesign).toContain('@container reading-overview (max-width:650px)');
+    expect(trainingDesign).toContain('.intelligence-row__pair,.intelligence-columns{grid-template-columns:1fr}');
+    expect(trainingDesign).not.toContain('responsibility-flow');
 
     expect(experimentSelector).toContain('@media(max-width:980px){.experiment-selector__flow{grid-template-columns:1fr}');
     expect(experimentSelector).not.toContain('.experiment-selector__flow>.experiment-selector__arrow:nth-of-type(2){display:none}');
@@ -197,7 +200,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(seedPaper).not.toContain('Read the problem before the equations');
 
     expect(researchHub).toContain("t('模型、任务与比较范围', 'Models, tasks, and comparison scope')");
-    expect(researchHub).toContain("t('WebShop 两阶段学习', 'WebShop two-stage learning')");
+    expect(researchHub).toContain("t('SEED × OpenEVO 两阶段学习范式', 'SEED × OpenEVO two-stage learning paradigm')");
     expect(researchHub).toContain("t('实验运行与结果比较', 'Experiment execution and result comparison')");
     expect(researchHub).not.toContain('下面用 WebShop 展开两阶段');
 
@@ -212,12 +215,12 @@ describe('sitewide normalization first repair batch', () => {
     expect(briefing).toContain('Task Vector、GDR、DirectApply / No-GDR');
     expect(briefingNotes).toContain('4. Task Vector：从 SD-LoRA 更新到真实参数方向');
     expect(mechanismMap).toContain('作为 Task Vector');
-    expect(capabilityLobby).toContain('Task Vectors and parameter themes');
+    expect(capabilityLobby).toContain('CAPABILITY_TOPIC_GROUPS');
 
     expect(gdrDirectApply).toContain('历史 GDR-v1 / DirectApply');
     expect(gdrDirectApply).toContain('Gated-Delta SD-LoRA');
     expect(gatedDeltaExplainer).toContain('从 sequence State 推到 residual write');
-    expect(gatedDeltaExplainer).toContain('Gated Delta：从序列 State 到参数 State');
+    expect(gatedDeltaExplainer).toContain('Gated Delta：从序列状态到参数更新');
   });
 
   it('keeps long-tail compatibility routes as redirects and historical notes explicitly historical', () => {

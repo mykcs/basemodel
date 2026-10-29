@@ -68,7 +68,7 @@ describe('2026-09-07 human-expression visual language protection', () => {
     expect(resultsScaffold).toContain('六个预先固定的组间比较槽位');
     expect(benchmarkNote).not.toContain('01 · 已经知道什么');
     expect(benchmarkNote).not.toContain('04 · 评分');
-    expect(benchmarkNote).toContain('class="section-number" aria-hidden="true">01</p>');
+    expect(benchmarkNote).toContain('class="evo-article__heading-number" aria-hidden="true">01</span>');
   });
 
   it('preserves labels that carry real status, date, version, or evidence identity', () => {

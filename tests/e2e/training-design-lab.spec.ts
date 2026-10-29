@@ -24,14 +24,17 @@ for (const route of routes) {
   test(`training design is integrated into the flow map on ${route}`, async ({ page }) => {
     test.skip(!routeInScope(route), 'outside hosted focused route scope');
 
-    for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 440, height: 956 }]) {
       await page.setViewportSize(viewport);
       await page.goto(route, { waitUntil: 'domcontentloaded' });
 
       const root = page.locator('#training-design');
       await expect(root).toBeVisible();
-      await expect(root.locator('h2')).toContainText(/WebShop 先做题和复盘，再持续学习|WebShop: act and review first, then continue learning/);
-      await expect(root.locator('.responsibility-flow > li')).toHaveCount(6);
+      await expect(root.locator('h2')).toContainText('SEED × OpenEVO 两阶段学习范式');
+      await expect(root.locator('[data-intelligence-comparison] [data-stage]')).toHaveCount(2);
+      await expect(root.locator('[data-intelligence-comparison] [data-axis]')).toHaveCount(8);
+      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__action').first()).toContainText('外部高能力教师模型 API（GLM-5.2）');
+      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__action').last()).toContainText('外部高能力教师模型 API（MiniMax-M3）');
       const researchNav = page.locator('[data-research-navigation][data-research-track="flow"]');
       if (viewport.width <= 720) {
         const mobileDirectory = researchNav.locator('.research-navigation__mobile');
@@ -41,7 +44,6 @@ for (const route of routes) {
       } else {
         await expect(researchNav.locator('.research-navigation__links').getByRole('link', { name: /训练设计|Training design/ })).toBeVisible();
       }
-      await expect(page.getByText('SEED × OPENEVO · WEBSHOP')).toHaveCount(0);
       await expect(page.getByText('先分清谁负责什么')).toHaveCount(0);
 
       const comparisonScope = root.locator('[data-learning-comparison-scope]');

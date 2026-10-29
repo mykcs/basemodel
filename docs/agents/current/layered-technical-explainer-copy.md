@@ -44,6 +44,14 @@ A technically correct table, threshold list, or professional conclusion does **n
 
 For example, if `rank95=78/159` is already explained successfully as “159 parameter-update arrows mostly reuse a smaller set of directions,” the canonical analysis should preserve that conceptual bridge before asking the reader to interpret `rank95`, residual energy, or K64 reconstruction error. The analogy remains optional; the reader model is mandatory.
 
+### 2.2 Plain-language coverage is not prose-only coverage
+
+If the comprehension gap is relational, comparative, exploratory, or temporal, the correct Depth-1 bridge may be a table, semantic diagram, purposeful interactive control, or (rarely) temporal media rather than another paragraph.
+
+Choose the smallest faithful representation first, then write the labels/copy that make it self-contained. Do not force every difficult concept back into prose just because this file is a copy contract, and do not add richer media unless it has a specific comprehension or verification gain.
+
+For public web explainers, the main scientific meaning and claim-changing boundaries must remain available without relying on animation or a transient interaction state.
+
 ## 3. Chinese-first technical language
 
 On Chinese routes, Chinese carries the meaning. English remains when it preserves scientific identity, maps to code, or helps source lookup.

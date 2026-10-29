@@ -7,14 +7,15 @@ test('Study keeps the seven real experiments as the primary directory', async ({
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(study, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('h1')).toContainText('七次实验的研究演进');
+  await expect(page.locator('h1')).toContainText('实验目录');
   await expect(page.locator('[data-experiment-primary]')).toHaveCount(7);
   await expect(page.locator('[data-research-progression]')).toHaveCount(7);
+  await page.locator('[data-experiment-details] > summary').first().click();
   const firstProgression = page.locator('[data-research-progression]').first();
   await expect(firstProgression).toContainText('当时的问题');
   await expect(firstProgression).toContainText('结果边界');
   await expect(firstProgression).toContainText('留下的下一问');
-  await expect(page.locator('.experiment-node')).toHaveCount(7);
+  await expect(page.locator('.experiment-node')).toHaveCount(8);
   await expect(page.locator('.experiment-node').first()).toHaveCSS('border-radius', '0px');
   await expect(page.locator('.secondary-routes')).toContainText('跨实验入口');
 });
@@ -68,4 +69,58 @@ for (const width of [390, 768, 1440]) {
       expect(overflow, `${route} overflows at ${width}px`).toBe(false);
     }
   });
+}
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`Study meeting links historical questions to Stage1 at ${width}px in ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto(study, { waitUntil: 'domcontentloaded' });
+      const meeting = page.locator('[data-advisor-meeting]');
+      const stage1 = page.locator('[data-experiment-primary="stage1-learning-objectives"]');
+      await expect(meeting.locator('h2')).toHaveText('和L 学长开会');
+      await expect(meeting.locator('time')).toHaveAttribute('datetime', '2026-09-22');
+      await expect(meeting).toContainText('哪一种更适合训练 Stage2 的起始参数');
+      await meeting.locator('summary').click();
+      await expect(meeting.locator('details > ul > li')).toHaveCount(6);
+      await expect(meeting).toContainText('检查 120 轮附近是否已经达到平台');
+      await expect(meeting).toContainText('不能直接说明 rank8 就足够保留能力');
+      await expect(meeting.locator('.meeting-source a').last()).toHaveAttribute('href', /ADVISOR_RESEARCH_RECONCILIATION_2026-09-28/);
+      const meetingBox = await meeting.boundingBox();
+      const stage1Box = await stage1.boundingBox();
+      expect(meetingBox).not.toBeNull();
+      expect(stage1Box).not.toBeNull();
+      expect(meetingBox!.y + meetingBox!.height).toBeLessThanOrEqual(stage1Box!.y);
+      await expect(stage1.locator('..').locator('..').locator('.experiment-node__rail')).toHaveText('08');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+      await meeting.locator('summary').click();
+      await expect(meeting.locator('details')).not.toHaveAttribute('open', '');
+    });
+  }
+}
+
+for (const width of [440, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`organized content remains navigable without JavaScript ${width}/${theme}`, async ({ browser }, info) => {
+      const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: width === 440 ? 956 : 1000 } });
+      const page = await context.newPage();
+      try {
+        await page.goto(study, { waitUntil: 'domcontentloaded' });
+        await page.locator('html').evaluate((el, mode) => el.setAttribute('data-theme', mode), theme);
+        const detail = page.locator('[data-experiment-details="directapply-1p7b"]');
+        await detail.locator('summary').click();
+        await expect(detail.locator('a[href$="/sd-lora-equivalence/"]')).toBeVisible();
+        await expect(detail.locator('a[href$="/sd-lora-bounded-state/"]')).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+        await page.screenshot({ path: info.outputPath(`study-${width}-${theme}.png`), fullPage: true });
+        await page.goto(study + 'capability-exploration/', { waitUntil: 'domcontentloaded' });
+        await page.locator('html').evaluate((el, mode) => el.setAttribute('data-theme', mode), theme);
+        await expect(page.locator('[data-topic-group]')).toHaveCount(4);
+        await expect(page.locator('[data-topic-group="history"] a[href$="/archive/"]')).toBeVisible();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+        await page.screenshot({ path: info.outputPath(`topics-${width}-${theme}.png`), fullPage: true });
+      } finally { await context.close(); }
+    });
+  }
 }

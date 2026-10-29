@@ -1,4 +1,5 @@
 ---
+import "../../styles/research-article.css";
 import EvidenceList from '../../components/EvidenceList.astro';
 import { PaperRoleDiagram } from '../../components/papers/PaperRoleDiagram';
 import ReproductionSummary from '../../components/papers/ReproductionSummary.astro';
@@ -27,11 +28,13 @@ const hasPaperLink = typeof paper.paper_url === 'string' && paper.paper_url.star
 const hasCodeLink = typeof paper.code_url === 'string' && paper.code_url.startsWith('http');
 const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.checkpoint_url.startsWith('http');
 ---
-<div class="shell detail-layout">
+<div class="shell detail-layout evo-approved-reader evo-reading-overview evo-paper-record">
   <article>
+    <header class="evo-article__header">
     <h1 class="detail-title">{paper.title}</h1>
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
+    </header>
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
       <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary

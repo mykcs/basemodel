@@ -1,0 +1,293 @@
+---
+import AppLayout from '../../../../layouts/AppLayout.astro';
+import ResearchPaperTable from '../../../../components/research/ResearchPaperTable.astro';
+import ExternalBrandMark from '../../../../components/common/ExternalBrandMark';
+import { HISTORICAL_RESEARCH_RECORDS } from '../../../../data/openEvoResearchRetrospective';
+import '../../../../styles/research-article.css';
+const source = 'https://github.com/mykcs/openevo-experiment/blob/2c05d2692bf0f2bd2718daae0fb1f5363e8e5de4';
+const historicalSource = 'https://github.com/mykcs/openevo-experiment/blob/d1f35ecdf84c61b07df7c646e83588d63b9297bd';
+const h139 = `${source}/docs/evidence/remote-runs/2026-08-20/h1.39-mr/REPORT.md`;
+const h143 = 'https://huggingface.co/openevo-recovery/openevo-h143-qwen25-7b-webshop/blob/96087c2c2f5a0628c127304b66ae8eaa056c7c3b/README.md';
+const q07 = 'https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv';
+const pilot = 'https://github.com/mykcs/openevo-experiment/blob/95343f53f5496127afffc67b6d9ebc5f9e12d680/docs/evidence/advisor-report-20261028/README.md';
+const q09Evidence = 'https://github.com/mykcs/openevo-experiment/blob/ba88f6074229b16b3be05ab2e35b37c8c102c63f/docs/evidence/advisor-report-20261028/followup-validations-20261028/README.md';
+const freshEvidence = 'https://github.com/mykcs/openevo-experiment/blob/ac12e471367469d734f4af376ba34ae342e54180/docs/evidence/advisor-report-20261028/fresh-pair-results-20261028/README.md';
+const longRunEvidence = 'https://github.com/mykcs/openevo-experiment/blob/04d6bd8e422103aa71be2b8f2672c2db97d0e351/docs/evidence/bounded-effective-state-final-closeout-20260918/FINAL_CLOSEOUT.json';
+const states = { 'sealed-result': '已封存结果', 'diagnostic-only': '仅诊断', 'protocol-only': '仅方案', 'invalid': '无效／排除', 'superseded-protocol': '已被替代' };
+const counts = Object.entries(states).map(([id,label])=>({id,label,count:HISTORICAL_RESEARCH_RECORDS.filter(r=>r.status===id).length}));
+---
+<AppLayout title="OpenEVO 研究进展：实测发现、失败与下一步验证｜BaseModel" description="从40条历史封存记录、H1.43的提前终止，到参数方向干预和近期基线验证，说明OpenEVO已回答什么、还缺什么，以及如何把实验转化为可分享的研究结论。" locale="zh">
+  <main class="reflection evo-approved-reader evo-article" data-reader-page="research-blog" data-copy-review data-research-retrospective>
+    <header class="intro evo-article__header">
+      <h1>OpenEVO：实测发现、失败与下一步验证</h1>
+      <p class="lead evo-article__lede">我研究智能体怎样从任务经验中持续学习。已有新题迁移和参数方向干预的局部证据，但长期稳定收益尚未证实。这次补齐的新题对照支持一组固定容量模型的能力改善，同时也说明：成功、失败和未知都需要及时整理成别人能够判断的科研结论。</p>
+      <p><a href="#spoken">先读三分钟口头说明 →</a></p>
+    </header>
+    <section class="evo-article__abstract" aria-labelledby="finding-title">
+      <h2 id="finding-title">目前最清楚的研究进展</h2>
+      <p>在先冻结、再评测的 64 道新题上，固定容量模型的末期参数状态比同一起点高 13.44 分，95% 配对区间为 +4.81 至 +22.54 分。两组使用相同文字与运行条件；这支持所选模型对的任务迁移改善，尚不能证明方法优于普通 OpenEVO，或换一个训练起点仍然稳定有效。</p>
+      <p>文字经验实验的第二条训练流已封存到第145轮，但两份候选修复仍无效，触发原有健康检查后暂停。下一步应先诊断这一失败，再决定如何接续；同起点的方法对照和独立训练复现也仍需补齐。下述材料供导师判断研究进展，不能替代对培养和毕业要求的判断。</p>
+    </section>
+    <nav class="evo-article__toc" aria-label="研究进展目录"><details><summary>目录与实验全表</summary><ol>
+      <li><a href="#research">1 研究问题与两条改进思路</a></li>
+      <li><a href="#findings">2 已经测出的结果</a></li>
+      <li><a href="#history">3 从历史失败形成的研究判断</a></li>
+      <li><a href="#publication">4 实验与分享之间的缺口</a></li>
+      <li><a href="#ability">5 已展示的能力与待完成的验证</a></li>
+      <li><a href="#spoken">6 三分钟口头说明</a></li>
+      <li><a href="#questions">十个后续问题的证据地图</a></li>
+      <li><a href="#inventory">历史60条记录</a></li>
+      <li><a href="#earlier-reflection">10月22日的原有复盘</a></li>
+    </ol></details></nav>
+    <section id="research" class="evo-article__section">
+      <h2>1 研究问题与两条改进思路</h2>
+      <p>WebShop 给智能体一项购物任务，例如找到指定颜色、尺码和价格的商品。模型需要搜索、选择规格并购买。OpenEVO 尝试将已经完成的任务经验保存为文字笔记、技能规则、系统指导或参数更新，让下一轮任务受益。Task Score 衡量购买结果满足要求的程度，以下统一显示为满分 100 分；完整成功则要求全部条件都满足。</p>
+      <p>我们的研究问题是：模型积累更多经验以后，能否继续学到新东西、保留已有能力，同时控制存储和更新成本？普通 OpenEVO 不断增加参数组件，历史越长，模型状态越大。我们据此探索两件事：将历史更新整合到固定容量；在固定容量下控制新经验写入的幅度与方向。前者形成 Bounded 路线，后者形成 β 控制及方向诊断。</p>
+      <p>下文把直接追加历史参数组件的普通路线称为 DirectApply，把整合进固定容量的路线称为 Bounded；β 表示每次新经验的写入强度。历史 β/GDR 路线还加入了额外写入规则，不能只用一个系数解释全部行为。SEED 是需要按论文条件对齐的外部基线。
+      </p><p>这两条思路是待检验的研究贡献。固定大小、代码运行或参数确实改变，都不足以证明做题能力提高。我们需要同题基线、独立新题、局部干预和长程复现分别回答这些问题。<a href="/research/seed-openevo/study/openevo-methods/">方法与核心公式 →</a></p>
+    </section>
+    <section id="findings" class="evo-article__section">
+      <h2>2 已经测出的结果</h2>
+      <h3>2.1 一次参数学习的收益在另一批新题上复现</h3>
+      <p>早期实验先遇到“新题上是否真能获益”的疑问。LoRA 与 SD-LoRA 都通过较少的可训练参数适配模型；SD-LoRA 进一步研究跨轮低秩参数组件的方向与幅度。我们冻结训练后的两种模型，另选与前一实验任务身份不重叠的 64 道题；每道题按四个随机设置评测三个模型，共 768 次尝试。这项独立复验保留了 740 条有效记录，主要配对分析使用 58 个四次尝试均完整有效的任务组。</p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">独立新题复验：冻结模型相对基础模型的 Task Score 差（满分100分；任务组配对统计）</Fragment>
+        <thead><tr><th scope="col">模型比较</th><th scope="col">平均分差</th><th scope="col">95% 区间</th></tr></thead>
+        <tbody><tr><th scope="row">普通 LoRA − 基础模型</th><td>+16.37</td><td>+7.81 至 +25.19</td></tr><tr><th scope="row">SD-LoRA − 基础模型</th><td>+24.88</td><td>+16.42 至 +33.65</td></tr></tbody>
+      </ResearchPaperTable>
+      <p>两组区间都在零以上，支持这次训练得到的冻结模型在这批新题上受益。区间按任务组重采样计算，反映这批任务比较的不确定性。它们不能证明后续每一轮更新仍有效，也没有证明超过 SEED。28 条动作解析或替代动作污染的记录没有混进有效分母；完整报告同时保留所有分配尝试的分析。<a href={h139} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={h139} />H1.39-MR 原始报告与统计 →</a></p>
+      <h3>2.2 反向一轮历史更新，会改变末期模型的表现</h3>
+      <p>我们对固定容量模型最后八轮的真实参数更新分别做删除和反向干预，再让模型做相同的 64 道题。反向操作将某轮历史更新改为相反方向，幅度保持不变；比较对象是同一末期模型中的这项干预，而不是把模型退回该轮 checkpoint。第 156 轮反向后平均下降 10.06 分，配对 95% 区间为下降 5.60 至 15.02 分，并通过八次方向反转的 Holm 多重比较校正。</p>
+      <p>这说明至少有一次更新的方向确实影响行为，为研究更新准入和方向控制提供了依据。其余方向干预没有全部成立，删除测试也没有通过各自的校正；我们尚未据此造出一个被证实更好的方向控制器。另有一组早已完成的新题复验：完整末期模型为 70.61 分，反向第 156 轮历史更新后为 62.79 分，共 128 次评测。分差 −7.82 分的方向一致，但按原先八项检验校正的区间为 −18.00 至 +1.46 分，没有确认新题上的效应；它也不能单独隔离最终参数范数的影响。<a href={q07} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q07} />全部删除／反向干预结果 →</a> · <a href={q09Evidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q09Evidence} />已有新题复验及原校正 →</a></p>
+      <h3>2.3 固定容量实现了长程运行，长期能力仍待验证</h3>
+      <p>在 Qwen3-1.7B 上，普通 DirectApply 历史前驱、固定容量 Bounded、固定容量加 GDR 三条路线均完成了 160 轮，每条保留 20,480 次正式交互。固定容量将不断增长的历史参数整合为一个受限大小的状态，是已经实现并实际跑完的工程方案。</p>
+      <p>历史记录中的参数更新阶段累计计时，DirectApply 为 31.09 小时，Bounded 为 2.02 小时；两者分别计量 trainer 和 transition 步骤，运行拓扑、等待与恢复也有差异，不能称整个实验提速 15 倍。同一冻结 128 题终评上，三条路线分别为 60.72、45.98、20.77 分。DirectApply 是历史参照，并非该次 Bounded／GDR 实验随机分配的第三组，不能把成绩差全部归因于压缩。当前成果是完成了可运行的固定容量方案和长期评测，同时发现能力保留问题；还没有得到更好的学习算法。<a href={longRunEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={longRunEvidence} />长跑封存、终评与资源分析 →</a></p>
+      <h3>2.4 近期基线验证没有支持简化配方更好</h3>
+      <p>10 月 27 日完成的一次早期开发评测，预先选定起始模型、训练到第 12 轮的参照模型和简化配方模型，各做相同的 64 道题，共 192 次真实评测，没有新增训练。两组都固定记忆、技能和系统指导，且均不加 β 项；差别是配方把新旧参数整合进固定容量，对照保留普通方法的历史参数组件。<a href="/research/seed-openevo/evidence/q10-r12-recipe-context-20261028.json">配方与对照的已核对定义 →</a></p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">第12轮开发评测：同一批64题、一个训练流；192次尝试并非192道不同题</Fragment>
+        <thead><tr><th scope="col">保存的模型</th><th scope="col">Task Score</th><th scope="col">完整成功</th></tr></thead>
+        <tbody><tr><th scope="row">起始模型</th><td>26.66</td><td>1 / 64</td></tr><tr><th scope="row">第12轮参照模型</th><td>45.22</td><td>7 / 64</td></tr><tr><th scope="row">第12轮简化配方</th><td>33.90</td><td>2 / 64</td></tr></tbody>
+      </ResearchPaperTable>
+      <p>简化配方比参照低 11.33 分，探索性的、未经多重比较校正的任务配对 95% 区间为 −20.87 至 −1.86 分；比起始模型高 7.23 分，区间为 −1.74 至 +16.00 分。因而不能只挑“高于起点”的数字证明配方成功。当前判断是没有清晰的早期优势，完整 Q10 仍由用户暂停；这不是新题确认、三个训练随机设置的稳定性检验或 160 轮结论。<a href={pilot} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={pilot} />字节一致的原始结果与范围说明 →</a></p>
+      <h3>2.5 新补齐的起点对照：参数学到了东西，文字政策尚未形成差异</h3>
+      <p>10 月 28 日完成两组匹配的开发评测：同一起点的第 119 轮模型，与第一条训练流第 159 轮模型，各做相同的 64 道题。当天先测完末期模型 64 次，随后新增起点基线 64 次；本次配对分析复用前者，共比较 64 对记录。任务、生成随机设置、基础模型、文字内容和运行方式逐项核对；实际用于生成的输入差别是参数权重。</p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">同起点与第159轮的开发题对照：64道不同题；两组各64条记录全部有效</Fragment>
+        <thead><tr><th scope="col">保存的模型</th><th scope="col">Task Score</th><th scope="col">完整成功</th></tr></thead>
+        <tbody><tr><th scope="row">共同起点 · 第119轮</th><td>48.23</td><td>12 / 64</td></tr><tr><th scope="row">第一条流 · 第159轮</th><td>68.05</td><td>26 / 64</td></tr></tbody>
+      </ResearchPaperTable>
+      <p>末期模型平均高 19.82 分，任务配对重采样的 95% 区间为 +10.74 至 +29.05 分。这支持这两个保存的参数状态在该开发题单上存在能力差异。比较方案在看到末期开发分数后、采集起点分数前固定；它不是盲测的新题确认，也不是两个独立训练随机设置，不能直接推广为算法优势或文字更新的因果收益。</p>
+      <p>逐轮核对第 120–159 轮的文件，三种文字载体每一轮都保留了旧内容，参数权重则每轮变化。允许更新文字的分支与冻结文字的分支，末期权重、配置和文字完全一致。因此不能把同一个模型重复评测，包装成两个独立基线。</p>
+      <p>进一步检查 120 个文字更新阶段：7 次是通过检查但没有新内容，113 次候选在一次允许的修复后仍未通过检查，因而按规则保留旧文。这里实际记录了 120 次初始调用及 113 次修复调用，不能称为零调用成本。许多生成触及输出长度上限，但没有结束原因记录，尚不能断言长度截断导致失败；改提示或预算将是新的实验假设，不能悄悄改变现有对照。</p>
+      <p>复用第 139 轮同题记录，后 20 轮只提高 1.67 分，探索性区间为 −3.96 至 +7.54 分，未确认继续改善。现有证据因此把两个问题分开：参数状态在开发题上有收益，文字更新政策却没有实现内容差异。下一步应检验独立新题上的迁移，并解释候选为何未通过，而不是强迫更新或重跑直到成绩变好。<a href={q09Evidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={q09Evidence} />原始摘要、匹配核验与可重算分析 →</a></p>
+      <h3>2.6 新的独立题单对照支持同一组模型的改善</h3>
+      <p>看到开发题改善后，我们另选 64 道题，先固定题目、配对随机设置和单一比较规则，再让同一起点与末期模型各评测一次。排除范围包括实际保存的前 120 轮全部 15,360 条任务身份、初始学习经验、两条后续训练流、已用评测题和保留题身份。此次没有新增训练，也没有访问最终题单进行模型评测；两组共 128 条新记录全部有效，没有自动重试。这里“新题”指任务身份不重叠，仍在同一 WebShop 环境与题目构造规则内，不能理解为已经验证了跨商品分布或跨环境泛化。</p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">独立新题对照：同一批64题，两个保存的固定容量状态；128次评测</Fragment>
+        <thead><tr><th scope="col">保存的模型</th><th scope="col">Task Score</th><th scope="col">完整成功</th></tr></thead>
+        <tbody><tr><th scope="row">共同起点 · 第119轮</th><td>58.42</td><td>19 / 64</td></tr><tr><th scope="row">第一条流 · 第159轮</th><td>71.87</td><td>28 / 64</td></tr></tbody>
+      </ResearchPaperTable>
+      <p>末期高 13.44 分，按事前固定的任务配对重采样规则，95% 区间为 +4.81 至 +22.54 分。独立实现重算得到了相同结果。这支持固定容量模型在这段后续学习中，得到过能迁移到新题的改善；它是所选两个保存状态的比较，并非两个独立训练起点，也不是允许文字更新与冻结文字的政策效应。</p>
+      <p>两组实际生成的参数输入不同，文字内容、模型基础、运行与评分条件相同；完整生成记录也逐步核对了随机设置。新题规则在采集前固定，但模型对是在看到开发题收益后选择的；分析实现则在采集开始后、读取新题分数前固定，不能称为从未见过任何结果的原始盲测。</p>
+      <p>这次 R119 至 R159 来自后续训练分支，题单也不同于三条历史长跑的冻结 128 题，不能把 71.87 分与其他题单的终评分数直接排高低。它回答“固定容量模型是否还能学到可迁移的东西”；要判断容量机制是否更优，还需从同一 R119 起点、按相同后续任务流运行的普通方法对照。<a href={freshEvidence} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={freshEvidence} />新题原始摘要、逐条配对与重算脚本 →</a></p>
+    </section>
+    <section id="history" class="evo-article__section">
+      <h2>3 从历史失败形成的研究判断</h2>
+      <p>实验记录的价值在于改变了什么判断。早期账本覆盖经验供给、动作接口、参数学习、新题迁移和多代更新。按原账本逐条核对，60 条记录中有 40 条标记为已封存结果，另外 8 条仅为诊断、5 条仅有方案、4 条无效或排除、3 条方案已被替代。其中包括同一实验的续跑和修订，不能当作 60 个独立实验，更不能当作 40 次方法成功。</p>
+      <h3>3.1 成功经验存在，但更多样本不自动带来迁移</h3>
+      <p>早期经验供给实验取得了可训练的完整成功轨迹。后来的多样性实验将经验来源分成 4、8、16 种任务条件，并完成 768 次尝试；相对基础模型的三项效果区间都跨过零，变化也不单调。这削弱了“只增加经验多样性就必然改善新题”的简单解释，促使我们补上学习方法对照和独立复验。<a href={`${historicalSource}/docs/evidence/remote-runs/2026-08-19/h1.38a-c/evidence/h1.38a-c-closeout-summary.json`} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={historicalSource} />多样性实验封存结果 →</a></p>
+      <h3>3.2 名义预算与有效探索的差别</h3>
+      <p>H1.43 使用 Qwen2.5-7B，原计划 21,920 次交互，在最后一个完整边界 12,448 次提前终止。审计发现，第一阶段虽然为 180 道任务各安排 8 次尝试，但温度为零；180 组任务内部的动作序列和原始输出都完全相同。名义上的八次探索退化成确定性重复。</p>
+      <p>这一实验第一阶段确实产生了可重新加载的 adapter，但后续闭合的第二阶段全部没有形成新的参数状态。重复问题没有在大量交互之前被及时截住，也暴露了早期监测的不足。冻结的 128 题终评没有运行，因此 H1.43 没有正式最终分数，也不能证明 OpenEVO 无效。它给出的可分享结论是：交互次数必须同时检查独立性与学习是否真实发生，不能把尝试次数写成有效探索量或参数更新次数。<a href={h143} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={h143} />提前终止、重复序列与模型指针证据 →</a></p>
+      <h3>3.3 小容量是否足够，需要新题的直接对照</h3>
+      <p>后续容量实验比较两条训练流中 rank 32、64、128 的六个末期模型，每个模型做相同的 64 道新题，共 384 次评测。这里的 rank 是参数记忆容量的设置；较小的数值能减少存储，但任务表现需要单独检验。以下分差均相对同一训练流的 rank 128 参照。</p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">末期压缩后的新题 Task Score 差：满分100分；按冻结的八项比较校正区间</Fragment>
+        <thead><tr><th scope="col">训练流／容量</th><th scope="col">平均分差</th><th scope="col">校正后的95%区间</th></tr></thead>
+        <tbody><tr><th scope="row">流1 · rank32</th><td>+0.56</td><td>−5.35 至 +8.05</td></tr><tr><th scope="row">流1 · rank64</th><td>+3.29</td><td>−6.16 至 +13.88</td></tr><tr><th scope="row">流2 · rank32</th><td>−0.95</td><td>−9.21 至 +7.80</td></tr><tr><th scope="row">流2 · rank64</th><td>−2.65</td><td>−9.96 至 +3.91</td></tr></tbody>
+      </ResearchPaperTable>
+      <p>八项比较是两条训练流、两档候选容量和两种成绩指标的组合；表中列出 Task Score 的四项，另外四项完整成功率比较保留在原始分析中。预设“容量足够”要求 Task Score 差的校正区间下界不低于 −2 分，同时完整成功率差的下界不低于每64题少成功2题所对应的容许损失（约 −3.13 个百分点）。这是该实验的容许损失标准，不能用“区间跨零”替代。</p>
+      <p>四项都没有通过预先规定的“容量足够”判断。尤其不能把区间跨零解读为两种容量等价；完整成功率也需要一起判断。此处只检验后期压缩，不能回答从训练起点就用小容量是否足够。原分析还缺开发阶段的时间变化及资源／失败核算，不能宣称整项研究已经收尾。<a href={pilot} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={pilot} />已核对的容量分析与范围 →</a></p>
+      <h3>3.4 从单次迁移转向持续学习中的容量与写入控制</h3>
+      <p>单次学习的正结果没有消除多代更新中的稳定性问题。我们因此把“能学到新知识”和“旧能力是否受损”分开测量，再探索固定容量、写入强度、方向干预及文字经验的作用。固定容量已经有局部存储与任务成绩比较；但小文件不等于长期能力等价，局部方向效应也不等于方向控制方法已成立。<a href="/research/seed-openevo/study/parameter-memory-results/">十个研究问题的结果与局限 →</a></p>
+    </section>
+    <section id="publication" class="evo-article__section">
+      <h2>4 实验与分享之间的缺口</h2>
+      <p>“进度慢主要是因为没有把实验转成可分享的东西”，是我需要检验的反思，不能先当成已经证实的唯一原因。已有网站、实验报告和公开模型档案，说明此前并非没有分享；同时，工程等待、无效测量和未完成的关键对照，也确实影响了研究产出。</p>
+      <p>本页原有的 10 月 22 日复盘主要讨论资源、学习和工具困难。这次补入了此前完成的早期配方负结果，并完成两批题上的四个评测单元：开发题对照与独立新题对照，共 256 次新评测，覆盖 128 道不同题。Q07 已有的新题 128 次和 Q10 早期 192 次直接复用，不重复计作本次新增。这个例子说明，运行记录还需要经过分析、限定结论和调整决策，才成为便于讨论的科研交付；它本身不足以估算表达缺口造成了多少进度损失。</p>
+      <p>我需要承担的改进是让每个重要实验在结束后形成一项可独立阅读的结果：为什么测、比较谁、测到什么、能排除什么、还缺什么、下一步因而怎样变化。正结果要补独立验证；负结果要说明它否定或限制了哪种解释；无效测量要明确排除原因。实验数量和投入时间作为背景，判断和证据才是主要交付。</p>
+      <p>截至 UTC 10 月 28 日 23:09 的独立核查，文字经验更新实验的第二条流已封存到第145轮。第143至145轮共384条有效记录，其中本次接续补齐283条，原有101条哈希未变；三轮任务、随机种子、模型与文字身份及状态衔接均已核对。训练收据和实际参数文件也确认三轮分别执行114、114、80次优化步骤，持久状态保持固定容量。这说明交互与参数学习真实发生，不等于新题能力已再次提升。<a href="/research/seed-openevo/evidence/q09-s2-final-progress-20261028.json">最终运行状态、逐轮核验与训练证据 →</a></p>
+      <p>这一流尚未完成原定的40轮。第145轮两份文字候选的修复输出与首稿相同，仍未通过检查；原有健康规则因此在封存本轮后暂停，未执行第146轮。三份文字仍保留原内容。这次退出有明确的检查收据，未发现此次退出由显存不足或外部强停导致的证据；当前对应进程和容器均已退出。后续须先完成同一合同下的诊断，不能自动重启、增加生成次数或放宽检查。它暴露的是当前文字更新政策无法形成可接纳内容的具体失败，尚不能证明文字经验没有价值。<a href="/research/seed-openevo/evidence/q09-s2-r143-progress-20261028.json">保留的第143轮较早快照 →</a></p>
+    </section>
+    <section id="ability" class="evo-article__section">
+      <h2>5 已展示的能力与待完成的验证</h2>
+      <p>我希望用可以核查的研究行为，说明自己能够独立承担课题：将大问题拆成可以失败的假设；设置基础模型和方法对照；发现错误时停止错误测量；用配对统计和独立任务限制结论；根据正负证据调整下一步。三条 160 轮长跑、H1.39 的独立复验、H1.43 的主动终止，以及参数方向干预，分别提供了实施、复核和修正判断的实例。</p>
+      <p>这些实例尚不能替代一篇完整、稳定、具有明确创新贡献的博士研究成果。我目前没有证明固定容量方法在长期学习中稳定优于强基线，也没有完成跨环境推广。学校和课题组的具体毕业要求、导师是否认可这条研究路线，仍需要正式沟通。</p>
+      <ol>
+        <li><strong>解释文字更新政策实际做了什么。</strong>第一条流已经发现，允许改写的政策在 40 轮中没有形成文字内容变化；先解释保留旧文、拒绝候选和第145轮健康检查失败的原因，再依据同一合同的诊断结果判断如何接续第二条流。原政策产生的未更新也必须保留，不能为了形成对照强迫改写。若另测新内容的作用，需要明确新的假设和匹配对照；两种现有政策都保留初始文字，也不能替代完整关闭文字的消融。</li>
+        <li><strong>按同一协议校准基线。</strong>已有 SEED 相关开发成绩与论文题单、提示及训练条件有差异，不能把数值差直接当成算法差距。正式论文条件的复现仍未完成。</li>
+        <li><strong>确认长期能力与泛化。</strong>新的独立题单对照已支持所选模型对的改善；下一步仍需独立训练起点与同起点方法对照，检验固定容量与写入控制的一般性；完整 Q10 当前暂停，后续执行须依据其实际恢复决定，不能将建议说成已经启动。</li>
+      </ol>
+      <p>我希望下一次讨论能得到两项具体反馈：这条“有界参数记忆与可靠写入”的问题是否值得继续推进，以及什么样的基线、独立验证和论文交付能满足阶段考核要求。这是我希望争取的研究机会，不是对老师决定的预设。</p>
+    </section>
+    <section id="spoken" class="evo-article__section">
+      <h2>6 三分钟口头说明</h2>
+      <p>老师，我承认目前进度和最终成果之间还有差距。我的研究是让智能体从交互经验中持续学习，并把不断增长的历史参数整合到固定容量。历史账本有 40 条封存记录，但我希望用结论而不是条数向您汇报；此前没有及时把每项结果整理成您能快速判断的说明，工程执行和关键验证也还有欠缺。</p>
+      <p>现在有一项新的、可以具体汇报的结果。我们补齐同起点与末期模型的对照，又在先冻结、再评测的 64 道新题上验证：平均分从 58.42 到 71.87，提高约 13.4 分，95% 区间约为 +4.8 至 +22.5 分。这支持固定容量模型在这段后续学习中，得到过能迁移到新题的改善；它还不是独立训练复现，也不是超过其他算法的结论。较早的单次更新新题复验和方向反转干预，则提供了另一些局部依据。</p>
+      <p>我也会报告失败。H1.43 审计发现，温度为零让每道题的八次尝试完全重复，后来在 12,448 次交互的完整边界终止，没有拿它报正式终评。近期简化配方在第12轮得33.9分，低于参照的45.2分。三条160轮长跑虽已完成，固定容量也降低了记录中的更新阶段成本，但尚未证明能长期稳定保住能力，不能拿运行完成或文件变小代替方法成功。</p>
+      <p>这些结果让我收窄判断：参数更新方向值得检验，但一次干预不足以证明通用控制器；允许文字更新也不等于真正形成内容差异。第二条训练流已到第145轮，但文字候选修复无效，按原有健康规则暂停。下一步应先诊断这一失败，再判断如何接续，并验证独立训练起点和论文条件下的基线。我希望得到一次围绕这些证据汇报、接受追问的机会，也请您帮助明确下一阶段最关键的问题和验收标准。我会用可核查的结果、局限和下一步回应，而不只汇报工作量。</p>
+    </section>
+    <section id="questions" class="evo-article__section">
+      <h2>十个后续问题的证据地图</h2>
+      <p>下面把后续验证放回同一条研究主线。它是截至本次核查的阅读地图，各行不是额外的独立成功发现；具体数据与限制仍由原始结果决定。</p>
+      <ResearchPaperTable>
+        <Fragment slot="caption">后续问题：已得到的答案，与仍然缺少的证据</Fragment>
+        <thead><tr><th scope="col">研究问题</th><th scope="col">已知与未知</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">训练何时停止</th><td>448 次新题评测没有确认开发题选出的三种停止时点；不能据此断言160轮一定太多。<a href="/research/seed-openevo/study/parameter-memory-results/#response-q01">查看问题1</a></td></tr>
+          <tr><th scope="row">怎样打好学习基础</th><td>两种训练方式各有三组训练及主比较；本次读取的主分析仍标记为仅分析、尚未完成权威核验，不能当作整项研究已收尾。<a href="/research/seed-openevo/study/parameter-memory-results/#response-q02">查看问题2</a></td></tr>
+          <tr><th scope="row">SEED基线</th><td>已有工程检查与开发题结果；正式论文条件的训练和终评仍未完成。<a href="/research/seed-openevo/study/parameter-memory-results/#response-q03">查看问题3</a></td></tr>
+          <tr><th scope="row">参数记忆需要多大</th><td>六个末期模型的384次新题评测未确认较小容量足够；也不是从起点小容量训练的结论。<a href="#history">查看本页容量对照</a></td></tr>
+          <tr><th scope="row">写入控制是否有益</th><td>复杂控制在历史同题比较中没有胜过固定容量；局部测试不能代替简化规则的长期对照。<a href="/research/seed-openevo/study/parameter-memory-results/#response-q05">查看问题5</a></td></tr>
+          <tr><th scope="row">能否提前预警做错题</th><td>对未来两条数据流的条件预测已完成，预先冻结的检验未获确认；两条流共享祖先，不能说成独立初始化或因果证明。<a href={pilot} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={pilot} />查看条件预测分析</a></td></tr>
+          <tr><th scope="row">更新方向的作用</th><td>一次反向干预产生明确局部影响；已有新题复验方向一致，但校正后未获确认，还需更多更新轮次和训练起点的验证。<a href="#findings">查看本页方向干预</a></td></tr>
+          <tr><th scope="row">旧知识是否遗忘</th><td>已做旧题评测，但“当时确实学会”的历史证据仍有缺口；再次测旧题不能补造学会的记录。<a href="/research/seed-openevo/study/parameter-memory-results/#response-q08">查看问题8</a></td></tr>
+          <tr><th scope="row">文字经验是否有益</th><td>开发题和新题各完成128次匹配评测，新题末期高13.44分；40轮未形成文字内容变化，不能制造独立基线或宣称文字无用。第二条流在第145轮后因文字候选健康检查失败暂停，仍未闭合。<a href="#publication">查看本页运行状态</a></td></tr>
+          <tr><th scope="row">长期学习能否迁移到新题</th><td>单次学习有局部正结果；本次后续分支新题对照也支持所选模型对的改善，但完整Q10三流长期方案仍暂停。<a href="#findings">查看本页最新开发评测</a></td></tr>
+        </tbody>
+      </ResearchPaperTable>
+    </section>
+    <section id="inventory" class="evo-article__section">
+      <h2>历史实验记录与证据</h2>
+      <p>以下核对范围是本次读取的历史账本全部60条记录，另对H1.43、后续长程实验和十问系列作重点追溯；这不是所有服务器目录的穷尽审计。原账本的“已封存”表示有相应结果归档，不表示假设成立。续跑、修订和基线不可重复计作独立发现。</p>
+      <ul>{counts.map(row=><li>{row.label}：{row.count}条</li>)}</ul>
+      <details><summary>展开60条历史记录的原始结论与证据</summary>
+        <p>逐条保留原账本英文结论与边界，中文研究脉络见上文。来源：<a href={`${source}/docs/science/webshop/program/WEBSHOP_PROGRAM_LEDGER.history.v1.json`} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={source} />历史账本原文件</a>。记录中的相对路径按已核实的不可变来源打开。</p>
+        <ol class="historical-records">{HISTORICAL_RESEARCH_RECORDS.map(row=><li><p><code>{row.id}</code> · {states[row.status]}</p><p>{row.finding}</p><p>{row.boundary}</p>{row.evidence&&<a href={`${row.id==='wb1-trackb-continuation'?source:historicalSource}/${row.evidence}`} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={historicalSource} />原始证据 →</a>}</li>)}</ol>
+      </details>
+      <p>本轮结果于2026年10月28日（UTC）核对，为新加坡时间10月29日09:00的汇报准备；后续运行进度与已封存结论分别记录。<a href="/research/seed-openevo/study/briefing/">已有24页研究演讲稿</a>保留更完整的历史技术叙述；<a href="/research/seed-openevo/study/parameter-memory-results/">十问结果</a>提供逐问题的细节。后续新结论仍需从实验的实际分支、封存结果和比较范围核对后更新。</p>
+    </section>
+    <details id="earlier-reflection"><summary>2026年10月22日的原有个人复盘（历史材料）</summary><p>以下保留当时对资源、学习、沟通和个人安排的判断，当前科研证据以上文为准；主观工时估计不是审计结果。</p>    <section class="summary evo-article__section" aria-labelledby="summary-title">
+      <h2 id="summary-title">先说目前的情况</h2>
+      <p>9 月 24 日及之前，服务器计算资源优先支持同学准备 ICLR 论文，部分 GPU 实验因此受到影响。与此同时，我们继续阅读文献、分析既有结果、学习 Agent 相关方法并准备后续验证。这里的“继续推进”不等于这些准备工作已经产生新的正式实验结果。</p>
+      <p>我的态度是：如果确实比别人推进得慢，就承认差距，抓紧时间学习和改进方法。我没有把这段时间当作休息期；除了原研究生导师安排的工作，其他可支配工作时间主要投入 OpenEVO。导师安排的科研和非科研任务，我个人粗略估计约占平时工作时间的 10%，这是主观估计，不是工时审计。</p>
+    </section>
+
+    <section aria-labelledby="challenges-title">
+      <div class="heading"><span>01 / 复盘</span><h2 id="challenges-title">六类问题，以及我准备怎么回应</h2></div>
+      <div class="issues">
+        <article><span class="category">资源安排</span><h3>服务器并非一直能用于我的实验</h3><p>9 月 24 日及之前，为支持同学的 ICLR 投稿，我们优先让出服务器资源。需要 GPU 的工作因此有过阶段性等待。</p><p class="response"><strong>我能做的：</strong>把文献阅读、已有结果检查、实验协议和无需 GPU 的验证先推进；资源可用后再按优先级恢复真实运行。</p></article>
+        <article><span class="category">技术执行</span><h3>使用 Codex 操作科研服务器并不总是顺畅</h3><p>远程连接、执行权限、实验启动、运行状态和文件整理，都可能出现工程性阻碍。遇到问题时，不能只停留在“工具不好用”的解释。</p><p class="response"><strong>我能做的：</strong>把实际报错、已验证的修复、仍未打通的路径逐一记录；优先复用现有可信工作流，区分工程准备和真正完成的实验。</p></article>
+        <article><span class="category">研究能力</span><h3>从原有方向转到 Agent，很多知识需要重新补</h3><p>我对智能体还不够熟悉，理解论文、判断机制和设计实验需要更多时间。学习速度和他人有差距是可以正视的事情。</p><p class="response"><strong>我能做的：</strong>持续系统学习，并把读到的方法落实为可以解释、复现和检验的研究问题；不拿“我很努力”代替具体成果。</p></article>
+        <article><span class="category">科研方法</span><h3>使用 AI 工具，不等于已经形成高效的 AI-native 科研方式</h3><p>我一直在使用 Codex 和其他 AI 工具，但仍需要改进人与 AI 的分工。重复执行和代码操作应尽可能交给工具，自己集中精力做深入思考、实验判断和结果核验。</p><p class="response"><strong>我能做的：</strong>让方法论升级体现在更短的反馈周期和可验证成果上；与优秀同行比较可以帮助发现差距，但比较时也要看任务、资源和证据是否可比。</p></article>
+        <article><span class="category">汇报沟通</span><h3>还不完全清楚老师和L 学长期望怎样汇报</h3><p>飞书或 Notion 这样的文档形式是已知选项；是否需要 PPT、口头汇报、固定频率或其他内容标准，我目前还没有明确答案。</p><p class="response"><strong>我能做的：</strong>先将问题、实验、结果、局限和下一步写成任何人能读懂的材料，同时主动确认汇报预期。</p></article>
+        <article><span class="category">时间目标</span><h3>考核节点与最终展示安排还需要明确</h3><p>目前我没有掌握明确的考核结束日期，也不清楚是否会有阶段检查或答辩机会。未知的安排不应被写成已有承诺。</p><p class="response"><strong>我能做的：</strong>先设置自己的短期研究目标，并向有关老师确认实际期限与评价形式。</p></article>
+      </div>
+    </section>
+
+    <section class="response-section evo-article__section" aria-labelledby="reply-title">
+      <div class="heading"><span>02 / 回应</span><h2 id="reply-title">如果老师问，怎么回答？</h2></div>
+      <div class="qa">
+        <article><h3>“这段时间主要做了什么？”</h3><p>服务器资源阶段性让给了赶 ICLR 投稿的同学，所以一些 GPU 实验没有持续推进。但我一直在围绕 OpenEVO 阅读相关文献、分析已有结果、补 Agent 知识、整理实验方案。哪些是已测出的结果，哪些只是准备，我会分开汇报。</p></article>
+        <article><h3>“为什么你的推进速度还不够快？”</h3><p>一方面是跨方向学习和技术执行确实有成本；另一方面，我自己的科研方法还有提高空间。如果比优秀同学慢，我愿意承认。我的选择是继续抓紧时间学，同时提高 Codex 等工具承担执行工作的比例，把更多精力放到科学判断上。</p></article>
+        <article><h3>“其他任务占了多少时间？”</h3><p>原研究生导师确实安排了一些科研和非科研工作，但我个人粗略估计约占平时工作时间的 10%，体感上并不算多。剩下的大部分可支配工作时间都在处理 OpenEVO 的研究相关事务。我不希望把进度问题归因于这些其他任务。</p></article>
+        <article><h3>“你现在需要什么？”</h3><p>我会继续做自己能推进的工作。同时，希望进一步确认汇报形式、频率、考核期限和可能的答辩安排，这样才能更有针对性地安排接下来的研究。</p></article>
+      </div>
+    </section>
+
+
+    <section class="reflection-section evo-article__section" aria-labelledby="reflection-title">
+      <div class="heading"><span>03 / 进一步反思</span><h2 id="reflection-title">困难之外，我还应该问自己什么？</h2></div>
+      <p class="section-lede">这些问题不是 W 老师的逐字评价，而是结合通话摘要、我的科研记录和目前实际遇到的困难，继续向自己提出的追问。努力值得珍惜，但也需要用结果检验方法是否有效。</p>
+      <ol class="reflections">
+        <li>
+          <span class="priority">优先反思 · 科研产出</span>
+          <h3>我是不是花了很多时间，却没有足够快地回答科学问题？</h3>
+          <p>读论文、修环境、整理 checkpoint 和准备实验都重要，但它们与“获得新的科学发现”不是一回事。更需要问：过去一两周，我到底新增了哪条可被证据支持的结论？哪些还只是猜想或执行准备？</p>
+          <p class="next"><strong>下一步：</strong>每周分别记录“新知道了什么”及其证据、“完成了什么工程工作”；没有产生新结论时也如实说明。</p>
+        </li>
+        <li>
+          <span class="priority">优先反思 · 科研方法</span>
+          <h3>我是否真正掌握了 AI-native 的科研方法？</h3>
+          <p>大量使用 Codex，不一定代表已经形成高效率的 Agent 工作流。重复对话才能删除文件、启动实验或恢复失败，说明执行路径仍可能过度依赖人工协调。</p>
+          <p class="next"><strong>下一步：</strong>把可重复的任务沉淀为可验证、可恢复的工作流；让 AI 处理执行，让自己更多承担研究问题选择、实验设计和证据判断。</p>
+        </li>
+        <li>
+          <span class="priority">优先反思 · 时间安排</span>
+          <h3>在外部期限尚不明确时，我有没有为自己设定清晰的短期目标？</h3>
+          <p>考核和答辩安排需要向老师确认，但外部没有明确日期，不应变成自己也没有时间节点。目标既要写出希望得到的结果，也要预设实验受阻时如何汇报。</p>
+          <p class="next"><strong>下一步：</strong>按周选一个最重要的科学问题，列出最小验证、预计交付物和无法完成时需要记录的原因。</p>
+        </li>
+        <li>
+          <span class="priority">同行比较</span>
+          <h3>面对推进更快的同学，我究竟应该比较什么？</h3>
+          <p>通话转写涉及其他同学推进速度的比较，但未经核实的评价不能扩大成科研能力、模型效果或结果全面优劣的结论。更重要的是找到对方值得学习的工作方法。</p>
+          <p class="next"><strong>下一步：</strong>在获得合适信息且比较条件相近时，学习其选题、实验设计、反馈节奏和工具使用，不把比较简化为“谁更优秀”。</p>
+        </li>
+        <li>
+          <span class="priority">知识学习</span>
+          <h3>我补 Agent 知识的方式，是否真的解决当前研究中的问题？</h3>
+          <p>跨领域需要时间是事实，但泛泛地读更多材料，未必能解决 OpenEVO 最迫切的困难。应当把阅读与下一次实验决策连起来。</p>
+          <p class="next"><strong>下一步：</strong>每次阅读至少留下一个可检验的问题、一项实验设计上的变化，或一个值得复用的方法。</p>
+        </li>
+        <li>
+          <span class="priority">汇报沟通</span>
+          <h3>我是否把“做了很多事”和“让别人看懂科研进展”混在了一起？</h3>
+          <p>自己的工作记录可能很多，但老师未必能迅速判断研究目标、实测发现、证据局限和后续安排。汇报不只是选择飞书、Notion 还是 PPT。</p>
+          <p class="next"><strong>下一步：</strong>先给出读者能在短时间理解的科学问题、两项关键证据与局限、尚未验证的内容，再链接详细材料。</p>
+        </li>
+        <li>
+          <span class="priority">个人成长</span>
+          <h3>我是不是过于重视证明自己没有浪费时间？</h3>
+          <p>我没有把服务器等待期当作休息期，也在认真学习，这些可以如实说明。但“不出去玩”“工作时间很长”本身不是科研评价指标。我不需要用不休息来证明自己值得被认可。</p>
+          <p class="next"><strong>下一步：</strong>诚实面对差距，同时用学习是否有效、方法是否改进和科学结果是否扎实评价进步；保留正常休息和长期工作的能力。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="improvement-section evo-article__section" aria-labelledby="improvement-title">
+      <div class="heading"><span>04 / 检验改进</span><h2 id="improvement-title">下一阶段，我怎么知道自己真的变好了？</h2></div>
+      <p class="section-lede">我希望用三个可观察的变化检验自己的改进。以下是自定检查方向，并非老师规定的考核标准；涉及实验的安排仍需要按正式流程确认。</p>
+      <div class="improvement-list">
+        <article><span>01 · 科研产出</span><h3>更快形成可检验的结论</h3><p>每周列出最重要的研究问题；如有新增实测，附上具体实验、指标、对照和局限；没有结果就明确卡在哪一步。</p></article>
+        <article><span>02 · 执行方法</span><h3>减少重复的人工协调</h3><p>记录启动实验、处理 checkpoint 等常见操作从提出请求到验证完成的耗时、失败原因和复用程度，观察工作流是否真的缩短反馈周期。</p></article>
+        <article><span>03 · 个人成长</span><h3>把学习和沟通落实到行动</h3><p>记录文献阅读如何改变实验设计；让阶段汇报先回答结论与证据；主动确认汇报形式、频率和实际考核节点。</p></article>
+      </div>
+      <div class="spoken-response">
+        <h3>如果需要用一段话向老师说明</h3>
+        <p>我觉得目前推进速度确实还有提高空间，这一点我承认。之前服务器曾优先支持同学准备 ICLR，部分实验受到影响；同时我也在补 Agent 知识、分析已有结果和准备后续研究。原研究生导师安排的科研和非科研任务，我个人粗略估计约占平时工作时间的 10%，其他大部分可支配工作时间都在 OpenEVO 上。我不想把进度问题归因于这些客观条件，也不想只拿投入时间证明自己。接下来我更需要提高研究方法和 AI 工具的执行效率，尽快形成扎实、可复现的科学结果，并确认好汇报与考核的具体要求。</p>
+      </div>
+    </section>
+
+</details>
+  </main>
+</AppLayout>
+<style>
+  .back{font-size:.85rem;color:var(--accent-deep);text-underline-offset:.2em}
+  .eyebrow,.heading>span,.category{font-size:.72rem;font-weight:800;letter-spacing:.06em;color:var(--accent-deep)}
+  .lead{font-size:clamp(1.1rem,2.2vw,1.4rem);line-height:1.7;max-width:42em}
+  .meta{color:var(--muted);font-size:.8rem;margin-top:1.3rem}
+  section{padding:2.5rem 0;border-bottom:1px solid var(--line)}
+  .heading{margin-bottom:1.5rem}
+  .issues,.qa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+  .issues article,.qa article{min-width:0;border:1px solid var(--line);border-radius:var(--radius-panel);padding:1.4rem;background:var(--surface,transparent)}
+  .issues p,.qa p{color:var(--muted);margin:.65rem 0 0}
+  .issues .response{border-top:1px solid var(--line);padding-top:1rem;margin-top:1rem;color:var(--ink)}
+
+  .section-lede{color:var(--muted);margin:-.5rem 0 1.6rem}
+  .reflections{list-style:none;padding:0;margin:0;display:grid;gap:0}
+  .reflections li{padding:1.35rem 0;border-top:1px solid var(--line)}
+  .reflections li:last-child{border-bottom:1px solid var(--line)}
+  .reflections p{color:var(--muted);margin:.35rem 0}
+  .reflections .next{color:var(--ink);margin-top:.65rem}
+  .priority,.improvement-list span{font-size:.75rem;font-weight:750;color:var(--accent-deep)}
+  .improvement-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}
+  .improvement-list article{border:1px solid var(--line);border-radius:var(--radius-panel);padding:1.25rem;min-width:0}
+  .improvement-list p{color:var(--muted);margin:.4rem 0}
+  .spoken-response{max-width:75ch;margin-top:1.6rem;padding:1.35rem;border-left:3px solid var(--accent-deep);background:var(--surface,transparent)}
+  .spoken-response p{margin:0}
+  .boundary{margin-top:2rem;padding:1.4rem;border-left:3px solid var(--accent-deep);background:var(--surface,transparent)}
+  .boundary p{color:var(--muted)}
+  @media(max-width:700px){.issues,.qa,.improvement-list{grid-template-columns:1fr}}
+</style>

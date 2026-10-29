@@ -1,43 +1,80 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
+import ExternalBrandMark from '../common/ExternalBrandMark';
 import { localePath, type Locale } from '../../i18n';
 import ResearchTechnicalDisclosure from './ResearchTechnicalDisclosure.astro';
+import { seedOpenEvoIntelligenceComparison, type BilingualCopy } from '../../data/seedOpenEvoIntelligenceComparison';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
+const say = (copy: BilingualCopy) => copy[locale];
 const p = (path: string) => localePath(locale, path);
-
-const stages = [
-  [t('做题模型', 'Actor'), 'Qwen2.5-3B-Instruct', t('当前对照固定同一模型；它自己选择 WebShop 动作', 'the current comparison fixes the same model; it chooses WebShop actions itself')],
-  [t('提示与动作层', 'Prompt and action layer'), 'SEED / OpenEvo', t('各自负责提示、历史和动作解析；这一交互层不提供具体购物答案', 'each owns its prompts, history, and action parsing; this interaction layer does not supply shopping answers')],
-  [t('任务环境', 'Environment'), 'Princeton WebShop', t('返回页面观察、任务分数和状态变化', 'returns page observations, task scores, and state changes')],
-  [t('保存完整过程', 'Sealed trajectory'), t('一次完整任务', 'One completed task'), t('任务结束后才把整条交互记录固定下来', 'freezes the full interaction record only after the task ends')],
-  [t('任务后复盘', 'Post-task review'), t('外部分析模型', 'External analysis model'), t('只在任务结束后读取已保存的轨迹', 'reads the saved trajectory only after task completion')],
-  [t('交给后续学习', 'Handoff'), t('成功轨迹 + 任务后复盘', 'successful traces + post-task review'), t('作为后续持续学习阶段（Stage 2）的可追溯输入；具体经验或参数状态由这一阶段决定', 'becomes traceable input to Stage 2; Stage 2 decides the resulting experience or parameter state')],
-] as const;
 ---
 <div class="training-design-body">
-  <p class="comparison-boundary">{t('完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到持续学习阶段（Stage 2）的学习器，两边还必须共享第一阶段（Stage 1）的轨迹、任务后复盘、训练配方和同一个起点模型。', 'A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model.')}</p>
-  <ol class="responsibility-flow" aria-label={t('Stage 1 责任边界', 'Stage-1 responsibility flow')}>
-    {stages.map((stage, index) => (
-      <li>
-        <span>{String(index + 1).padStart(2, '0')}</span>
-        <div><small>{stage[0]}</small><strong>{stage[1]}</strong><p>{stage[2]}</p></div>
-      </li>
+  <div class="intelligence-intro">
+    <p class="intelligence-intro__claim">{t('SEED 和 OpenEVO 都经历两个阶段：第一阶段借助外部教师形成学习起点，第二阶段从新任务的内部反馈中持续学习。两个阶段都可能更新模型参数；真正值得比较的是学习信号怎样形成、参数怎样变化、经验最终存在哪里。', 'SEED and OpenEVO both have two stages: an external teacher helps establish the learning starting point, then new task feedback drives continual learning. Both stages may update model parameters. The differences lie in how learning signals are formed, how parameters change, and where experience persists.')}</p>
+    <div class="intelligence-intro__legend" aria-label={t('比较的阅读规则', 'Comparison legend')}>
+      <span>{t('相同的操作使用同一条原文', 'Shared operations use exactly the same wording')}</span>
+      <span>{t('括号内是可替换的具体模型', 'Parentheses name replaceable model implementations')}</span>
+    </div>
+  </div>
+
+  <div class="intelligence-stage-stack" data-intelligence-comparison>
+    {seedOpenEvoIntelligenceComparison.map((stage) => (
+      <section class:list={['intelligence-stage', `intelligence-stage--${stage.id}`]} aria-labelledby={`intelligence-${stage.id}-title`} data-stage={stage.id}>
+        <header class="intelligence-stage__header">
+          <span class="intelligence-stage__number">Stage {Number(stage.number)}</span>
+          <div>
+            <h3 id={`intelligence-${stage.id}-title`}>{say(stage.name)}</h3>
+            <p>{say(stage.promise)}</p>
+          </div>
+        </header>
+        <div class="intelligence-columns" aria-hidden="true"><span>SEED</span><span>OpenEVO</span></div>
+        <ol class="intelligence-rows">
+          {stage.rows.map((step, index) => (
+            <li class:list={['intelligence-row', `intelligence-row--${step.tone}`]} data-axis={step.id}>
+              <div class="intelligence-row__axis">
+                <span class="intelligence-row__index">{String(index + 1).padStart(2, '0')}</span>
+                <span class="intelligence-row__axis-title">{say(step.axis)}</span>
+                <span class="intelligence-row__relation">{step.similarity === 'same-operation' ? t('共同操作', 'Shared operation') : t('同一作用 · 机制不同', 'Same role · different mechanics')}</span>
+              </div>
+              <div class="intelligence-row__pair">
+                {(['seed', 'openEvo'] as const).map((side) => {
+                  const detail = step[side];
+                  return (
+                    <div class:list={['intelligence-method', `intelligence-method--${side}`]} data-framework={side}>
+                      <small class="intelligence-method__name">{side === 'seed' ? 'SEED' : 'OpenEVO'}</small>
+                      <strong class="intelligence-method__action">{say(step.sharedAction)}{detail.replaceableTeacher && <span class="intelligence-method__vendor">{say(detail.replaceableTeacher)}</span>}</strong>
+                      {detail.technique && <span class="intelligence-method__technique">{say(detail.technique)}</span>}
+                      <p class="intelligence-method__explanation">{say(detail.explanation)}</p>
+                      {step.sharedBoundary && <p class="intelligence-method__boundary">{say(step.sharedBoundary)}</p>}
+                    </div>
+                  );
+                })}
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p class="intelligence-stage__result">{say(stage.result)}</p>
+      </section>
     ))}
-  </ol>
-  <p class="stage2-bridge">{t('第一阶段（Stage 1）留下可追溯的成功轨迹和 MiniMax 任务后复盘。第一阶段封存后的初始参数训练（OPSD，内部用于构造第二阶段起点的步骤）只把这些冻结证据变成进入第二阶段的起始参数适配器，不是每轮任务里的第五种滚动状态。第二阶段（Stage 2，持续学习）随后分别更新四类东西：文字经验保存可复用经验；可复用技能保存策略；行为与恢复规则保存全局规则；少量模型适配参数（SD-LoRA）更新参数。每一类状态都有实验开始前固定的更新条件；只有最终采用的版本才装入下一批任务。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用这四类状态。', 'Stage 1 leaves traceable successful trajectories and MiniMax post-task review. OPSD (initial parameter training) runs only after Stage 1 is sealed, turning that frozen evidence into the starting parameter adapter for Stage 2; it is not a fifth per-round state. Stage 2 (continual learning) then updates four kinds of state: Text Memory stores reusable written experience; Skill stores reusable strategies; Agent System stores global behavior and recovery rules; SD-LoRA updates a small parameter adapter. Each state type has update conditions frozen before the experiment, and only the adopted versions are loaded into the next task batch. Earlier Stage-1 and LoRA-vs-SD-LoRA comparisons did not enable all four states together.')}</p>
+  </div>
+
+  <p class="comparison-boundary">{t('这张图比较的是方法机制，不是实验成绩。完整系统比较只能回答两套系统总体表现有什么差异；如果要把后续差异归因到持续学习阶段（Stage 2）的学习器，两边还必须共享第一阶段（Stage 1）的轨迹、任务后复盘、训练配方和同一个起点模型。早期 Stage 1 / LoRA-vs-SD-LoRA 对照没有同时启用全部四类 OpenEVO 状态。', 'This figure compares method mechanisms, not benchmark scores. A full-system comparison only answers how the two systems differ overall. To attribute a later difference to the Stage-2 learner, both sides must also share Stage-1 trajectories, post-task review, the training recipe, and the same starting model. Earlier Stage-1 / LoRA-vs-SD-LoRA comparisons did not use all four OpenEVO state types at once.')}</p>
+  <p class="intelligence-sources">{t('方法来源：', 'Method sources: ')}<a href="https://github.com/jinyangwu/SEED" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/jinyangwu/SEED" />SEED {t('公开源码', 'source code')}</a><span aria-hidden="true"> · </span><a href="https://github.com/mykcs/openevo-experiment" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment" />OpenEVO {t('实验仓库', 'experiment repository')}</a><span aria-hidden="true"> · </span><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法详情', 'SEED method')}</a><span aria-hidden="true"> · </span><a href={p('/research/seed-openevo/flow/openevo/')}>{t('OpenEVO 方法详情', 'OpenEVO method')}</a></p>
 
   <section class="comparison-scope" data-learning-comparison-scope aria-labelledby="comparison-scope-title">
     <h3 id="comparison-scope-title">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</h3>
     <div class="comparison-table-wrap">
-      <table>
+      <ResearchPaperTable narrowRecords>
+<Fragment slot="caption">{t('比较口径决定差异能归因到哪里', 'The comparison scope determines what can explain a difference')}</Fragment>
         <thead><tr><th scope="col">{t('比较口径', 'Comparison')}</th><th scope="col">{t('哪些条件保持一致', 'What stays aligned')}</th><th scope="col">{t('可以支持什么结论', 'What the result can support')}</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('完整系统比较', 'Full-system comparison')}</th><td>{t('模型、任务、评分和训练预算尽量一致；SEED 与 OpenEvo 可以使用各自的提示、历史与动作解析层。', 'Keep model, tasks, scoring, and training budget aligned; SEED and OpenEvo may use their own prompt, history, and action-parsing layers.')}</td><td>{t('只能比较两个完整系统的总体表现，不能把全部差异单独归因于第二阶段（Stage 2）的学习器。', 'Supports a comparison of the complete systems, not attribution of the whole difference to the Stage-2 learner alone.')}</td></tr>
           <tr><th scope="row">{t('只比较第二阶段（Stage 2）学习器', 'Stage-2 learner only')}</th><td>{t('共享第一阶段（Stage 1）的轨迹、事后分析、监督微调（SFT，也就是用已保存示例继续训练）配方和同一个起点模型保存点（checkpoint，也就是一版固定参数），再从这里分成 SEED 与 OpenEvo 的第二阶段学习。', 'Share Stage-1 trajectories, post-task analysis, the SFT recipe, and the same starting checkpoint — one fixed parameter snapshot — before forking into SEED Stage 2 and OpenEvo Stage 2.')}</td><td>{t('只有这种共同起点的对照，才允许把后续差异收窄到第二阶段（Stage 2）学习器。', 'Only this common-start comparison can narrow a later difference to the Stage-2 learner.')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
   </section>
 
@@ -62,40 +99,77 @@ const stages = [
 </div>
 
 <style>
-  .comparison-boundary{max-width:82ch;margin:0 0 .85rem;padding:0 0 .75rem;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem;line-height:1.6}.responsibility-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.45rem;margin:0;padding:0;list-style:none}
-  .responsibility-flow li{position:relative;min-width:0;padding:.8rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface)}
-  .responsibility-flow li:not(:last-child)::after{content:'';position:absolute;z-index:2;right:-.45rem;top:50%;width:.45rem;border-top:2px solid var(--muted)}
-  .responsibility-flow li:not(:last-child)::before{content:'';position:absolute;z-index:3;right:-.48rem;top:calc(50% - 4px);border-left:7px solid var(--muted);border-top:4px solid transparent;border-bottom:4px solid transparent}
-  .responsibility-flow li>span{color:var(--accent-deep);font:800 .64rem/1 var(--font-mono)}
-  .responsibility-flow small,.responsibility-flow strong{display:block}
-  .responsibility-flow small{margin-top:.6rem;color:var(--muted);font-size:.65rem}
-  .responsibility-flow strong{margin-top:.15rem;font-size:.82rem}
-  .responsibility-flow p{margin:.35rem 0 0;color:var(--muted);font-size:.69rem;line-height:1.45}
-  .stage2-bridge{margin:.9rem 0 0;padding:.85rem 0;border-top:1px solid var(--line);color:var(--muted);font-size:.76rem;line-height:1.6}
+  .training-design-body{--intelligence-blue:var(--blue);--intelligence-amber:var(--warning);--intelligence-red:var(--danger);--intelligence-violet:#6656a1;--intelligence-green:var(--positive);min-width:0}
+  :global(:root[data-theme='dark']) .training-design-body{--intelligence-violet:#baa9e9}
+  .intelligence-intro{display:grid;gap:.75rem;margin-bottom:1.3rem}
+  .intelligence-intro__claim{max-width:80ch;margin:0;color:var(--ink);font-size:var(--article-body-size,var(--type-body-small));line-height:var(--type-leading-body)}
+  .intelligence-intro__legend{display:flex;gap:.35rem 1rem;flex-wrap:wrap}
+  .intelligence-intro__legend span{display:inline-flex;align-items:center;gap:.45rem;color:var(--muted);font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+  .intelligence-intro__legend span::before{content:'';width:.45rem;height:.45rem;flex:none;border-radius:50%;background:var(--intelligence-green)}
+  .intelligence-intro__legend span+span::before{background:var(--intelligence-violet)}
+  .intelligence-stage-stack{display:grid;gap:2.15rem;min-width:0}
+  .intelligence-stage{position:relative;min-width:0;padding:clamp(.85rem,2vw,1.4rem);border:1px solid var(--line);border-radius:var(--radius-feature);background:color-mix(in srgb,var(--surface) 94%,var(--bg))}
+  .intelligence-stage--stage-1{--stage-color:var(--intelligence-amber)}
+  .intelligence-stage--stage-2{--stage-color:var(--intelligence-violet)}
+  .intelligence-stage--stage-1::after{content:'';position:absolute;left:50%;bottom:-2.15rem;width:2px;height:2.1rem;background:color-mix(in srgb,var(--intelligence-violet) 68%,var(--line));transform:translateX(-50%)}
+  .intelligence-stage--stage-1::before{content:'';position:absolute;z-index:2;left:calc(50% - 5px);bottom:-2.2rem;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--intelligence-violet)}
+  .intelligence-stage__header{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:1.1rem;margin-bottom:1.15rem;padding:.25rem .1rem .95rem;border-bottom:1px solid var(--line)}
+  .intelligence-stage__number{display:grid;place-items:center;min-width:5.2rem;min-height:3.8rem;padding:.6rem;border:1px solid color-mix(in srgb,var(--stage-color) 42%,var(--line));border-radius:var(--radius-panel);color:var(--ink);background:color-mix(in srgb,var(--stage-color) 12%,var(--surface));font-size:var(--type-body-small);font-family:var(--font-interface);font-weight:var(--type-weight-heading);white-space:nowrap}
+  .intelligence-stage__header h3{margin:0;color:var(--ink);font-size:clamp(1.2rem,2vw,1.65rem);line-height:var(--type-leading-heading)}
+  .intelligence-stage__header p{max-width:67ch;margin:.4rem 0 0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-body)}
+  .intelligence-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:0 0 .35rem 0}
+  .intelligence-columns span{padding:.45rem .75rem;border-radius:var(--radius-control);text-align:center;font-size:var(--type-body-small);font-family:var(--font-interface);font-weight:var(--type-weight-heading);letter-spacing:.02em;background:color-mix(in srgb,var(--intelligence-violet) 9%,var(--surface))}
+  .intelligence-columns span+span{background:color-mix(in srgb,var(--intelligence-green) 10%,var(--surface))}
+  .intelligence-rows{display:grid;gap:.75rem;min-width:0;margin:0;padding:0;list-style:none;counter-reset:intelligence-step}
+  .intelligence-row{--row-tone:var(--intelligence-blue);min-width:0}
+  .intelligence-row--experience{--row-tone:var(--intelligence-amber)}
+  .intelligence-row--optimization{--row-tone:var(--intelligence-red)}
+  .intelligence-row--model{--row-tone:var(--intelligence-violet)}
+  .intelligence-row--accepted{--row-tone:var(--intelligence-green)}
+  .intelligence-row__axis{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;min-width:0;margin-bottom:.4rem;padding:0 .2rem}
+  .intelligence-row__index{display:grid;place-items:center;width:1.45rem;height:1.45rem;flex:none;border-radius:50%;background:var(--row-tone);color:var(--bg);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-heading)}
+  .intelligence-row__axis-title{color:var(--ink);font-size:var(--type-body-small);font-family:var(--font-interface);font-weight:var(--type-weight-heading)}
+  .intelligence-row__relation{margin-left:auto;color:var(--muted);font-size:var(--type-meta);font-family:var(--font-interface)}
+  .intelligence-row__pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;min-width:0}
+  .intelligence-method{position:relative;display:flex;flex-direction:column;min-width:0;padding:1rem 1.05rem 1.05rem;border:1px solid var(--line);border-top:3px solid var(--row-tone);border-radius:var(--radius-panel);background:var(--surface);overflow-wrap:anywhere}
+  .intelligence-method__name{display:block;margin-bottom:.45rem;color:var(--muted);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-heading);letter-spacing:.05em}
+  .intelligence-method__action{display:block;color:var(--ink);font-size:var(--type-minor-heading);line-height:var(--type-leading-heading);font-weight:var(--type-weight-heading)}
+  .intelligence-method__vendor{display:inline;color:var(--accent-deep);font-weight:var(--type-weight-medium)}
+  .intelligence-method__technique{display:inline-flex;align-self:flex-start;max-width:100%;margin-top:.65rem;padding:.3rem .5rem;border:1px solid color-mix(in srgb,var(--row-tone) 26%,var(--line));border-radius:var(--radius-control);background:color-mix(in srgb,var(--row-tone) 8%,var(--surface));color:var(--ink);font-size:var(--type-meta);font-weight:var(--type-weight-heading);line-height:var(--type-leading-caption)}
+  .intelligence-method__explanation{margin:.55rem 0 0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-body)}
+  .intelligence-method__boundary{margin:.75rem 0 0;padding:.55rem .65rem;border-left:2px solid var(--intelligence-red);border-radius:0 var(--radius-control) var(--radius-control) 0;background:color-mix(in srgb,var(--intelligence-red) 7%,var(--surface));color:var(--ink);font-size:var(--type-meta);line-height:var(--type-leading-body)}
+  .intelligence-stage__result{margin:1rem 0 0;padding:.8rem 1rem;border:1px solid color-mix(in srgb,var(--intelligence-green) 25%,var(--line));border-radius:var(--radius-panel);background:color-mix(in srgb,var(--intelligence-green) 7%,var(--surface));color:var(--ink);font-size:var(--type-body-small);line-height:var(--type-leading-body);font-weight:var(--type-weight-heading)}
+  .comparison-boundary{max-width:86ch;margin:1.15rem 0 .45rem;padding:1rem 0 .45rem;border-top:1px solid var(--line);color:var(--ink);font-size:var(--type-body-small);font-family:var(--font-interface);line-height:var(--type-leading-body)}
+  .intelligence-sources{display:flex;flex-wrap:wrap;gap:0 .3rem;max-width:86ch;margin:0 0 1.2rem;color:var(--muted);font-size:var(--type-meta);font-family:var(--font-interface);line-height:var(--type-leading-body)}
+  .intelligence-sources a{color:var(--accent-deep);text-underline-offset:.2em}
   .comparison-scope{margin-top:.45rem;padding:1rem 0;border-top:1px solid var(--line)}
-  .comparison-scope h3{margin:0 0 .65rem;font-size:.9rem}
-  .comparison-table-wrap{max-width:100%;overflow-x:auto}
-  .comparison-scope table{width:100%;min-width:660px;border-collapse:collapse;font-size:.72rem;line-height:1.5}
-  .comparison-scope th,.comparison-scope td{padding:.65rem .7rem;border-top:1px solid var(--line);text-align:left;vertical-align:top}
-  .comparison-scope thead th{color:var(--muted);font-size:.66rem;font-weight:760}
-  .comparison-scope tbody th{width:18%;font-size:.74rem}
-  .comparison-scope tbody td{color:var(--muted)}
+  .comparison-scope h3{margin:0 0 .65rem;font-size:var(--type-minor-heading)}
+  .comparison-table-wrap{max-width:100%;overflow-x:auto;min-width:0}
+  .comparison-scope table{min-width:660px}
+  .comparison-scope tbody th{width:18%}
   .design-disclosures{display:grid;gap:.35rem;margin-top:.35rem}
-  .parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:.71rem;line-height:1.55}
+  .parameter-note{margin:.35rem 0 0;color:var(--muted);font-size:var(--type-body-small);font-family:var(--font-interface);line-height:var(--type-leading-body)}
   .parameter-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.35rem;padding:.75rem .75rem 0;margin:0}
   .parameter-list div{display:flex;justify-content:space-between;gap:.7rem;padding:.45rem 0;border-bottom:1px solid var(--line)}
-  .parameter-list dt{color:var(--muted);font-size:.68rem}
-  .parameter-list dd{margin:0;font-size:.7rem;font-weight:700}
+  .parameter-list dt{color:var(--muted);font-size:var(--type-meta);font-family:var(--font-mono)}
+  .parameter-list dd{margin:0;font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-medium)}
   .parameter-note{padding:0 .75rem .75rem}
-  .design-next{margin:.8rem 0 0 3.05rem}
-  .design-next a{font-size:.74rem;font-weight:750}
-  @media(max-width:950px){
-    .responsibility-flow{grid-template-columns:1fr;gap:.75rem}
-    .responsibility-flow li:not(:last-child)::after{right:auto;left:1.2rem;top:auto;bottom:-.75rem;width:0;height:.75rem;border-top:0;border-left:2px solid var(--muted)}
-    .responsibility-flow li:not(:last-child)::before{right:auto;left:calc(1.2rem - 4px);top:auto;bottom:-.79rem;border-left:4px solid transparent;border-right:4px solid transparent;border-top:7px solid var(--muted);border-bottom:0}
+  .design-next{margin:.8rem 0 0}
+  .design-next a{font-size:var(--type-meta);font-weight:var(--type-weight-heading)}
+  @container reading-overview (max-width:650px){
+    .intelligence-row__pair,.intelligence-columns{grid-template-columns:1fr}
+    .intelligence-columns{display:none}
+    .intelligence-method--openEvo{background:color-mix(in srgb,var(--intelligence-green) 3%,var(--surface))}
+  }
+  @media(max-width:720px){
+    .intelligence-row__pair,.intelligence-columns{grid-template-columns:1fr}
+    .intelligence-columns{display:none}
+    .intelligence-method--openEvo{background:color-mix(in srgb,var(--intelligence-green) 3%,var(--surface))}
+    .intelligence-stage__header{grid-template-columns:1fr;gap:.55rem}
+    .intelligence-stage__number{min-height:0;min-width:0;width:max-content;padding:.35rem .7rem}
+    .intelligence-row__relation{margin-left:0}
   }
   @media(max-width:640px){
-    .design-next{margin-left:0}
     .parameter-list{grid-template-columns:1fr}
   }
 </style>

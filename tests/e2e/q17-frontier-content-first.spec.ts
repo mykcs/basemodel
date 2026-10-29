@@ -6,7 +6,7 @@ test('focus result keeps the comparable result and scientific boundary in the fi
   await page.setViewportSize({ width: 1280, height: 633 });
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('h1')).toContainText('OpenEVO 的 WebShop 同题复测：暂时不能证明第 128 轮模型状态整体变差');
-  await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026-09-11');
+  await expect(page.locator('.result-hero > .eyebrow')).toContainText('局部诊断 · 2026 年 9 月 11 日');
   await expect(page.locator('.result-hero__numbers')).toContainText('63.58 → 59.41');
   await expect(page.locator('.result-hero__numbers')).toContainText('10 / 32 → 8 / 32');
   await expect(page.locator('.result-hero__numbers')).not.toContainText('−17.13 ～ +8.00');
@@ -46,6 +46,11 @@ for (const viewport of [
           clientWidth: node.clientWidth,
         }));
         expect(tableGeometry.scrollWidth).toBeLessThanOrEqual(tableGeometry.clientWidth + 2);
+        const readingWindow = page.locator('[data-paper-table-scroll]');
+        expect(await readingWindow.evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(2);
+        // The explicit --records presentation switches the native table to
+        // labeled full records on phones while retaining its table semantics.
+        await expect(page.locator('.table-wrap table')).toHaveCSS('display', 'block');
         const r128Cells = await page.locator('.table-wrap tbody tr td:nth-child(3)').evaluateAll((nodes) => nodes.map((node) => {
           const rect = node.getBoundingClientRect();
           return { left: rect.left, right: rect.right };
@@ -60,4 +65,26 @@ for (const viewport of [
       await expect(page.locator('.table-wrap')).toBeFocused();
     });
   }
+}
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('same-task comparison values stay inside their labeled cells: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto(route,{waitUntil:'load'});
+    const table=page.locator('.table-wrap table');
+    const measure=()=>table.locator('tbody td:nth-child(2),tbody td:nth-child(3),tbody td:nth-child(4)').evaluateAll(nodes=>nodes.map(node=>{
+      const range=document.createRange();range.selectNodeContents(node);
+      const cell=node.getBoundingClientRect();
+      return {text:node.textContent,left:cell.left,right:cell.right,lines:[...range.getClientRects()].map(r=>({left:r.left,right:r.right}))};
+    }));
+    const accept=(rows:Awaited<ReturnType<typeof measure>>)=>rows.forEach(row=>{
+      expect(row.lines.length).toBeGreaterThan(0);
+      for(const line of row.lines){expect(line.left).toBeGreaterThanOrEqual(row.left-1);expect(line.right,row.text??'').toBeLessThanOrEqual(row.right+1);}
+    });
+    accept(await measure());
+    for(const value of ['10 / 32 (31.25%)','8 / 32 (25.00%)','27 / 32 (84.38%)','25 / 32 (78.13%)'])await expect(table).toContainText(value);
+    expect(()=>accept([{text:'overflow control',left:0,right:40,lines:[{left:0,right:80}]}])).toThrow();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
 }

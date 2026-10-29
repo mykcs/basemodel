@@ -22,9 +22,17 @@ After root `AGENTS.md`, for any non-trivial task:
 
 Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`../README.md`](../README.md) owns the documentation-system lifecycle and archive boundary. This file owns **navigation/task selection only**; durable rules live in their single current policy owner.
 
+## Quality standards / acceptance navigation
+
+When a task asks **what quality must be met or how its acceptance is proved**, consult [`docs/standards/README.md`](../standards/README.md) and [ACCEPTANCE_MAP](../standards/ACCEPTANCE_MAP.md). This is a short owner/check index, not a second Agent rule system or a universal pre-read. The [open gaps](../standards/OPEN_GAPS.md) route to their **existing** PR owners.
+
 ## Task bundles
 
+**人物姓名／匿名化（全仓库）：**任何页面、报告、会议来源、申请材料或其他涉及具体导师／前辈的改动，先读 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md)；这是唯一称谓规则 owner，执行检查为 `npm run audit:person-privacy`。
+
 ### User-facing page, copy, navigation, explanation, or feature
+
+**Exact visual-reference bundle:** If the owner asks to follow the “用实验回答 L 学长十问” page (fonts, spacing, question index, reading width), first read [`current/sitewide-typography-standard.md`](current/sitewide-typography-standard.md), inspect [`parameter-memory-results/index.astro`](../../src/pages/research/seed-openevo/study/parameter-memory-results/index.astro), and reuse [`research-article.css`](../../src/styles/research-article.css) with [`advisor-ten-approved-reader.css`](../../src/styles/advisor-ten-approved-reader.css). The canonical standard stays at its current owner; this router only makes the required files findable. Use `current/ui-change-visual-acceptance-gate.md` for 440px / 1440px rendered acceptance.
 
 Always load the relevant combination of:
 
@@ -42,7 +50,7 @@ These files are complementary owners, not competing style guides:
 
 | Owner | Load when | Owns |
 |---|---|---|
-| [central Human Expression Standard](https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md) | every public page/copy task | cross-site natural language / zero-context / terminology / information-order standard |
+| [central Human Expression Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md) | substantial/durable public content artifact | full cross-site writing / structure / representation standard |
 | [`website-design-spec.md`](current/website-design-spec.md) | BaseModel public research surfaces | BaseModel-specific scientific presentation, Reader Contract, ELI5 and local execution overlay |
 | [`site-reader-attention-contract.md`](current/site-reader-attention-contract.md) | any new public page or substantial public-page structure/attention change | per-route audience, primary task, first-viewport goal, non-hideable boundary, next step, attention mode, and executable fail-closed coverage |
 | [`audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) | any public technical copy | headings name subjects, concrete language, context, terminology, audience baseline |
@@ -55,7 +63,7 @@ These files are complementary owners, not competing style guides:
 
 For user-facing research work, `reader-first-copy-hierarchy.md` and `research-editorial-style.md` are mandatory through `src/components/research/AGENTS.md`. Add `layered-technical-explainer-copy.md` when the Chinese page teaches a technical mechanism. A narrower task-specific contract refines the general rule; it does not erase scientific or product truth.
 
-If the owner says `说人话`, `不要 AI 味`, `自然一点`, or equivalent, read the current shared standard at https://github.com/mykcs/.codex/blob/main/website-governance/HUMAN_EXPRESSION_STANDARD.md first. Load learned evidence from https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and BaseModel-specific learned experience only when prior feedback matters. Then apply `current/website-design-spec.md` as the BaseModel-specific overlay. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
+If the task is a substantial/durable page or copy artifact, read https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md and then apply `current/website-design-spec.md` as the BaseModel-specific overlay. A small wording tweak or conversational `说人话 / 不要 AI 味 / 自然一点` request can use the lightweight root behavior without loading the full artifact-writing stack. Load learned evidence from https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md and BaseModel-specific learned experience only when prior feedback matters. The retired local case corpus is historical evidence only; there is no local `feedback:retrieve` step.
 
 For UI/layout/theme/CSS work also read:
 

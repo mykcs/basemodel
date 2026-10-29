@@ -3,15 +3,16 @@ import type { Locale } from '../../i18n';
 
 interface Props {
   locale: Locale;
+  article?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, article = false } = Astro.props;
 const label = locale === 'zh' ? '本页导航' : 'On this page';
 ---
 
-<nav class="page-outline" data-page-outline data-ui-audit="contrast layout" aria-label={label} hidden>
+<nav class:list={['page-outline', { 'page-outline--article': article }]} data-article-outline={article || undefined} data-page-outline data-ui-audit="contrast layout" aria-label={label} hidden>
   <span class="page-outline__sr">{label}</span>
-  <ol class="page-outline__list" data-page-outline-list></ol>
+  {article ? <details class="article-contents"><summary>{locale === 'zh' ? '目录' : 'Contents'}</summary><ol class="page-outline__list" data-page-outline-list></ol></details> : <ol class="page-outline__list" data-page-outline-list></ol>}
   <span class="page-outline__text" data-page-outline-tooltip hidden></span>
 </nav>
 
@@ -27,13 +28,19 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
   const normalizeLabel = (value: string) => value.replace(/\s+/g, ' ').trim();
 
+  const headingLabel = (heading: HTMLHeadingElement) => {
+    const copy = heading.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('.evo-article__heading-number').forEach(number => number.remove());
+    return normalizeLabel(copy.textContent ?? '');
+  };
+
   const ensureHeadingId = (heading: HTMLHeadingElement, usedIds: Set<string>, index: number) => {
     if (heading.id) {
       usedIds.add(heading.id);
       return heading.id;
     }
 
-    const normalized = normalizeLabel(heading.textContent ?? '')
+    const normalized = headingLabel(heading)
       .normalize('NFKD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLocaleLowerCase()
@@ -56,7 +63,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     const candidates = [...main.querySelectorAll<HTMLHeadingElement>('h2, h3')].filter((heading) => {
       if (heading.closest(ignoredAncestorSelector)) return false;
       const style = getComputedStyle(heading);
-      return style.display !== 'none' && style.visibility !== 'hidden' && normalizeLabel(heading.textContent ?? '').length > 0;
+      return style.display !== 'none' && style.visibility !== 'hidden' && headingLabel(heading).length > 0;
     });
     const levelTwo = candidates.filter((heading) => heading.tagName === 'H2');
     return levelTwo.length >= 4 ? levelTwo : candidates;
@@ -74,9 +81,13 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     list.replaceChildren();
     tooltip.hidden = true;
 
-    const headings = collectHeadings(main).slice(0, 48);
+    const articleMode = root.hasAttribute('data-article-outline');
+    if (articleMode && main.querySelector('.evo-article__toc')) return;
+    const articleRoot = articleMode ? main.querySelector<HTMLElement>('.evo-approved-reader') : null;
+    root.classList.toggle('page-outline--overview',Boolean(articleRoot?.classList.contains('evo-reading-overview')));
+    const headings = collectHeadings(articleRoot ?? main).slice(0, 48);
     const longEnough = main.scrollHeight >= Math.max(1400, window.innerHeight * 1.65);
-    if (headings.length < 4 || !longEnough) return;
+    if (headings.length < (articleMode ? 2 : 4) || !longEnough) return;
 
     const usedIds = new Set([...document.querySelectorAll('[id]')].map((element) => element.id));
     const links: HTMLAnchorElement[] = [];
@@ -84,7 +95,7 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
     headings.forEach((heading, index) => {
       const id = ensureHeadingId(heading, usedIds, index);
-      const text = normalizeLabel(heading.textContent ?? '');
+      const text = headingLabel(heading);
       const item = document.createElement('li');
       item.className = 'page-outline__item';
       item.dataset.outlineLevel = heading.tagName.toLowerCase();
@@ -99,12 +110,14 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
       bar.className = 'page-outline__bar';
       bar.setAttribute('aria-hidden', 'true');
 
-      link.append(bar);
+      if (articleMode) link.textContent = text;
+      else link.append(bar);
       item.append(link);
       list.append(item);
       links.push(link);
 
       const showTooltip = () => {
+        if (articleMode) return;
         const rootRect = root.getBoundingClientRect();
         const linkRect = link.getBoundingClientRect();
         tooltip.textContent = text;
@@ -121,6 +134,8 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
       link.addEventListener('click', (event) => {
         event.preventDefault();
+        // On phones the directory occupies document flow: collapse it before measuring the destination.
+        if (articleMode) root.querySelector<HTMLDetailsElement>('details')?.removeAttribute('open');
         const top = heading.getBoundingClientRect().top + window.scrollY - 96;
         window.scrollTo({
           top: Math.max(0, top),
@@ -167,6 +182,12 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
 
     root.hidden = false;
     root.classList.add('is-visible');
+    if (articleMode && articleRoot) {
+      const header = articleRoot.classList.contains('evo-reading-overview')
+        ? articleRoot.querySelector('h1')?.closest('header, [data-reader-primary], .results-hero, .result-hero') ?? articleRoot.querySelector('h1')
+        : articleRoot.querySelector('header');
+      if (header) header.after(root);
+    }
     updateActive();
   };
 
@@ -267,9 +288,9 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
     background: var(--surface);
     color: var(--ink);
     box-shadow: var(--shadow);
-    font-size: .78rem;
+    font-size: var(--type-meta);
     font-weight: 650;
-    line-height: 1.35;
+    line-height: var(--type-leading-caption);
     text-align: start;
     white-space: normal;
     pointer-events: none;
@@ -281,6 +302,28 @@ const label = locale === 'zh' ? '本页导航' : 'On this page';
       display: block;
       opacity: 1;
     }
+  }
+
+  /* Article navigation uses the same quiet, collapsible left directory as the response article. */
+  .page-outline--article.is-visible {
+    display:block;opacity:1;top:115px;left:max(12px,calc(50% - 575px));
+    inset-inline-end:auto;transform:none;z-index:12;max-width:246px;
+    font:400 12px/1.5 system-ui,-apple-system,"PingFang SC",sans-serif;
+    color:var(--paper-ink);
+  }
+  .article-contents {border:1px solid var(--paper-line);border-radius:var(--radius-control);background:var(--paper);}
+  .article-contents summary {cursor:pointer;padding:8px 12px;font-weight:600;}
+  .article-contents[open] {width:246px;max-height:calc(100vh - 140px);overflow-y:auto;}
+  .page-outline--article .page-outline__list {display:block;margin:0 10px 12px;padding:0;max-height:none;scrollbar-width:thin;}
+  .page-outline--article .page-outline__item {border-bottom:1px solid var(--paper-line);}
+  .page-outline--article .page-outline__link {display:block;width:auto;min-height:0;padding:7px 4px;font-size:12px;line-height:1.45;color:var(--paper-muted);}
+  .page-outline--article .page-outline__link:is(:hover,[aria-current='location']) {color:var(--paper-ink);text-decoration:underline;}
+  .page-outline--article.page-outline--overview.is-visible {position:static;max-width:100%;margin:16px 0;}
+  .page-outline--overview .article-contents[open] {width:100%;max-height:min(460px,55vh);}
+  @media(max-width:1100px){.page-outline--article.is-visible{left:12px;top:75px;}}
+  @media(max-width:820px){
+    .page-outline--article.is-visible{position:static;max-width:100%;margin:16px 0;}
+    .article-contents[open]{width:100%;max-height:min(460px,55vh);}
   }
 
   @media (prefers-reduced-motion: reduce) {

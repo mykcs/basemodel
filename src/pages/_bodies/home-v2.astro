@@ -2,7 +2,6 @@
 import ExternalBrandMark from '../../components/common/ExternalBrandMark';
 import { isLocale, localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from '../../components/research/SeedOpenEvoMissionHero.astro';
-import { OPEN_EVO_EXPERIMENTS } from '../../data/openEvoExperimentNavigation';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
@@ -42,28 +41,24 @@ const currentAnswers = [
 
 const nextActions = [
   {
-    audience: t('第一次来', 'First visit'),
-    title: t('先理解这项研究', 'Understand the study first'),
-    body: t('从 Base Model、SEED、OpenEvo 和 WebShop 开始，先弄清我们在比较什么，以及经验到底写到哪里。', 'Start with the base model, SEED, OpenEvo, and WebShop to understand what is being compared and where experience is written.'),
+    title: t('理解研究', 'Understand the study'),
+    body: t('先弄清 Base Model、SEED、OpenEvo、WebShop / ALFWorld 分别是什么，以及经验到底被写到哪里。', 'Understand the base model, SEED, OpenEvo, WebShop / ALFWorld, and where experience is actually written.'),
     href: p('/research/seed-openevo/flow/'),
   },
   {
-    audience: t('只想看结论', 'Current conclusions only'),
-    title: t('现在证据支持什么', 'See what the evidence supports now'),
-    body: t('直接进入 Results：看已经封存的结果、限制，以及哪些问题现在仍然不能回答。', 'Go straight to Results for sealed findings, limitations, and the questions that still cannot be answered.'),
-    href: p('/research/seed-openevo/study/results/'),
+    title: t('查看实验演进', 'Follow the experiments'),
+    body: t('按发生顺序查找实验、改动原因和后续问题；完整目录集中在实验入口。', 'Find experiments, reasons for changes, and follow-up questions in the single chronological directory.'),
+    href: p('/research/seed-openevo/study/'),
   },
   {
-    audience: t('隔一阵回来', 'Returning later'),
-    title: t('从最新研究问题接上', 'Resume from the latest research question'),
-    body: t('先到实验目录的读者入口，再从最后一项主实验继续；需要时再向前追溯上一问。', 'Open the study reader entry and continue from the latest main experiment; trace backward only when you need the previous question.'),
-    href: `${p('/research/seed-openevo/study/')}#reader-entry`,
-  },
-  {
-    audience: t('准备继续实验', 'Ready to run work'),
-    title: t('查看运行与复现边界', 'Check execution and reproduction boundaries'),
-    body: t('查看代码、任务规则、运行记录、授权边界和证据怎样组成一份可复现的实验身份。', 'See how code, task rules, run records, authorization boundaries, and evidence form a reproducible experiment identity.'),
+    title: t('复现实验', 'Reproduce an experiment'),
+    body: t('查看代码、任务规则、运行记录和证据怎样组成一份可复现的实验身份。', 'See how code, task rules, run records, and evidence form a reproducible experiment identity.'),
     href: p('/research/seed-openevo/study/run/'),
+  },
+  {
+    title: t('设计下一组实验', 'Design the next experiment'),
+    body: t('把研究目标、模型角色和资源限制放进工作台，再检查候选模型和比较条件。', 'Put the research goal, model role, and resource limits into the workspace, then inspect candidate models and comparison conditions.'),
+    href: p('/workspace/'),
   },
 ] as const;
 ---
@@ -94,31 +89,21 @@ const nextActions = [
     </div>
   </section>
 
-  <section class="home-section home-journey" aria-labelledby="journey-title">
+  <section class="home-section home-challenges" aria-labelledby="challenges-title">
     <div class="home-section__heading">
-      <span>{t('研究路径', 'Research path')}</span>
+      <span>{t('近期复盘', 'Recent reflection')}</span>
       <div>
-        <h2 id="journey-title">{t('我们做过哪些尝试', 'What we tried')}</h2>
-        <p>{t('这七次实验不是七个独立项目。每一次都在回答上一轮留下的问题；第 07 项是一次有意的“回到上游”，重新检查 Stage1 学习方式。', 'These seven experiments are not seven independent projects. Each one answers a question left by the previous round; Experiment 07 deliberately moves upstream to revisit the Stage-1 learning rule.')}</p>
+        <h2 id="challenges-title">{t('最近遇到的问题', 'Recent challenges')}</h2>
+        <p>{t('资源、技术、学习方法和沟通上确实遇到困难。这里说清楚发生了什么、我们仍在做什么，以及下一步如何改进。', 'A candid account of resource, technical, learning, and communication challenges—and what we are doing next.')}</p>
       </div>
     </div>
-
-    <ol class="journey-list">
-      {OPEN_EVO_EXPERIMENTS.map((experiment) => (
-        <li>
-          <a href={p(experiment.primaryHref)}>
-            <span class="journey-number">{experiment.number}</span>
-            <div>
-              <h3>{zh ? experiment.title.zh : experiment.title.en}</h3>
-              <p>{zh ? experiment.motivation.zh : experiment.motivation.en}</p>
-            </div>
-            <span class="journey-open" aria-hidden="true">→</span>
-          </a>
-        </li>
-      ))}
-    </ol>
-
-    <p class="home-section__after"><a href={p('/research/seed-openevo/study/')}>{t('打开完整实验目录', 'Open the full experiment index')} →</a></p>
+    <a class="challenges-entry" href={p('/research/seed-openevo/recent-challenges/')}>
+      <div>
+        <strong>{t('读一份诚实的阶段性复盘', 'Read the research reflection')}</strong>
+        <p>{t('包括服务器与 Codex 执行问题、Agent 学习、AI 科研方法、汇报和时间安排，以及面对追问时的具体回应。', 'Includes server/Codex execution, learning Agent methods, research workflows, reporting expectations, and practical answers to questions.')}</p>
+      </div>
+      <span aria-hidden="true">→</span>
+    </a>
   </section>
 
   <section class="home-section home-next" aria-labelledby="next-title">
@@ -135,7 +120,6 @@ const nextActions = [
         <a href={action.href}>
           <span>{String(index + 1).padStart(2, '0')}</span>
           <div>
-            <small class="next-audience">{action.audience}</small>
             <strong>{action.title}</strong>
             <p>{action.body}</p>
           </div>
@@ -156,39 +140,44 @@ const nextActions = [
   .home-section { padding: 3.2rem 0; border-top: 1px solid var(--line); }
   .home-section:first-child { border-top: 0; }
   .home-section__heading { display: grid; grid-template-columns: minmax(90px, .32fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3.4rem); margin-bottom: 1.5rem; }
-  .home-section__heading > span { padding-top: .35rem; color: var(--accent-deep); font-size: .72rem; font-weight: 800; letter-spacing: .04em; }
-  .home-section__heading h2 { margin: 0; font-size: clamp(1.75rem, 3.6vw, 2.8rem); line-height: 1.05; letter-spacing: -.035em; }
-  .home-section__heading p { max-width: 58ch; margin: .65rem 0 0; color: var(--muted); line-height: 1.65; }
+  .home-section__heading > span { padding-top: .35rem; color: var(--accent-deep); font-size: var(--type-meta); font-family: var(--font-interface); font-weight: var(--type-weight-heading); letter-spacing: normal; }
+  .home-section__heading h2 { margin: 0; font-size: var(--type-section); line-height: var(--type-leading-heading); letter-spacing: normal; }
+  .home-section__heading p { max-width: 58ch; margin: .65rem 0 0; color: var(--muted); line-height: var(--type-leading-body); }
 
   .answer-list { border-top: 1px solid var(--line); }
   .answer-row { display: grid; grid-template-columns: minmax(88px, .28fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3.4rem); padding: 1.45rem 0; border-bottom: 1px solid var(--line); }
-  .answer-state { width: fit-content; height: fit-content; padding: .28rem .5rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: .7rem; font-weight: 800; }
-  .answer-row h3 { margin: 0; font-size: clamp(1.08rem, 2vw, 1.38rem); line-height: 1.32; }
-  .answer-row p { max-width: 66ch; margin: .55rem 0 0; color: var(--muted); line-height: 1.65; }
-  .answer-row a { display: inline-block; margin-top: .7rem; font-size: .82rem; font-weight: 750; text-underline-offset: .22em; }
+  .answer-state { width: fit-content; height: fit-content; padding: .28rem .5rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: var(--type-meta); font-family: var(--font-interface); font-weight: var(--type-weight-heading); }
+  .answer-row h3 { margin: 0; font-size: var(--type-subsection); line-height: var(--type-leading-heading); }
+  .answer-row p { max-width: 66ch; margin: .55rem 0 0; color: var(--muted); line-height: var(--type-leading-body); }
+  .answer-row a { display: inline-block; margin-top: .7rem; font-size: var(--type-body-small); font-weight: var(--type-weight-heading); text-underline-offset: .22em; }
+
+  .challenges-entry { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.4rem 1.5rem; border:1px solid var(--line); border-radius:var(--radius-panel); color:inherit; text-decoration:none; transition:border-color 140ms ease; }
+  .challenges-entry:hover, .challenges-entry:focus-visible { border-color:var(--accent-deep); }
+  .challenges-entry strong { font-size:1.08rem; }
+  .challenges-entry p { margin:.4rem 0 0; max-width:64ch; color:var(--muted); font-size:.88rem; line-height:1.6; }
+  .challenges-entry > span { color:var(--accent-deep); font-size:1.35rem; }
 
   .journey-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
   .journey-list li { border-bottom: 1px solid var(--line); }
   .journey-list a { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 1rem; align-items: start; padding: 1.2rem 0; color: inherit; text-decoration: none; }
   .journey-list a:hover h3, .journey-list a:focus-visible h3 { color: var(--accent-deep); }
-  .journey-number { padding-top: .2rem; color: var(--accent-deep); font: 800 .72rem/1 var(--font-mono); }
-  .journey-list h3 { margin: 0; font-size: 1.05rem; line-height: 1.4; transition: color 140ms ease; }
-  .journey-list p { max-width: 68ch; margin: .38rem 0 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
+  .journey-number { padding-top: .2rem; color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
+  .journey-list h3 { margin: 0; font-size: var(--type-minor-heading); line-height: var(--type-leading-heading); transition: color 140ms ease; }
+  .journey-list p { max-width: 68ch; margin: .38rem 0 0; color: var(--muted); font-size: var(--type-body-small); line-height: var(--type-leading-body); }
   .journey-open { color: var(--muted); }
   .home-section__after { margin: 1rem 0 0; text-align: right; }
-  .home-section__after a { font-size: .84rem; font-weight: 750; }
+  .home-section__after a { font-size: var(--type-body-small); font-weight: var(--type-weight-heading); }
 
   .next-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); }
   .next-list a { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: .8rem; align-items: start; min-width: 0; padding: 1.15rem 1rem 1.15rem 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
   .next-list a:nth-child(odd) { margin-right: 1rem; }
   .next-list a:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--line); }
-  .next-list > a > span { padding-top: .18rem; color: var(--accent-deep); font: 800 .68rem/1 var(--font-mono); }
-  .next-audience { display: block; margin-bottom: .2rem; color: var(--accent-deep); font-size: .68rem; font-weight: 800; }
-  .next-list strong { display: block; font-size: .98rem; }
-  .next-list p { margin: .38rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.55; }
+  .next-list > a > span { padding-top: .18rem; color: var(--accent-deep); font: var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface); }
+  .next-list strong { font-size: var(--type-minor-heading); }
+  .next-list p { margin: .38rem 0 0; color: var(--muted); font-size: var(--type-body-small); font-family: var(--font-interface); line-height: var(--type-leading-body); }
   .next-list i { color: var(--muted); font-style: normal; }
 
-  .home-maintenance-shortcuts { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: .15rem; margin: 2.5rem 0 .5rem; font-size: .75rem; }
+  .home-maintenance-shortcuts { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: .15rem; margin: 2.5rem 0 .5rem; font-size: var(--type-meta); font-family: var(--font-interface); }
   .home-maintenance-shortcuts span { color: var(--muted); }
   .home-maintenance-shortcuts a { color: var(--accent-deep); padding: .35rem .45rem; text-underline-offset: .2em; transition: color 140ms ease; }
   .home-maintenance-shortcuts a:hover, .home-maintenance-shortcuts a:focus-visible { color: var(--ink); }
@@ -200,7 +189,7 @@ const nextActions = [
     .home-section__heading > span { padding-top: 0; }
     .answer-row { padding: 1.15rem 0; }
     .journey-list a { grid-template-columns: 36px minmax(0, 1fr) auto; gap: .65rem; }
-    .journey-list p { font-size: .82rem; }
+    .journey-list p { font-size: var(--type-body-small); }
     .next-list { grid-template-columns: 1fr; }
     .next-list a, .next-list a:nth-child(odd), .next-list a:nth-child(even) { margin: 0; padding: 1rem 0; border-left: 0; }
   }

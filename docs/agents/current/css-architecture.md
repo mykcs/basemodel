@@ -59,6 +59,12 @@ AppLayout.astro
 
 Feature-owned CSS may still be imported by its owning component when the rules do not need page-wide reach. That is not a second global composition root.
 
+`src/components/models/ModelQuickView.css` travels with both Quick View component
+consumers and owns the shared dialog interior, typography and fact-row layout.
+Foundation `site.css` retains the outer dialog primitive; `workspace.css` retains
+the workbench mobile handoff. The shared interior must not depend on loading the
+Workspace bundle from an unrelated Papers or Models page.
+
 ## Ownership classes
 
 ### Tokens

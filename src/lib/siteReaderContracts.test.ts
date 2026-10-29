@@ -38,7 +38,7 @@ describe('site-wide reader attention contracts', () => {
 
   it('keeps the four redesign pilots as distinct reader modes with exact route owners', () => {
     const pilots = [
-      ['flow', '/research/seed-openevo/flow/', 'choice', '.mission-hero__lede'],
+      ['flow', '/research/seed-openevo/flow/', 'comparison', '.mission-hero__lede'],
       ['flow-sd-lora', '/research/seed-openevo/flow/sd-lora/', 'narrative', '.sdlora-intro__lede'],
       ['flow-server', '/research/seed-openevo/flow/server/', 'operational', '.server-hero__status'],
       ['capability-q17-frontier', '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', 'focus', '[data-q17-advisor-diagnostics] .lede'],
@@ -68,19 +68,18 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
-  it('keeps the Study first screen focused while preserving experiment taxonomy below it', () => {
+  it('keeps the Study budget bounded while all experiment and lineage detail remains recoverable', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
-    expect(row?.firstViewportBudget?.maxInteractive).toBe(4);
-    expect(row?.firstViewportGoal).toContain('三个互不混淆的入口');
-    expect(row?.firstViewportGoal).toContain('第一次来去 Flow');
-    expect(row?.firstViewportGoal).toContain('只想看当前结论去 Results');
-    expect(row?.firstViewportGoal).toContain('隔一阵回来直接接最后一项主实验');
+    expect(row?.firstViewportBudget?.maxInteractive).toBe(11);
+    expect(row?.firstViewportGoal).toContain('七次主要实验');
+    expect(row?.firstViewportGoal).toContain('和L 学长开会');
+    expect(row?.mustStayVisible).toContain('两条路线说明');
+    expect(row?.mustStayVisible).toContain('Stable Reduction');
+    expect(row?.mustStayVisible).toContain('Bounded Online Recurrence');
     expect(row?.mustStayVisible).toContain('七个主实验父项');
     expect(row?.mustStayVisible).toContain('SD-LoRA 加速');
     expect(row?.mustStayVisible).toContain('解释入口而不是第三个 treatment');
     expect(row?.mustStayVisible).toContain('SD-LoRA v2 只属于 Stable Reduction');
-    expect(row?.mustStayVisible).toContain('Bounded Online Recurrence 保持独立');
-    expect(row?.mustStayVisible).toContain('dynamic α + dynamic β 未运行');
   });
 
   it('resolves exact pages before dynamic families and shares contracts across locales', () => {

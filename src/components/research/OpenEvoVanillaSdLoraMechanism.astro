@@ -1,10 +1,12 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import MathFormula from '../common/MathFormula.astro';
 import { VANILLA_SD_LORA_MECHANISM as facts } from '../../data/vanillaSdLoraMechanism';
 import OpenEvoVanillaSdLoraSlide from './OpenEvoVanillaSdLoraSlide.astro';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -39,8 +41,8 @@ const risks = zh ? [
 ];
 
 ---
-<article class="sdlora" data-copy-review data-testid="vanilla-sd-lora-mechanism" data-reader-page="research-explainer" data-ui-audit="contrast layout">
-  <section class="sdlora-intro" data-reader-primary aria-labelledby="sdlora-intro-title">
+<article class="sdlora evo-approved-reader" data-copy-review data-testid="vanilla-sd-lora-mechanism" data-reader-page="research-explainer" data-ui-audit="contrast layout">
+  <section class="sdlora-intro evo-article__section" data-reader-primary aria-labelledby="sdlora-intro-title">
     <h1 id="sdlora-intro-title">{t('把做对的网页购物轨迹训练成下一轮候选参数', 'Train solved shopping traces into candidate parameters for the next round')}</h1>
     <p class="sdlora-intro__lede">{t(
       '在 OpenEvo（这里的持续学习系统）里，这条参数更新方法叫 SD-LoRA（Scalable Decoupled LoRA）。它基于 LoRA（基础模型保持不动、只训练少量适配参数的方法）：本轮只把 WebShop（网页购物任务）训练任务中，每题最早一条“完整做对且通过全部检查”的轨迹送进参数训练；最终锁定测试题不参加这里的筛选或训练。每轮保留以前学到的参数方向，再从这些成功轨迹学习一个新方向。',
@@ -56,22 +58,23 @@ const risks = zh ? [
       'Ordinary LoRA freezes the base model and learns one low-rank parameter update. SD-LoRA stands for Scalable Decoupled LoRA; it represents the accumulated update as directions D with coefficients α, preserving earlier directions while learning new ones.'
     )}</p>
     <div class="sdlora-compare-wrap" role="region" aria-label={t('普通 LoRA 与 SD-LoRA 对比', 'Ordinary LoRA versus SD-LoRA comparison')} tabindex="0">
-      <table class="sdlora-compare-table">
+      <ResearchPaperTable class="sdlora-compare-table">
+<Fragment slot="caption">{t("轮次间的参数状态", "Parameter state across rounds")}</Fragment>
         <thead><tr><th scope="col">{t('维度', 'Dimension')}</th><th scope="col">{t('普通 LoRA', 'Ordinary LoRA')}</th><th scope="col">SD-LoRA</th></tr></thead>
         <tbody>
           <tr><th scope="row">{t('参数形式', 'Parameter form')}</th><td><MathFormula latex={String.raw`\Delta W = BA`} display={false} label={t('普通 LoRA 参数更新', 'Ordinary LoRA parameter update')} /></td><td><MathFormula latex={String.raw`\Delta W_t = \sum_i \alpha_i D_i`} display={false} label={t('SD-LoRA 累计参数更新', 'SD-LoRA accumulated parameter update')} /></td></tr>
           <tr><th scope="row">{t('旧方向', 'Earlier directions')}</th><td>{t('没有把旧方向单独冻结成历史角色', 'not preserved as separate frozen historical directions')}</td><td>{t('旧 D 保持不动', 'earlier D stay fixed')}</td></tr>
           <tr><th scope="row">{t('新一轮学习', 'New-round learning')}</th><td>{t('学习新的低秩 A / B', 'learn new low-rank A / B')}</td><td>{t('学一个新 Dₜ，并重调所有 α', 'learn one new Dₜ and rebalance all α')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="sdlora-note"><strong>{t('本页把没有加入后续加速变体的当前基线称为 “Vanilla SD-LoRA”。', 'This page calls the current baseline “Vanilla SD-LoRA.”')}</strong> {t('它仍然使用 SD-LoRA 的方向 / 幅度分解；“Vanilla” 只用来和后续 SD-LoRA 变体区分。', 'It still uses SD-LoRA’s direction/magnitude decomposition; “Vanilla” only distinguishes this baseline from later SD-LoRA variants.')}</p>
     <p class="sdlora-caveat">{t('ICLR 2025 的原始 SD-LoRA 论文研究 class-incremental vision continual learning，并强调 rehearsal-free；我们当前的语言 Agent / WebShop 适配会带回最多 64 条旧经验，因此 paper_equivalent=false、rehearsal_free=false。这里借用核心的方向 / 幅度分解思想，不是逐项复刻论文实验。', 'The original ICLR 2025 SD-LoRA paper studies class-incremental vision continual learning and emphasizes rehearsal-free training. Our language-agent / WebShop adaptation replays up to 64 old examples, so paper_equivalent=false and rehearsal_free=false. We reuse the core direction/magnitude decomposition rather than reproducing the paper protocol item for item.')}</p>
   </details>
 
-  <OpenEvoVanillaSdLoraSlide locale={locale} />
+  <div class="sdlora-diagram-frame"><OpenEvoVanillaSdLoraSlide locale={locale} /></div>
 
-  <section class="sdlora__section" id="round-inputs" aria-labelledby="round-inputs-title">
+  <section class="sdlora__section evo-article__section" id="round-inputs" aria-labelledby="round-inputs-title">
     <h2 id="round-inputs-title">{t('一轮开始前，模型带着什么？', 'What does the model carry into a round?')}</h2>
     <p class="sdlora-round-context">{t('这一步属于持续学习阶段。前一阶段先由 Qwen 完成 WebShop 任务，MiniMax 只在任务结束后回看已保存轨迹；持续学习还可能同时更新文字经验、可复用技能和全局行为规则。这些对象会影响下一轮，但这里继续只追踪 SD-LoRA 参数怎样训练和采用。', 'This belongs to the continual-learning stage. Qwen first completes the WebShop task and MiniMax reviews the saved trace only after the task ends. Continual learning may also update written experience (Text Memory), reusable skills (Skill Bundle), and global behavior rules (Agent System). Those states can affect the next round, but this page continues to track only how SD-LoRA parameters are trained and adopted.')}</p>
     <div class="sdlora-two-col">
@@ -91,7 +94,7 @@ const risks = zh ? [
     </div>
   </section>
 
-  <section class="sdlora__section" id="training-data" aria-labelledby="training-data-title">
+  <section class="sdlora__section evo-article__section" id="training-data" aria-labelledby="training-data-title">
     <h2 id="training-data-title">{t('128 次尝试里，哪些会进入参数训练？', 'Which of the 128 attempts enter parameter training?')}</h2>
     <div class="sdlora-filter" data-ui-audit="contrast layout">
       <div class="sdlora-filter__all" data-ui-audit-item>
@@ -112,7 +115,7 @@ const risks = zh ? [
     )}</p>
   </section>
 
-  <section class="sdlora__section" id="inside-update" aria-labelledby="inside-update-title">
+  <section class="sdlora__section evo-article__section" id="inside-update" aria-labelledby="inside-update-title">
     <h2 id="inside-update-title">{t('SD-LoRA 怎样更新参数？', 'How does SD-LoRA update the parameters?')}</h2>
     <ol class="sdlora-detail-steps">
       <li data-ui-audit-item><span>1</span><div><strong>{t('把本轮成功轨迹拆成训练样本', 'Turn this round’s successful traces into training examples')}</strong><p>{t('把成功轨迹里的每一步转成一个 chat/tool 样本，只对模型应该回答的部分计算训练损失（loss）。', 'Turn each successful step into a chat/tool example and compute training loss only on the model’s answer tokens.')}</p></div></li>
@@ -123,7 +126,7 @@ const risks = zh ? [
     </ol>
   </section>
 
-  <section class="sdlora__section" id="round-boundary" aria-labelledby="round-boundary-title">
+  <section class="sdlora__section evo-article__section" id="round-boundary" aria-labelledby="round-boundary-title">
     <h2 id="round-boundary-title">{t('训练结束后，下一轮到底用新参数还是旧参数？', 'After training, does the next round use the new or old parameters?')}</h2>
     <div class="sdlora-boundary" data-ui-audit="contrast layout">
       <div data-ui-audit-item>
@@ -147,7 +150,7 @@ const risks = zh ? [
     <p class="sdlora-note">{t('LoRA 训练完成和下一轮采用它是两件事：历史本地 GDR-v1 一共训练出 44 个候选，最后只有 7 个进入下一轮模型。', 'Training a LoRA candidate and adopting it for the next round are separate events. Historical local GDR-v1 trained 44 candidates, but only 7 entered the next-round model state.')}</p>
   </section>
 
-  <section class="sdlora__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
+  <section class="sdlora__section evo-article__section" id="mechanism-risks" aria-labelledby="mechanism-risks-title">
     <h2 id="mechanism-risks-title">{t('旧方向没被重写，也不代表能力会一直变好', 'Keeping old directions fixed does not guarantee capability keeps improving')}</h2>
     <div class="sdlora-two-col sdlora-two-col--evidence">
       <div data-ui-audit-item><h3>{t('它想保护什么', 'What this design tries to protect')}</h3><ul>{helps.map((item) => <li>{item}</li>)}</ul></div>
@@ -174,7 +177,7 @@ const risks = zh ? [
     <p>{t('因此它复用了 SD-LoRA 的方向/幅度分解思想，但不是 ICLR 2025 vision protocol 的逐项复刻。', 'It therefore reuses SD-LoRA’s direction/magnitude decomposition but is not an item-for-item reproduction of the ICLR 2025 vision protocol.')}</p>
   </details>
 
-  <section class="sdlora__section sdlora__sources" aria-labelledby="sdlora-sources-title">
+  <section class="sdlora__section sdlora__sources evo-article__section" aria-labelledby="sdlora-sources-title">
     <h2 id="sdlora-sources-title">{t('来源与继续阅读', 'Sources and next steps')}</h2>
     <div class="sdlora-sources-grid">
       <div>
@@ -208,9 +211,11 @@ const risks = zh ? [
 </article>
 
 <style>
-.sdlora{width:min(1120px,calc(100% - 2rem));margin:1rem auto 4rem;color:var(--ink);font-size:1rem;line-height:1.65}:global(.sdlora-slide){margin-top:1.5rem}.sdlora__back{display:inline-flex;margin:.25rem 0 .65rem;color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}.sdlora a:focus-visible,.sdlora summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.sdlora-intro{margin:.2rem 0 0;padding:1.05rem 0 1.15rem;border-bottom:1px solid var(--line)}.sdlora-intro h1{max-width:27ch;margin:0;font-size:clamp(1.9rem,4vw,3.35rem);line-height:1.02;letter-spacing:-.045em}.sdlora-intro__lede{max-width:54rem;margin:.7rem 0 0;font-size:clamp(1rem,1.55vw,1.18rem);line-height:1.52}.sdlora-round-context{max-width:54rem;margin:0 0 .9rem;color:var(--muted);font-size:.9rem;line-height:1.58}.sdlora-intro__boundary{max-width:54rem;margin:.85rem 0 0;color:var(--muted);font-size:.88rem;line-height:1.55}.sdlora-intro__boundary strong{color:var(--ink)}.sdlora-compare-wrap{max-width:56rem;margin:1rem 0;overflow-x:auto;overscroll-behavior-inline:contain}.sdlora-compare-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed}.sdlora-compare-table th,.sdlora-compare-table td{padding:.72rem .75rem;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;font-size:.88rem;line-height:1.5;overflow-wrap:anywhere}.sdlora-compare-table thead th{color:var(--muted);font-size:.74rem;background:transparent}.sdlora-compare-table tbody th{width:20%;color:var(--muted);font-weight:760;white-space:normal}.sdlora-compare-table code{font-size:.86rem;white-space:normal}.sdlora__section{margin-top:2.25rem;padding-top:1.45rem;border-top:1px solid var(--line)}.sdlora__section h2{max-width:36ch;margin:0 0 .85rem;font-size:clamp(1.45rem,2.5vw,1.95rem);line-height:1.25;letter-spacing:-.02em}.sdlora__section--primer>summary{width:max-content;max-width:100%;min-height:44px;cursor:pointer;color:var(--accent-deep);font-weight:780;line-height:1.4}.sdlora__section--primer[open]>summary{margin-bottom:.75rem;color:var(--ink)}.sdlora__section h3{margin:.1rem 0 .55rem;font-size:1.03rem;line-height:1.35}.sdlora__section>p{max-width:50rem}.sdlora-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-two-col>div{min-width:0;padding:.85rem 0;border-top:2px solid var(--line)}.sdlora-two-col p,.sdlora-two-col ul{margin:.5rem 0}.sdlora-two-col ul{padding-left:1.15rem}.sdlora-two-col li{margin:.35rem 0}.sdlora-two-col--evidence>div:first-child{border-top-color:var(--color-positive)}.sdlora-two-col--evidence>div:last-child{border-top-color:var(--color-warning)}.sdlora-filter{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:1rem;align-items:center;margin:1rem 0}.sdlora-filter>div:not(.sdlora-filter__arrow){min-width:0;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.sdlora-filter>div.sdlora-filter__train{border-color:var(--color-positive)}.sdlora-filter small{display:block;color:var(--muted);font-size:1rem;font-weight:800}.sdlora-filter strong{display:block;margin:.25rem 0;font-size:1.05rem}.sdlora-filter p{margin:.35rem 0 0;color:var(--muted)}.sdlora-filter__arrow{color:var(--muted);font-size:1.2rem}.sdlora-note{max-width:52rem;padding:.7rem .85rem;border-left:3px solid var(--color-info);background:var(--surface-muted);color:var(--muted)}.sdlora-detail-steps{list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.55rem}.sdlora-detail-steps li{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:.7rem;align-items:start;padding:.65rem 0;border-top:1px solid var(--line)}.sdlora-detail-steps li>span{font-size:1rem;display:grid;place-items:center;width:1.8rem;height:1.8rem;border:1px solid var(--accent-deep);border-radius:50%;color:var(--accent-deep);font:800 1rem/1 var(--font-mono)}.sdlora-detail-steps strong{font-size:1rem}.sdlora-detail-steps p{max-width:52rem;margin:.2rem 0 0;color:var(--muted)}.sdlora-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,.8fr);gap:.8rem;align-items:center;margin:1rem 0}.sdlora-boundary>div{min-width:0;padding:.9rem;border-top:2px solid var(--line);background:var(--surface-muted)}.sdlora-boundary>div:first-child{border-top-color:var(--accent-deep)}.sdlora-boundary>div:last-of-type{border-top-color:var(--color-info)}.sdlora-boundary small{display:block;color:var(--muted);font-size:1rem;font-weight:800}.sdlora-boundary strong{display:block;margin:.2rem 0}.sdlora-boundary p{margin:.25rem 0 0;color:var(--muted);font-size:1rem}.sdlora-boundary>span{color:var(--muted);font-size:1rem}.sdlora-caveat{padding:.75rem .9rem;border-left:3px solid var(--color-warning);background:var(--surface-muted)}.sdlora__details{margin:2rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.sdlora__details summary{min-height:44px;cursor:pointer;font-weight:800}.sdlora__details>p{max-width:52rem;color:var(--muted)}.sdlora-config{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1rem 0}.sdlora-config>div{padding:.55rem .7rem;border-top:1px solid var(--line)}.sdlora-config .wide{grid-column:span 2}.sdlora-config dt{color:var(--muted);font-size:.8rem;font-weight:800}.sdlora-config dd{margin:.15rem 0 0;font-family:var(--font-mono);overflow-wrap:anywhere}.sdlora-sources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-sources-grid>div{min-width:0}.sdlora-sources-grid ul{padding-left:1.1rem}.sdlora-sources-grid li{margin:.45rem 0;overflow-wrap:anywhere}.sdlora-sources-grid a,.sdlora-next a{color:var(--accent-deep);text-underline-offset:.2em}.sdlora-next{display:grid;gap:.4rem}.sdlora__sources footer{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+/* A narrow article needs the same readable topology as a narrow viewport. */
+.sdlora-diagram-frame{container-type:inline-size;container-name:sdlora-reading;}
+:global(.sdlora-slide){margin-top:1.5rem}.sdlora__back{display:inline-flex;margin:.25rem 0 .65rem;color:var(--accent-deep);font-size:1rem;text-underline-offset:.2em}.sdlora a:focus-visible,.sdlora summary:focus-visible{outline:2px solid var(--accent-deep);outline-offset:4px}.sdlora-intro__lede{margin:.7rem 0 0}.sdlora-round-context{max-width:54rem;margin:0 0 .9rem;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-body)}.sdlora-intro__boundary{margin:.85rem 0 0;color:var(--muted)}.sdlora-intro__boundary strong{color:var(--ink)}.sdlora-compare-wrap{max-width:56rem;margin:1rem 0;overflow-x:auto;overscroll-behavior-inline:contain}.sdlora-compare-table{min-width:0}.sdlora-compare-table tbody th{width:20%;white-space:normal}.sdlora-compare-table code{white-space:normal}.sdlora__section--primer>summary{width:max-content;max-width:100%;min-height:44px;cursor:pointer;color:var(--accent-deep);font-weight:var(--type-weight-heading);line-height:var(--type-leading-caption)}.sdlora__section--primer[open]>summary{margin-bottom:.75rem;color:var(--ink)}.sdlora-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-two-col>div{min-width:0;padding:.85rem 0;border-top:2px solid var(--line)}.sdlora-two-col p,.sdlora-two-col ul{margin:.5rem 0}.sdlora-two-col ul{padding-left:1.15rem}.sdlora-two-col li{margin:.35rem 0}.sdlora-two-col--evidence>div:first-child{border-top-color:var(--color-positive)}.sdlora-two-col--evidence>div:last-child{border-top-color:var(--color-warning)}.sdlora-filter{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:1rem;align-items:center;margin:1rem 0}.sdlora-filter>div:not(.sdlora-filter__arrow){min-width:0;padding:1rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.sdlora-filter>div.sdlora-filter__train{border-color:var(--color-positive)}.sdlora-filter small{display:block;color:var(--muted);font-size:var(--type-body);font-weight:var(--type-weight-label)}.sdlora-filter strong{display:block;margin:.25rem 0;font-size:var(--type-minor-heading)}.sdlora-filter p{margin:.35rem 0 0;color:var(--muted)}.sdlora-filter__arrow{color:var(--muted);font-size:1.2rem}.sdlora-note{max-width:52rem;padding:.7rem .85rem;border-left:3px solid var(--color-info);background:var(--surface-muted);color:var(--muted)}.sdlora-detail-steps{list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.55rem}.sdlora-detail-steps li{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:.7rem;align-items:start;padding:.65rem 0;border-top:1px solid var(--line)}.sdlora-detail-steps li>span{display:grid;place-items:center;width:1.8rem;height:1.8rem;border:1px solid var(--accent-deep);border-radius:50%;color:var(--accent-deep)}.sdlora-detail-steps strong{font-size:var(--type-body)}.sdlora-detail-steps p{margin:.2rem 0 0;color:var(--muted)}.sdlora-boundary{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,.8fr);gap:.8rem;align-items:center;margin:1rem 0}.sdlora-boundary>div{min-width:0;padding:.9rem;border-top:2px solid var(--line);background:var(--surface-muted)}.sdlora-boundary>div:first-child{border-top-color:var(--accent-deep)}.sdlora-boundary>div:last-of-type{border-top-color:var(--color-info)}.sdlora-boundary small{display:block;color:var(--muted)}.sdlora-boundary strong{display:block;margin:.2rem 0}.sdlora-boundary p{margin:.25rem 0 0;color:var(--muted)}.sdlora-boundary>span{color:var(--muted)}.sdlora-caveat{padding:.75rem .9rem;border-left:3px solid var(--color-warning);background:var(--surface-muted)}.sdlora__details{margin:2rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}.sdlora__details summary{min-height:44px;cursor:pointer;font-weight:var(--type-weight-heading)}.sdlora__details>p{color:var(--muted)}.sdlora-config{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1rem 0}.sdlora-config>div{padding:.55rem .7rem;border-top:1px solid var(--line)}.sdlora-config .wide{grid-column:span 2}.sdlora-config dt{color:var(--muted);font-size:var(--type-meta);font-weight:var(--type-weight-label)}.sdlora-config dd{margin:.15rem 0 0;overflow-wrap:anywhere}.sdlora-sources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}.sdlora-sources-grid>div{min-width:0}.sdlora-sources-grid ul{padding-left:1.1rem}.sdlora-sources-grid li{margin:.45rem 0;overflow-wrap:anywhere}.sdlora-sources-grid a,.sdlora-next a{color:var(--accent-deep);text-underline-offset:.2em}.sdlora-next{display:grid;gap:.4rem}.sdlora__sources footer{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:var(--type-body-small)}
 @media(max-width:900px){.sdlora-boundary{grid-template-columns:1fr}.sdlora-boundary>span{transform:rotate(90deg);justify-self:start;margin-left:.8rem}.sdlora-config{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){:global(.sdlora-slide){margin-top:1rem}.sdlora{width:min(100% - 1rem,1120px);margin-top:.4rem}.sdlora-intro{padding-top:.65rem}.sdlora-intro h1{font-size:clamp(1.52rem,6.5vw,1.88rem)}.sdlora-intro__lede{font-size:.89rem;line-height:1.45}.sdlora-intro__boundary{margin-top:.48rem;font-size:.76rem;line-height:1.42}.sdlora__section--primer{margin-bottom:1.25rem}.sdlora__section--primer>summary{color:var(--muted);font-size:.78rem;font-weight:700}.sdlora-compare-table th,.sdlora-compare-table td{padding:.6rem .45rem;font-size:.78rem}.sdlora-compare-table thead th{font-size:.68rem}.sdlora-two-col,.sdlora-filter,.sdlora-sources-grid{grid-template-columns:1fr}.sdlora-filter__arrow{transform:rotate(90deg);justify-self:start;margin-left:1rem}.sdlora-config{grid-template-columns:1fr}.sdlora-config .wide{grid-column:auto}}
-@media print{.sdlora__back,.sdlora__section,.sdlora__details{display:none}.sdlora{width:100%;margin:0}}
+@media(max-width:620px){:global(.sdlora-slide){margin-top:1rem}.sdlora-intro__boundary{margin-top:.48rem}.sdlora__section--primer{margin-bottom:1.25rem}.sdlora__section--primer>summary{color:var(--muted);font-size:var(--type-meta);font-weight:var(--type-weight-label)}.sdlora-two-col,.sdlora-filter,.sdlora-sources-grid{grid-template-columns:1fr}.sdlora-filter__arrow{transform:rotate(90deg);justify-self:start;margin-left:1rem}.sdlora-config{grid-template-columns:1fr}.sdlora-config .wide{grid-column:auto}}
+@media print{.sdlora__back,.sdlora__section,.sdlora__details{display:none}.sdlora__section:has([data-research-paper-table]){display:block}}
 
 </style>

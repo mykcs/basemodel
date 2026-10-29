@@ -17,7 +17,8 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(contracts).toContain("c('capability-q17-directapply-analysis'");
     expect(routes).toContain('"route": "q17-directapply-analysis"');
     expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/'");
-    expect(lobby).toContain('directApplyAnalysisHref');
+    expect(lobby).toContain('CAPABILITY_READER_ROUTES');
+    expect(read('../data/capabilityReaderRoutes.ts')).toContain("'q17-directapply-analysis'");
   });
 
   it('keeps training, frozen final, and D1 as distinct evidence layers', () => {

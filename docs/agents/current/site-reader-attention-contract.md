@@ -124,3 +124,7 @@ reader contract 已登记
 - 不允许把“预算 PASS”冒充成人类理解已经 PASS；预算只负责拦截明显的注意力过载。
 
 当真人反馈指出新的注意力失败机制时，先按中央 conversation-learning closeout 保存 RAW / 更新 derived learning，再判断是否需要扩充这里的 mode、字段或 Gate；不要把个案词语升级成禁词表。
+
+## 8. 文章阅读模式
+
+`src/data/technicalArticleRoutes.ts` 显式登记采用回应实验阅读样板的文章；`AppLayout` 将文章模式交给现有 `PageOutline`，使用有文字的折叠目录，并在页面已有文章目录时停用重复入口。此登记补充各 route 的 Reader Contract，不改变其 audience、主要任务或科学边界。目录/工具/操作页、幻灯片和兼容迁移页不因相邻路径自动成为文章。具体写作与视觉偏好只由 `website-design-spec.md` §13 维护。

@@ -2,7 +2,7 @@ name: Public PR CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -55,6 +55,11 @@ jobs:
         run: node scripts/ci-public-plan.mjs --github-output
 
   deterministic:
+    outputs:
+      build_attempt: ${{ github.run_attempt }}
+    env:
+      CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     name: public-deterministic
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -82,8 +87,15 @@ jobs:
           git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
+      - name: Re-evaluate discovery applicability with the shared planner
+        id: deterministic_plan
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/ci-public-plan.mjs --github-output
+
       - name: Validate CI contracts
-        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs tests/ci-public-plan.test.mjs
+        run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs tests/ci-public-plan.test.mjs tests/ci-build-artifact.test.mjs
 
       - name: Install dependencies
         run: npm ci
@@ -94,13 +106,33 @@ jobs:
       - name: Build static artifact
         run: npm run build
 
+      - name: Seal exact-head static artifact
+        if: steps.deterministic_plan.outputs.browser_total != '0'
+        run: node scripts/ci-build-artifact.mjs create
+
+      - name: Upload exact-head static artifact
+        if: steps.deterministic_plan.outputs.browser_total != '0'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: static-build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/
+            ci-public-build-manifest.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Validate built browser discovery contracts
+        if: steps.deterministic_plan.outputs.browser_total != '0'
+        run: node --test tests/ci-ui-test-list.test.mjs
+
   browser:
     name: public-browser-${{ matrix.shard }}-of-${{ needs.plan.outputs.browser_total }}
-    needs: plan
-    if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'
+    needs: [plan, deterministic]
+    if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.browser_total != '0'
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -112,8 +144,9 @@ jobs:
       CI_EXPECTED_UI_MODE: ${{ needs.plan.outputs.mode }}
       CI_BROWSER_SHARD_INDEX: ${{ matrix.shard }}
       CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}
-      CI_BROWSER_INSTALL: '1'
-      CI_BROWSER_BUILD: '1'
+      CI_BROWSER_INSTALL: '0'
+      CI_BUILD_RUN_ATTEMPT: ${{ needs.deterministic.outputs.build_attempt }}
+      CI_BROWSER_BUILD: '0'
       CI_PLAYWRIGHT_WITH_DEPS: '0'
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
       PLAYWRIGHT_WORKERS: '1'
@@ -140,8 +173,38 @@ jobs:
           git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
+      - name: Install browser test dependencies
+        run: npm ci
+
+      - name: Download this run's exact-head static artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: static-build-${{ github.run_id }}-${{ needs.deterministic.outputs.build_attempt }}
+          path: .
+
+      - name: Verify exact-head static artifact
+        run: node scripts/ci-build-artifact.mjs verify
+
       - name: Risk-based browser acceptance shard
         run: node scripts/ci-ui-gate.mjs
+
+      # Keep the exact-head browser evidence in GitHub Actions, not on an
+      # owner's MacBook. Playwright produces screenshots on selected tests and
+      # screenshots/videos/traces on failure; upload only those bounded files.
+      - name: Retain cloud Playwright visual evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: basemodel-ui-pr-${{ github.event.pull_request.number }}-shard-${{ matrix.shard }}
+          path: |
+            ci-browser-inventory/*.json
+            test-results/**/*.png
+            test-results/**/*.json
+            test-results/**/*.webm
+            test-results/**/*.zip
+            test-results/**/*.md
+          if-no-files-found: ignore
+          retention-days: 3
 
   gate:
     name: public-ci-gate
@@ -165,3 +228,103 @@ jobs:
           else
             test "$BROWSER_RESULT" = success
           fi
+
+  # An independent, read-only full WebKit acceptance for typography work.
+  # Match the semantic branch name so a current-base successor PR keeps the
+  # same browser contract without depending on historical PR numbers.
+  typography_full_webkit:
+    needs: deterministic
+    if: needs.deterministic.result == 'success' && contains(github.head_ref, 'typography')
+    name: typography-full-webkit-${{ matrix.shard }}-of-4
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      CI: '1'
+      CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      CI_BUILD_RUN_ATTEMPT: ${{ needs.deterministic.outputs.build_attempt }}
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_REUSE_BUILD: '1'
+      PLAYWRIGHT_WORKERS: '1'
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number }}/head
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Bind source and install WebKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"
+          npm ci
+          npx playwright install webkit
+
+      - name: Fetch exact build base
+        shell: bash
+        run: git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
+
+      - name: Download this run's exact-head static artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: static-build-${{ github.run_id }}-${{ needs.deterministic.outputs.build_attempt }}
+          path: .
+
+      - name: Verify exact-head static artifact
+        run: node scripts/ci-build-artifact.mjs verify
+
+      - name: Run entire test:ui:all WebKit selection
+        shell: bash
+        env:
+          WEBKIT_SHARD: ${{ matrix.shard }}
+        run: |
+          set -uo pipefail
+          mkdir -p evidence-logs
+          printf 'head=%s\nshard=%s/4\ncommand=npm run test:ui:all -- --project=webkit --shard=%s/4 --max-failures=0\n' "$CI_HEAD_SHA" "$WEBKIT_SHARD" "$WEBKIT_SHARD" > evidence-logs/identity.txt
+          # Override the normal script's fail-fast=1 only for this exhaustive
+          # acceptance run: preserve all 643 test outcomes, not one failure/shard.
+          npm run test:ui:all -- --project=webkit --shard="$WEBKIT_SHARD"/4 --max-failures=0 2>&1 | tee evidence-logs/webkit-results.txt
+          code=${PIPESTATUS[0]}
+          printf 'exit_code=%s\n' "$code" | tee evidence-logs/exit-status.txt
+          exit "$code"
+
+      - name: Preserve source-bound PNG, JSON, logs and exit status
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: typography-${{ github.event.pull_request.number }}-full-webkit-shard-${{ matrix.shard }}
+          path: |
+            evidence-logs/**
+            test-results/**/*.png
+            test-results/**/*.json
+            test-results/**/*.webm
+            test-results/**/*.zip
+            test-results/**/*.md
+          if-no-files-found: error
+          retention-days: 7
+
+  typography_full_webkit_gate:
+    if: always() && contains(github.head_ref, 'typography')
+    name: typography-full-webkit-gate
+    needs: [typography_full_webkit]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require all four full-suite WebKit shards
+        env:
+          WEBKIT_RESULT: ${{ needs.typography_full_webkit.result }}
+        run: test "$WEBKIT_RESULT" = success
