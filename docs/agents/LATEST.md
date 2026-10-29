@@ -1,5 +1,9 @@
 # Latest Agent handoff
 
+## 2026-10-29 CI performance qualification
+
+[#814](https://github.com/mykcs/basemodel/pull/814) merged fail-early browser prerequisites, exact-source sealed static artifacts, duration-balanced full-title allocation and shared risk routing. [The CI implementation and measurement record](../dev/CI/README.md) owns behavior, positive/negative receipts, costs and rollback; hosting and release authority remain in the existing current owners. The sampled complete browser-workflow wait fell from 55.6 to 35.8 minutes, while summed Runner time rose 5.2%; no net full-run compute saving is claimed. [#962](https://github.com/mykcs/basemodel/pull/962) is qualifying the typography consumer's shared-plan condition against current main. The independent #958 privacy work is preserved, including its merged auditor and existing image/external-identity follow-up. Scientific source/evidence and required check identities remain intact.
+
 ## 2026-10-29 人物称谓隐私：待合入的标准候选
 
 BaseModel 当前任务分支正在把公开科研沟通中的人物引用统一为 `W 老师` 与 `L 学长`，以 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 为唯一称谓 owner；根入口、`src/AGENTS.md`、站点 README、质量验收索引和 `npm run audit:person-privacy` 都指向/执行这一规则。当前源码对已知私人身份做失败即停止审查，正式发布仍须看 PR 精确 HEAD 的 CI / Vercel 及真实网页；此段是候选状态记录，不能当作已经合入 `main` 或撤回公共 Git 历史的证明。
@@ -30,7 +34,7 @@ CI/Preview receipts do not transfer to its SHA.
 
 Last updated: **2026-08-28** (research-state snapshot)
 
-CI architecture last verified: **2026-09-21**
+CI architecture last verified: **2026-10-29**
 
 Agent bootstrap last refreshed: **2026-10-03** — root `AGENTS.md` remains a routing/invariant layer; substantial/durable user-facing content now loads the shared `HUMAN_EXPRESSION_STANDARD.md` on demand, and source/raw/calculation questions route through the current scenario trigger plus `research-site-presentation-contract.md`. Detailed scientific/provider authority did not move.
 
