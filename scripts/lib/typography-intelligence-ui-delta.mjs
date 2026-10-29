@@ -106,7 +106,7 @@ export const intelligenceTypographyDelta = {
       transitions: ['44b727d8d2f3175e76a3', 'a3a682b63a2ad821c8d3', 'bb1635d60ddf4f794948', 'c456cc9f9f70015ad0a2'],
     },
     'src/components/research/SeedOpenEvoTrainingDesignOverview.astro': {
-      currentSourceSha256: '5a730b803a8d0b53fafd89f1cd6df8c6b84844c506e1a8d639f8fcfb47f6bd6a',
+      currentSourceSha256: 'b2e988db86c72d5399fa04b2c303c3dc21ddf68ccd185a02f061b3863325d993',
       reason: 'Stage-1-only typography was replaced by the explicitly classified two-stage comparison declarations above.',
       transitions: ['37bd6e677ef57ecc4461', '741947e3fe960b60e49f'],
     },
