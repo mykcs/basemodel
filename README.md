@@ -23,11 +23,24 @@ Production           -> https://basemodel-preview.vercel.app
 Cloudflare Pages     -> frozen legacy rollback snapshot; normal Builds = 0
 ```
 
-Vercel 统一执行 `npm run verify:deploy && npm run build`。GitHub Actions 与 GitHub Pages 保持退役。Cloudflare Direct Upload、Pages build helper 和 Workers shadow 只保留作回滚/Cloudflare-specific 诊断，不是日常发布链路。
+当前验收分为两个独立环节：GitHub Actions 的 `public-ci-gate` 负责确定性检查及按风险选择的浏览器测试；Vercel 负责最终候选的构建／部署检查与 `main` 的 Production 发布。Vercel 当前实际构建命令是 `npm run build`，**不能把 Vercel 构建通过等同于全套 CI 通过**。GitHub Pages 已退出日常发布；Cloudflare Direct Upload、Pages build helper 和 Workers shadow 只保留作回滚或 Cloudflare-specific 诊断。
 
 直到 Cloudflare Pages 的 Git 自动部署能在账户侧关闭之前，分支和 release merge 使用 `[CF-Pages-Skip]`，避免旧 Pages 项目因 Git 提交再次消耗 Build。
 
 新的 Coding Agent 请从 `AGENTS.md`、`docs/agents/LATEST.md`、`docs/agents/current/hosting-architecture.md` 和 `docs/agents/current/deployment-policy.md` 开始。
+
+## 仓库隐私与构建频率：拟议方向（尚未切换）
+
+考虑到 BaseModel 的构建频率已明显下降，**倾向在完成脱敏及 CI 迁移验收后将 GitHub 源码仓库改为私有**。截至本说明形成时，仓库仍为公开；这里记录的是意向，**不是已经改为私有或已切换 CI 的声明**，也不自动授权更改可见性、订阅或仓库保护规则。
+
+按实际负载区分两种方案：
+
+- **膨胀期：一天明显超过 100 次部署。** 如果源码已经通过公开安全审查且确实需要开放，公开 GitHub 仓库可使用标准托管 Actions 运行所需测试；若源码必须私有，应保持私有并评估 Vercel Pro、更合理的合批策略与独立的 CI 计算预算，不能为获取免费额度自动公开源码。Vercel Pro 官方每日部署上限为 6,000 次，但仍有构建时间、并发与使用成本约束。
+- **平稳期：一天不超过约 100 次部署。** 倾向私有 GitHub 仓库，由 Vercel 负责网站构建、Preview 和 Production；独立的单元、浏览器、隐私与合并检查仍需要经过资格验证的 CI 执行环境。每天 100 次是内部预算目标；Vercel Hobby 官方部署上限才是 100 次／天，当前项目的付费方案不能仅凭这个数字判断。
+
+变更前必须核实：GitHub 私有仓库 Actions 额度和账单、Vercel 的私人 Git 仓库授权及当前套餐、现行 `public-ci-gate`／`Vercel` 必需检查如何交接、部署访问控制、旧公开 fork／历史副本、以及实际生成网站是否含个人身份信息。**仓库私有不等于已发布的网页、旧提交或既有公开副本自动私有。**
+
+详细决策、官方限额来源、迁移验收及回滚条件见 [`docs/dev/CI/README.md`](./docs/dev/CI/README.md)。当前真实部署架构仍以 [`hosting-architecture.md`](./docs/agents/current/hosting-architecture.md)、工作流、GitHub 规则与 Vercel 实际配置为准。
 
 ## 本地运行与验证
 
