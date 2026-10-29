@@ -29,6 +29,20 @@ const webshopDataUsageCells = [
   '20,480', '最多 2,560 个不同 goal；期望约 2,113 个（33.0%）',
 ];
 
+const retrospectiveRoute = '/research/seed-openevo/recent-challenges/';
+// Match scientific tables by their native caption, preserving the sealed cells
+// while editorial overview tables can precede them without changing identity.
+const retrospectiveNumericCaptions = [
+  '独立新题复验：冻结模型相对基础模型的 Task Score 差（满分100分；任务组配对统计）',
+  '第12轮开发评测：同一批64题、一个训练流；192次尝试并非192道不同题',
+  '同起点与第159轮的开发题对照：64道不同题；两组各64条记录全部有效',
+  '独立新题对照：同一批64题，两个保存的固定容量状态；128次评测',
+  '末期压缩后的新题 Task Score 差：满分100分；按冻结的八项比较校正区间',
+] as const;
+const retrospectiveOverviewCaption = '把沟通中关心的议题，接到可复核的研究行动；表述为议题归纳而非原话';
+const retrospectiveQuestionsCaption = '后续问题：已得到的答案，与仍然缺少的证据';
+const retrospectiveCaptions = [...retrospectiveNumericCaptions, retrospectiveOverviewCaption, retrospectiveQuestionsCaption];
+
 async function expectPaperGrammar(target: Locator, route: string, index: number) {
 
   // Preserve the immutable hashes for all historical research tables. The
@@ -40,19 +54,31 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const freshQ01 = route === responseRoute && await target.evaluate(el => Boolean(el.closest('[data-q01-fresh448]')));
   const currentWebshopDataUsage = route === '/research/seed-openevo/flow/webshop/'
     && await target.evaluate(el => Boolean(el.closest('.webshop-seed-data-usage')));
-  const retrospective = route === '/research/seed-openevo/recent-challenges/'
+  const retrospective = route === retrospectiveRoute
     && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
   if (retrospective) {
-    // New evidence is checked explicitly; do not rewrite the historical table seal.
-    if (index < RETROSPECTIVE_NUMERIC_CELLS.length) {
-      expect(cellTexts, 'retrospective source-bound numeric table '+index).toEqual(RETROSPECTIVE_NUMERIC_CELLS[index]);
-    } else {
-      expect(index, 'only the declared evidence tables and the question map are allowed').toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
+    const caption = (await target.locator('caption').textContent())?.trim();
+    const numericIndex = retrospectiveNumericCaptions.findIndex(title => title === caption);
+    if (numericIndex >= 0) {
+      expect(await target.evaluate((el,section)=>Boolean(el.closest(section)),numericIndex===4?'#history':'#findings')).toBe(true);
+      expect(cellTexts, 'retrospective source-bound numeric table '+caption).toEqual(RETROSPECTIVE_NUMERIC_CELLS[numericIndex]);
+    } else if (caption === retrospectiveQuestionsCaption) {
+      expect(await target.evaluate(el=>Boolean(el.closest('#questions')))).toBe(true);
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
       for (const row of await target.locator('tbody tr').all()) {
         await expect(row.locator('td')).not.toHaveText('');
         await expect(row.locator('a')).toHaveCount(1);
+      }
+    } else {
+      expect(caption, 'only declared retrospective tables are accepted').toBe(retrospectiveOverviewCaption);
+      expect(await target.evaluate(el=>Boolean(el.closest('#advisor')))).toBe(true);
+      expect(await target.locator('thead th').allTextContents()).toEqual(['需要回答的议题','已经可检查的事实','仍未过关的地方']);
+      expect(await target.locator('tbody th').allTextContents()).toEqual(['科研能力和推进速度','怎样利用 AI 做科研','方向是否值得继续','继续讨论的机会与名额']);
+      await expect(target.locator('tbody tr')).toHaveCount(4);
+      for (const row of await target.locator('tbody tr').all()) {
+        await expect(row.locator('td')).toHaveCount(2);
+        for (const cell of await row.locator('td').all()) await expect(cell).not.toHaveText('');
       }
     }
   } else if (freshQ01) {
@@ -158,6 +184,11 @@ for (const route of routes) {
         document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow).toBeLessThanOrEqual(2);
       const nativeTables = page.locator('table');
+      if (route === retrospectiveRoute) {
+        await expect(nativeTables).toHaveCount(retrospectiveCaptions.length);
+        const captions = (await nativeTables.locator('caption').allTextContents()).map(text => text.trim());
+        expect(captions.sort(), 'each declared native caption appears exactly once').toEqual([...retrospectiveCaptions].sort());
+      }
       if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
       for (let index = 0; index < await nativeTables.count(); index++) {
         const target = nativeTables.nth(index);
