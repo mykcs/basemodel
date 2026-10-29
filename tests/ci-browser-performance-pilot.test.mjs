@@ -62,6 +62,19 @@ test('pilot rejects the wrong subject and application differences before browser
   assert.throws(() => inspectPilotSubject({ cwd: s.cwd, env: { ...s.env, PILOT_CANDIDATE_SHA: git(s.cwd, 'rev-parse', 'HEAD') } }), /application inputs differ/i);
 });
 
+test('pilot permits source-owned test files but rejects real application input changes', t => {
+  const s = fixture(t);
+  mkdirSync(join(s.cwd, 'src/lib'), { recursive: true });
+  writeFileSync(join(s.cwd, 'src/lib/policy.test.ts'), 'candidate contract test');
+  git(s.cwd, 'add', '.'); git(s.cwd, 'commit', '-m', 'candidate contract test');
+  s.env.PILOT_CANDIDATE_SHA = git(s.cwd, 'rev-parse', 'HEAD');
+  assert.equal(inspectPilotSubject({ cwd: s.cwd, env: s.env }).applicationEquality.nonTestPackageEqual, true);
+  writeFileSync(join(s.cwd, 'src/page.astro'), '<h1>changed production app</h1>');
+  git(s.cwd, 'add', '.'); git(s.cwd, 'commit', '-m', 'change application');
+  s.env.PILOT_CANDIDATE_SHA = git(s.cwd, 'rev-parse', 'HEAD');
+  assert.throws(() => inspectPilotSubject({ cwd: s.cwd, env: s.env }), /application inputs differ/i);
+});
+
 test('pilot overlays trace/video only in untracked config and records byte-bound evidence', t => {
   const s = fixture(t), tracked = readFileSync(join(s.cwd, 'playwright.config.ts'), 'utf8');
   const result = runPerformancePilot({ cwd: s.cwd, env: s.env, spawn: simulator(s) });

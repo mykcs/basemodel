@@ -41,8 +41,10 @@ export function inspectPilotSubject({ cwd = process.cwd(), env = process.env } =
   if (subjectSha !== (variant === 'baseline' ? baselineSha : candidateSha)) throw new Error('Pilot checkout subject mismatch');
   if (git(cwd, 'status', '--porcelain', '--untracked-files=no')) throw new Error('Pilot tracked checkout must be clean');
   const protectedPaths = ['src', 'public', 'figures', 'package-lock.json', ':(glob)astro.config.*', ':(glob)playwright.config.*', 'tsconfig.json', '.node-version'];
-  const changed = git(cwd, 'diff', '--name-only', baselineSha, candidateSha, '--', ...protectedPaths);
-  if (changed) throw new Error('Pilot application inputs differ: ' + changed.split('\n').join(', '));
+  const changed = git(cwd, 'diff', '--name-only', baselineSha, candidateSha, '--', ...protectedPaths)
+    .split('\n').filter(Boolean)
+    .filter(path => !/(?:\.test|\.spec)\.[cm]?[jt]sx?$/.test(path) && !path.includes('/__tests__/'));
+  if (changed.length) throw new Error('Pilot application inputs differ: ' + changed.join(', '));
   const packages = [baselineSha, candidateSha].map(sha => nonTestPackage(JSON.parse(git(cwd, 'show', sha + ':package.json'))));
   if (JSON.stringify(packages[0]) !== JSON.stringify(packages[1])) throw new Error('Pilot package non-test semantics differ');
   return { variant, baselineSha, candidateSha, subjectSha, tree: git(cwd, 'rev-parse', 'HEAD^{tree}'), applicationEquality: { protectedPaths, nonTestPackageEqual: true } };
