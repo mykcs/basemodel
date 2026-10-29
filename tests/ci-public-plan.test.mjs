@@ -9,6 +9,19 @@ import {
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
+test('draft heads already run and ready promotion does not repeat unchanged acceptance', () => {
+  for (const file of ['public-pr-ci.yml', 'cloud-figure-visual-review.yml']) {
+    const workflow = read(`.github/workflows/${file}`);
+    assert.match(workflow, /types: \[opened, synchronize, reopened\]/);
+    assert.doesNotMatch(workflow, /ready_for_review|pull_request\.draft|pull_request\.isDraft/);
+  }
+  const deterministic = read('.github/workflows/public-pr-ci.yml').split('\n  deterministic:')[1].split('\n  browser:')[0];
+  assert.match(deterministic, /id: deterministic_plan/);
+  assert.match(deterministic, /Validate built browser discovery contracts\n        if: steps\.deterministic_plan\.outputs\.browser_total != '0'/);
+  assert.match(deterministic, /run: npm run verify:deploy/);
+  assert.match(deterministic, /run: npm run build/);
+});
+
 test('expensive browser jobs wait for successful deterministic build preflight', () => {
   const publicCi = read('.github/workflows/public-pr-ci.yml');
   const browser = publicCi.split('\n  browser:')[1].split('\n  gate:')[0];

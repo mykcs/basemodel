@@ -2,7 +2,7 @@ name: Public PR CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -87,6 +87,13 @@ jobs:
           git fetch --no-tags --depth=1 origin "$CI_BASE_SHA"
           git cat-file -e "$CI_BASE_SHA^{commit}"
 
+      - name: Re-evaluate discovery applicability with the shared planner
+        id: deterministic_plan
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          CI_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/ci-public-plan.mjs --github-output
+
       - name: Validate CI contracts
         run: node --test tests/ci-plan.test.mjs tests/ci-circleci-prepare.test.mjs tests/ci-browser-budget.test.mjs tests/ci-public-plan.test.mjs tests/ci-build-artifact.test.mjs
 
@@ -100,9 +107,11 @@ jobs:
         run: npm run build
 
       - name: Seal exact-head static artifact
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         run: node scripts/ci-build-artifact.mjs create
 
       - name: Upload exact-head static artifact
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: static-build-${{ github.run_id }}-${{ github.run_attempt }}
@@ -114,6 +123,7 @@ jobs:
           retention-days: 3
 
       - name: Validate built browser discovery contracts
+        if: steps.deterministic_plan.outputs.browser_total != '0'
         run: node --test tests/ci-ui-test-list.test.mjs
 
   browser:
