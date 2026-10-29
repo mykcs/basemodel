@@ -1,6 +1,6 @@
 # SEED × OpenEVO Flow — ChatGPT Intelligence UI visual-fidelity contract
 
-Status: **semantic transfer shipped; original-UI visual acceptance NOT_VERIFIED** (2026-10-29)  
+Status: **original dark screenshots received; faithful Astro reconstruction in review; visual acceptance NOT_VERIFIED** (2026-10-29)
 Scope: `/research/seed-openevo/flow/` — specifically the two-stage SEED (left) × OpenEVO (right) training comparison.  
 Source-of-truth for the general procedure: [website-improve / human-thinking web expression](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md). The user’s repeated negative feedback remains in the [private .agents case](https://github.com/mykcs/.agents/blob/main/docs/learning/projects/basemodel/2026-10-23-advisor-intelligence-ui-site-fidelity-regression.md); do not replicate the private RAW here.
 
@@ -14,9 +14,9 @@ This task is **not** satisfied by a new layout that merely communicates the same
 
 | Acceptance dimension | Current verdict | Evidence / precise limit |
 | --- | --- | --- |
-| `COPY_MATCH` | **Verified for the published implementation** | [PR #959](https://github.com/mykcs/basemodel/pull/959) merged at `cde65a49a4151da6c6941149a92dfa78957f8766`; `src/data/seedOpenEvoIntelligenceComparison.ts` owns `sharedAction` once per paired row; `sharedBoundary` renders for both at Stage 2. |
-| `TOPOLOGY_MATCH` | **Partial / not an original-reference comparison** | The current page has two sequential stages, four rows each, aligned desktop columns and a phone order. Without the accepted ChatGPT original, cannot verify exact connecting lines, grouping, visual dominance or ordering against it. |
-| `VISUAL_MATCH` | **NOT_VERIFIED — missing original reference** | Site screenshots exist, but not the approved ChatGPT UI source/screenshot at matched theme/viewport. Font, spacing, color, radius and density have no faithful reference. |
+| `COPY_MATCH` | **Original/implementation alignment under re-test** | [PR #959](https://github.com/mykcs/basemodel/pull/959) established shared `sharedAction` and symmetric Stage-2 teacher boundaries. The original image reveals **nine** aligned operations, not the eight previously published. The visual-recovery candidate restores the missing Stage-1 initial-state operation and source-visible wording; exact-head tests remain required. |
+| `TOPOLOGY_MATCH` | **Candidate restored, rendered acceptance pending** | Two broad nested stages, five Stage-1 rows and four Stage-2 rows, SEED left/OpenEVO right; full-width grouping replaces separate mini-card borders. A screenshot of the candidate under the same conditions is still required. |
+| `VISUAL_MATCH` | **ORIGINAL_REFERENCE_AVAILABLE / NOT_VERIFIED** | Two approved dark-mode captures now establish typography, grouping, color, radii, row spacing and the stage transition. They do not show the full continuous UI or prove pixel identity. Candidate site must still be captured and compared. |
 | `BEHAVIOR_MATCH` | **NOT_VERIFIED against original** | Current paired comparison is predominantly static. Cannot infer from the user's feedback whether the ChatGPT original contained controls or preserved changed state; verify when source is captured. |
 | `SOURCE_IDENTICAL` | **No** | The current version is hand-authored Astro markup/CSS using BaseModel design tokens, **not** the original ChatGPT native UI renderer or identical exported source. |
 
@@ -33,9 +33,25 @@ The page owns its executable copy in `src/data/seedOpenEvoIntelligenceComparison
 
 Do not change these scientific claims in a CSS or appearance-only recovery.
 
-## Capture request and security
+## Received original visual reference (2026-10-29)
 
-**Missing artifact:** the user-approved ChatGPT native Intelligence UI visual source. Ask for a full screenshot cropped to the relevant UI (desktop light mode, include both stages; multiple pieces if tall); accept an explicit source export if the user already owns one. If the original contained sliders, controls or non-default states, request a state-specific follow-up only after seeing the first image.
+The owner supplied two PNG screenshots in this conversation. These remain outside the public repository; their SHA-256 identities are recorded solely to distinguish reference versions:
+
+- Top/Stage-1 opening: **1602×1172**, `21c571cc60ae0bd68a973b574fe0f4302175ddd7a25015f856fd8737eb4424cb`.
+- Stage-1 ending/Stage-2 opening: **1688×1174**, `ee24f81d4d7526d32f6f9fa84fb9d39c166e90160c5dfa3bc711ab7b516dff73`.
+
+Both are **dark-mode partial scroll captures** with ChatGPT application chrome; the input bar and floating scroll-to-bottom buttons are host controls, not figure elements to reproduce. The originals show:
+
+1. An outer almost-black panel with a thin neutral border and large radius, headed **“两种框架，一套对照语言”**, plus a green **“2 个阶段 · 9 组对应操作”** count.
+2. Inner large neutral-border Stage panels; blue Stage 1 / SEED pills, purple Stage 2 / OpenEVO pills, neutral comparison-status pills.
+3. Five aligned Stage-1 operations, including **“形成 Stage 2 的初始状态”**, and four Stage-2 operations. No per-method colored-outline mini-cards.
+4. Strict paired shared titles, separate parenthetical replaceable-teacher names, and both sides' Stage-2 no-external-teacher boundary.
+
+This is a strong **partial visual reference**, not an export of the host renderer or full interaction state. Do not report `SOURCE_IDENTICAL` or full pixel parity from it.
+
+## Capture security
+
+The supplied screenshots are enough to implement and review the primary composition without asking again. A complete source export or continuous full-height capture would only be needed to assert **every** original row's visual state or source identity. The mobile appearance remains an adaptive design, not a claim that the dark desktop screenshots specify mobile.
 
 Capture provenance in the private approved evidence store if the source contains private research; do **not** commit a private conversation, credentials, raw transcript, or unreviewed extension dump to this **public** BaseModel repository. This public file can store a sanitized evidence reference, source hash and acceptance summary after authorization.
 
@@ -43,8 +59,8 @@ Do not assume the original DIL/host renderer can be extracted as ordinary Astro/
 
 ## Next implementation/acceptance steps
 
-1. Freeze original evidence: screenshot/source identity, initial/current state, desktop 1440 CSS px and iPhone 18 Pro Max 440×956 CSS px if available, theme, browser/font/DPR, crop. No original → maintain `MISSING_REFERENCE`, stop claiming exact visual parity.
-2. Render exact current Flow component using existing Playwright route sentinel and screenshot gate, in matched conditions. Create an **original vs site** side-by-side and difference overlay (same crop). Compare typography, layout, spacing, stage separators, contrast, color purpose, prominence and mobile transformation.
+1. Preserve reference identity, two dark screenshots and their partial-scroll scope. The screenshot pixel widths are not automatically CSS viewport widths or proof of DPR; use 1440 CSS px desktop and iPhone 18 Pro Max 440×956 CSS px for current site acceptance.
+2. Render the candidate Flow component using the existing Playwright route sentinel and screenshot gate. Compare the exact visible source regions, acknowledging different surrounding ChatGPT/site chrome and any unknown zoom. Compare typography, layout, spacing, borders, contrast, color purpose, prominence and mobile transformation.
 3. Reuse an actually portable original code artifact when available. Otherwise make the **smallest** Astro/CSS changes to close observed mismatches while preserving shared data and existing BaseModel reader contracts.
 4. Add assertions for measurable topology/visual/interactive behaviors and ensure the test runs in the actual `test:ui` entrypoint, not just a file on disk. Run the project's `preflight:ui`, exact-head browser evidence and deployment checks as applicable.
 5. Obtain the user's **visual** approval of the actual deployed Preview/Production screenshot separately from machine checks. Mark only the proven dimensions `PASS`; do not use guessed resemblance or current-site golden snapshots as proof of the ChatGPT original.
