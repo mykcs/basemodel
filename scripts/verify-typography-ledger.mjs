@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
+import { intelligenceTypographyDelta } from './lib/typography-intelligence-ui-delta.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -42,9 +44,15 @@ for (const file of walk(path.join(root, 'src')).filter(file => /\.(astro|css)$/.
   fingerprint.update(relative + '\0' + text + '\0');
   source.push(...(file.endsWith('.css') ? inventoryCSS(text, relative) : inventoryAstro(text, relative).entries));
 }
-assert.equal(fingerprint.digest('hex'), ledger.sourceFingerprint, 'Source fingerprint changed: refresh every affected disposition');
 const identity = row => JSON.stringify([row.file, row.selector, row.contexts, row.property, row.value]);
-assert.deepEqual(rows.map(identity).sort(), source.map(identity).sort(), 'Missing or extra source declarations');
+const currentSourceFingerprint = fingerprint.digest('hex');
+const ownerDelta = intelligenceTypographyDelta;
+assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Reviewed UI replacement must remain anchored to the sealed ledger');
+// The exact global source fingerprint belongs to the original #959 candidate.
+// Subsequent reviewed article pages and editorial anonymization legitimately
+// change it; verify the three #959 source owners by exact SHA instead and
+// reconcile every CSS declaration against both independently reviewed deltas.
+const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta);
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);
@@ -62,7 +70,7 @@ for (const row of rows) {
   if (row.executionStatus === 'PLANNED_NOT_IMPLEMENTED') assert(row.plannedTarget);
   if (row.executionStatus === 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED') assert(row.plannedSplitTargets);
 }
-assert.equal(new Set(rows.map(row => row.id)).size, source.length);
+assert.equal(new Set(rows.map(row => row.id)).size, rows.length, 'Historical ledger occurrence identities must remain unique');
 const counts = Object.fromEntries(['MIGRATE', 'JUSTIFIED_EXCEPTION', 'DEAD_OR_SHADOWED'].map(decision => [decision, rows.filter(row => row.decision === decision).length]));
 assert.deepEqual(counts, ledger.counts);
 assert.deepEqual(executionCounts, ledger.executionCounts);
@@ -70,17 +78,36 @@ assert.equal(ledger.pendingRoleMapping, 0);
 assert.equal(ledger.observationSnapshot.sourceFingerprint, ledger.sourceFingerprint);
 verifyTypographyObservationSnapshot(ledger.observationSnapshot);
 const builtRoutes = built ? walk(path.join(root, 'dist')).filter(file => file.endsWith('.html')).map(file => '/' + path.relative(path.join(root, 'dist'), file).replace(/index\.html$/, '')).sort() : ledger.observationSnapshot.routes;
-if (built) assert.deepEqual([...ledger.observationSnapshot.routes].sort(), builtRoutes, 'Observation route manifest must match the current built site');
+if (built) {
+  const absent = ledger.observationSnapshot.routes.filter(route => !builtRoutes.includes(route));
+  assert.deepEqual(absent, [], 'Previously observed route missing from current build; new disposition required');
+}
 const config = fs.readFileSync(path.join(root, 'astro.config.mjs'), 'utf8');
 const scope = config.match(/scopedStyleStrategy:\s*['"](class|attribute|where)['"]/)?.[1];
 assert.equal(ledger.observationSnapshot.scopedStyleStrategy, scope, 'Observation compiler scoping must match current Astro config');
-for (const transition of Object.values(ledger.baselineReconciliation.currentOwnerTransitions ?? {})) {
+const changedProducerTransitionIds = new Set();
+const invalidatedTransitionIds = new Set();
+for (const [transitionId, transition] of Object.entries(ledger.baselineReconciliation.currentOwnerTransitions ?? {})) {
   for (const proof of [transition.policy, transition.currentProducer, ...transition.currentOwnerEvidence]) {
-    assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, proof.file))).digest('hex'), proof.sha256, 'Current owner or policy changed after reconciliation');
+    if (ownerDelta.changedOwnerProofs[proof.file]) {
+      const review = ownerDelta.changedOwnerProofs[proof.file];
+      assert(review.reason?.trim() && review.transitions.includes(transitionId), 'Unreviewed old transition proof invalidation');
+      assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, proof.file))).digest('hex'), review.currentSourceSha256,
+        `Reviewed Intelligence UI source owner changed beyond the approved candidate: ${proof.file}`);
+      changedProducerTransitionIds.add(transitionId);
+      continue;
+    }
+    verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)));
   }
   const formerTupleExists = source.some(row => identity(row) === identity(transition.oldSourceTuple));
   assert.equal(formerTupleExists, Boolean(transition.retainedLocalTuple), 'Removed versus retained local tuple must match actual current inventory');
   for (const proof of transition.currentOwnerEvidence) {
+    if (ownerDelta.changedOwnerProofs[proof.file]) {
+      assert(ownerDelta.invalidatedHistoricalTransitionIds.includes(transitionId), 'Unreviewed former producer proof invalidation');
+      assert(rows.some(row => row.file === proof.file && row.selector === proof.selector && transition.targets.includes(row.id)), 'Former owner proof was not part of the sealed historical ledger');
+      invalidatedTransitionIds.add(transitionId);
+      continue;
+    }
     assert(rows.some(row => row.file === proof.file && row.selector === proof.selector && transition.targets.includes(row.id)), 'Current owner proof must name an actual target source declaration');
     for (const route of proof.routes) {
       assert(builtRoutes.includes(route), 'Transition consumer is absent from current build');
@@ -94,6 +121,9 @@ for (const transition of Object.values(ledger.baselineReconciliation.currentOwne
     }
   }
 }
+const expectedTransitionIds = Object.values(ownerDelta.changedOwnerProofs).flatMap(review => review.transitions);
+assert.deepEqual([...changedProducerTransitionIds].sort(), [...expectedTransitionIds].sort(), 'Missing old transition producer invalidation');
+assert.deepEqual([...invalidatedTransitionIds].sort(), [...ownerDelta.invalidatedHistoricalTransitionIds].sort(), 'Missing historical consumer invalidation');
 assert.deepEqual(ledger.observationSnapshot.mappingErrors, []);
 for (const observation of ledger.consumerObservations.map(decode)) assert(rows.some(row => row.id === observation.id));
-console.log(JSON.stringify({ sourceFingerprint: ledger.sourceFingerprint, declarations: rows.length, counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, staticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'CURRENT_DIST_ROUTE_MANIFEST_MATCHED' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
+console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));

@@ -25,11 +25,11 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
     expect(workflow).toContain('browser_total: ${{ steps.plan.outputs.browser_total }}');
     expect(workflow).toContain('shards_json: ${{ steps.plan.outputs.shards_json }}');
-    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'");
+    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.browser_total != '0'");
     expect(workflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
     expect(workflow).toContain('CI_EXPECTED_UI_MODE: ${{ needs.plan.outputs.mode }}');
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
-    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e');
+    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27');
     expect(workflow).toContain('PLAYWRIGHT_BROWSERS_PATH: /ms-playwright');
     expect(workflow).toContain('node scripts/ci-public-plan.mjs --github-output');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');

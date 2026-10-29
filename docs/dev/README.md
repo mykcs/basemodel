@@ -4,6 +4,8 @@ This folder explains BaseModel's current development direction and why its CI an
 
 - [LATEST.md](LATEST.md) — short current direction; read for ordinary implementation.
 - [DESIGN.md](DESIGN.md) — repository-specific CI/provider reasoning; read before changing CI, hosting, or release behavior.
+- [CI performance implementation and qualification](CI/README.md) — staged optimization, measurements and rollback; current merge authority remains in the hosting contract.
+- [Proposed private-repository and build-budget modes](CI/PRIVATE_REPOSITORY_STRATEGY.md) — privacy, frequency, quota, qualification and cutover; **proposal only**.
 - [ARCHIVE.md](ARCHIVE.md) — replaced development directions; consult only for history.
 - [Project Report 全站内容审查计划](PROJECT_REPORT_SITEWIDE_20261014.md) — 268 个构建后路由的全量清单、按工作量拆 PR 与尚未验收的范围；机器候选信号不是科研结论。
 

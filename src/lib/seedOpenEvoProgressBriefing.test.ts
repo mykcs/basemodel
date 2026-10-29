@@ -499,7 +499,7 @@ describe('SEED × OpenEVO summer review HTML deck', () => {
     expect(finalSlide).not.toContain('再经单独预注册和授权，启动下一条单变量实验');
     expect(finalSlide).not.toContain('向北');
     expect(finalSlide).not.toContain('向南');
-    expect(finalSlide).not.toContain('想请老师和学长判断优先级');
+    expect(finalSlide).not.toContain('想请老师和L 学长判断优先级');
     expect(finalSlide).not.toContain('composed state');
   });
 

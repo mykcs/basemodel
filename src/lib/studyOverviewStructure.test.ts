@@ -86,7 +86,8 @@ describe('study overview information architecture', () => {
   it('moves training design into the flow map and leaves the old route as a redirect', () => {
     expect(hub).toContain('id="training-design"');
     expect(hub).toContain('SeedOpenEvoTrainingDesignOverview');
-    expect(training).toContain('Stage 1 责任边界');
+    expect(training).toContain('data-intelligence-comparison');
+    expect(training).toContain('seedOpenEvoIntelligenceComparison.map');
     expect(training).toContain('当前 Stage 1 参数协议');
     expect(designZh).toContain('/research/seed-openevo/flow/#training-design');
     expect(designEn).toContain('/en/research/seed-openevo/flow/#training-design');

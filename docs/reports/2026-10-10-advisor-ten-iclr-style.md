@@ -211,24 +211,24 @@ Q03 复用历史 OpenEVO 轨迹和 MiniMax 分析，训练了自己的 Stage1，
 
 **本地研究证据：**
 
-本报告没有把学长的所有会议说法写成逐字引语。所引数字来自截至 2026-10-09 核对的公共科学页面与实验 PR；如相互矛盾，应回到更高权威的原始冻结收据，保留差异并重新核对。
+本报告没有把L 学长的所有会议说法写成逐字引语。所引数字来自截至 2026-10-09 核对的公共科学页面与实验 PR；如相互矛盾，应回到更高权威的原始冻结收据，保留差异并重新核对。
 
 - **原始实验总结与长期状态**：[Bounded + 历史 β/GDR 的网页研究记录](https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro)；[9 月 22 日阶段性研究证据](https://github.com/mykcs/openevo-experiment/tree/main/docs/evidence)。
 - **学习信号/容量**：[post-advisor 匹配筛选与科学解释 #597](https://github.com/mykcs/openevo-experiment/pull/597)；[BaseModel 发布核验 #805](https://github.com/mykcs/basemodel/pull/805)。
-- **学长十问 Q01–Q10 的直接证据**：[#628](https://github.com/mykcs/openevo-experiment/pull/628)、[#629](https://github.com/mykcs/openevo-experiment/pull/629)、[#630](https://github.com/mykcs/openevo-experiment/pull/630)、[#631](https://github.com/mykcs/openevo-experiment/pull/631)、[#632](https://github.com/mykcs/openevo-experiment/pull/632)、[#633](https://github.com/mykcs/openevo-experiment/pull/633)、[#634](https://github.com/mykcs/openevo-experiment/pull/634)、[#635](https://github.com/mykcs/openevo-experiment/pull/635)、[#636](https://github.com/mykcs/openevo-experiment/pull/636)、[#637](https://github.com/mykcs/openevo-experiment/pull/637)。
+- **L 学长十问 Q01–Q10 的直接证据**：[#628](https://github.com/mykcs/openevo-experiment/pull/628)、[#629](https://github.com/mykcs/openevo-experiment/pull/629)、[#630](https://github.com/mykcs/openevo-experiment/pull/630)、[#631](https://github.com/mykcs/openevo-experiment/pull/631)、[#632](https://github.com/mykcs/openevo-experiment/pull/632)、[#633](https://github.com/mykcs/openevo-experiment/pull/633)、[#634](https://github.com/mykcs/openevo-experiment/pull/634)、[#635](https://github.com/mykcs/openevo-experiment/pull/635)、[#636](https://github.com/mykcs/openevo-experiment/pull/636)、[#637](https://github.com/mykcs/openevo-experiment/pull/637)。
 - **Q03 独立新配方与可比性**：[#677](https://github.com/mykcs/openevo-experiment/pull/677)（新公开配方）、[#678](https://github.com/mykcs/openevo-experiment/pull/678)（原生评测校准）。
 - **点击候选熵与独立固定点评测**：[#649](https://github.com/mykcs/openevo-experiment/pull/649)。
 - **交互式、带图表的 Q01–Q10 原报告**：[BaseModel advisor questions](https://basemodel-preview.vercel.app/research/seed-openevo/study/advisor-questions/)（该公开网址是否已发布本版本，需另以 Production 核验）。
 
-## Appendix A｜学长十问的来源、状态与证据
+## Appendix A｜L 学长十问的来源、状态与证据
 
-| 主题 | 学长会议关切与延伸 | 需要回答的科学问题 |
+| 主题 | L 学长会议关切与延伸 | 需要回答的科学问题 |
 |---|---|---|
 | 学习信号与参照（Q01–Q03） | 训练多久、普通 SFT/OPSD 有多强、SEED 能否真正复现 | 验证集能力是否改善，且与训练 loss、不同实验协议的数字明确区分？ |
 | 长期参数更新（Q04–Q07） | rank128 必要性、β 的效果、点击 entropy、Task Vector 方向 | 哪些状态容量和更新操作在给定任务与预算下有可测影响？ |
 | 可靠性与迁移（Q08–Q10） | 旧任务遗忘、文字状态贡献；会后加入新任务复现 | 能否在可证实的已学任务上测遗忘，能否排除文字状态的混杂，结果能否跨随机设置成立？ |
 
-**会议来源边界：**2026 年 9 月 22 日，我们和学长召开了一次 OpenEVO 研究讨论会。[当时的完整会议逐字记录（RAW）](https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md)是会议话语的原始证据；[9 月 28 日会后整理](https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md)才将讨论归纳为六个主题。Q01–Q09 是我们进一步细化的九个研究问题；Q10 是会后新增的独立复现问题，不能伪装成学长当场逐字提出的第十问。
+**会议来源边界：**2026 年 9 月 22 日，我们和L 学长召开了一次 OpenEVO 研究讨论会。[当时的完整会议逐字记录（RAW）](https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md)是会议话语的原始证据；[9 月 28 日会后整理](https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md)才将讨论归纳为六个主题。Q01–Q09 是我们进一步细化的九个研究问题；Q10 是会后新增的独立复现问题，不能伪装成L 学长当场逐字提出的第十问。
 
 | 问题 | 已有观察（简写） | 科学状态 / 下一证据 |
 |---|---|---|

@@ -1099,7 +1099,27 @@ test('Landscape label gate rejects injected 9px ECharts axis/legend text',async(
 });
 // These witnesses came from exact source-to-scoped-DOM matching, not a blanket
 // assumption that every literal size is a defect. Keep concurrent rewrites out.
-const scopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as Array<{file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null}>;
+type ScopedMigrationWitness = {file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null};
+const historicalScopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as ScopedMigrationWitness[];
+const flowRoute = '/research/seed-openevo/flow/';
+// Preserve the 2026-10-22 historical witness receipt byte-for-byte. The 2026-10-29
+// Intelligence UI replaced these exact text/selector pairs; they must no longer
+// masquerade as current-page observations, while unaffected witnesses remain live.
+const obsoleteFlowWitness = (row: ScopedMigrationWitness) => row.route === flowRoute && (
+  (row.selector === '.mission-section__heading h2' && row.text.startsWith('01 模型、任务与比较范围')) ||
+  row.selector.startsWith('.responsibility-flow') ||
+  row.selector === '.stage2-bridge' ||
+  row.selector === '.mission-hero.mission-hero--compact .mission-hero__boundary' ||
+  row.selector === '.mission-hero.mission-hero--compact .mission-hero__lede'
+);
+const currentFlowWitnesses: ScopedMigrationWitness[] = [
+  {file:'src/components/research/SeedOpenEvoResearchHub.astro',selector:'.mission-section__heading h2',route:flowRoute,text:'01 SEED × OpenEVO 两阶段学习范式',minimum:21,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null,faceOwner:'system-sans'},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-stage__header h3',route:flowRoute,text:'学习信号与能力初始化',minimum:18,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__action',route:flowRoute,text:'Qwen 自主采集 WebShop 任务轨迹',minimum:14,role:'method',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__boundary',route:flowRoute,text:'本阶段不再调用 Stage 1 的外部高能力教师模型 API。',minimum:12,role:'boundary',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoMissionHero.astro',selector:'.mission-hero.mission-hero--compact .mission-hero__lede',route:flowRoute,text:'两套方法都先借助外部高能力教师',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null},
+];
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)),...currentFlowWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{
@@ -1112,7 +1132,12 @@ const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=
   }
 };
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
+  const routeWitnesses = scopedMigrationWitnesses.filter(row => row.route === route);
   test('confirmed scoped typography readers '+route, async ({page}, info)=>{
+    // Six viewport/theme passes over 120+ historical witnesses can exceed the
+    // normal 90s total test budget even when individual assertions succeed.
+    // Keep every witness and all six views; extend only the dense-route budget.
+    if (routeWitnesses.length >= 120) test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
@@ -1120,7 +1145,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
       await page.evaluate(()=>document.fonts.ready);
       const receipts=[];let faceNegative=false,weightNegative=false;
-      for(const row of scopedMigrationWitnesses.filter(row=>row.route===route&&(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
+      for(const row of routeWitnesses.filter(row=>(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
         const checksFace=row.ordinaryFace!==false && Boolean(row.faceOwner || row.ordinaryFace);
         const liveText=route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
         const node=page.locator(row.selector).filter({hasText:liveText}).first();

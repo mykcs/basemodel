@@ -14,8 +14,11 @@ const assertCloudFigureSafety = (source: string) => {
   const workflow = parse(source);
   expect(Object.keys(workflow.on).sort()).toEqual(['pull_request', 'workflow_dispatch']);
   expect(workflow.permissions).toEqual({ contents: 'read' });
-  expect(Object.keys(workflow.jobs)).toEqual(['cloud-figure-browsers', 'cloud-figure-evidence']);
+  expect(Object.keys(workflow.jobs)).toEqual(['preflight', 'cloud-figure-browsers', 'cloud-figure-evidence']);
   const job = workflow.jobs['cloud-figure-browsers'];
+  expect(job.needs).toBe('preflight');
+  expect(workflow.jobs.preflight.steps.some((step: { run?: string }) => step.run === 'npm run verify:deploy')).toBe(true);
+  expect(workflow.jobs.preflight.steps.some((step: { run?: string }) => step.run === 'npm run build')).toBe(true);
   expect(job['runs-on']).toBe('ubuntu-24.04');
   expect(job.permissions).toBeUndefined();
   expect(job.environment).toBeUndefined();
@@ -23,10 +26,10 @@ const assertCloudFigureSafety = (source: string) => {
   expect(job.strategy.matrix.shard).toEqual([1, 2, 3, 4]);
   expect(job.outputs.sha).toBe('${{ steps.candidate.outputs.sha }}');
   const aggregate = workflow.jobs['cloud-figure-evidence'];
-  expect(aggregate.needs).toBe('cloud-figure-browsers');
+  expect(aggregate.needs).toEqual(['preflight', 'cloud-figure-browsers']);
   expect(aggregate.if).toBe('always()');
   expect(aggregate.strategy.matrix.browser).toEqual(['chromium', 'webkit']);
-  expect(aggregate.steps.find((step: { name: string }) => step.name === 'Require every browser shard to succeed').run).toBe('test "$SHARD_RESULT" = success');
+  expect(aggregate.steps.find((step: { name: string }) => step.name === 'Require every browser shard to succeed').run).toContain('full) test "$SHARD_RESULT" = success');
   expect(aggregate.permissions).toEqual({ actions: 'read', contents: 'read' });
   const indexStep = aggregate.steps.find((step: { name: string }) => step.name === 'Wait until exact evidence artifact ID is indexed by GitHub Actions');
   const downloadStep = aggregate.steps.find((step: { name: string }) => step.name === 'Download the uploaded artifact for round-trip verification');
@@ -150,10 +153,10 @@ describe('Vercel production deployment architecture', () => {
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q17-mobile-comparison-cell-collision');
     expect(readText('../../scripts/preflight-ui.ts')).toContain('q03-rendered-label-axis-collision');
     expect(packageJson.scripts['test:ui:all']).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
-    expect(cloud).toContain('npm run test:ui:all -- --project=${{ matrix.browser }} --workers=1');
+    expect(cloud).toContain('node scripts/ci-ui-test-list.mjs timed test:ui:all ${{ matrix.browser }} ${{ matrix.shard }} 4');
     expect(cloud).toContain('npm run ui:overflow-preflight');
     expect(cloud).toContain('actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131');
-    expect(cloud).toContain('--shard=${{ matrix.shard }}/4 --reporter=list,json');
+    expect(cloud).toContain('figure-inventory/playwright-run.json');
     expect(cloud).toContain('    timeout-minutes: 65');
     expect(cloud).toContain('--list --reporter=json');
     expect(readText('../../scripts/verify-cloud-figure-evidence.mjs')).toContain('Downloaded bytes differ:');
