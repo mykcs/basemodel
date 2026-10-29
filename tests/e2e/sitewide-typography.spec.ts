@@ -1134,10 +1134,11 @@ const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
   const routeWitnesses = scopedMigrationWitnesses.filter(row => row.route === route);
   test('confirmed scoped typography readers '+route, async ({page}, info)=>{
-    // Six viewport/theme passes over 120+ historical witnesses can exceed the
+    // Six viewport/theme passes over 70+ historical witnesses can exceed the
     // normal 90s total test budget even when individual assertions succeed.
-    // Keep every witness and all six views; extend only the dense-route budget.
-    if (routeWitnesses.length >= 120) test.setTimeout(180_000);
+    // WebKit needed just over 90s for 77 witnesses on study/results. Keep every
+    // witness and all six views; extend only routes with that measured workload.
+    if (routeWitnesses.length >= 70) test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
