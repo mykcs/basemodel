@@ -2303,6 +2303,19 @@
         "sha256": "9e18e9a3123f5247751f81b18c7dc16cec9f2459a6139dbb47f1552309829ace"
       },
       "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/agents/current/openevo-reproduction-research-page.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_project_display_label",
+      "evidence": {
+        "before_commit": "79026814d001da2a4459fbaae62c4edd9f05d24c",
+        "before_sha256": "0035dfa767ddb0d34e39ffa27498e18d1bf24c200191b508860b24a4d0fcee3c",
+        "after_sha256": "d36c641795dfae60a8f959994eb4229315f3745029f5df2d9383199c7778195f",
+        "unchanged": "Date, Kaggle/Colab, model/runtime facts and scientific limitations; no original receipt or URL changed."
+      },
+      "status": "FIXED_CURRENT_EDITABLE_POLICY_LABEL; PUBLIC_HISTORY_REMAINS"
     }
   ],
   "unrevoked_surfaces": [
@@ -2336,7 +2349,8 @@
   "identity_fingerprint_scan": {
     "current_website_source_and_downloads": 0,
     "repository_only_paths": 12,
-    "status": "Current raw account clues removed from production inputs; retained tests and history do not prove historical anonymity"
+    "status": "Current raw account clues removed from production inputs; retained tests and history do not prove historical anonymity",
+    "search_boundary": "The12 retained paths refer to the known account fingerprint only. A separately identified private-project display label in current policy was removed; counts are not a proof of complete anonymity or exhaustive name discovery."
   },
   "original_archive": {
     "objects": 10,

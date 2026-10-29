@@ -8,6 +8,7 @@ describe('Vercel hosted UI gate planner', () => {
     expect(plan.mode).toBe('focused');
     expect(plan.routes).toEqual(['/research/seed-openevo/recent-challenges/']);
     expect(plan.specs).toContain('tests/e2e/research-retrospective.spec.ts');
+    expect(plan.specs).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
   });
 
   it('maps concrete Astro page files to their deployed routes', () => {

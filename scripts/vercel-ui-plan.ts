@@ -95,6 +95,7 @@ function focusedSpecsForRoutes(routes: string[]): string[] {
 
   if (routes.includes('/research/seed-openevo/recent-challenges/')) {
     specs.add('tests/e2e/research-retrospective.spec.ts');
+    specs.add('tests/e2e/sitewide-figure-width-scope.spec.ts');
   }
 
   if (routes.some((route) => RESULTS_ROUTE.test(route))) {
