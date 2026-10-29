@@ -4,9 +4,15 @@
 
 Owner-authorized adoption proceeds from existing Astro/strict TypeScript/Starlight MDX to Lucide, prefixed Tailwind/daisyUI, Alpine CSP, Motion mini and an adapted shadcn/ui React Button. Live consumers are the workspace pane icons, shared CopyButton, research-context count/layout and Header mobile menu. Existing `tokens.css`, research copy/data, route contracts and semantic CSS owners remain authoritative; `current/css-architecture.md` owns the updated migration boundaries.
 
-The initial type check/static build and eight focused Chromium checks passed, including 440×956/1440, both themes, clipboard success/failure, reduced motion and menu focus/breakpoints. Full preflight, independent rendered review and exact-head hosted checks are still pending for this candidate. No merge or Production publication is claimed.
+Implementation `a83b5e2b` passed the type/static-build gates, 959 unit tests, all 2,088 Chromium/WebKit cases in one clean two-worker run with zero retries/skips, and eight independent rendered checks at 440×956/1440 in both themes. An earlier four-worker run stopped after a test-runner result-delivery stall; its failure and trace remain recorded separately. Integration with the newer main and exact-head hosted acceptance are pending for this source candidate; Production publication is separate.
+
+## 2026-10-29 CI performance qualification
+
+[#814](https://github.com/mykcs/basemodel/pull/814) merged fail-early browser prerequisites, exact-source sealed static artifacts, duration-balanced full-title allocation and shared risk routing. [The CI implementation and measurement record](../dev/CI/README.md) owns behavior, positive/negative receipts, costs and rollback; hosting and release authority remain in the existing current owners. The sampled complete browser-workflow wait fell from 55.6 to 35.8 minutes, while summed Runner time rose 5.2%; no net full-run compute saving is claimed. [#962](https://github.com/mykcs/basemodel/pull/962) merged the typography consumer's shared-plan condition as `b2807e2`; current-base Public and complete Figure acceptance passed, including an explicitly recorded failed-only WebKit recovery. The independent #958 privacy work is preserved, including its merged auditor and existing image/external-identity follow-up. Scientific source/evidence and required check identities remain intact.
 
 ## 2026-10-29 人物称谓隐私：待合入的标准候选
+
+历史快照（#958 合并前）：下段保留当时的候选状态；该候选现已作为 `1ed126c` 合入 main。此状态更新不代表历史、图片或外部链接已完全匿名，既有剩余事项见 [#963](https://github.com/mykcs/basemodel/issues/963)。
 
 BaseModel 当前任务分支正在把公开科研沟通中的人物引用统一为 `W 老师` 与 `L 学长`，以 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 为唯一称谓 owner；根入口、`src/AGENTS.md`、站点 README、质量验收索引和 `npm run audit:person-privacy` 都指向/执行这一规则。当前源码对已知私人身份做失败即停止审查，正式发布仍须看 PR 精确 HEAD 的 CI / Vercel 及真实网页；此段是候选状态记录，不能当作已经合入 `main` 或撤回公共 Git 历史的证明。
 
@@ -36,7 +42,7 @@ CI/Preview receipts do not transfer to its SHA.
 
 Last updated: **2026-08-28** (research-state snapshot)
 
-CI architecture last verified: **2026-09-21**
+CI architecture last verified: **2026-10-29**
 
 Agent bootstrap last refreshed: **2026-10-03** — root `AGENTS.md` remains a routing/invariant layer; substantial/durable user-facing content now loads the shared `HUMAN_EXPRESSION_STANDARD.md` on demand, and source/raw/calculation questions route through the current scenario trigger plus `research-site-presentation-contract.md`. Detailed scientific/provider authority did not move.
 
