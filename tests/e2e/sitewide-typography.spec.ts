@@ -1099,7 +1099,7 @@ test('Landscape label gate rejects injected 9px ECharts axis/legend text',async(
 });
 // These witnesses came from exact source-to-scoped-DOM matching, not a blanket
 // assumption that every literal size is a defect. Keep concurrent rewrites out.
-type ScopedMigrationWitness = {file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null};
+type ScopedMigrationWitness = {lineageId?:string;file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null};
 const historicalScopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as ScopedMigrationWitness[];
 const flowRoute = '/research/seed-openevo/flow/';
 // Preserve the 2026-10-22 historical witness receipt byte-for-byte. The 2026-10-29
@@ -1127,7 +1127,24 @@ const obsoleteContentWitness = (row: ScopedMigrationWitness) =>
 const currentContentWitnesses: ScopedMigrationWitness[] = [
   {file:'src/components/research/OpenEvoExperimentIndex.astro',selector:'.study-hero__lede',route:'/research/seed-openevo/study/',text:'OpenEVO 在 WebShop 中怎样学习',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null,readerOwner:'article',faceOwner:'system-sans'},
 ];
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)),...currentFlowWitnesses,...currentContentWitnesses];
+// ResearchTaskContext no longer appears in the topic directory. Exercise the
+// same unchanged producer, text and role floors at its surviving mechanism page;
+// keep the historical snapshot immutable.
+const tutorialWitnessMoves = new Map([
+  ['d6ef87c2179ef7d0737d', '.task-example figcaption'],
+  ['9d0f44155112bf6ea92d', '.task-example__number'],
+]);
+if (historicalScopedMigrationWitnesses.filter(row=>tutorialWitnessMoves.has(row.lineageId??'')).length !== 2)
+  throw Error('Expected the two sealed task-context witness identities');
+const currentWitnessRoute = (row: ScopedMigrationWitness): ScopedMigrationWitness => {
+  const selector=tutorialWitnessMoves.get(row.lineageId??'');
+  if(!selector)return row;
+  if(row.route!=='/research/seed-openevo/study/capability-exploration/' ||
+    row.file!=='src/components/research/ResearchTaskContext.astro' || row.selector!==selector)
+    throw Error('Unexpected task-context witness identity');
+  return {...row,route:'/research/seed-openevo/study/capability-exploration/mechanism-1-0/'};
+};
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{

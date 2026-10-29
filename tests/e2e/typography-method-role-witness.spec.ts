@@ -654,11 +654,14 @@ test('stage2 historical typography rejects former heavy mono statuses and tiny e
 // or the absence of narrow-page clipping. This suite is wired to Public PR CI.
 const capabilityLobbyRoute='/research/seed-openevo/study/capability-exploration/';
 const lobbyRoot='[data-testid="openevo-capability-map-lobby"]';
+// research-article.css owns approved-reader prose/list text at 14px and h2 at
+// 21px. The separate primary action retains ResearchOrientation's --type-body.
 const lobbyRoles={
-  '[data-research-orientation] [data-reader-purpose]':16,
+  '[data-research-orientation] [data-reader-purpose]':14,
+  '[data-research-orientation] .research-orientation__action':16,
   '[data-topic-group] h2':21,
-  '[data-topic-route] a':16,
-  '[data-topic-navigation] a':16,
+  '[data-topic-route] a':14,
+  '[data-topic-navigation] a':14,
 } as const;
 type LobbyReading={
   roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
