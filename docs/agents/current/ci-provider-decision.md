@@ -1,6 +1,6 @@
 # BaseModel CI provider decision — fast, cheap, exact-head
 
-Last reviewed: **2026-09-21**
+Last reviewed: **2026-10-30**
 
 Status: **current provider-selection rationale for `mykcs/basemodel`**.  
 Executable authority remains `vercel.json`, repository scripts/tests, the live GitHub ruleset, [`hosting-architecture.md`](hosting-architecture.md), and [`deployment-policy.md`](deployment-policy.md). If this rationale disagrees with executable or live control-plane state, executable/live state wins and this document must be corrected in the same closeout.
@@ -9,7 +9,9 @@ Human-facing projection: [`/development/`](/development/) explains the same arch
 
 ## One-sentence decision
 
-**Use public GitHub Actions as the required, read-only, risk-adaptive repository/browser acceptance (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel Pro as the separately required exact-head provider build/deploy authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
+**Use public GitHub Actions as the required, read-only, risk-adaptive repository/browser acceptance (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel as the separately required exact-head provider build/deploy authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
+
+**Live capacity note (2026-10-30):** the linked Vercel team is currently Hobby. A final exact-head candidate was rejected with `Deployment rate limited — retry in 24 hours`, so wait for quota recovery before requesting another provider gate. This does not change the acceptance contract or classify the candidate source as failed; ordinary branches are already excluded before deployment creation by `git.deploymentEnabled` in `vercel.json`.
 
 The optimization target is not "find the provider with the largest free quota." It is:
 

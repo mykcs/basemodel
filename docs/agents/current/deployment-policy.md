@@ -1,6 +1,6 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-21**
+Last reviewed: **2026-10-30**
 
 ## Authority
 
@@ -16,7 +16,7 @@ working PR / development branch
 
 final non-draft current-base candidate
 -> run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first proves exact-head public-ci-gate success, then records live `main` in non-deploy `ci/vercel-gate-base` before moving persistent `ci/vercel-gate-final` to the exact PR head SHA
--> Vercel Pro Preview on that exact SHA
+-> Vercel Preview on that exact SHA
 -> npm run build
 -> required GitHub statuses: public-ci-gate + Vercel on the exact candidate SHA
 -> CircleCI automatic PR/main workflows disabled; API-triggered manual fallback only
@@ -135,7 +135,7 @@ Changes to Public PR CI, planner, Vercel gate tooling, deployment config, Circle
 
 ### Budget-first execution
 
-Vercel Pro is metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
+Vercel deployments are quota-metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
 
@@ -196,7 +196,7 @@ Post-merge verification therefore checks the deployed `main` SHA and READY state
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Deterministic/Chromium/Lab merge acceptance belongs on required Public PR CI; exact final Preview and Production provider build/deploy acceptance remain on Vercel Pro. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
+- Deterministic/Chromium/Lab merge acceptance belongs on required Public PR CI; exact final Preview and Production provider build/deploy acceptance remain on Vercel. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
