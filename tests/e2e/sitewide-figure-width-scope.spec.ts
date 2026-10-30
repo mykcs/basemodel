@@ -49,9 +49,6 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
       const root = el.closest('[data-research-retrospective]')!;
       const header = [...el.querySelectorAll('thead th')].map(cell => cell.textContent?.trim());
       const advisorSummaryHeader = ['需要回答的议题', '已经可检查的事实', '仍未过关的地方'];
-      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1 };
-      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1 };
-      if (JSON.stringify(header) === JSON.stringify(advisorSummaryHeader)) return { kind: 'advisor', numericIndex: -1 };
       const numericTables = [...root.querySelectorAll('#findings table, #history table')]
         .filter(table => JSON.stringify([...table.querySelectorAll('thead th')].map(cell => cell.textContent?.trim())) !== JSON.stringify(advisorSummaryHeader));
       const numericCount = numericTables.length;
