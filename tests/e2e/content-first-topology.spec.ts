@@ -65,7 +65,7 @@ test('legacy Stage-2 genealogy remains one connected ordered spine below desktop
   }
 });
 
-test('SEED × OpenEVO stages stay connected and matched learning rows retain order at tablet width', async ({ page }) => {
+test('SEED × OpenEVO stages remain adjacent nested frames with ordered paired rows at tablet width', async ({ page }) => {
   await setViewport(page, 768, 1024);
   await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
   const diagram = page.locator('[data-intelligence-comparison]');
@@ -73,18 +73,14 @@ test('SEED × OpenEVO stages stay connected and matched learning rows retain ord
   const stage2 = diagram.locator('[data-stage="stage-2"]');
   await expect(stage1).toBeVisible();
   await expect(stage2).toBeVisible();
-  await expect(stage1.locator('[data-axis]')).toHaveCount(4);
+  await expect(stage1.locator('[data-axis]')).toHaveCount(5);
   await expect(stage2.locator('[data-axis]')).toHaveCount(4);
   const stages = await verticalOrder(page, '[data-intelligence-comparison] [data-stage]');
-  expect(stages[1]!.top).toBeGreaterThan(stages[0]!.top + stages[0]!.height);
-  const connector = await stage1.evaluate((node) => {
-    const line = getComputedStyle(node, '::after');
-    const head = getComputedStyle(node, '::before');
-    return { width: line.width, height: line.height, arrow: head.borderTopWidth };
-  });
-  expect(Number.parseFloat(connector.width)).toBeGreaterThan(0);
-  expect(Number.parseFloat(connector.height)).toBeGreaterThan(0);
-  expect(Number.parseFloat(connector.arrow)).toBeGreaterThan(0);
+  const gap = stages[1]!.top - (stages[0]!.top + stages[0]!.height);
+  expect(gap).toBeGreaterThan(8);
+  expect(gap).toBeLessThan(80);
+  await expect(stage1.locator('.intelligence-stage__number')).toHaveText('Stage 1');
+  await expect(stage2.locator('.intelligence-stage__number')).toHaveText('Stage 2');
   for (const stage of [stage1, stage2]) {
     const rows = await stage.locator('[data-axis]').evaluateAll((nodes) => nodes.map((node) => ({ top: node.getBoundingClientRect().top, count: node.querySelectorAll('[data-framework]').length })));
     expect(rows.every((row, index) => row.count === 2 && (index === 0 || row.top > rows[index - 1]!.top))).toBe(true);

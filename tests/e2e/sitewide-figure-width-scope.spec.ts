@@ -43,17 +43,20 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const retrospective = route === '/research/seed-openevo/recent-challenges/'
     && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
   if (retrospective) {
-    // Bind frozen numeric cells to their evidence sections. An editorial
-    // summary inserted before them must not shift scientific table identity.
+    // Keep numeric receipts bound to their evidence sections while checking
+    // both newly added editorial tables by identity and content.
     const identity = await target.evaluate(el => {
       const root = el.closest('[data-research-retrospective]')!;
-      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1 };
-      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1 };
-      return { kind: 'numeric', numericIndex: [...root.querySelectorAll('#findings table, #history table')].indexOf(el) };
+      const numericTables = [...root.querySelectorAll('#findings table, #history table')];
+      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
+      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
+      return { kind: 'numeric', numericIndex: numericTables.indexOf(el), numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
     });
+    expect(identity.numericCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
+    expect(identity.totalTables).toBe(RETROSPECTIVE_NUMERIC_CELLS.length + 2);
     if (identity.kind === 'numeric') {
       expect(identity.numericIndex, 'only declared numeric evidence sections are allowed').toBeGreaterThanOrEqual(0);
-      expect(cellTexts, 'retrospective source-bound numeric table '+identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
+      expect(cellTexts, 'retrospective source-bound numeric table ' + identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
     } else if (identity.kind === 'questions') {
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
@@ -62,9 +65,11 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
         await expect(row.locator('a')).toHaveCount(1);
       }
     } else {
-      expect(await target.locator('thead th').allTextContents()).toEqual(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
-      expect(await target.locator('tbody th').allTextContents()).toEqual(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
+      await expect(target.locator('thead th')).toHaveText(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
+      await expect(target.locator('tbody th')).toHaveText(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
       await expect(target.locator('tbody tr')).toHaveCount(4);
+      await expect(target).toContainText('必须分开正式确认');
+      await expect(target).toContainText('现有转写不构成录取承诺');
       for (const row of await target.locator('tbody tr').all()) {
         await expect(row.locator('td')).toHaveCount(2);
         for (const cell of await row.locator('td').all()) await expect(cell).not.toHaveText('');

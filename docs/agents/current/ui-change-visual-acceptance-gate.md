@@ -15,6 +15,12 @@ This document is a scenario-based future warning. When an Agent changes UI, it m
 
 The owning contrast rules remain in `theme-contrast-contract.md`. This file adds the broader browser/layout/state acceptance gate.
 
+### Additional gate for a ChatGPT-approved Intelligence UI transfer
+
+When the user says “把聊天里的 Intelligence UI 原封不动搬到网站”, ordinary rendered browser PASS is necessary but **not proof of fidelity to the ChatGPT original**. Keep five verdicts separate: `COPY_MATCH`, `TOPOLOGY_MATCH`, `VISUAL_MATCH`, `BEHAVIOR_MATCH`, and `SOURCE_IDENTICAL`. `VISUAL_MATCH` needs a genuine original approved screenshot/source plus a same-conditions comparison; a screenshot of the site alone is only a site baseline. If the original is unavailable, record `NOT_VERIFIED`, preserve valid semantic work, and request the minimum user-owned reference rather than guessing CSS changes.
+
+See the current [SEED × OpenEVO Flow fidelity record](seed-openevo-flow-intelligence-ui-fidelity.md) for the affected route, acceptance status and missing original; reusable capture method belongs to [website-improve](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md).
+
 ### Visual acceptance is not an external-AI review requirement
 
 Ordinary UI/visual acceptance is repository-owned: rendered screenshots, semantic/Reader Contract checks, browser geometry and interaction checks, theme/accessibility checks, and exact-head Preview inspection as applicable. **Do not introduce an external AI chat, AI CLI, or local/network vision model as a mandatory reviewer merely to declare a UI change visually valid.** Those systems are optional research aids only when the owner or task explicitly asks for an independent preference/comprehension study. Their outage, quota, login state, or inability to accept a local file must not become a blocker for the ordinary visual-acceptance path.

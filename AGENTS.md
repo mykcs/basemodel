@@ -1,5 +1,7 @@
 # Repository Agent instructions
 
+Shared operating policy: follow [the central AGENTS.md](https://github.com/mykcs/.agents/blob/main/AGENTS.md) and [Capability Routing](https://github.com/mykcs/.agents/blob/main/docs/dev/CAPABILITY_ROUTING.md) for authorization reuse, tool fallbacks and engineering completion. This repository retains its scoped scientific, resource, privacy and release requirements.
+
 ## Historical Codex dialogue archive
 
 When prior product, deployment, or research-workbench decisions are relevant,
@@ -119,7 +121,7 @@ main
 - Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium; **do not claim WebKit passed unless an actual WebKit job ran**.
 - Use cloud Playwright outputs and retained GitHub Actions artifacts for screenshots, trace/video on failure, typography and figure geometry evidence. Where the existing workflow does not yet upload an artifact, explicitly state that limitation and improve the owning cloud workflow rather than silently falling back to the Mac.
 - Request a Vercel Preview/final gate on the exact accepted PR SHA, inspect the actual protected route (not a login page), then separately verify main and Production. GitHub status is not a substitute for rendered-page review.
-- RDC is an exceptional last resort only for genuinely MacBook-exclusive local files, authorized Mac-controlled compute/server access, or capabilities demonstrably unavailable in the cloud. Establish that need and obtain explicit user approval before using it for this task; return to cloud-first afterward.
+- RDC remains an exceptional fallback for MacBook-exclusive files, authorized Mac-controlled compute/server access, or a demonstrated plugin/cloud capability gap. Reuse explicit task-specific **or standing** user approval covering the same operation; never ask again solely because the Agent, session, or tool changed. If approval is absent or an actual action/object `DENY`/`HOLD` applies, stop the affected action rather than routing around it. Use the Mac's authenticated `gh`/provider CLI as a control plane only when cloud invocation is unavailable; keep CI/build/browser workloads on hosted runners and return to cloud-first afterward.
 
 This allocation applies to BaseModel website changes, including research figures and UI acceptance. It does **not** alter the project-level release/security gates, and is not permission to skip browser or scientific-evidence validation.
 

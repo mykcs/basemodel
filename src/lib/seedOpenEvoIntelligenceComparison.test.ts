@@ -13,8 +13,10 @@ describe('SEED and OpenEVO Intelligence UI comparison contract', () => {
   it('has two major stages, both including parameter learning', () => {
     expect(seedOpenEvoIntelligenceComparison).toHaveLength(2);
     expect(seedOpenEvoIntelligenceComparison.map((stage) => stage.id)).toEqual(['stage-1', 'stage-2']);
-    expect(initialization.name.zh).toBe('学习信号与能力初始化');
+    expect(initialization.name.zh).toBe('外部经验引导的能力初始化');
     expect(evolution.name.zh).toBe('内部反馈驱动的持续演化');
+    expect(initialization.rows).toHaveLength(5);
+    expect(evolution.rows).toHaveLength(4);
     for (const stage of seedOpenEvoIntelligenceComparison) {
       expect(stage.rows.some((row) => row.tone === 'model')).toBe(true);
       expect(stage.result.zh).toMatch(/参数/);
@@ -33,14 +35,17 @@ describe('SEED and OpenEVO Intelligence UI comparison contract', () => {
         expect(row.openEvo.explanation.zh).toBeTruthy();
       }
     }
-    expect(initialization.rows[0]!.sharedAction.zh).toBe('Qwen 自主采集 WebShop 任务轨迹');
-    expect(initialization.rows[0]!.seed.explanation).toBe(initialization.rows[0]!.openEvo.explanation);
+    expect(initialization.rows[0]!.sharedAction.zh).toBe('采集 WebShop 任务轨迹');
+    expect(initialization.rows[0]!.seed.explanation.zh).toContain('Qwen 在 WebShop 中执行任务');
+    expect(initialization.rows[0]!.openEvo.explanation.zh).toContain('Qwen 在 WebShop 中执行任务');
+    expect(evolution.rows[0]!.seed.explanation).toEqual(evolution.rows[0]!.openEvo.explanation);
     expect(evolution.rows[1]!.sharedAction.zh).toBe('从新轨迹中构造学习信号');
+    expect(initialization.rows[4]!.sharedAction.zh).toBe('形成 Stage 2 的初始状态');
   });
 
   it('puts the role first and only the replaceable teacher implementation in parentheses', () => {
     const teacher = initialization.rows.find((row) => row.id === 'external-teacher');
-    expect(teacher?.sharedAction.zh).toBe('外部高能力教师模型 API');
+    expect(teacher?.sharedAction.zh).toBe('调用外部高能力教师模型 API');
     expect(teacher?.similarity).toBe('same-operation');
     expect(teacher?.seed.replaceableTeacher?.zh).toBe('（GLM-5.2）');
     expect(teacher?.openEvo.replaceableTeacher?.zh).toBe('（MiniMax-M3）');
@@ -74,5 +79,8 @@ describe('SEED and OpenEVO Intelligence UI comparison contract', () => {
     expect(component).toContain('data-framework={side}');
     expect(component).toContain('data-learning-comparison-scope');
     expect(component).toContain('https://github.com/jinyangwu/SEED');
+    expect(component).toContain('两种框架，一套对照语言');
+    expect(component).toContain('data-iui-reference="user-dark-screenshots-20261029"');
+    expect(component).toContain('intelligence-method__vendor');
   });
 });
