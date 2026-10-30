@@ -3,6 +3,14 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { pageFileToRoute, planHostedUi } from '../../scripts/vercel-ui-plan';
 
 describe('Vercel hosted UI gate planner', () => {
+  it('selects the existing retrospective regression when its report page changes', () => {
+    const plan = planHostedUi(['src/pages/research/seed-openevo/recent-challenges/index.astro']);
+    expect(plan.mode).toBe('focused');
+    expect(plan.routes).toEqual(['/research/seed-openevo/recent-challenges/']);
+    expect(plan.specs).toContain('tests/e2e/research-retrospective.spec.ts');
+    expect(plan.specs).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+  });
+
   it('maps concrete Astro page files to their deployed routes', () => {
     expect(pageFileToRoute('src/pages/index.astro')).toBe('/');
     expect(pageFileToRoute('docs/archive/site-en/src/pages/en/index.astro.archive')).toBeUndefined();

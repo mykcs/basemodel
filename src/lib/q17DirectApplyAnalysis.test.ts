@@ -87,10 +87,10 @@ describe('Q17 DirectApply complete analysis page', () => {
 
   it('publishes native W&B Workspace LinePlots without changing Q17 scientific authority', () => {
     expect(component).toContain('data-wandb-native-workspace');
-    expect(component).toContain('jey7zo1544l');
+    expect(component).toContain('/research/seed-openevo/evidence/source-index.json#wb-007');
     expect(component).toContain('原生 Workspace LinePlot');
     expect(component).toContain('只负责交互查看，不改变封存证据、Final 结果或科学权威');
-    expect(component).toContain('历史 1.7B Stage2 W&B（不同实验）');
+    expect(component).toContain('历史 1.7B Stage2 来源（不同实验）');
     expect(wandbAudit.schema).toBe('basemodel.q17-wandb-lineage-audit.v3');
     expect(wandbAudit.visualization_mirror.score_points).toBe(160);
     expect(wandbAudit.visualization_mirror.loss_points).toBe(159);
