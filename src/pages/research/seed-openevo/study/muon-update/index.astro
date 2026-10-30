@@ -202,11 +202,11 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
 .muon-article{max-width:1090px}
 .muon-hero h1{max-width:24ch}
 .muon-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.3rem 0 1rem;border-top:1px solid var(--paper-line);border-bottom:1px solid var(--paper-line)}
-.muon-status span{display:block;min-width:0;padding:.72rem .75rem;font-size:.79em;line-height:1.52;color:var(--paper-muted)}
+.muon-status span{display:block;min-width:0;padding:.72rem .75rem;font-size:var(--type-body-small);line-height:1.52;color:var(--paper-muted)}
 .muon-status span:first-child{padding-left:0}
 .muon-status span+span{border-left:1px solid var(--paper-line)}
-.muon-status strong{display:block;font-size:.93em;font-weight:750;color:var(--paper-ink);margin-bottom:.18rem}
-.muon-related{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.5rem;margin:1rem 0 0;font-size:.83em}
+.muon-status strong{display:block;font-size:var(--type-meta);font-weight:750;color:var(--paper-ink);margin-bottom:.18rem}
+.muon-related{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.5rem;margin:1rem 0 0;font-size:var(--type-body-small)}
 .muon-related a{display:inline-block;text-decoration:none;border-bottom:1px solid var(--paper-line);padding:.25rem 0}
 .muon-related a:hover{text-decoration:underline}
 .muon-article .muon-booktabs{width:100%;min-width:700px}
@@ -216,10 +216,10 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
 .muon-mechanism{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.5rem 0}
 .muon-mechanism article{min-width:0;border:1px solid var(--paper-line);border-top:3px solid #736c8b;padding:1rem;background:var(--paper)}
 .muon-mechanism article:nth-child(2){border-top-color:#537f68}
-.muon-mechanism h3{margin:.1rem 0 .6rem;font-size:1.15em}
-.muon-mechanism p{margin:.5rem 0;font-size:.9em;line-height:1.65}
+.muon-mechanism h3{margin:.1rem 0 .6rem;font-size:var(--type-article-subsection)}
+.muon-mechanism p{margin:.5rem 0;font-size:var(--type-body-small);line-height:1.65}
 .muon-formula{margin:1.2rem 0;padding:1rem 1.25rem;border-left:3px solid var(--paper-line);background:color-mix(in srgb,var(--paper) 93%,#7f9a8a)}
-.muon-formula>p{margin:.5rem 0;font-size:.9em}
+.muon-formula>p{margin:.5rem 0;font-size:var(--type-body-small)}
 .muon-flow-figure{padding:1.1rem 0 0}
 .muon-pipeline{display:grid;grid-template-columns:minmax(0,1fr) 1.5rem minmax(0,1fr) 1.5rem minmax(0,1fr) 1.5rem minmax(0,1fr);gap:.3rem;align-items:stretch;margin:0 0 .8rem}
 .muon-node{min-width:0;min-height:12rem;border:1px solid var(--paper-line);border-top:3px solid var(--muon-accent);background:var(--paper);padding:1.05rem .78rem;display:flex;flex-direction:column;gap:.3rem}
@@ -227,18 +227,18 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
 .muon-node--signal{--muon-accent:#aa685e}
 .muon-node--model{--muon-accent:#8b6a9d}
 .muon-node--memory{--muon-accent:#58836a}
-.muon-node small{display:block;font-size:.69em;line-height:1.4;color:var(--paper-muted);font-weight:650}
-.muon-node strong{display:block;font-size:.96em;line-height:1.42;color:var(--paper-ink)}
-.muon-node p{font-size:.75em;line-height:1.55;margin:.2rem 0 0;color:var(--paper-muted)}
+.muon-node small{display:block;font-size:var(--type-meta);line-height:1.4;color:var(--paper-muted);font-weight:650}
+.muon-node strong{display:block;font-size:var(--type-body-small);line-height:1.42;color:var(--paper-ink)}
+.muon-node p{font-size:var(--type-body-small);line-height:1.55;margin:.2rem 0 0;color:var(--paper-muted)}
 .muon-arrow{align-self:center;justify-self:center;width:100%;height:2rem;overflow:visible;stroke:var(--paper-muted);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.muon-article .muon-flow-figure figcaption{font-size:.83em}
+.muon-article .muon-flow-figure figcaption{font-size:var(--type-caption)}
 .muon-evaluation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.4rem 0}
 .muon-evaluation article{min-width:0;border-top:2px solid var(--paper-line);padding:.7rem 0 0}
-.muon-evaluation h3{font-size:1em;line-height:1.35;margin:0 0 .4rem}
-.muon-evaluation p{font-size:.87em;line-height:1.7;margin:0;color:var(--paper-muted)}
+.muon-evaluation h3{font-size:var(--type-article-subsection);line-height:1.35;margin:0 0 .4rem}
+.muon-evaluation p{font-size:var(--type-body-small);line-height:1.7;margin:0;color:var(--paper-muted)}
 .muon-article .evo-article__tablewrap{max-width:100%;width:100%;overflow-x:auto;overscroll-behavior-x:contain}
 .muon-article .evo-article__sources li{overflow-wrap:anywhere}
 .muon-article a:focus-visible{outline:2px solid var(--paper-ink);outline-offset:3px}
-@media(max-width:860px){.muon-pipeline{grid-template-columns:minmax(0,1fr);gap:.25rem}.muon-node{min-height:0;padding:.8rem .85rem}.muon-arrow{width:2rem;height:1.65rem;transform:rotate(90deg)}.muon-node p{font-size:.84em}}
-@media(max-width:720px){.muon-status{grid-template-columns:1fr}.muon-status span{padding:.48rem 0}.muon-status span+span{border-left:0;border-top:1px solid var(--paper-line)}.muon-status strong{display:inline;margin-right:.6rem}.muon-mechanism,.muon-evaluation{grid-template-columns:1fr}.muon-evaluation{gap:.8rem}.muon-related{display:grid;gap:.2rem}.muon-booktabs{font-size:.9em}}
+@media(max-width:860px){.muon-pipeline{grid-template-columns:minmax(0,1fr);gap:.25rem}.muon-node{min-height:0;padding:.8rem .85rem}.muon-arrow{width:2rem;height:1.65rem;transform:rotate(90deg)}.muon-node p{font-size:var(--type-body-small)}}
+@media(max-width:720px){.muon-status{grid-template-columns:1fr}.muon-status span{padding:.48rem 0}.muon-status span+span{border-left:0;border-top:1px solid var(--paper-line)}.muon-status strong{display:inline;margin-right:.6rem}.muon-mechanism,.muon-evaluation{grid-template-columns:1fr}.muon-evaluation{gap:.8rem}.muon-related{display:grid;gap:.2rem}.muon-booktabs{font-size:var(--type-table)}}
 </style>
