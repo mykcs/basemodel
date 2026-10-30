@@ -10,7 +10,11 @@ PR [#960](https://github.com/mykcs/basemodel/pull/960) is being updated onto the
 
 ## 2026-10-29 隐私后续与发布身份检查
 
-#958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准。
+#958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准.
+
+## 2026-10-29 Unified browser acceptance qualification
+
+[#968](https://github.com/mykcs/basemodel/pull/968) consolidates automatic browser acceptance into Public PR CI: one static build, Chromium 4 / WebKit 8 complete-population shards and seven distinct Public core/Lab cases. The former automatic Cloud graph becomes a manual wrapper. Original default-reading checks run before the expanded scientific evidence states, and exact source/population/byte validation binds all 4/8 shards. Typography's exhaustive failure collection and diagnostics remain. On implementation head `ec1d30672002d674fac762d2a03c9bf3ba1eac6c`, Public run [40946336257](https://github.com/mykcs/basemodel/actions/runs/40946336257) passed: 1,045 clean cases per engine and byte-verified round-trip artifacts. Compared with the previous two-workflow sample, event-to-gate time was 26m24s vs 40m39s and summed Runner time 10,351s vs 12,574s. This is one observed comparison across different heads and hosted runners, not a controlled benchmark. The first full run failed closed on a 90s timeout for a 77-witness WebKit route; the targeted 180s route budget fixed it without dropping checks, and the same route passed in 84s. [The CI record](../dev/CI/README.md) owns detailed measurements, failure evidence and rollback. The final PR-head state still requires live Public and Vercel checks.
 
 ## 2026-10-30 BaseModel content reorganization · PR #817
 
