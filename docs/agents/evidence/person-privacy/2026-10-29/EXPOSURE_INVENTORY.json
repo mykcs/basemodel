@@ -1,0 +1,2362 @@
+{
+  "schema": "basemodel.person-privacy-exposure-inventory.v1",
+  "baseline_commit": "1ed126cbe2c799520fe365b98a105ef7aa79b7bd",
+  "scope": "Tracked current source. Hosted rendered output and exact candidate CI/Preview/Production receipts are recorded separately.",
+  "images": [
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-desktop-b24c307e.png",
+      "sha256": "969b74e3838a3317f8d2083212650438c85426e529116d48b1c776ad31d8affe",
+      "width": 1280,
+      "height": 19579,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-desktop-current.png",
+      "sha256": "f5468b72510e0f1758274f3d1c8ae0e6bba82aaaa3812547e5e0ebfe8bf4273c",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-experiment-current.png",
+      "sha256": "0b3ec29628d2fb3024ff95f8df44054e642727e1554724cd9dc4f71259f78573",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-a-models-index-filter-current.png",
+      "sha256": "da49a73174c6c2abeed50e3bfa0fa96799e2b950df2970501ed1760b629b02f9",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-b-models-index-desktop.png",
+      "sha256": "989f8d9fe2f026d0fdf31dc512e052f869247c01fbea3c8132e0dc708525e77f",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/candidate-c-models-index-desktop.png",
+      "sha256": "6c5d3d8643866f93b550a49257ed7674e4018a424f2bd2e1c941ada1a62b5da4",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/gated-delta-site-restructure/candidates/candidate-a-vertical-narrative.png",
+      "sha256": "6d5a7a0e7db7a22c6b59a3fa6507c7d49606ece1dff0fb568aa4cfdfb149ad56",
+      "width": 1280,
+      "height": 1849,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/gated-delta-site-restructure/candidates/candidate-b-card-comparison.png",
+      "sha256": "323e20105fea9c247225b2098ceece76b7ae56a97ddbdfa16e10f5bd3835e213",
+      "width": 1280,
+      "height": 1595,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/gdr-directapply/gdr-directapply-desktop.png",
+      "sha256": "95158d32219a2518e90a00a0d84e22c7842bdb836716ff2233f46ac936533cce",
+      "width": 1440,
+      "height": 9340,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/gdr-directapply/gdr-directapply-mobile.png",
+      "sha256": "f5f5fe020993a64db5a28aff6cb5a6bc70f3c640a3bb8db7bdc8bec1f46d8157",
+      "width": 390,
+      "height": 15645,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/vanilla-sd-lora-mechanism/candidate-a-end-to-end.workflow.visual-check.1440x900.light.png",
+      "sha256": "70f8e9959cb7bf51d2c34c0d0126456b49756b557647253edba1dc9c79591ec5",
+      "width": 1440,
+      "height": 900,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/vanilla-sd-lora-mechanism/candidate-b-direction-scale.workflow.visual-check.1440x900.light.png",
+      "sha256": "cde4cd3e1ec842b3fa501ff88e93de58d78c0a21cfd929f8fdaa9699f914ff1d",
+      "width": 1440,
+      "height": 900,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/evidence/vanilla-sd-lora-mechanism/candidate-c-parameter-equation.workflow.visual-check.1440x900.light.png",
+      "sha256": "41b5213fd14ce5c20f4b69b9bdfeaa7df032d17143d793262977d727b74b4344",
+      "width": 1440,
+      "height": 900,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/history/2026-09-11-text-memory-research/candidate-a-original-page.png",
+      "sha256": "91c107035a9f12b4fc73bc8a8c386c5e672b8e54bfd6d4ec34fe9065cddaa326",
+      "width": 1280,
+      "height": 633,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/history/2026-09-11-text-memory-research/en-dark-1440-slide.png",
+      "sha256": "81f5bc52a9df122d14e5462b6234c98335bdb6aaa7cdf9894246710509179d27",
+      "width": 1280,
+      "height": 721,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/history/2026-09-11-text-memory-research/zh-light-1440-page.png",
+      "sha256": "e375939d4a4d9aecf5b461641b2be481333d9cf4b132fb29c89f98dc5578369e",
+      "width": 1440,
+      "height": 4036,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/history/2026-09-11-text-memory-research/zh-light-1440-slide.png",
+      "sha256": "a3a9c1e3651a7e62b9e22e3425bc8e0cdd4bfb51202a917701998b602d71f8b9",
+      "width": 1280,
+      "height": 721,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "docs/agents/history/2026-09-11-text-memory-research/zh-light-390-page.png",
+      "sha256": "a429bc11f37474633e4b02ba16150f1c4a459f9ea4b2301b8aa3ff39bccb3914",
+      "width": 390,
+      "height": 5552,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "public/brands/arxiv-mark.png",
+      "sha256": "5add8f07a3a7268c6690dfbfa3bd8cf84f527074b92eb3936d4bb8e010f9e60d",
+      "width": 32,
+      "height": 32,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "public/og-cover.png",
+      "sha256": "4d29d2885cf88253932fccf6c55f59888b31ce30dea8b5f9dfac4ed669cc7594",
+      "width": 1200,
+      "height": 630,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Current AI inspection; neutral existing SVG restored"
+    },
+    {
+      "path": "public/research/seed-openevo/figures/vanilla-sd-lora-mechanism-slide-en.png",
+      "sha256": "b961ece7b58092c59f83baac6fcff7c968301a1ce3821d50acadb38075f7c4c6",
+      "width": 1120,
+      "height": 631,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "public/research/seed-openevo/figures/vanilla-sd-lora-mechanism-slide-zh.png",
+      "sha256": "c509990d3951f0e01003ce74d8c26e40c68bfbf941a7de9553bcee25658e31dc",
+      "width": 1120,
+      "height": 631,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/comparison-en-1440-chromium-darwin.png",
+      "sha256": "c2fcdda8cb785a6a801c18d2a8e1c8be3da9c7fe8c4fb7fc8d6241efd41fd341",
+      "width": 1180,
+      "height": 4204,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/comparison-en-390-chromium-darwin.png",
+      "sha256": "8613c9eb133d6cfca8e6a8cf9de61ad7d406734b62f67877713b359a358920ca",
+      "width": 368,
+      "height": 13828,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/comparison-zh-1440-chromium-darwin.png",
+      "sha256": "e77a2671a2c8f9a415ab9307ccbfab9d75d1455dba6afa70152eb34e8c4f80cc",
+      "width": 1180,
+      "height": 4144,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/comparison-zh-390-chromium-darwin.png",
+      "sha256": "bfa2ba3187dc5479ba88c7c8d328c0371ef0bdfc2228e1524c257e7821b29806",
+      "width": 368,
+      "height": 13687,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/header-en-1440-chromium-darwin.png",
+      "sha256": "30692f6d6a92367f4934c7aa8914f4d39981392a125aa7931f60e14ee4757b06",
+      "width": 1440,
+      "height": 73,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/header-en-390-chromium-darwin.png",
+      "sha256": "e74c945cf406d5d98b300f26629c888938c6968e23c0aaa2390b2f73feded4c5",
+      "width": 390,
+      "height": 59,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/header-zh-1440-chromium-darwin.png",
+      "sha256": "9be4dda43a70352f5069b6352f7867e3a7dfe480e61a57bdae32ef1fd0769b3a",
+      "width": 1440,
+      "height": 73,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/header-zh-390-chromium-darwin.png",
+      "sha256": "e74c945cf406d5d98b300f26629c888938c6968e23c0aaa2390b2f73feded4c5",
+      "width": 390,
+      "height": 59,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/landscape-en-1440-chromium-darwin.png",
+      "sha256": "68422eb64b433169ab4368883cc8526dbc850e1f0ac92ccffaaafaaac20d208e",
+      "width": 1180,
+      "height": 697,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/landscape-en-390-chromium-darwin.png",
+      "sha256": "21a2ed64d6832f686da330af1cb251d76d1b081ee564c6538cdadaa0cbcc2fb3",
+      "width": 368,
+      "height": 549,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/landscape-zh-1440-chromium-darwin.png",
+      "sha256": "8917d98fac57c5b1ec0336d8091738b20e2f33485a3b5f4bf89f39b8d1d3bd7d",
+      "width": 1180,
+      "height": 697,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/landscape-zh-390-chromium-darwin.png",
+      "sha256": "1743d9c752060e095df6eb6edfc981569d8c12e2e3a17bcbc90b8926110014dc",
+      "width": 368,
+      "height": 549,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/matrix-en-1440-chromium-darwin.png",
+      "sha256": "56f252d96cd68c6a053ea461db62e8d81b4094987a4e6459bae5880757ddc2ac",
+      "width": 1180,
+      "height": 713,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/matrix-en-390-chromium-darwin.png",
+      "sha256": "720ab9cc2936742077b5b9c08a83724b08043ba3e714694ebbc8f39a5c8d17dd",
+      "width": 368,
+      "height": 690,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/matrix-zh-1440-chromium-darwin.png",
+      "sha256": "932ed6d6081ca1f409bde61b699095f012e5233b08203c4fa579f2f126d7c211",
+      "width": 1180,
+      "height": 713,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/matrix-zh-390-chromium-darwin.png",
+      "sha256": "89a42e635b98d53f384a81344537106c1bc46a73fadf103fcf59eb34b9415f07",
+      "width": 368,
+      "height": 690,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/stats-en-1440-chromium-darwin.png",
+      "sha256": "2698743137cbe82efe3b5235996b1b415a6ab8678528ec9b07facf023a535916",
+      "width": 1180,
+      "height": 109,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/stats-en-390-chromium-darwin.png",
+      "sha256": "a6703998380cbbc76da899a82e13e5958887a651fbfe7ec879cbb51dc425fff9",
+      "width": 368,
+      "height": 534,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/stats-zh-1440-chromium-darwin.png",
+      "sha256": "069421256dbbffc78173165ed3c38c0ad9f5c95db4a96edac31ea21f7e6e9e21",
+      "width": 1180,
+      "height": 109,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/stats-zh-390-chromium-darwin.png",
+      "sha256": "c8da28f98f2fb23ba255a49020c07ae38f3de5870b60d06d63a830f690182219",
+      "width": 368,
+      "height": 534,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/workflow-en-1440-chromium-darwin.png",
+      "sha256": "83593c082b92ea93b7eee0b6e6fe708ca16bca928135b8ee649b873bc63a432e",
+      "width": 708,
+      "height": 301,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/workflow-en-390-chromium-darwin.png",
+      "sha256": "182259553a1f5c7430415bfb0a6df4533f29851bc2940b1a9c57279e81ab9597",
+      "width": 368,
+      "height": 341,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/workflow-zh-1440-chromium-darwin.png",
+      "sha256": "5c33ffe5c88db5af0323f2ebee1a0ba0f95fe587ad0146a2bb25d55d068a6fb4",
+      "width": 708,
+      "height": 277,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    },
+    {
+      "path": "tests/e2e/visual-regression.spec.ts-snapshots/workflow-zh-390-chromium-darwin.png",
+      "sha256": "34ef56d1bd67829f5587afb05366979e23cee8307662c4d3586e5586b113c0ad",
+      "width": 368,
+      "height": 297,
+      "decoded": true,
+      "exif_present": false,
+      "xmp_present": false,
+      "iptc_present": false,
+      "human_review": "APPROVED by repository owner on 2026-10-30",
+      "ai_review": "Prior #958 AI/OCR observation; unchanged source bytes; not human certification"
+    }
+  ],
+  "pdfs": [],
+  "path_risks": [
+    {
+      "path": "AGENTS.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 11,
+        "sha256": "430f2314397dce93ee362d583d732a4ee5f83d1d3c7ac8348a3eb3f04ccd50bc"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "a587ae5600525979f0d7d147e03ba9db7ea5050c74be9686f3ecceac610d84f8"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/LATEST.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "705902b6086d0423c4feb64fa0b333e26e37b848144acb9a5957f7c361cf73a2"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "cf88ee0214778d5c0b669d71dae88ce7b047788b2280ee235448bf3e35e3ef72"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/EFFECTIVE_STATE_GDR_LORA_WEBSITE_PUBLICATION_PLAN_20260915.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "551c1a9df00931dcbf99c4b4540b274ac0c8d9b85f3436fb2df1582810579862"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/experiment-result-publication-workflow.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "71b719f5466337b5aba3ecbbf1a1a65f50e76249cd6e9320769f14b85f14c18f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/human-feedback-ingestion-closeout.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "f660bcf03294b41993dd7e2f09ec6582d18e109ca51f060ee8a6d4c5854eff7d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/human-preference-learning-system.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "97b2bc9df40bb9afcaefe3de4727f5e0d1f69722b4365ca0aaf55c95f9ae5a58"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/layered-technical-explainer-copy.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "8cf1d95fce29ae7dd2de7e87031a5fc6146cdb5b67d8163aedc4a8f7eb13ac52"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/mechanism-site-authority-snapshot-202609062000.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "1bf0c779e9bf426b81eba3d6caa8942d624c03c65fc8ee9c996bc7cd4840bd46"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/reader-first-copy-hierarchy.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "844ff31501534d6a00507d42c3cee82971333f059cb4cc55bb3b0d70490d8c32"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/research-result-reading-contract.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "f7996e03f8901c62792b70ac940264333d09e9670d24b7dffd94be717ea55d2d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/research-site-presentation-contract.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "98320bb6ec9e1eff37f10bdf57dd84a280d7c0667daf43e8513897f88a1f078a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/scenario-trigger-registry.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "91ddfd5814a0ea155b07440b6f6d6df0a3d42f46ed4aacc29d20caa8ac27df54"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/scientific-state-provenance.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "ca3ee94ea538981a75d7d670690c8754a897ad07f2afd03d03507eea54bbd37b"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/seed-openevo-research-ia-authority-revalidation-2026-09-03.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 22,
+        "sha256": "f17d6859b0f574cbe67074fbb1d69772b396d7d825c374907223082d16ac6533"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/ui-design-principles.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "2a3a37eeb3bf715c85b7a34a0876d4c82df7750eab0a5150e250d228d71d0d55"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/website-copy-cases.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "c00b199aba10d699dd0571bfd763f689a2647d878127fbcd38766da3ab59ab06"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/website-design-spec.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "2bf33bd59291986f3857001b9560fcc432f09c41071fec5b0ef9d5f9d37d5de4"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/website-engineering-standard.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "b3973b1bb12d895e0e35d04fa6a3731f500b63d79cac1aed8aed3733a032748d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/papers-matrix-20261022/RELEASE_ACCEPTANCE.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "6217b5b04e4ee2061e96ecdfc8490b23648736e5fd183ab751dd3b4e6c62f269"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-20/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "34d33d96d956a275329e4fdd2b9937a9518caf49e7f92ba9445a4213af3fa202"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/FOUR_ARM_REASONING.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "1ba949552b490febbc48335e60f3fa3046815f6938474c93fe7758b10f0a5544"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/MINIMAX_TEACHER_READABILITY.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "1fada34a8cee5aa49664226b05532adb45f2cee1990ebebbea65116c64eb2a45"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/WP2_FOUR_ARM_READABLE_DATA.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "fb8cc63e2a6563cdcc8c90fed743e8a986bdddc6e3df1ce5915b8b137e413d5a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/WP_B_LEGACY_GUIDE.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "3dc1b602b7482ef938ac9ec471b4c1d570b2c36a4ca5f6af0e9e72e28b3279dc"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/WP_B_MODEL_CATALOG.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "781098f3eed80ddbb755e6b90f167542a52659d78d0f03920693b7dd7155fc5e"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/WP_C_7B_HISTORICAL_STAGE2.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "a3393155bf8d9a54876d299ecbdfae2d2b9c74b3875d96fd3b79da8bd9db9a53"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-21/WP_C_METRIC_NATIVE_ZOOM.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "005463af8e5e91ac518c39d45596c2faf05ed83345516a3672f773ed059bce06"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-22/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "4147fb1e7e8e5698e4cc5d27291bc2cfc496aaed25f64a45bee624ede7ae6da0"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-22/WP_D6_Q17_FRONTIER_TYPOGRAPHY.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "2ad14b2a465a93b3b336bb45ead3ccce463e1a2c9ea14d6203d37d29f0c3f740"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-22/WP_D7_NATIVE_SVG_AND_LANDSCAPE.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "3b9291554b35838b3eae3b1e63a90124f3d8dec4322ce25bf1888829d19d0294"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/typography-experiment-selector-review-20261020.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "122c7b500accf9b1e98c89c6dc15e88463761a011bd28364230502ba4972a698"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/typography-method-stage-migration-20261020.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "c495e63a6a0a6ffc8a3bded0e8e2a0dc02f443ebd4a5c6780158464b959ce716"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/typography-product-tools-20261020.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "1463019c5ee71af72a66e87f4afc1024647c7e438da6787a1d616ddb321e07fa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/evidence/typography-stage2-genealogy-reader-review-20261020.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "7b047a25b65ee0c63390342649d3f88ab7be567c6e914e14ca7689dc563144ff"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-12-open-pr-semantic-integration.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "3345907b550d96afb4f92ab5ad9e08c4197da3c670baa182243bcede1e073998"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-21-webkit-runner-recovery.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "ab39cefe2e9d6c6b338f384a719086d01ccb84277fdd4bc112798850141e1afb"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-26-seed-results-source-faithful-128-integration-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "0d9fc9225fdf8ca2a861f204e0e3a72cc6481a30886d0fcb50eceb4a29f4eacc"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-28-site-three-pass-audit-and-release-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "b251aed30d251937d7f809928bc7057c0175c9713c9b71f0d3d1b268c559ab89"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-30-all-branch-site-optimization-audit.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "ec8da3254c1155488cd699ffe268d8aff6754746dbda7cbcff921e0092cc7a90"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-30-site-optimization-implementation-and-release-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "a9084a90469a8eeb32e9652e912b58350c2c32d78f249b4c3ec6528f7e731e18"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-31-ceiling-stage1-versioning-gpu-handoff-and-artifact-publication-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "6c4a3177135b9d2a27dc4ab1080047cfa8bf5a31046cd03158b7d89e75c54d8d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-31-ci-pr-stability-and-moving-head-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "0d9a7c8ee6961704aa7a5f56cbc3e7c1bdbb1e0ae49edfa89a2f2b7e410dd4aa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-08-31-human-copy-preference-mining-and-governance-retrospective.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "b28d6ce06371077414827b320fac3e58db4cbcbc82fb79e33d19c932fac7c0aa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-09-06-reader-journey-repair.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "adadc5a647c09248706e91d74f5881fb81a8fb688d0c6f6b52d4f0ff55a97681"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-09-07-full-conversation-experience-deposition.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "8631635bc144d8ec655f41dba9ca19885e3564b10b05102c29a3319782713c4f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-09-07-mechanism-ci-route-ownership.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "3d3d7eecdb61989bc9867a33da3471adadb3f8adcf0a9d0d763c2f135c061d6f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-09-07-reader-journey-experience-retention.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "31066a9bde76266686321b2c0ac256fd1c927d48ab93c29a05678516dad98c8f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-09-21-vercel-github-author-identity-mismatch-case.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "9f4862890007547a3b7f5887fb7e2b68f0b040d0f675b7fe73f45c4684c0a602"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-10-09-advisor-ten-visual-expression-audit.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "03b397e36b15416f872da4e346b1372a37d6212e565f7b89c0ce9b4748df8b60"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-10-09-research-report-reader-journey.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "5a999bbe77ee17f0934f02c3b70ab6f8cda8c807c2959dff4d478280fac3a73e"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/history/2026-10-23-advisor-q01-q10-fidelity-audit.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "f0e75d70621f59fbbd7c6d0593d5fff5f57906c46ade717502e7fb1c68f1d704"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/dev/CI/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "2bfa193de3dfca008989db1d83868bd0d338596f77ecb9c9424ac4b211425cc5"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/dev/DESIGN.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "6404205ec7fde0d469cafab1b42791904de783796a81e42290386a651d8fd74d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/dev/PROJECT_REPORT_SITEWIDE_20261014.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "09362b963c75aa98fd7a8894dd61fce9d7bdd6775ff7aa31624a24e08c6c84ff"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/dev/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "8269732eebc76eb7a8dd657696562dac86c18b7c6076574f0fa7b7cba96f91d9"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/operations/governance/CONVERSATION_LESSONS_CLOSEOUT.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "6f73cf3f22bcce7df95177609d45570b8c400098ac73be438c5e1189cdf074df"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/plans/2026-10-20-figure-cloud-closeout.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 9,
+        "sha256": "d9f185a0d11e02269451bdf0096a441744a17368d8d7f6b2a0e387b935086935"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/plans/site-upgrade-20261002/tasks/A01.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "946fbd8961e9090495ddc093fc771cc18553147c55cf3a7702793ec6819b68ee"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/plans/sitewide-typography-20261020/CODEX_EXACT_HEAD_CLOSEOUT_20261022.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 14,
+        "sha256": "c62effd16bc19e68114ac3e40746bd3c344717ba06531cb383250ff32b6209b2"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/plans/sitewide-typography-20261020/CODEX_EXECUTION_PLAN.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 17,
+        "sha256": "658ab5e7edd98e9c5c9abe966b6b31eaa2b65b81bcb17c8c4ccc5492a4067ce4"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/plans/sitewide-typography-20261020/HANDOFF_CONTINUATION.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "2d68635de853583949e57d5fd43cf77fe53c35d3d4efcfd8f557e87b1a2c8382"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/reports/2026-10-10-advisor-ten-iclr-style.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 55,
+        "sha256": "fe6d4bc9a3dd7dfcdd9f212b203161bf5b30728eda3fe9b025acd3c704f93486"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/standards/ACCEPTANCE_MAP.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "3a7b5c1db35138be328369b784d2aef001508209d6bfd1dfa47cb7e37127f7a7"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/standards/OPEN_GAPS.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "533ac0732655f86b58c2d1bbe450ae33fefc6875878e12466fb1622381297b35"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/standards/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "aa07250dd840d6b8932985985925e01317131b3d46439862adcd5a2f32e71828"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/standards/REFERENCE_INTAKE.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "0bdb43cbaeea51ffa0c710406601fcbb442626b56f06d43bf4948fde464d9c43"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/standards/REFERENCE_LIBRARY.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "30470807fbeee341da2b3046e9933788b1ca9ff01dad3e2f8b8a6009f7a71be9"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/wish/README.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "089beaeefc3c3d364a854c6e4219a3012e5cbb490b86d64da25138332d8fd75f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "figures/latex/advisor-confidence-intervals.manifest.json",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "4b1c88b07f0323be2712581087151855e3662b43a729ef664942b4752e892cb4"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "figures/latex/q01-three-way-pgfplots.manifest.json",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "bbbd453873879c87a5acd499150ad4c6b49714d654daae0d7dee483f3c3abab1"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "public/research/seed-openevo/evidence/q17-directapply-frontier-plan-20260910-2312-sgt.json",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "e6568e8802a4e2a5c52e24667c15ca541cc896ad34e7996c702d3e6a17d2a2c6"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "public/research/seed-openevo/evidence/q17-text-memory-research-20260911.json",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "3dd036bc8d38c2be0a76bc9c34869517493417c23eb1a3d63e3aa01716f64555"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "scripts/lib/person-reference-privacy.test.mjs",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "HIGH",
+      "kind": "provider_account_locator_or_guard_pattern",
+      "evidence": {
+        "sha256": "6ab1b92cb6b47e27383290e3d79571d23fc2575d935b992a54978378cf14a27e"
+      },
+      "status": "REVIEW_CONTEXT; HISTORICAL_DOCS_OR_TOOLING_MAY_RETAIN_LOCATORS"
+    },
+    {
+      "path": "scripts/recheck-stale-models.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "46d852b3ba9685871d39c82e70915e4a3c3c89d4b4c6e119b03c8f21f773338f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "scripts/vercel-git-range.mjs",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "4c2c81ae37aba1a96c5c65a87badbac5b421391752b982bf53be6d584771754c"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/models/detail/ModelDetailTools.tsx",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "6b044b820c93f199dbe8e0124bcf0473e7a40e917143ff748b3fd6045976bfd9"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/AGENTS.md",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "9d1948d6a2370020c2413a05ce4a60721149e0e06c40bc4ac4137c6a0498d235"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/AdvisorTenConceptUI.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "05d6ba53744b411cc91c87655eca4774408835540543369dcd2f6d619630884a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/AdvisorTenEvidenceVisual.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "bd11c89816f73baf98913429d0b7516ceddf561d68e841832b802ee8d5f583be"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvo7BStage2AnalysisMap.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "d5bb89ebed8910d38b2e1696b83764b7801281db5067c241eeb9aafc0e36a690"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoActionWrapperAttribution.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "bde02bf73a5d7178e05cad9e6fbd942027d2a6ebd4efa32c87c7c1dd031fe2c9"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoCeilingStrategy.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "5b867d980654bbe7497e7d7f2838aac0ee408bb0e262304e1a166ab491191d2f"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "8f3dbf91e1feb870066772a1e863985e8a51c6d593b2e04a8de56d57519b7bd2"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoExperimentArchive.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "6b6255604f778b9e8be82855e157b50f9295123d95854e21043426f9022027a7"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoExperimentDesignCatalog.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "86b6ac1422793a273354d2eaed513e4bb0a85ac96e12fbad864eb0d00cabb6e4"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoExperimentProgram.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "a45fdc065dec07ec0d5e63de26536f3427a64d5a1c1552b95aaa11acbc23f5c5"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoLegacyStage1Archive.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "317c5441336c78f7fd75881d493b4dbb07ed3361fcd15a7e6ab02be36ff6d9a8"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoLegacyStage2Archive.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "ba90984071dfb1a10ef05e5ccfb88bc54bcc070228028d7a13a924dc95ec670a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoLegacyStage2ResearchJourney.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "ee8f0a8ed352a361f0593549a946b95102d0f3fb6fc0b7dbb9e7ddd534bbe81d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoMechanismMap.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "4a40f9b7bb8f7448b855d911855142621af9497ec95239f1d380a41400bafc57"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoQ17AdvisorDiagnostics.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "4d4b8d52d014d89dde4685f4bf7ddc9cbc5c6d231f11c4e9d62b93e7ec9fc264"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "2273259e4f4f1e9aea56c6b8bbea738af2e27b9b217231e6d0fa82cefab9dfb7"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoQ17FrontierRoadmap.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "c6a2367c0bab4468e6f71aab17d407423ecfed052095f3ae28a5b342864a38fd"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoSdLoraBoundedRecurrence.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "0d3b49f954da5cacb575996191e95f28b425ee9419d7c5d6e77b33e39938ab03"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoSeedWorld4Reproduction.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "1741732d3d4d5f6e624e7724035a49a6bb1c832dda2152579f4f520582579b09"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoStage1EvolutionMap.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "1e979d42267857e0e4ba33aeef9be3d95624a3da135180d9d68f947bc7d818d0"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoStage1LearningObjectives.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "c798e04fe5c46b85246e83a9c965db2fe6a01ceca52066ec17f93eb4ae180340"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoTextMemoryPlan.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "0898f06c7bc1217e4ba0726fd574dc49a1e8c8ceb8e30e3be3449e5721e66675"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopCurrentQ7.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "3c15bc350e590da04a97845b3a9e38f58bc8050f367eafbea0f5ff224e32d516"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopG2Ablation.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "0517390a48629efcd7966c1b820279e191e3adff78409a6ce6ac4742fa2161bf"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopNextSteps.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "0552a6faf52812e7307a87470ac636c2cbf3311286a22a6d2170f17fa8ae6269"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopResultNote.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "87c4bc37e6993afaae44c0a21e1f3ad6a0d839b95cc73c41a897b4de65182aaa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopResultsProtocol.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 5,
+        "sha256": "2d9b5568ff680316229728ff266caba86eada133983f74d3800614455fdb6110"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/OpenEvoWebShopResultsQuestions.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "b0788bddb616822e5e40e9dc8667b31ef51d8191bc5a668f64c27a7af1bc851e"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/Q09TextGuidanceIntelligence.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "8535950d0bf8324975bc8c70bda87c2adb2dfa3b96765a0c3515c8e791426f1a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/Seed3090EvidenceGate.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "35918b80aae2f5bac71838f978534a1a33b1165622838a2cfd364611c8942adb"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/Seed3090PairedRunAudit.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "e936f61ebee06dbd841877b61475bf2c042e586e6ac34a3e02be4a003ad0a406"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/Seed3090ParametricProgress.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "e0e65d872b7ae55b2f0c42a2515dff9e92f633b8eb50eb435a73b36887032e8e"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoBriefingTechnicalNotes.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 7,
+        "sha256": "c41e0553c82b5fec3991b6bc5d0b63316f2787e7b45a7204e1c40848102fa7ae"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoProgressBriefing.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 9,
+        "sha256": "9ed7150ac0a00faf490b01db4362897de7f51b0144dcb18645f237496f238014"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoStudyOverview.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "607b974e397b09964ff04b67243fa0c38015a3ca998b9c2514e5e3d1b57d7f28"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoTrainingDesignOverview.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "5a730b803a8d0b53fafd89f1cd6df8c6b84844c506e1a8d639f8fcfb47f6bd6a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/components/research/WebShopTrainingNote.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "d49a1e29848bad077c521484817e0ad14fed1c6ec0ef615332cfcb752cee3c83"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/advisorConfidenceIntervals.json",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "6e00cd11bac804ebc09b2cae4a6ffd8888e18655c3339b4b4b380b8b11ebe35d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/effectiveStateGdrLoraStudy.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "52e2de193816199bb7b308b2c4176044b49a9ee534723cc2758edfd9ed665fdd"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/gatedDeltaSdLoraPublicationSnapshot.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 15,
+        "sha256": "0d35008c49278b2260636611fb6ea4c73ff730a47824bf74877e3b454c8189f8"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoAdvisorMeeting.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "761c39bbc4cd6a78a39811b26e1881a63d5d3d4904238923149cfb28f418e60e"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoAdvisorTenQuestions.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 29,
+        "sha256": "bed6605f039213494ca93ca77e0231445a4e57ceae66680df826d89d22e4d887"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoDirectApplyLiveDynamics.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "b49d31a4e779e9cd1303e267899dd19413364b75bb7c37b0839370984d92a852"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoHarness2Qualification.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 3,
+        "sha256": "f14c0b95a36b1bf1f0a214657c5749090f1315ef0eca2b63980b6c8bac62be2d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoMechanismNarrative.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "94a1581be566c70ef4c81920e9a0cf1b661b03d2ac656ddf0798f0d447e021d8"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoSuccessorNarrative.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 8,
+        "sha256": "523fcb5f9b04bcef82d96c69d46df86d8f234c491076e8cc531e63a7a9ba0362"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/openEvoWebShopProgram.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "91d9569aed9562ddc181bd19d9d03c9f0423762954ec77a5fcdc9d6bce1d90c9"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/research-evidence/advisor-q04-gpu-round140-20261022.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "0e800e7f057405795a2b64581601948ba94c4066a134d6a8cfb8b64641fc3d26"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/research-evidence/advisor-q08-seen-retention-20261003.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "b92b1e0b1d2035f48d01861321ed7ee6d3e39d6f431dc806680137b663830b57"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/data/vanillaSdLoraMechanism.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "416177a93783751c84b3b45a48402d8de8584afffd4232c9f65e28c166fdb8cb"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/externalLinkBrand.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "25b33c6d1186e26e0480dbc62e2cc8264f3272063017ac3bc83cb248190dd363"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/openEvoAdvisorTenQuestionsReport.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 4,
+        "sha256": "f5cfe93c1236352a6c48140eee49ee1dfb1040c1fbcc4ba13cc12a28a1749539"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/openEvoScientificState.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "2b447b38d6b4d47944f5cbc7e99df96764567f76b2cc31971b90d963e675db48"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/openEvoTextMemoryPlan.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "47f949a9c919951d434e8769d3713badb33618588a536ee2646d9d49af6c42d0"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/openEvoWebShopProgramData.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "b598a84ba2e5a87ef8a260b2d5220ba74e4050429919aac68f8c987870fb97e5"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/openEvoWebShopResults.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "b65c41cd93b9cb794f744d62ee20abdb11ab99e2be9d55efaa3d52caa4943de4"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/researchEvidence.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "8181e4a759d612a529c94e524d42a0d266a6da6ca751474950338b2d4a0e2386"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/researchEvidence.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "7ed4aa698608620ce44dc32958777a65bf87afe3eb5b613af8171a48268bb46a"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/seedOpenEvoProgressBriefing.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "e004839daf532546011f3dc1facf364068829b4f79342bcc9f99c80708ae5f2b"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/lib/vercelPersistentGateRange.test.ts",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "f50376cc40194adf2d62ee19673ba9f6ff7551d1c5af10b1b54ac6052d94ee6d"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/_bodies/home-v2.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/guide/today.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "87f5a378fb45b6ee527ff3d8c97c79f0b90f07def7bb22b36ebbbf0187933193"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/lab.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "816c29f87046a8a3bad2516465979033a4fb5e131081f29ee57b8979d76ac26c"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/recent-challenges/index.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 7,
+        "sha256": "85950f5f575ac8930758d53c9868df568a0b6141b32d8b57c9e1cfb0c34653d1"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/advisor-questions/index.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 2,
+        "sha256": "bb70c7d1a3affd74756792c9c1db7ce93e21cc527e9ec4e913124fae86e8bf53"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "594108f797366770b958e0e2019baaf8872fb826dc004be3a8d51bbf83e66eaa"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/openevo-methods/index.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 6,
+        "sha256": "e02d56011c80784983cf47b88a1bc16b0a4890294e34dc096e5538f643f67c88"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/parameter-memory-results/index.astro",
+      "surface": "CURRENT_SITE_SOURCE_OR_DOWNLOAD",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 32,
+        "sha256": "ccf99efc9c524918291038a2809c260abf59fee212d00a6632b3ca6564759f33"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "tests/e2e/external-brand-links.spec.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "HIGH",
+      "kind": "provider_account_locator_or_guard_pattern",
+      "evidence": {
+        "sha256": "8cb5feb7979466d99185e83314dfcff438fbd356aafc2ebdc85cc25b4d488b02"
+      },
+      "status": "REVIEW_CONTEXT; HISTORICAL_DOCS_OR_TOOLING_MAY_RETAIN_LOCATORS"
+    },
+    {
+      "path": "tests/e2e/open-evo-webshop-program-report.spec.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "repository_account_link",
+      "evidence": {
+        "matches": 1,
+        "sha256": "0c8eae74971e02daacc51fd2c1768735559d86456fcfbdb104dd043d1f906c01"
+      },
+      "status": "RETAINED_FOR_SCIENTIFIC_OR_REPOSITORY_PROVENANCE; INDIRECT_IDENTITY_REMAINS"
+    },
+    {
+      "path": "docs/agents/current/VANILLA_SD_LORA_ARCHIFY_FLOW_COMPLETION_PLAN_20260913.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "98807fc5e1a915561aac67df29e9eab4fdbf273c0175700b213cb8bab0463a4f"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/agents/evidence/base-model-flow-to-models-20260913/phase-i-vercel-final-gate.txt",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "30c6d80860ad53125eaef75c3a07cde7f08963dfe44abd2185ecc6dd2ed697db"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/agents/evidence/sitewide-typography/2026-10-22/WP_D7_NATIVE_SVG_AND_LANDSCAPE.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "3b9291554b35838b3eae3b1e63a90124f3d8dec4322ce25bf1888829d19d0294"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/agents/tasks/WEBSHOP_FIRST_PRINCIPLES_COMPLETION_PLAN_20260913.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "3766db70d7085402549bb8adb9de99f1317be48a3132641637085e5dea553385"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/plans/sitewide-typography-20261020/CODEX_EXECUTION_PLAN.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "658ab5e7edd98e9c5c9abe966b6b31eaa2b65b81bcb17c8c4ccc5492a4067ce4"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/plans/sitewide-typography-20261020/HANDOFF_CONTINUATION.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "2d68635de853583949e57d5fd43cf77fe53c35d3d4efcfd8f557e87b1a2c8382"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "scripts/audit-audience-copy.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "1a1f892de061cc7af738a22df315659361135d071a02e27d1fe69aba60efffb9"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "src/lib/openEvoTextMemoryPlan.test.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "47f949a9c919951d434e8769d3713badb33618588a536ee2646d9d49af6c42d0"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "src/lib/publicReleaseSecurityGate.test.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "f258dd1c9ee3cf9fa2c910d9b0c45e96fc1a5ebb71a19c374574875c44534ee0"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "src/lib/researchArchitectureDiagrams.test.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "4c66e964d5fb1e54d70d8bb89d6d2bbb2480f8c691403f554125325c45ba411c"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "src/lib/themeContrast.test.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "1fed504de6cef457b065daca2e1b05d99a1e1c75556e3cb1db6e5f2de945ef59"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "tests/e2e/public-reproduction-guide.spec.ts",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_account_fingerprint",
+      "evidence": {
+        "sha256": "9e18e9a3123f5247751f81b18c7dc16cec9f2459a6139dbb47f1552309829ace"
+      },
+      "status": "RETAINED_TEST_GUARD_OR_HISTORICAL_PROVENANCE; NO_CURRENT_SITE_MATCH"
+    },
+    {
+      "path": "docs/agents/current/openevo-reproduction-research-page.md",
+      "surface": "CURRENT_REPO_ONLY",
+      "risk": "MEDIUM",
+      "kind": "private_project_display_label",
+      "evidence": {
+        "before_commit": "79026814d001da2a4459fbaae62c4edd9f05d24c",
+        "before_sha256": "0035dfa767ddb0d34e39ffa27498e18d1bf24c200191b508860b24a4d0fcee3c",
+        "after_sha256": "d36c641795dfae60a8f959994eb4229315f3745029f5df2d9383199c7778195f",
+        "unchanged": "Date, Kaggle/Colab, model/runtime facts and scientific limitations; no original receipt or URL changed."
+      },
+      "status": "FIXED_CURRENT_EDITABLE_POLICY_LABEL; PUBLIC_HISTORY_REMAINS"
+    }
+  ],
+  "unrevoked_surfaces": [
+    {
+      "surface": "PUBLIC_GIT_HISTORY_PR_DIFFS",
+      "risk": "HIGH",
+      "status": "RETAINED; NO_HISTORY_REWRITE_AUTHORIZED"
+    },
+    {
+      "surface": "HISTORICAL_CI_LOGS_ARTIFACTS",
+      "risk": "HIGH",
+      "status": "RETENTION_AND_ACCESS_VARY; NOT_REVOKED"
+    },
+    {
+      "surface": "EXTERNAL_WANDB_GITHUB_CACHES_CLONES",
+      "risk": "HIGH",
+      "status": "NO_REVOCATION_CLAIM"
+    },
+    {
+      "surface": "VERCEL_GENERATED_ALIASES",
+      "risk": "HIGH",
+      "status": "TEAM_NAME_CLUE_REMAINS; SETTINGS_CHANGE_REQUIRES_OWNER_DECISION"
+    },
+    {
+      "surface": "W_PREPARATION_DIRECT_ROUTE",
+      "risk": "MEDIUM",
+      "status": "NOINDEX_IS_NOT_ACCESS_CONTROL; EXISTING_VERCEL_AUTHENTICATION_ALL_ENVIRONMENTS_RETAINED"
+    }
+  ],
+  "boundary": "No full anonymity or human certification. This report never republishes private account locators. Scientific measurement identity stays intact.",
+  "identity_fingerprint_scan": {
+    "current_website_source_and_downloads": 0,
+    "repository_only_paths": 12,
+    "status": "Current raw account clues removed from production inputs; retained tests and history do not prove historical anonymity",
+    "search_boundary": "The12 retained paths refer to the known account fingerprint only. A separately identified private-project display label in current policy was removed; counts are not a proof of complete anonymity or exhaustive name discovery."
+  },
+  "original_archive": {
+    "objects": 10,
+    "exact_sha256_readback": "PASS",
+    "directory_mode": "0700",
+    "file_mode": "0600",
+    "remote_disaster_recovery": "NOT_VERIFIED"
+  }
+}

@@ -22,6 +22,12 @@ Prefer static/server-rendered HTML and CSS for research content. Hydrate only in
 
 Shared component/data owners outrank page-local overrides. BaseModel-specific CSS, theme, hydration, navigation and route ownership remain with their existing current contracts/tests.
 
+### 1.1 全站可读日期的统一显示
+
+中文网页中的可见日期统一为 **`10 月 14 日`**；需要年份时统一为 **`2026 年 10 月 14 日`**。英文内容显示英文日期，例如 `Oct 14, 2026`。具体时间保留 24 小时制及有实际含义的时区说明，不猜测时区，也不补造年月日。
+
+原始研究收据、JSON/ISO 日期字段、`<time datetime>`、URL、文件名、代码、引用身份和可复制的机器命令保持不变。显示层采用 [同一个纯格式化函数](../../../src/lib/readableDate.js)：静态 HTML 由 `scripts/normalize-readable-dates.mjs` 在构建后统一可见文字，React 交互区复用该函数；`npm run audit:date-format` 负责拒绝重新出现的不一致。不得把格式化后的中文日期写回科研原始数据。
+
 ## 2. BaseModel release topology
 
 Current ordinary release path:

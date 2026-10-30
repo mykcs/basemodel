@@ -1,4 +1,5 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -9,6 +10,7 @@ import { EFFECTIVE_STATE_GDR_LORA_STUDY as study } from '../../data/effectiveSta
 import type { EffectiveStateFormalResult } from '../../data/effectiveStateGdrLoraStudy';
 import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS as directApplyDynamics } from '../../data/openEvoDirectApplyLiveDynamics';
 import { OPEN_EVO_EXPERIMENTS } from '../../data/openEvoExperimentNavigation';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -26,49 +28,49 @@ const boundedManifestHref = 'https://github.com/mykcs/openevo-experiment/blob/c5
 const betaControllerSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_gauge_invariant_beta_policy_v2_202609151320.py';
 const betaRuntimeSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_lora_effective_state_runtime_v1_202609151345.py';
 
-const wandbReportUrl = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==';
+const wandbReportUrl = '/research/seed-openevo/evidence/source-index.json#wb-002';
 const wandbWorkspaceUrl = study.posthocAnalysis.wandbWorkspace;
-const panelHref = (panelDisplayName: string, panelSectionName: string) => {
-  const join = wandbWorkspaceUrl.includes('?') ? '&' : '?';
-  return `${wandbWorkspaceUrl}${join}panelDisplayName=${encodeURIComponent(panelDisplayName)}&panelSectionName=${encodeURIComponent(panelSectionName)}`;
-};
 const metricCharts = {
   taskScore: {
     title: t('WebShop Task Score · 160轮', 'WebShop Task Score · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
     href: wandbReportUrl,
-    linkText: t('打开 W&B Report ↗', 'Open W&B Report ↗'),
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组 OpenEVO 的 WebShop Task Score 160 轮静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods'),
   },
   loss: {
     title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'),
     src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg',
     href: wandbReportUrl,
-    linkText: t('打开 W&B Report ↗', 'Open W&B Report ↗'),
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods'),
   },
   taskVector: {
     title: 'Task Vector · Frobenius',
     src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg',
-    href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments'),
   },
   outputLength: {
     title: t('每一步输出长度 · 160轮', 'Tokens per step · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/tokens-per-step.svg',
-    href: panelHref('每一步输出长度', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验每一步 raw-completion token 数的 160 轮静态曲线', 'Static 160-round raw-completion tokens-per-step curves for the three experiments'),
   },
   steps: {
     title: t('平均任务步数', 'Steps per episode'),
     src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg',
-    href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments'),
   },
   entropy: {
     title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg',
-    href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
   },
   r200TaskScore: {
@@ -237,14 +239,30 @@ const twentyRoundScoreWindows = finalResult
   : [];
 ---
 
-<article class="paper" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
-  <header class="paper__hero esg__hero" data-reader-context id="top">
+<article class="paper evo-approved-reader" data-effective-state-gdr-page data-copy-review data-reader-page="research-explainer" data-experiment-id={experiment.id}>
+  <header class="paper__hero esg__hero evo-article__header" data-reader-context id="top">
     <h1>{t('OpenEVO 参数演变：Bounded State 与 β 组件', 'OpenEVO parameter evolution: Bounded State and the β component')}</h1>
 
 
+    <section class="esg__first-result" data-gdr-first-result aria-label={t('同一冻结题集的最终结果', 'Final results on the same frozen panel')}>
+      <p>{t('同一冻结 128 题 Final · Task Score / 100；完整成功题数另列。', 'The same frozen 128-task final · Task Score / 100; exact successes are listed separately.')}</p>
+      <dl>
+        {[
+          { id: 'directApply', label: names.baseline, result: study.threeWayFinal.directApply },
+          { id: 'off', label: names.bounded, result: study.threeWayFinal.off },
+          { id: 'on', label: names.gdr, result: study.threeWayFinal.on },
+        ].map((row) => <div data-gdr-final-row={row.id}>
+          <dt>{row.label}</dt>
+          <dd><strong>{row.result.score.toFixed(2)}</strong><br/>{row.result.exactCount}/128 {t('完整成功', 'exact')}</dd>
+        </div>)}
+      </dl>
+      <p>{t('普通 OpenEVO 是历史前驱；预注册对照仅为 Bounded 与 + β-gating。训练分数另列。SEED 是外部论文参考，动态 α + β 尚未运行。', 'OpenEVO is a historical predecessor; the preregistered contrast is Bounded versus + β-gating only. Training scores are separate. SEED is an external paper reference; dynamic α + β has not run.')}</p>
+    </section>
+
     <figure class="paper-table-figure paper-table-figure--hero" data-result-stage="direct-result">
       <div class="paper-table-wrap paper-table-wrap--hero" aria-label={t('三组已完成实验、一个未做实验位置，以及 SEED 论文参考', 'Three completed experiments, one unrun slot, and a SEED paper reference')}>
-        <table class="paper-table paper-table--ablation" aria-describedby="ablation-table-caption">
+        <ResearchPaperTable class="paper-table paper-table--ablation" style="font-size:var(--type-table)" aria-describedby="ablation-table-caption" narrowRecords>
+<Fragment slot="caption">{t("各组实验的设置与结果", "Experiment configurations and results")}</Fragment>
           <thead>
             <tr>
               <th>{t('实验', 'Experiment')}</th>
@@ -297,7 +315,7 @@ const twentyRoundScoreWindows = finalResult
               <td>—</td>
             </tr>
           </tbody>
-        </table>
+        </ResearchPaperTable>
       </div>
       <figcaption id="ablation-table-caption" class="paper-table__caption">
         <strong>{t('表 1.', 'Table 1.')}</strong>{' '}
@@ -310,8 +328,8 @@ const twentyRoundScoreWindows = finalResult
 
     <div class="paper__metric-context">
       <p class="paper__lede esg__lede" data-reader-task data-reader-purpose>{t(
-        '三条已完成路线现在形成了一个很清楚的结果：Bounded 把参数更新累计耗时从 31.09 小时降到 2.02 小时，但同题终评从 60.72 降到 45.98；继续加入 β 组件后，终评进一步降到 20.77。接下来的核心问题是：固定容量到底应该多大、Bounded 为什么没有完全保持能力，以及 β 为什么后期掉分。',
-        'The three completed lines now form a clear result: Bounded reduces cumulative parameter-update time from 31.09 hours to 2.02 hours, but the same-panel final drops from 60.72 to 45.98; adding the β component lowers it further to 20.77. The central open questions are the required fixed-state capacity, why Bounded does not fully preserve capability, and why β-gating degrades late.',
+        '普通 OpenEVO 逐轮保留参数更新；Bounded 把历史更新整合为固定容量；Bounded + β 再控制新经验的写入强度。三条历史路线中，Bounded 的累计参数更新时间为 2.02 小时，普通 OpenEVO 为 31.09 小时；同一冻结题集上的 Task Score 分别为 45.98 和 60.72 分，加入 β 后为 20.77 分（满分 100 分）。这些结果提出了三个待研究的问题：固定容量需要多大、能力损失来自哪里，以及 β 为什么后期掉分。',
+        'Ordinary OpenEVO retains each parameter update; Bounded folds historical updates into a fixed-capacity state; Bounded + β also controls the strength of new writes. Across these historical runs, cumulative update time was 2.02 hours for Bounded and 31.09 hours for ordinary OpenEVO. Their Task Scores on the same frozen panel were 45.98 and 60.72 out of 100, while Bounded + β scored 20.77. Open questions concern the required capacity, the lost capability, and the late decline with β.',
       )}</p>
       <p>{t(
         'Task Score 是 WebShop 每个任务结束时给出的 0–1 连续分数的平均值 × 100。商品属性只完成一部分时也可能得到部分分；“完整做对”则要求任务真正成功且 task_score = 1.0。因此 60.72 / 100 和 50/128 不是同一个指标。',
@@ -328,9 +346,8 @@ const twentyRoundScoreWindows = finalResult
     </div>
   </header>
 
-  <section class="paper__section" id="motivation" aria-labelledby="motivation-title">
-    <p class="paper__section-number">1</p>
-    <h2 id="motivation-title">{t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
+  <section class="paper__section evo-article__section" id="motivation" aria-labelledby="motivation-title">
+    <h2 id="motivation-title"><span class="evo-article__heading-number" aria-hidden="true">1</span> {t('我们先解决 SD-LoRA 越训练越慢', 'We first address SD-LoRA slowing down as history grows')}</h2>
     <p>{t(
       '普通 OpenEVO 的参数更新方式是：每轮训练得到一个新的 SD-LoRA component，并把过去的 component 一起保留到后续模型。这样参数历史会随轮数持续变长；到了后期，每一轮训练都要经过越来越多的低秩路径，所以参数更新越来越慢。',
       'Ordinary OpenEVO updates parameters by producing a new SD-LoRA component each round and retaining the earlier components in later model states. The parameter history therefore grows with round count, so late training must traverse more and more low-rank paths and parameter updates become slower.',
@@ -348,9 +365,8 @@ const twentyRoundScoreWindows = finalResult
     <p class="paper__links"><a href={scalingHref}>{t('SD-LoRA 计算扩展性证据 →', 'SD-LoRA scaling evidence →')}</a></p>
   </section>
 
-  <section class="paper__section" id="method" aria-labelledby="method-title">
-    <p class="paper__section-number">2</p>
-    <h2 id="method-title">{t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
+  <section class="paper__section evo-article__section" id="method" aria-labelledby="method-title">
+    <h2 id="method-title"><span class="evo-article__heading-number" aria-hidden="true">2</span> {t('Bounded State 与 β 组件：固定容量与写入强度控制', 'Bounded State and the β component: fixed capacity and write-strength control')}</h2>
 
     <h3>2.1 {t('我们把长期参数历史固定在 rank128', 'We keep the long-term parameter history at rank128')}</h3>
     <p>{t(
@@ -375,10 +391,11 @@ const twentyRoundScoreWindows = finalResult
       'After the formal runs, we inspect the parameter-change spectrum of each LoRA module. Rank95 asks how many dominant directions are needed to explain about 95% of the change energy. Its median is 8 for Bounded and 7 after adding the β component.',
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("后验参数几何", "Posterior parameter geometry")}</Fragment>
         <thead><tr><th>{t('后验参数几何', 'Posterior parameter geometry')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody><tr><td>rank95 · median</td><td><strong>{study.parameterAnalysis.off.rank95Median}</strong></td><td><strong>{study.parameterAnalysis.on.rank95Median}</strong></td></tr></tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__boundary">{t(
       '这说明 rank128 很可能留了大量余量，但不能把“rank95≈8”直接写成“长期状态 rank8 已经够用”。rank95 是几何诊断，不是任务性能；而且“每轮当前更新本来就是 rank8”和“跨轮长期状态只保留 rank8”是两个不同问题。下一步仍需要 rank 8 / 16 / 32 / 64 / 128 的同口径任务性能与计算成本消融。',
@@ -414,7 +431,8 @@ const twentyRoundScoreWindows = finalResult
       'Here, “mapping” does not mean copying linear-attention k and v tensors into LoRA tensors. It means mapping the roles in the update rule: the persistent State becomes the parameter state kept across rounds, the current training update becomes the proposed new change, and beta controls how much of that new change is actually written.',
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--mapping">
+      <ResearchPaperTable class="paper-table paper-table--mapping" narrowRecords>
+<Fragment slot="caption">{t("Gated Delta 与参数状态的对应", "Mapping Gated Delta to parameter state")}</Fragment>
         <thead><tr><th>{t('Gated Delta 里的对象', 'Gated Delta object')}</th><th>{t('在我们这里对应什么', 'OpenEVO counterpart')}</th><th>{t('本版选择', 'Choice')}</th></tr></thead>
         <tbody>
           <tr><td>State S</td><td>{t('固定 rank128 的长期参数状态', 'fixed-rank128 long-term parameter state')}</td><td>{t('跨轮保留', 'persistent across rounds')}</td></tr>
@@ -423,7 +441,7 @@ const twentyRoundScoreWindows = finalResult
           <tr><td>α / g</td><td>{t('旧参数状态保留多少', 'how much prior state is retained')}</td><td>{t('本实验固定', 'this study fixes')} <MathFormula latex={math.gZero} display={false} />{t('，因此', ', hence')} <MathFormula latex={math.alphaOne} display={false} />{t('：不额外衰减旧 State', ': no extra decay of the prior State')}</td></tr>
           <tr><td>k / v</td><td>{t('保留“读旧状态 / 写 residual”的语义', 'retain the read-state / residual-write semantics')}</td><td>{t('不把 sequence 张量逐字映射成参数张量', 'not a literal tensor-to-tensor mapping')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
 
     <div class="paper__math-boundary">
@@ -501,7 +519,8 @@ const twentyRoundScoreWindows = finalResult
       'It is also not “a learnable scalar placed in front of LoRA and trained throughout the 160 rounds.” Before the formal experiment, supervised rows are built from historical optimizer trajectories: the input is the 22-feature local geometry above, and the target is the canonical effective-write β reconstructed from the effective write in the same historical update, fit in log10 space.',
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("β controller 的训练与冻结设置", "β-controller training and frozen settings")}</Fragment>
         <thead><tr><th>{t('β controller 离线训练', 'Offline β-controller training')}</th><th>{t('冻结设置', 'Frozen setting')}</th></tr></thead>
         <tbody>
           <tr><td>{t('训练轮', 'train rounds')}</td><td>R{study.posthocAnalysis.gdr.controllerTraining.trainRounds.join(' / R')}</td></tr>
@@ -512,7 +531,7 @@ const twentyRoundScoreWindows = finalResult
           <tr><td>{t('优化', 'optimization')}</td><td>AdamW · lr {study.posthocAnalysis.gdr.controllerTraining.learningRate} · batch {study.posthocAnalysis.gdr.controllerTraining.batchSize}</td></tr>
           <tr><td>{t('最佳 epoch', 'best epoch')}</td><td>{study.posthocAnalysis.gdr.controllerTraining.bestEpoch}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <pre class="paper__code"><code>{`# frozen implementation: build the supervised target
 for kind, (key, write) in enumerate(((a[ri], left1[:, ri]), (da[ri], left2[:, ri]))):
@@ -573,9 +592,8 @@ delta_a = (beta_eff_a / c1_norm) * (da / da_norm)`}</code></pre>
     <p class="paper__math-caption">{t('这是参数空间里的概念式；实际 runtime 先写 C 得到真实 C1，再基于 C1 写 A。', 'Conceptual parameter-space form; runtime writes C first to obtain the actual C1, then writes A conditioned on C1.')}</p>
   </section>
 
-  <section class="paper__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
-    <p class="paper__section-number">3</p>
-    <h2 id="experiment-title">{t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
+  <section class="paper__section evo-article__section" id="formal-design" data-result-stage="setup" aria-labelledby="experiment-title">
+    <h2 id="experiment-title"><span class="evo-article__heading-number" aria-hidden="true">3</span> {t('实验设置：Qwen3-1.7B × WebShop', 'Experiments: Qwen3-1.7B × WebShop')}</h2>
     <p>{t(
       '这一节先说明三条实验各自改了什么、哪些条件保持相同。三条已完成实验都使用 Qwen3-1.7B 和 WebShop，Stage 2 都跑 160 轮。真正的正式匹配对照只有 Bounded Online Recurrence 与 Bounded Online Recurrence + β-gating（α 固定为 1）：它们每轮 128 个 rollout，并对齐任务、seed、sampling、horizon、replay 和 optimizer recipe。普通 OpenEVO 是更早完成的前序实验；动态 α + 动态 β 还没有运行。',
       'This section first states what each run changes and which conditions are held fixed. All three completed experiments use Qwen3-1.7B and WebShop and run Stage 2 for 160 rounds. The formal matched pair is Bounded Online Recurrence versus Bounded Online Recurrence + β-gating (α fixed at 1): both use 128 rollouts per round with matched tasks, seeds, sampling, horizon, replay, and optimizer recipe. Ordinary OpenEVO is an earlier predecessor run; dynamic α + dynamic β has not been run.',
@@ -651,7 +669,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 
       <figure class="paper-table-figure">
         <div class="paper-table-wrap" aria-label={t('三组 OpenEVO 160 轮四条状态通道的更新和沿用次数', 'Update and retained-state counts for four state channels across 160 rounds in the three OpenEVO runs')}>
-          <table class="paper-table paper-table--carrier-ledger" aria-describedby="carrier-ledger-caption">
+          <ResearchPaperTable class="paper-table paper-table--carrier-ledger" aria-describedby="carrier-ledger-caption" narrowRecords>
+<Fragment slot="caption">{t("参数状态与非参数状态", "Parametric and non-parametric state")}</Fragment>
             <thead>
               <tr>
                 <th>{t('状态通道', 'State channel')}</th>
@@ -686,7 +705,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
                 <td><strong>{study.carrierAnalysis.betaGating.agentSystem.updates}</strong> {t('次更新', 'updates')}<br/><span class="paper-table__metric-detail">{study.carrierAnalysis.betaGating.agentSystem.noops} {t('次沿用', 'retained')}</span></td>
               </tr>
             </tbody>
-          </table>
+          </ResearchPaperTable>
         </div>
         <figcaption id="carrier-ledger-caption" class="paper-table__caption">
           <strong>{t('表 2.', 'Table 2.')}</strong>{' '}
@@ -718,9 +737,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     </div>
   </section>
 
-  <section class="paper__section esg__results" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
-  <p class="paper__section-number">4</p>
-  <h2 id="result-title">{t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
+  <section class="paper__section esg__results evo-article__section" id="formal-result" data-result-stage="task-result-detail" aria-labelledby="result-title">
+  <h2 id="result-title"><span class="evo-article__heading-number" aria-hidden="true">4</span> {t('实验结果：Task Score、成功率与计算代价', 'Results: Task Score, success, and compute')}</h2>
   <p class="paper__lede">{t(
     '先把“模型做题表现怎样”讲清楚，再进入 loss、参数几何和行为诊断。这里依次看 160 轮原始 Task Score、每 20 轮平均、最后 20 轮平均、固定 128 题终评，以及后两组正式匹配对照的训练期成功率。',
     'We first establish task performance before moving into loss, parameter geometry, and behavior diagnostics. The sequence is the raw 160-round Task Score, non-overlapping 20-round means, the last-20 mean, the fixed 128-task final, and the matched training-period success statistics for the latter two runs.',
@@ -732,14 +750,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     'Task Score is the mean terminal WebShop task score multiplied by 100; partial completion can receive partial credit. We start with all 160 rounds instead of selecting a late window first. Exact success is a stricter metric and requires the task to be won with task_score = 1.0.',
   )}</p>
   <div class="paper-table-wrap">
-    <table class="paper-table">
+    <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("逐轮 Task Score 汇总", "Per-round Task Score summary")}</Fragment>
       <thead><tr><th>{t('指标', 'Metric')}</th><th>{t('它回答什么', 'What it answers')}</th><th>{t('是否属于 Task Score', 'Part of Task Score?')}</th></tr></thead>
       <tbody>
         <tr><td>Task Score</td><td>{t('任务完成到什么程度；0–1 连续 reward，本页 ×100', 'degree of task completion; continuous 0–1 reward, ×100 on this page')}</td><td>{t('本身就是这个指标', 'this is the metric itself')}</td></tr>
         <tr><td>{t('完整成功（Exact Success）', 'Exact Success')}</td><td>{t('是否完整完成任务：won=true 且 task_score=1.0', 'whether the task is fully completed: won=true and task_score=1.0')}</td><td>{t('否，单独统计', 'No; reported separately')}</td></tr>
         <tr><td>{t('动作 / 解析合法性', 'Action / parser validity')}</td><td>{t('动作是否能被环境正确解析、是否有工程 invalid', 'whether actions parse correctly and avoid engineering-invalid outcomes')}</td><td>{t('否，属于工程有效性', 'No; engineering validity')}</td></tr>
       </tbody>
-    </table>
+    </ResearchPaperTable>
   </div>
   <p class="paper__boundary">{t(
     '所以 Task Score 不包含“成功率 + 合法性”这两个子项。后面看到 valid-action rate = 100% 时，那是在排除 parser / action 失败这个简单解释，不是在给 Task Score 加分。',
@@ -748,8 +767,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.webshopEvaluatorSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.webshopEvaluatorSource} />{t('WebShop evaluator 定义', 'WebShop evaluator definition')}</a></p>
   <MetricEvidenceFigure item={metricCharts.taskScore} />
   <p class="paper__chart-note">{t(
-    '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接仍指向原始观测入口。',
-    'Scale: this page consistently reports Task Score / 100. The native W&B scalar is 0–1; this publication figure only multiplies it by 100, so the curve shape, round positions, and relative relationships are unchanged. The W&B link still points to the original observability surface.',
+    '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接现指向匿名来源索引；原始观测入口按权限保留。',
+    'Scale: this page consistently reports Task Score / 100. The native W&B scalar is 0–1; this publication figure only multiplies it by 100, so the curve shape, round positions, and relative relationships are unchanged. The W&B link opens an anonymous source index; the original observability locator is retained with owner-only access.',
   )}</p>
   <p class="paper__boundary">{t(
     '单轮曲线抖动很大，因为每轮抽到的 WebShop 任务会变化。它适合看完整训练形状，但不适合只凭某一个峰值判断哪条路线更好；所以下一步把同一条轨迹按每 20 轮聚合。',
@@ -772,11 +791,13 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     <figcaption>
       <strong>{t('每 20 轮平均 Task Score', 'Mean Task Score per 20-round window')}</strong>
       <span>{t('由同一份封存 160 轮轨迹聚合，不是新实验，也不是固定题终评。', 'Derived from the same sealed 160-round trajectories; this is neither a new run nor a fixed-panel final.')}</span>
+      <a href="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.svg">{t('查看原尺寸 SVG', 'Open original-size SVG')}</a>
       <a href="/research/seed-openevo/evidence/wandb-threeway/task-score-20-round-mean.json">{t('机器可读数据 →', 'Machine-readable data →')}</a>
     </figcaption>
   </figure>
   <div class="paper-table-wrap">
-    <table class="paper-table paper-table--score-windows">
+    <ResearchPaperTable class="paper-table paper-table--score-windows" narrowRecords>
+<Fragment slot="caption">{t("非重叠 20 轮窗口均值", "Non-overlapping 20-round window means")}</Fragment>
       <thead>
         <tr>
           <th>{t('20 轮窗口', '20-round window')}</th>
@@ -795,7 +816,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           </tr>
         ))}
       </tbody>
-    </table>
+    </ResearchPaperTable>
   </div>
   <p class="paper__boundary">{t(
     '这个视角把一个重要转折直接暴露出来：普通 OpenEVO 和 Bounded 的最高 20 轮均值都出现在 R140–R159；β-gating（α 固定为 1）则在 R120–R139 达到更高窗口，随后在最后 20 轮回落。这里只是在描述训练轨迹，不把这个转折直接解释成某个参数指标造成的。',
@@ -812,7 +833,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     '“Last 20 rounds” does not mean “20 tasks.” Each round contains 128 task attempts, so 20 rounds correspond to 2,560 rollouts; the reported value averages 20 round-level Task Scores. But those 2,560 attempts do not use one fixed task panel, so this still does not prove that the model remembers all earlier tasks and is not a continual-learning retention test.',
   )}</p>
   <div class="paper-table-wrap">
-    <table class="paper-table">
+    <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("末 20 轮均值与固定终评", "Last-20 means and fixed final evaluation")}</Fragment>
       <thead><tr><th>{t('实验', 'Experiment')}</th><th>{t('最后 20 轮平均 Task Score', 'Mean Task Score, last 20 rounds')}</th><th>{t('这列在测什么', 'What this measures')}</th></tr></thead>
       <tbody>
         <tr><td>{names.baseline}</td><td><strong>{directApplyLast20Score.toFixed(2)}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159 with different sampled tasks each round')}</td></tr>
@@ -820,14 +842,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
         <tr><td>{names.gdr}</td><td><strong>{gdrLast20Score?.toFixed(2) ?? '—'}</strong></td><td>{t('R140–R159 每轮不同抽样任务的平均', 'mean over R140–R159 with different sampled tasks each round')}</td></tr>
         <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>{t('未做，暂无训练轨迹', 'not run; no training trajectory')}</td></tr>
       </tbody>
-    </table>
+    </ResearchPaperTable>
   </div>
   <p>{t(
     '最后 20 轮平均更接近“训练后期通常处在什么水平”，但它不是同题考试。下面的固定终评则让三组最终模型做完全相同、顺序相同的 128 题，同时给连续 Task Score 和完整做对数量。',
     'The last-20 mean is closer to typical late-training behavior, but it is not a same-task exam. The fixed final below evaluates all three final models on exactly the same ordered 128 tasks and reports both continuous Task Score and exact-success count.',
   )}</p>
   <div class="paper-table-wrap">
-    <table class="paper-table">
+    <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("同一冻结题集的评测结果", "Evaluation on the same frozen panel")}</Fragment>
       <thead><tr><th>{t('实验', 'Experiment')}</th><th>Task Score / 100</th><th>{t('完整做对', 'Exact success')}</th></tr></thead>
       <tbody>
         <tr><td>{names.baseline}</td><td><strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.directApply.exactCount}/128</td></tr>
@@ -835,7 +858,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
         <tr><td>{names.gdr}</td><td><strong>{study.threeWayFinal.on.score.toFixed(2)}</strong></td><td>{study.threeWayFinal.on.exactCount}/128</td></tr>
         <tr><td>{names.dynamicAlphaBeta}</td><td>—</td><td>—</td></tr>
       </tbody>
-    </table>
+    </ResearchPaperTable>
   </div>
   <p class="paper__boundary">{t(
     '固定终评适合回答“在这一套冻结题上谁完成得更多”，但仍只是一套 128 题，不能读成全面能力分数。普通 OpenEVO 还是更早的独立前序实验；它不是后两组预注册同设置正式对照里的第三条实验。',
@@ -850,14 +873,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
         'Ordinary OpenEVO is not included in this formal statistical comparison because it is not part of the same matched campaign. We compare only the latter two runs over R1–R159 using mean reward, exact-success rate, and an uncertainty interval for the reward difference. Mean reward measures overall degree of completion, exact success counts only fully solved tasks, and the 95% interval asks whether the observed reward difference is stable enough to exclude zero.',
       )}</p>
       <div class="paper-table-wrap">
-        <table class="paper-table">
+        <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("训练期的 Bounded 与 β-gating 对照", "Training-period Bounded and β-gating comparison")}</Fragment>
           <thead><tr><th>{t('正式指标', 'Formal metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th><th>{t('差值', 'Delta')}</th></tr></thead>
           <tbody>
             <tr><td>R1–R159 mean reward</td><td>{finalResult.pooledReward.off.toFixed(4)}</td><td>{finalResult.pooledReward.on.toFixed(4)}</td><td>+{finalResult.pooledReward.delta.toFixed(4)}</td></tr>
             <tr><td>R1–R159 exact success</td><td>{(finalResult.exactSuccess.off * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.on * 100).toFixed(2)}%</td><td>{(finalResult.exactSuccess.delta * 100).toFixed(2)} pp</td></tr>
             <tr><td>95% moving-block bootstrap CI</td><td colspan="2">{finalResult.uncertainty.low.toFixed(4)} → +{finalResult.uncertainty.high.toFixed(4)}</td><td>{t('跨 0', 'crosses 0')}</td></tr>
           </tbody>
-        </table>
+        </ResearchPaperTable>
       </div>
       <p class="paper__boundary">{t(
         '训练期平均 reward 出现过正差值，但置信区间跨 0，而且 exact success 没有改善。因此这里只能说出现过短暂正向信号，不能写成稳定长期提升；更不能用这两组结果替代尚未运行的动态 α + 动态 β。',
@@ -873,7 +897,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       `There are two timing scopes. Parameter trainer / transition time covers only parameter updates, while Stage-2 wall-clock also includes rollouts, non-parametric state processing, scheduling, and other phases. For Bounded, parameter-update time changes from ${study.timingComparison.directApply.trainerHours.toFixed(2)} h to ${study.timingComparison.off.transitionHours.toFixed(2)} h, about ${(study.timingComparison.directApply.trainerHours / study.timingComparison.off.transitionHours).toFixed(2)}×; full Stage-2 wall-clock changes only from ${study.timingComparison.directApply.wallClockHours.toFixed(2)} h to ${study.timingComparison.off.wallClockHours.toFixed(2)} h, about ${(study.timingComparison.directApply.wallClockHours / study.timingComparison.off.wallClockHours).toFixed(2)}×.`,
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("训练与参数更新耗时", "Training and parameter-update cost")}</Fragment>
         <thead><tr><th>{t('时间口径', 'Timing')}</th><th>{names.baseline}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody>
           <tr><td>{t('参数 trainer / transition 累计', 'parameter trainer / transition total')}</td><td>{study.timingComparison.directApply.trainerHours.toFixed(2)} h</td><td>{study.timingComparison.off.transitionHours.toFixed(2)} h</td><td>{study.timingComparison.on.transitionHours.toFixed(2)} h</td></tr>
@@ -881,7 +906,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>{t('整个 Stage 2 相对普通 OpenEVO', 'full Stage-2 speedup vs ordinary OpenEVO')}</td><td>1×</td><td>{(study.timingComparison.directApply.wallClockHours / study.timingComparison.off.wallClockHours).toFixed(2)}×</td><td>{(study.timingComparison.directApply.wallClockHours / study.timingComparison.on.wallClockHours).toFixed(2)}×</td></tr>
           <tr><td>Stage2 wall clock</td><td>{study.timingComparison.directApply.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.off.wallClockHours.toFixed(2)} h</td><td>{study.timingComparison.on.wallClockHours.toFixed(2)} h</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__boundary">{t('参数更新阶段的十几倍加速不能直接写成整个 Stage 2 的十几倍加速；rollout 等其他阶段仍然占据大部分总时间。', 'The order-of-magnitude parameter-update speedup must not be reported as an order-of-magnitude full Stage-2 speedup; rollouts and other phases still dominate much of the total time.')}</p>
   </div>
@@ -895,7 +920,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 
     <p class="paper__metric-label">{t('① 这 40 轮实际跑了什么', '① What actually ran in these 40 rounds')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("R159 至 R199 的延长结果", "Extension results from R159 to R199")}</Fragment>
         <thead><tr><th>{t('封存账本', 'Sealed ledger')}</th><th>{t('结果', 'Result')}</th><th>{t('它说明什么', 'Meaning')}</th></tr></thead>
         <tbody>
           <tr><td>{t('新 frontier', 'new frontiers')}</td><td><strong>{r200Control.sealed_accounting.new_frontiers}</strong></td><td>{t('R160–R199 全部 40 轮都进入正式 extension', 'all R160–R199 rounds belong to the formal extension')}</td></tr>
@@ -904,7 +930,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>{t('累计正式 rollout', 'cumulative formal rollouts')}</td><td><strong>{r200Control.sealed_accounting.cumulative_formal_rollouts.toLocaleString()}</strong></td><td>{t('与 next_round=200、logical history=200 一致', 'consistent with next_round=200 and logical history=200')}</td></tr>
           <tr><td>{t('受保护边界', 'protected boundaries')}</td><td><strong>Final {r200Control.sealed_accounting.final_panel_access_count} · teacher {r200Control.sealed_accounting.external_teacher_calls}</strong></td><td>{t('延长训练没有偷看终评，也没有调用外部教师', 'the continuation neither opens the final panel nor calls an external teacher')}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
 
     <MetricEvidenceFigure item={metricCharts.r200TaskScore} />
@@ -915,7 +941,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 
     <p class="paper__metric-label">{t('② 把晚期轨迹按窗口拆开', '② Break the late trajectory into windows')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("延长运行的状态核验", "State verification of the extended run")}</Fragment>
         <thead><tr><th>{t('训练窗口', 'Training window')}</th><th>Task Score / 100</th><th>training loss</th><th>{t('β · step-max 中位数', 'β · median step-max')}</th><th>{t('每步 tokens', 'tokens / step')}</th><th>{t('平均步骤', 'steps')}</th><th>action H</th></tr></thead>
         <tbody>
           {['R120-139', 'R140-159', 'R160-179', 'R180-199'].map((label) => {
@@ -931,7 +958,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
             </tr>;
           })}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p>{t(
       `最关键的新事实不是“R200 更高”，而是 R140–159 的低谷没有继续单调恶化：20 轮平均 Task Score 从 ${(r200.phases['R140-159']!.mean_score * 100).toFixed(2)} 回到 R160–179 的 ${(r200.phases['R160-179']!.mean_score * 100).toFixed(2)}，R180–199 为 ${(r200.phases['R180-199']!.mean_score * 100).toFixed(2)}。同时 β 的 step-max 中位数仍在 5×10⁻⁴ 量级，没有塌到 0。因此，“160 轮之后已经单调饱和、继续训练只会更差”以及“掉分只是因为 β 不再写入”这两个简单故事都不成立。`,
@@ -940,7 +967,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 
     <p class="paper__metric-label">{t('③ 中途 recovery 有没有偷偷改变实验？', '③ Did recovery silently change the experiment?')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("延长运行的分段统计", "Segmented statistics of the extended run")}</Fragment>
         <thead><tr><th>{t('控制面事件', 'Control-plane event')}</th><th>{t('实际处理', 'What happened')}</th><th>{t('科学边界', 'Scientific boundary')}</th></tr></thead>
         <tbody>
           <tr><td>R160 zero-replay</td><td>{t('rollout 已经封存；只从 transition 继续', 'rollout was already sealed; continuation resumed at transition only')}</td><td><strong>{r200Control.recovery_boundaries.r160_zero_replay.formal_rollout_replay} replay</strong> · {t('scientific contract 未变', 'scientific contract unchanged')}</td></tr>
@@ -948,7 +976,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>R165–R199 Completion-First</td><td>{t('可审计的 carrier 内容拒绝时沿用旧内容继续；完整性不确定仍暂停', 'keep the prior carrier on auditable content rejection; still pause on integrity uncertainty')}</td><td><strong>{r200Control.recovery_boundaries.completion_first_from_r165.additional_model_calls_for_disposition} extra calls · {r200Control.recovery_boundaries.completion_first_from_r165.formal_rollout_replay} replay</strong> · β/GDR/sampling/update frequency {t('均不变', 'unchanged')}</td></tr>
           <tr><td>R199 boundary</td><td>{r200Control.recovery_boundaries.r199_effective_boundary.status}</td><td><strong>{r200Control.recovery_boundaries.r199_effective_boundary.integrity_failures.length} integrity failures</strong> · {r200Control.recovery_boundaries.r199_effective_boundary.additional_model_calls} extra calls · {r200Control.recovery_boundaries.r199_effective_boundary.formal_rollout_replay} replay</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__boundary">{t(
       '所以旧 runner / transition 的失败与后来的 Completion-First 都属于控制面恢复证据，不是新的实验臂。更早那个在 R160 transition guard 上失败的 predecessor 保留用于审计，但不能再算一条“R200 实验结果”。真正的科学轨迹只有一条：从封存 R159 继续到 R199，正式 rollout 不重放，算法 treatment 不变。',
@@ -969,16 +997,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-<section class="paper__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
-  <p class="paper__section-number">5</p>
-  <h2 id="analysis-title">{t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
+<section class="paper__section evo-article__section" id="analysis" data-result-stage="diagnostics" aria-labelledby="analysis-title">
+  <h2 id="analysis-title"><span class="evo-article__heading-number" aria-hidden="true">5</span> {t('训练过程中发生了什么？从 loss 到行为变化', 'What changed during training? From loss to behavior')}</h2>
   <p class="paper__lede">{t(
     '分数现象已经在上一节先摆出来，包括 R160–R199 的延长轨迹。这里再按“优化 → 参数大小 → Task Vector → 谱与方向 → 输出路径 → 行为分布”逐层往里看，并把原来只到 R159 的问题重新检查到 R199。每个指标都先解释它是什么，再放证据，最后才说它能解释到哪里。',
     'The previous section establishes the score pattern, including the R160–R199 continuation. We now move inward in a fixed order—optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution—and revisit the questions that previously stopped at R159 through R199. Each metric is defined before its evidence and interpretation.',
   )}</p>
   <p class="paper__links">
-    <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B Report（需要权限）', 'W&B Report (access required)')}</a>
-    <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('完整 W&B Workspace', 'Full W&B Workspace')}</a>
+    <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B 来源索引（原件需权限）', 'W&B source index (originals require permission)')}</a>
+    <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('W&B Workspace 来源索引', 'W&B Workspace source index')}</a>
   </p>
 
   <div class="paper__metric-step" id="loss">
@@ -991,14 +1018,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     <MetricEvidenceFigure item={metricCharts.loss} />
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("训练 loss 汇总", "Training-loss summary")}</Fragment>
         <thead><tr><th>{t('实验', 'Experiment')}</th><th>R0 loss</th><th>R159 loss</th><th>{t('缺失更新轮', 'missing update rounds')}</th></tr></thead>
         <tbody>
           <tr><td>{names.baseline}</td><td>{lossFirst.ordinary_openevo_loss?.toFixed(3)}</td><td><strong>{lossLast.ordinary_openevo_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.ordinary_openevo}</td></tr>
           <tr><td>{names.bounded}</td><td>{lossFirst.bounded_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded}</td></tr>
           <tr><td>{names.gdr}</td><td>{lossFirst.bounded_gdr_loss?.toFixed(3)}</td><td><strong>{lossLast.bounded_gdr_loss?.toFixed(3)}</strong></td><td>{lossEvidence.missing_loss_points.bounded_gdr}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -1024,14 +1052,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("长期状态与更新范数", "Long-term state and update norms")}</Fragment>
         <thead><tr><th>{t('Frobenius 指标', 'Frobenius metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody>
           <tr><td>Final State · Frobenius</td><td>{study.parameterAnalysis.off.finalStateFrobenius.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateFrobenius.toFixed(3)}</strong></td></tr>
           <tr><td>Final Task Vector · Frobenius</td><td>{study.parameterAnalysis.off.finalTaskVectorFrobenius.toFixed(3)}</td><td>{study.parameterAnalysis.on.finalTaskVectorFrobenius.toFixed(3)}</td></tr>
           <tr><td>{t('R159 update norm · β-gating / Bounded', 'R159 update norm · β-gating / Bounded')}</td><td>1.000×</td><td><strong>{study.posthocAnalysis.directionMagnitudeR159.updateNormRatioOnOff.toFixed(3)}×</strong></td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -1057,19 +1086,20 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
     <MetricEvidenceFigure item={metricCharts.taskVector} />
     <p class="paper__chart-note">{t(
-      '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接保留原始观测入口。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
-      'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link preserves the original observability surface. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
+      '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接提供匿名来源索引；原始观测入口按权限保留。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
+      'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link provides an anonymous index with permission-scoped original locators. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
     )}</p>
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table">
+      <ResearchPaperTable class="paper-table" narrowRecords>
+<Fragment slot="caption">{t("Task Vector 与分数变化", "Task Vector and score changes")}</Fragment>
         <thead><tr><th>{t('Task Vector 诊断', 'Task Vector diagnostic')}</th><th>{t('结果', 'Result')}</th></tr></thead>
         <tbody>
           <tr><td>{t('普通 OpenEVO：Task Vector Frobenius vs Task Score · raw Spearman', 'Ordinary OpenEVO: Task Vector Frobenius vs Task Score · raw Spearman')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorSpearmanRaw.toFixed(3)}</strong></td></tr>
           <tr><td>{t('普通 OpenEVO：去掉 20 轮窗口共同训练趋势后的 Pearson', 'Ordinary OpenEVO: within-20 Pearson after removing the shared training trend')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorWithin20Pearson.toFixed(3)}</strong></td></tr>
           <tr><td>{t('普通 OpenEVO：当前 Task Vector 预测后 5 轮分数 · 95% 区间', 'Ordinary OpenEVO: current Task Vector predicting score five rounds ahead · 95% interval')}</td><td><strong>{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[0].toFixed(3)} → +{study.posthocAnalysis.parameterScore.taskVectorFuture5Ci95[1].toFixed(3)}</strong></td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -1087,7 +1117,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("谱与方向的后验诊断", "Post-hoc spectrum and direction diagnostics")}</Fragment>
         <thead><tr><th>{t('参数几何指标', 'Parameter-geometry metric')}</th><th>{names.bounded}</th><th>{names.gdr}</th></tr></thead>
         <tbody>
           <tr><td>Final State · max spectral norm</td><td>{study.parameterAnalysis.off.finalStateMaxSpectral.toFixed(3)}</td><td><strong>{study.parameterAnalysis.on.finalStateMaxSpectral.toFixed(3)}</strong></td></tr>
@@ -1095,7 +1126,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>full/base spectral ratio · median</td><td>{study.parameterAnalysis.off.fullToBaseSpectralRatioMedian.toFixed(6)}</td><td>{study.parameterAnalysis.on.fullToBaseSpectralRatioMedian.toFixed(6)}</td></tr>
           <tr><td>rank95 · median</td><td>{study.parameterAnalysis.off.rank95Median}</td><td>{study.parameterAnalysis.on.rank95Median}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p>{t(
       `这里的 rank95 中位数正是前面 rank128 设计留下的关键新问题：Bounded 是 ${study.parameterAnalysis.off.rank95Median}，继续加入 β 组件后是 ${study.parameterAnalysis.on.rank95Median}。这说明实际变化在单模块内高度低维，因此 rank 容量消融比继续直接叠复杂门控更值得优先做；但它仍然不能证明 rank8 长期 State 不会掉任务性能。`,
@@ -1107,7 +1138,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       'R200 adds the previously missing within-run phase comparison for the β treatment. The table below compares net State displacement between the start and end adapters of each window; it is neither a cross-arm final cosine nor a per-round Task Vector.',
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("方向与成绩的局部关系", "Local relationships between direction and score")}</Fragment>
         <thead><tr><th>{t('阶段', 'Phase')}</th><th>{t('净 State 位移 · Frobenius', 'net State displacement · Frobenius')}</th><th>{t('与前一阶段方向 cosine', 'cosine vs previous phase')}</th></tr></thead>
         <tbody>
           <tr><td>R96–119</td><td>{r200.phase_net_update['R96-119']!.frobenius.toFixed(3)}</td><td>—</td></tr>
@@ -1116,7 +1148,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>R160–179</td><td>{r200.phase_net_update['R160-179']!.frobenius.toFixed(3)}</td><td>{r200.consecutive_phase_update_cosine['R140-159_vs_R160-179']!.toFixed(3)}</td></tr>
           <tr><td>R180–199</td><td>{r200.phase_net_update['R180-199']!.frobenius.toFixed(3)}</td><td>{r200.consecutive_phase_update_cosine['R160-179_vs_R180-199']!.toFixed(3)}</td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__boundary">{t(
       `R140–159 同时出现最小的 20 轮净位移（${r200.phase_net_update['R140-159']!.frobenius.toFixed(3)}）和明显的方向重定向（相对 R120–139 cosine=${r200.consecutive_phase_update_cosine['R120-139_vs_R140-159']!.toFixed(3)}）；进入 R160–179 后又再次换向（cosine=${r200.consecutive_phase_update_cosine['R140-159_vs_R160-179']!.toFixed(3)}），而 R160–179 与 R180–199 更一致（${r200.consecutive_phase_update_cosine['R160-179_vs_R180-199']!.toFixed(3)}）。这说明“掉分期只是在同一方向把更新缩小一点”过于简单，但仍不能把方向变化写成因果机制；gradient / Adam moment 的逐阶段因果诊断也没有在这次只读分析里补齐。`,
@@ -1139,7 +1171,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     <MetricEvidenceFigure item={metricCharts.outputLength} />
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("输出长度与任务步数", "Output length and task steps")}</Fragment>
         <thead><tr><th>{t('方法 / 窗口', 'Method / window')}</th><th>{t('每步输出', 'tokens / step')}</th><th>{t('Episode 总输出', 'episode tokens')}</th><th>{t('平均步骤', 'steps')}</th><th>Task Score / 100</th></tr></thead>
         <tbody>
           <tr><td>{names.baseline} · R0–31</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.ordinary.earlySteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.ordinary.earlyScore * 100).toFixed(2)}</td></tr>
@@ -1149,7 +1182,7 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
           <tr><td>{names.gdr} · R0–31</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyStepTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlyEpisodeTokens.toFixed(1)}</td><td>{study.posthocAnalysis.outputLength.linearConstraint.earlySteps.toFixed(2)}</td><td>{(study.posthocAnalysis.outputLength.linearConstraint.earlyScore * 100).toFixed(2)}</td></tr>
           <tr><td>{names.gdr} · R128–159</td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong></td><td><strong>{study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong></td><td><strong>{(study.posthocAnalysis.outputLength.linearConstraint.lateScore * 100).toFixed(2)}</strong></td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <MetricEvidenceFigure item={metricCharts.steps} />
     <p>{t('β-gating（α 固定为 1）在 R96–127 → R128–159：', 'β-gating (α fixed at 1), R96–127 → R128–159:')} {t('每步 tokens', 'tokens/step')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midStepTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateStepTokens.toFixed(1)}</strong> · {t('episode tokens', 'episode tokens')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midEpisodeTokens.toFixed(1)} → {study.posthocAnalysis.outputLength.linearConstraint.lateEpisodeTokens.toFixed(1)}</strong> · {t('平均步骤', 'mean steps')} <strong>{study.posthocAnalysis.outputLength.linearConstraint.midSteps.toFixed(2)} → {study.posthocAnalysis.outputLength.linearConstraint.lateSteps.toFixed(2)}</strong> · Task Score / 100 <strong>{(study.posthocAnalysis.outputLength.linearConstraint.midScore * 100).toFixed(2)} → {(study.posthocAnalysis.outputLength.linearConstraint.lateScore * 100).toFixed(2)}</strong></p>
@@ -1179,14 +1212,15 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
       'R159 search / click are shown as shares of valid actions rather than raw counts. The three methods have different total action counts in that round, so raw counts are not directly comparable as policy preference.',
     )}</p>
     <div class="paper-table-wrap">
-      <table class="paper-table paper-table--dense-results">
+      <ResearchPaperTable class="paper-table paper-table--dense-results" narrowRecords>
+<Fragment slot="caption">{t("策略输出熵", "Policy output entropy")}</Fragment>
         <thead><tr><th>{t('方法', 'Method')}</th><th>R0–31 mean H</th><th>R128–159 mean H</th><th>R159 H</th><th>{t('R159 search 占比', 'R159 search share')}</th><th>{t('R159 click 占比', 'R159 click share')}</th></tr></thead>
         <tbody>
           <tr><td>{names.baseline}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.ordinaryLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.ordinary.entropy.toFixed(4)}</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.ordinary.search / study.posthocAnalysis.behaviorEntropy.r159.ordinary.total * 100).toFixed(1)}%</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.ordinary.click / study.posthocAnalysis.behaviorEntropy.r159.ordinary.total * 100).toFixed(1)}%</td></tr>
           <tr><td>{names.bounded}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedEarly.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.boundedLate.toFixed(4)}</td><td>{study.posthocAnalysis.behaviorEntropy.r159.bounded.entropy.toFixed(4)}</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.bounded.search / study.posthocAnalysis.behaviorEntropy.r159.bounded.total * 100).toFixed(1)}%</td><td>{(study.posthocAnalysis.behaviorEntropy.r159.bounded.click / study.posthocAnalysis.behaviorEntropy.r159.bounded.total * 100).toFixed(1)}%</td></tr>
           <tr><td>{names.gdr}</td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrEarly.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.gdrLate.toFixed(4)}</strong></td><td><strong>{study.posthocAnalysis.behaviorEntropy.r159.gdr.entropy.toFixed(4)}</strong></td><td>{(study.posthocAnalysis.behaviorEntropy.r159.gdr.search / study.posthocAnalysis.behaviorEntropy.r159.gdr.total * 100).toFixed(1)}%</td><td><strong>{(study.posthocAnalysis.behaviorEntropy.r159.gdr.click / study.posthocAnalysis.behaviorEntropy.r159.gdr.total * 100).toFixed(1)}%</strong></td></tr>
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="paper__metric-label">{t('③ 分析', '③ Analysis')}</p>
     <p class="paper__boundary">{t(
@@ -1221,9 +1255,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   </div>
 </section>
 
-  <section class="paper__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
-    <p class="paper__section-number">6</p>
-    <h2 id="next-question-title">{t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
+  <section class="paper__section evo-article__section" id="next-question" data-result-stage="next-question" aria-labelledby="next-question-title">
+    <h2 id="next-question-title"><span class="evo-article__heading-number" aria-hidden="true">6</span> {t('现在真正卡在哪里，以及下一步先做什么', 'What is actually blocked now, and what should come next')}</h2>
     <p>{t(
       '现在最重要的研究判断已经变了：问题不是“还能给 Gated Delta 再加什么机制”，而是先把几个更基础的变量拆开。Bounded 已经证明固定容量有明确工程价值，但能力保持还不够；后验 rank95 又提示 128 可能远大于实际活跃维度；β 组的负结果则说明更复杂的 controller 不能默认带来更好任务表现。',
       'The main research judgment has changed: the question is no longer what extra mechanism can be added to Gated Delta, but how to separate more basic variables first. Bounded has clear engineering value but does not yet fully preserve capability; posterior rank95 suggests 128 may be far above the active dimensionality; and the negative β result shows that a more complex controller cannot be assumed to improve task performance.',
@@ -1268,9 +1301,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
   </section>
 
-  <section class="paper__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
-    <p class="paper__section-number">7</p>
-    <h2 id="evidence-title">{t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
+  <section class="paper__section evo-article__section" id="evidence" data-result-stage="evidence" aria-labelledby="evidence-title">
+    <h2 id="evidence-title"><span class="evo-article__heading-number" aria-hidden="true">7</span> {t('证据与复现身份：如何确认这些结果来自哪一组实验', 'Evidence and reproducibility identity: how to identify the exact experiments behind these results')}</h2>
     <p>{t(
       '这一节不再解释实验结果，而是回答复现和审计问题：每条曲线、表格和结论究竟对应哪一个正式实验身份，应该去哪里查原始证据。网页上的易读名称可以调整，但底层实验 ID、封存结果和证据入口必须保持不变。',
       'This section no longer interprets results. It answers the reproducibility and audit question: which exact formal experiment identity each curve, table, and conclusion belongs to, and where the underlying evidence can be checked. Reader-facing names may improve, but the underlying experiment IDs, sealed results, and evidence entry points must remain unchanged.',
@@ -1323,77 +1355,66 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
 </article>
 
 <style>
-  .paper{max-width:1080px;margin:0 auto;padding:34px 24px 90px;color:var(--text-primary)}
-  .paper__hero{padding:4px 0 32px}
-  .paper h1{max-width:900px;margin:0;font-size:clamp(2rem,4vw,3.5rem);line-height:1.04;letter-spacing:-.05em}
-  .paper__lede{max-width:830px;margin:18px 0 14px;font-size:clamp(1.08rem,2vw,1.28rem);line-height:1.7}
+  .paper__lede{margin:18px 0 14px}
   .paper__metric-context{max-width:900px;margin-top:18px}
   .paper__metric-context p{margin:10px 0}
-  .paper-table__metric-detail{color:var(--text-secondary);font-size:1rem}
-  .paper__boundary{max-width:880px;color:var(--text-secondary);font-size:1rem;line-height:1.65}
-  .paper__chart-note{max-width:880px;margin:.65rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.65}
-  .paper__section{padding:44px 0;border-top:1px solid var(--border-color)}
+  .paper__boundary{color:var(--text-secondary)}
+  .paper__chart-note{max-width:880px;margin:.65rem 0 1rem;color:var(--text-secondary);font-size:var(--type-body);line-height:var(--type-leading-body)}
   .paper__metric-step{max-width:940px;margin:34px 0 0;padding:0 0 28px;border-bottom:1px solid var(--border-color)}
   .paper__metric-step:last-child{border-bottom:0;padding-bottom:0}
-  .paper__metric-label{width:max-content;max-width:100%;margin:18px 0 6px;padding:4px 9px;border-radius:999px;background:var(--surface-muted);color:var(--text-secondary);font-size:1rem;font-weight:800;letter-spacing:.01em}
-  .paper__metric-step .paper-table-wrap{margin-top:10px}
+  .paper__metric-label{width:max-content;max-width:100%;margin:18px 0 6px;padding:4px 9px;border-radius:999px;background:var(--surface-muted);color:var(--text-secondary);font-size:var(--type-body);font-weight:var(--type-weight-label);letter-spacing:normal}
+  .paper__metric-step .paper-table-wrap{margin-top:10px;min-width:0}
+  .paper p.paper__metric-label{max-width:100%;box-sizing:border-box}
   .paper__derived-figure{max-width:940px;margin:1rem 0 1.35rem;min-width:0}
   .paper__derived-figure>img{display:block;width:100%;height:auto;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:#fff;box-shadow:0 10px 28px color-mix(in srgb,var(--text-primary) 7%,transparent)}
-  .paper__derived-figure figcaption{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-top:.6rem;line-height:1.5}
+  .paper__derived-figure figcaption{display:flex;flex-wrap:wrap;gap:.35rem 1rem;margin-top:.6rem;line-height:var(--type-leading-caption)}
   .paper__derived-figure figcaption span{color:var(--text-secondary)}
   .paper__analysis-summary{max-width:900px;margin:34px 0 0;padding:22px 24px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
-  .paper__analysis-summary h3{margin-top:0}
   .paper__analysis-summary p:last-child{margin-bottom:0}
-  .paper-table--score-windows th:not(:first-child),.paper-table--score-windows td:not(:first-child){text-align:right}
 
-  .paper__section-number{margin:0 0 5px;color:var(--text-secondary);font:700 1rem/1.3 var(--font-mono)}
-  .paper h2{max-width:900px;margin:0 0 20px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.15;letter-spacing:-.035em}
-  .paper h3{max-width:900px;margin:32px 0 10px;font-size:clamp(1.18rem,2vw,1.45rem);line-height:1.35}
-  .paper p{max-width:880px;line-height:1.72}
-  .paper__links{display:flex;flex-wrap:wrap;gap:8px 18px}.paper a{color:var(--accent);font-weight:700;text-underline-offset:3px}
+
+  .paper__links{display:flex;flex-wrap:wrap;gap:8px 18px}.paper a{color:var(--accent);font-weight:var(--type-weight-label);text-underline-offset:3px}
   .paper-table-figure{margin:18px 0 12px}
-  .paper-table-figure .paper-table-wrap{margin:0}
-  .paper-table__caption{max-width:1040px;margin:8px 0 0;color:var(--text-secondary);font-size:1rem;line-height:1.55;text-align:left}
-  .paper-table__caption strong{color:var(--text-primary);font-weight:750}
-  .paper-table-wrap{overflow-x:auto;margin:18px 0 12px}
-  .paper-table{width:100%;min-width:700px;border-collapse:collapse;font-size:1rem}
-  .paper-table th,.paper-table td{padding:11px 12px;border-bottom:1px solid var(--border-color);text-align:left;vertical-align:middle;font-size:16px}
-  .paper-table thead th{border-top:2px solid var(--text-primary);border-bottom:1.5px solid var(--text-primary);font-weight:750}
-  .paper-table tbody tr:last-child td{border-bottom:2px solid var(--text-primary)}
-  .paper-table td.paper-table__mark{text-align:center;font-size:1.2rem;font-weight:800}
-  .paper-table--ablation{min-width:960px;table-layout:fixed}
-  .paper-table--ablation th,.paper-table--ablation td{padding-block:6px;line-height:1.35}
+  .paper-table-figure .paper-table-wrap{margin:0;min-width:0}
+  .paper-table__caption{max-width:1040px;margin:8px 0 0}
+  .paper-table-wrap{overflow-x:auto;margin:18px 0 12px;min-width:0}
+  .paper-table--carrier-ledger :is(th,td){width:25%}
   .paper-table--ablation th:first-child,.paper-table--ablation td:first-child{width:31%}
   .paper-table--ablation th:nth-child(2),.paper-table--ablation td:nth-child(2){width:8%}
   .paper-table--ablation th:nth-child(3),.paper-table--ablation td:nth-child(3){width:8%}
   .paper-table--ablation th:nth-child(4),.paper-table--ablation td:nth-child(4){width:8%}
   .paper-table--ablation th:nth-child(5),.paper-table--ablation td:nth-child(5){width:20%}
   .paper-table--ablation th:nth-child(6),.paper-table--ablation td:nth-child(6){width:25%}
-  .paper-table--ablation td:nth-child(n+2),.paper-table--ablation th:nth-child(n+2){text-align:center}
-  .paper-table__reference-row td{border-top:1.5px solid var(--text-primary)}
   .paper-table-wrap--hero{margin-top:12px;overflow-x:auto}
-  .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:1rem;line-height:1.6}
-  .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:1rem;line-height:1.65}
+  .paper__math-caption{max-width:880px;margin:-.45rem 0 1rem;color:var(--text-secondary);font-size:var(--type-body);line-height:var(--type-leading-caption)}
+  .paper__math-boundary{max-width:880px;margin:1rem 0;padding:.85rem 0 .85rem 1rem;border-left:3px solid var(--border-color);color:var(--text-secondary);font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .esg__first-result{margin:1rem 0}
+  .esg__first-result p{margin:.65rem 0;font-size:var(--type-body);line-height:var(--type-leading-body)}
+  .esg__first-result dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;border-block:1px solid var(--border-color)}
+  .esg__first-result dl>div{padding:.65rem;min-width:0}
+  .esg__first-result dt,.esg__first-result dd{font-size:var(--type-body);line-height:var(--type-leading-caption);overflow-wrap:anywhere}
+  .esg__first-result dd{margin:.35rem 0 0}
+  @media(max-width:760px){.esg__first-result dl{grid-template-columns:1fr}}
+  @media(max-width:760px){.esg__first-result dl>div{display:grid;grid-template-columns:minmax(0,1fr) 7.5rem;gap:.6rem;padding:.4rem 0;border-bottom:1px solid var(--border-color)}}
+  @media(max-width:760px){.esg__first-result dl>div:last-child{border-bottom:0}}
+  @media(max-width:760px){.esg__first-result dd{margin:0;text-align:right}}
   .paper__math-symbol{font-family:serif;font-style:italic}
   .paper__code{max-width:880px;overflow-x:auto;margin:14px 0 18px;padding:14px 16px;border:1px solid var(--border-color);border-radius:var(--radius-panel);background:var(--surface-muted)}
-  .paper__code code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal;font-family:var(--font-mono);font-size:.94rem;line-height:1.6}
+  .paper__code code{display:block;min-width:max-content;white-space:pre;overflow-wrap:normal;font-family:var(--font-mono);font-size:var(--type-body-small);line-height:var(--type-leading-caption)}
   .paper__setup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:18px 0 22px;border-top:2px solid var(--text-primary);border-bottom:2px solid var(--text-primary)}
   .paper__setup>div{padding:14px 16px;border-bottom:1px solid var(--border-color)}
-  .paper__setup dt{color:var(--text-secondary);font-size:.95rem}.paper__setup dd{margin:5px 0 0;font-weight:700}
+  .paper__setup dt{color:var(--text-secondary);font-size:var(--type-meta)}.paper__setup dd{margin:5px 0 0}
   .paper__details{max-width:900px;margin:14px 0;border-top:1px solid var(--border-color);padding-top:10px}
-  .paper__details summary{cursor:pointer;font-weight:750}.paper__details ul{line-height:1.7}
+  .paper__details summary{cursor:pointer;font-weight:var(--type-weight-heading)}.paper__details ul{line-height:var(--type-leading-body)}
   .paper__experiment-hub [data-hub-motivation]{max-width:820px}
   .paper__hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-  .paper__hub-grid h3{margin:12px 0 4px;font-size:1rem;letter-spacing:0}
+
   .paper__hub-grid ul{margin:4px 0;padding-left:20px}
   code{overflow-wrap:anywhere}
   @media(max-width:760px){
-    .paper{padding:24px 18px 72px}.paper__section{padding:36px 0}
     .paper__setup{grid-template-columns:1fr}
     .paper__hub-grid{grid-template-columns:1fr}
-    .paper-table{min-width:640px}
-    .paper-table--ablation{min-width:900px}
-    .paper-table--ablation th,.paper-table--ablation td{padding:7px 7px;overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){.paper *,.paper *::before,.paper *::after{scroll-behavior:auto;transition:none;animation:none}}
+.paper-table-wrap--hero{--paper-table-margin:0;--paper-table-window-padding:0;--paper-table-cell-padding:4px 8px;--paper-table-line-height:1.2}
 </style>

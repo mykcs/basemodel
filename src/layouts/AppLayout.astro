@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Header.astro';
+import ThemeInitialization from '../components/common/ThemeInitialization.astro';
 import SeedOpenEvoResearchNav from '../components/research/SeedOpenEvoResearchNav.astro';
 import LegacyTodayRunbookNotice from '../components/LegacyTodayRunbookNotice.astro';
 import ActionableContentLayer from '../components/common/ActionableContentLayer.astro';
@@ -11,6 +12,7 @@ import { GlobalModelQuickView } from '../components/models/GlobalModelQuickView.
 import '../styles/app.css';
 import { getMessages, isLocale, locales, baseUrl, type Locale } from '../i18n';
 import { availableLocalesForRoute, localizedRoute } from '../lib/sitemapRoutes';
+import { isTechnicalArticleRoute } from '../data/technicalArticleRoutes';
 import { readerContractForRoute } from '../data/siteReaderContracts';
 
 interface Props { title: string; description?: string; locale?: Locale }
@@ -26,9 +28,13 @@ const isPrivateProduction = process.env.VERCEL_ENV === 'production';
 const isVercelPreview = process.env.VERCEL_ENV === 'preview';
 const isCloudflarePreview = process.env.CF_PAGES === '1' && Boolean(process.env.CF_PAGES_BRANCH) && process.env.CF_PAGES_BRANCH !== 'main';
 const explicitNoIndex = process.env.PUBLIC_SEARCH_INDEXING === 'disabled';
-const shouldNoIndex = isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview;
+// A direct-link admissions/call-preparation route must remain noindex even
+// outside Vercel's protected Production/Preview environments.
+const isSensitiveCallPreparation = /\/research\/seed-openevo\/study\/w-advisor-call\/?$/.test(Astro.url.pathname);
+const shouldNoIndex = isPrivateProduction || explicitNoIndex || isVercelPreview || isCloudflarePreview || isSensitiveCallPreparation;
 const pathNoBase = Astro.url.pathname.startsWith(base) ? `/${Astro.url.pathname.slice(base.length)}` : Astro.url.pathname;
 const localeNeutralPath = pathNoBase.replace(/^\/en(\/|$)/, '/');
+const isTechnicalArticle = isTechnicalArticleRoute(localeNeutralPath);
 const readerContract = readerContractForRoute(localeNeutralPath);
 if (!readerContract) throw new Error(`Public page is missing a reader-attention contract: ${localeNeutralPath}`);
 const exactRoute = (target: string) => localeNeutralPath === target || localeNeutralPath === `${target}/`;
@@ -101,14 +107,7 @@ const compareTrayLabels = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <script is:inline>
-      try {
-        const storedTheme = localStorage.getItem('atlas-theme');
-        document.documentElement.dataset.theme = storedTheme === 'dark' ? 'dark' : 'light';
-      } catch {
-        document.documentElement.dataset.theme = 'light';
-      }
-    </script>
+    <ThemeInitialization />
     <meta name="description" content={description} />
     {shouldNoIndex && <meta name="robots" content="noindex,follow" />}
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />
@@ -133,7 +132,7 @@ const compareTrayLabels = {
     <title>{fullTitle}</title>
     <script type="application/ld+json" is:inline set:html={websiteJsonLd} />
   </head>
-  <body data-reader-contract-id={readerContract.id} data-reader-attention-mode={readerContract.attentionMode} data-research-nav={researchBridgePage ? 'persistent' : undefined}>
+  <body data-technical-article={isTechnicalArticle || undefined} data-reader-contract-id={readerContract.id} data-reader-attention-mode={readerContract.attentionMode} data-research-nav={researchBridgePage ? 'persistent' : undefined}>
     <a class="skip-link" href="#main-content">{m.site.skipLink}</a>
     <Header locale={locale} />
     <ResearchContextBar labels={researchContextLabels} locale={locale} />
@@ -148,7 +147,7 @@ const compareTrayLabels = {
       {isTodayRunbook && <LegacyTodayRunbookNotice locale={locale} />}
       <slot />
     </main>
-    <PageOutline locale={locale} />
+    <PageOutline locale={locale} article={isTechnicalArticle} />
     <CompareTray labels={compareTrayLabels} locale={locale} />
     <footer class="site-footer"><div class="shell footer-inner"><span>{m.footer.identity}</span></div></footer>
     <ActionableContentLayer locale={locale} />

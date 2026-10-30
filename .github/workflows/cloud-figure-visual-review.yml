@@ -1,0 +1,114 @@
+name: Cloud Figure Visual Review
+
+# Automatic browser coverage is owned once by Public PR CI. This entrypoint
+# preserves explicit manual full review and a bounded, non-gating benchmark.
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Open PR for full review; use 0 for a performance pilot'
+        required: true
+        type: string
+      purpose:
+        description: 'Full review or bounded diagnostic benchmark'
+        required: true
+        default: review
+        type: choice
+        options: [review, performance-pilot]
+      benchmark_base:
+        description: 'Immutable baseline SHA for performance-pilot only'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: basemodel-cloud-figure-manual-${{ inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: inputs.purpose == 'review'
+    uses: ./.github/workflows/public-pr-ci.yml
+    with:
+      pr_number: ${{ inputs.pr_number }}
+      force_full: true
+
+  performance-pilot:
+    if: inputs.purpose == 'performance-pilot'
+    name: webkit-performance-${{ matrix.variant }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [baseline, candidate]
+    env:
+      CI: '1'
+      PILOT_VARIANT: ${{ matrix.variant }}
+      PILOT_BASE_SHA: ${{ inputs.benchmark_base }}
+      PILOT_CANDIDATE_SHA: ${{ github.sha }}
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+      PLAYWRIGHT_REUSE_BUILD: '1'
+      PLAYWRIGHT_WORKERS: '1'
+      CLOUD_FIGURE_AUDIT: '1'
+      PILOT_BROWSER_IMAGE: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+    steps:
+      - name: Checkout immutable pilot controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Preserve controller then select the immutable subject
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          [[ "$PILOT_BASE_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$PILOT_CANDIDATE_SHA"
+          mkdir -p "$RUNNER_TEMP/ci-performance"
+          cp scripts/ci-browser-performance-pilot.mjs "$RUNNER_TEMP/ci-performance/pilot.mjs"
+          git fetch --no-tags --depth=1 origin "$PILOT_BASE_SHA"
+          if [ "$PILOT_VARIANT" = baseline ]; then git checkout --detach "$PILOT_BASE_SHA"; fi
+
+      - name: Install subject dependencies
+        run: npm ci
+
+      - name: Build the subject from its own source
+        run: npm run build
+
+      - name: Qualify prepared capture pixels and stale-state repair in both engines
+        if: matrix.variant == 'candidate'
+        run: npx playwright test tests/e2e/figure-evidence-preparation.spec.ts --workers=1 --retries=0 --output=performance-pilot/preparation-regression --reporter=list
+
+      - name: Measure one complete WebKit route without merge-gate claims
+        env:
+          CI_CAPTURE_PROFILE: '1'
+          CI_CAPTURE_PROFILE_DIR: ${{ github.workspace }}/work/performance-pilot/${{ matrix.variant }}/capture-profiles
+        shell: bash
+        run: node "$RUNNER_TEMP/ci-performance/pilot.mjs"
+
+      - name: Retain diagnostic timings and original evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: diagnostic-webkit-pilot-${{ matrix.variant }}-${{ github.sha }}
+          path: |
+            performance-pilot/**
+            work/performance-pilot/**
+            test-results/**
+          if-no-files-found: error
+          retention-days: 3

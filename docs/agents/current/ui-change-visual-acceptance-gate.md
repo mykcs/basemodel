@@ -15,6 +15,12 @@ This document is a scenario-based future warning. When an Agent changes UI, it m
 
 The owning contrast rules remain in `theme-contrast-contract.md`. This file adds the broader browser/layout/state acceptance gate.
 
+### Additional gate for a ChatGPT-approved Intelligence UI transfer
+
+When the user says “把聊天里的 Intelligence UI 原封不动搬到网站”, ordinary rendered browser PASS is necessary but **not proof of fidelity to the ChatGPT original**. Keep five verdicts separate: `COPY_MATCH`, `TOPOLOGY_MATCH`, `VISUAL_MATCH`, `BEHAVIOR_MATCH`, and `SOURCE_IDENTICAL`. `VISUAL_MATCH` needs a genuine original approved screenshot/source plus a same-conditions comparison; a screenshot of the site alone is only a site baseline. If the original is unavailable, record `NOT_VERIFIED`, preserve valid semantic work, and request the minimum user-owned reference rather than guessing CSS changes.
+
+See the current [SEED × OpenEVO Flow fidelity record](seed-openevo-flow-intelligence-ui-fidelity.md) for the affected route, acceptance status and missing original; reusable capture method belongs to [website-improve](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md).
+
 ### Visual acceptance is not an external-AI review requirement
 
 Ordinary UI/visual acceptance is repository-owned: rendered screenshots, semantic/Reader Contract checks, browser geometry and interaction checks, theme/accessibility checks, and exact-head Preview inspection as applicable. **Do not introduce an external AI chat, AI CLI, or local/network vision model as a mandatory reviewer merely to declare a UI change visually valid.** Those systems are optional research aids only when the owner or task explicitly asks for an independent preference/comprehension study. Their outage, quota, login state, or inability to accept a local file must not become a blocker for the ordinary visual-acceptance path.
@@ -119,7 +125,7 @@ Predicted failure:
 
 Required falsification:
 
-- run at 390px, 768px, and 1440px widths;
+- run the default phone check at **iPhone 18 Pro Max portrait 440 × 956 CSS px** and retain the desktop 1440px check; additional phone/tablet sizes only for a known failure or an explicitly required device;
 - assert no document-level horizontal overflow;
 - assert critical text is not clipped by `overflow: hidden/clip`;
 - assert audited sibling items do not geometrically overlap;
@@ -216,9 +222,9 @@ The browser gate uses representative routes rather than pretending every one of 
 
 ### Viewports
 
-- mobile: `390 × 844`;
-- tablet/narrow desktop: `768 × 1024`;
+- **one default phone**: iPhone 18 Pro Max portrait, `440 × 956` CSS px (standard Display Zoom);
 - desktop: `1440 × 1000`.
+- a second phone/tablet width is opt-in only for a documented regression, supported-device contract, or explicit owner request. Browser viewport emulation must not be called a physical iPhone Safari test.
 
 ### Locales
 
@@ -391,7 +397,7 @@ A valid report names the matrix actually tested, for example:
 
 ```text
 Pre-provider: risk class + exact candidate/base + PASS/FAIL
-UI safety: Chromium, light/dark, 390/768/1440, Chinese representative routes + English sample routes
+UI safety: Chromium, light/dark, iPhone 18 Pro Max 440×956 + desktop 1440, Chinese representative routes + English sample routes
 Cross-browser: WebKit included / not included and why
 Artifacts: no failures, or trace/screenshot path for the first failure
 Preview: exact commit and routes inspected
@@ -467,3 +473,21 @@ Do not lower broad readability thresholds to hide a bad proxy; repair the proxy 
 When the hosted command uses `--max-failures=1`, a repair that turns the first failing test green only unlocks the rest of the suite. Rerun until all tests execute. `N passed / 1 failed / M did not run` means the last `M` are unknown, not green.
 
 The detailed historical case is [`../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md`](../history/2026-08-26-vercel-ui-gate-serial-failure-recovery.md).
+
+---
+
+## 11. Advisor ten-question design fidelity: fast feedback without rewriting approved work
+
+When a user finds an error in one Q01–Q10 diagram, first recover the *current approved source*, the earlier owner decision, and the exact scientific evidence boundary. A fresh, plausible diagram is not a substitute for an approved composition. Preserve the chosen topology, option count, terminology and explanatory hierarchy unless the owner changes them. A passing build is not proof of fidelity to prior human feedback.
+
+For one-question iteration use the executable scoped lane already registered in the main advisor browser suite:
+
+```bash
+npx playwright test tests/e2e/advisor-intelligence-q02-q10.spec.ts --project=chromium --grep 'Focused Q02'
+```
+
+Replace `Q02` with any `Q01`–`Q10`. Each check binds to a question's mechanism, experimental scope, count, or interaction; all ten are also included in `test:ui` and `test:ui:all`. Run this short lane while editing, then the actual project-required Chromium/WebKit suite and `preflight:ui` before provider-triggering ref updates. **Never replace the full gate with the short lane.** The separately maintained Q01–Q10 suite still has older 320/390/768/1440 fixtures and a known 320px legend-overflow negative control. Its real required checks remain in force until that suite is deliberately migrated by its test owner; do not claim the new 440px baseline already replaced those executable cases. Consolidate its routine phone sweep on the next safe owner-side edit, retaining only bug-specific widths with named reasons.
+
+Diagram-specific mobile policy for this research page: preserve the complete conceptual topology; prefer proportional scaling or an explicitly designed vertical composition over forcing a reader to swipe along a partial timeline. Check `scrollWidth` on the graphic's *own* wrapper and the document, not just absence of root overflow. Distinguish real observations from illustrative curves in both states. On an unsupported browser runner, use a clean, isolated checkout on an authorized supported macOS/Ubuntu machine; do not weaken assertions to turn an environmental failure green.
+
+Historical regression and per-question witness: [`../history/2026-10-23-advisor-q01-q10-fidelity-audit.md`](../history/2026-10-23-advisor-q01-q10-fidelity-audit.md).

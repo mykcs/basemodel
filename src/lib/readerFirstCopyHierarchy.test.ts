@@ -78,6 +78,6 @@ describe('reader-first public copy hierarchy', () => {
     expect(incident).toContain('对下一步实验');
     expect(incident).toContain('模型输出 → parser → 环境动作');
     expect(incident).toContain('invalid action 一旦异常升高就应该立刻停');
-    expect(incident).toContain('wrapper-attribution__incident strong{color:var(--color-danger);font-weight:820}');
+    expect(incident).toContain('wrapper-attribution__incident strong{color:var(--color-danger);font-weight:var(--type-weight-heading)}');
   });
 });

@@ -1,0 +1,30 @@
+name: Production identity alarm
+on:
+  push:
+    branches: [main]
+  deployment_status:
+  workflow_dispatch:
+permissions:
+  contents: read
+  deployments: read
+concurrency:
+  group: ${{ github.event_name == 'deployment_status' && github.event.deployment.environment != 'Production' && format('production-identity-skip-{0}', github.run_id) || 'production-identity' }}
+  cancel-in-progress: true
+jobs:
+  identity:
+    if: github.event_name != 'deployment_status' || github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - name: Compare live main with Vercel's GitHub Production mirror
+        run: node scripts/verify-production-identity.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PRODUCTION_IDENTITY_ATTEMPTS: '20'

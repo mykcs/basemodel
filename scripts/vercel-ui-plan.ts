@@ -25,8 +25,15 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/vercel-lab-browser-gate.mjs',
   'vercel.json',
   'scripts/ci-ui-gate.mjs',
+  'scripts/ci-build-artifact.mjs',
   'scripts/ci-public-plan.mjs',
   'scripts/ci-ui-test-list.mjs',
+  'scripts/audit-sitewide-research-figure-widths.mjs',
+  'scripts/wait-for-cloud-figure-artifact.mjs',
+  'scripts/wait-for-cloud-figure-artifact.test.mjs',
+  '.github/workflows/cloud-figure-visual-review.yml',
+  '.github/workflows/cloudflare-standby.yml',
+  'wrangler.standby.jsonc',
   'scripts/ci-ui-test-timings-202609061200.json',
   'scripts/ci-ui-test-timings-202609152256.json',
   '.github/workflows/self-hosted-ci.yml',
@@ -88,6 +95,11 @@ export function pageFileToRoute(file: string): string | undefined {
 function focusedSpecsForRoutes(routes: string[]): string[] {
   const specs = new Set<string>();
 
+  if (routes.includes('/research/seed-openevo/recent-challenges/')) {
+    specs.add('tests/e2e/research-retrospective.spec.ts');
+    specs.add('tests/e2e/sitewide-figure-width-scope.spec.ts');
+  }
+
   if (routes.some((route) => RESULTS_ROUTE.test(route))) {
     specs.add('tests/e2e/results-mobile-overflow.spec.ts');
     specs.add('tests/e2e/results-reference-visual.spec.ts');
@@ -141,7 +153,13 @@ export function planHostedUi(files: string[]): HostedUiPlan {
 
   // This planner owns the provider-side test selection itself. A change to its
   // source must never be allowed to classify its own blast radius as harmless.
-  if (changedFiles.some((file) => HOSTED_GATE_OWNERS.has(file) || file.startsWith('.github/runner/'))) {
+  if (changedFiles.some((file) => HOSTED_GATE_OWNERS.has(file)
+    || file.startsWith('.github/runner/')
+    || file.startsWith('scripts/ci-ui-test-timings-')
+    || file.startsWith('scripts/verify-cloud-figure-evidence')
+    || file.startsWith('scripts/hosting/')
+    || file.startsWith('tests/e2e/')
+    || file.startsWith('tests/fixtures/'))) {
     return {
       mode: 'full',
       risk: 'global',

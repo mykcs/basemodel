@@ -1,77 +1,113 @@
 /*
- * Shared paper-table grammar for evidence-bearing research report tables.
- * HTML table semantics stay intact; this emulates LaTeX booktabs rather
- * than reproducing LaTeX output as a screenshot.
- * Tables use their natural content width rather than stretching to the page.
- * The wrapper alone scrolls on narrow screens when truly necessary.
- * Do not apply automatically to interactive workbench/data-entry grids.
+ * Canonical native research-table presentation, shared by ResearchPaperTable.
+ * This is paper/booktabs grammar, not a conference-page skin.
+ * Existing scientific values, source labels and comparison boundaries stay with callers.
  */
 .research-booktabs-wrap {
-  width: fit-content;
-  max-width: 100%;
-  overflow-x: auto;
-  margin: 1.3rem 0 1.5rem;
-  padding: .2rem 0 .15rem;
-  scrollbar-width: thin;
+  width:fit-content;max-width:100%;min-width:0;overflow:visible;
+  margin:var(--paper-table-margin,1.25rem auto 1.5rem);margin-inline:auto;
+  padding:var(--paper-table-window-padding,.2rem 0 .15rem);
 }
-.research-booktabs-wrap:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
+.research-booktabs-wrap:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table],
 table.research-booktabs {
-  border-collapse: collapse;
-  width: auto;
-  min-width: 0;
-  max-width: 100%;
-  border-top: 1.6px solid var(--color-text);
-  border-bottom: 1.6px solid var(--color-text);
-  color: var(--color-text);
-  background: transparent;
-  font-family: var(--font-editorial);
-  font-variant-numeric: tabular-nums lining-nums;
-  font-size: .9rem;
-  line-height: 1.48;
+  border-collapse:collapse;border-spacing:0;table-layout:auto;
+  width:auto;min-width:0;max-width:100%;margin:0;
+  border:0;border-top:1.5px solid var(--color-text);border-bottom:1.5px solid var(--color-text);
+  border-radius:0;box-shadow:none;background:transparent;color:var(--color-text);
+  font-family:"Times New Roman",Times,"Noto Serif SC","Noto Serif CJK SC","Songti SC",STSong,SimSun,serif;
+  font-size:clamp(.75rem, .65rem + .45vw, 1rem);font-weight:400;font-style:normal;line-height:var(--paper-table-line-height,1.45);
+  font-variant-numeric:tabular-nums lining-nums;font-feature-settings:normal;
 }
+/* Tables with at most three columns should not pay the tiny-type cost of dense matrices.
+   Width remains intrinsic; real multi-column tables keep the bounded responsive scale. */
+:root .research-booktabs-wrap:not(.research-booktabs-wrap--records)>table.research-booktabs[data-research-paper-table]:not(:has(thead tr > :nth-child(4))) {
+  font-size:clamp(.875rem, .8rem + .25vw, 1rem);
+}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption,
 table.research-booktabs caption {
-  caption-side: top;
-  padding: 0 0 .68rem;
-  text-align: left;
-  line-height: 1.6;
-  font-weight: 660;
-  font-size: .88rem;
-  color: var(--color-text);
+  display:table-caption;position:static;caption-side:top;
+  width:auto;height:auto;margin:0;padding:0 0 .6rem;
+  overflow:visible;clip:auto;clip-path:none;white-space:normal;
+  text-align:left;color:var(--color-text);background:transparent;
+  font-family:inherit;font-size:inherit;font-weight:400;line-height:1.5;
 }
-table.research-booktabs th,
-table.research-booktabs td {
-  text-align: left;
-  vertical-align: baseline;
-  font-size: inherit;
-  line-height: inherit;
-  padding: .64rem .7rem .64rem .25rem;
-  border: 0;
-  background: transparent;
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td),
+table.research-booktabs :is(th,td) {
+  padding:var(--paper-table-cell-padding,.42em .75em);border:0;border-radius:0;background:transparent;
+  box-shadow:none;color:inherit;font-family:inherit;font-size:inherit;
+  line-height:inherit;font-style:normal;letter-spacing:normal;
+  text-align:left;vertical-align:top;min-width:0;white-space:normal;overflow-wrap:anywhere;word-break:normal;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] thead th,
+table.research-booktabs thead th {
+  padding-top:.5em;padding-bottom:.5em;font-weight:700;
+  border-bottom:.8px solid var(--color-text);vertical-align:bottom;
+}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody th,
+table.research-booktabs tbody th{font-weight:400}
+/* Intrinsic small tables stay compact; wide tables wrap within the article measure. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody+tbody>tr:first-child>*,
+table.research-booktabs tbody+tbody>tr:first-child>*{border-top:.6px solid var(--color-text)}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td)[data-numeric],
+table.research-booktabs :is(th,td)[data-numeric]{
+  text-align:right;white-space:normal;font-variant-numeric:tabular-nums lining-nums;min-width:0;
+}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] tbody :is(th,td)[data-numeric]{overflow-wrap:normal}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child,
+table.research-booktabs :is(th,td):first-child{padding-left:0;min-width:0;overflow-wrap:normal}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child,
+table.research-booktabs :is(th,td):last-child{padding-right:0}
+:root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table]{font-size:14px}
+:root .research-booktabs-wrap--presentation>table.research-booktabs[data-research-paper-table] caption{font-size:14px}
+@media print {
+  .research-booktabs-wrap{overflow:visible;max-width:100%;break-inside:avoid}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table]{max-width:100%;font-size:10pt}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] caption{font-size:10pt}
+}
+
+/* Table text stays at one paper reading scale; mathematical glyphs and code keep their own owners. */
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(thead,tbody,tfoot,tr){background:transparent;border:0;box-shadow:none}
+:root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td) :is(span,strong,small,em,a):not(.katex):not(.katex *):not(.math-formula *){font-family:inherit;font-size:inherit;line-height:inherit;background:transparent;border:0;border-radius:0;box-shadow:none}
+
+@media screen and (max-width:600px) {
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td) {padding:.4em .35em}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):first-child {padding-left:0}
+  :root .research-booktabs-wrap>table.research-booktabs[data-research-paper-table] :is(th,td):last-child {padding-right:0}
+}
+
+:root .site-main .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table]{font-size:var(--type-table)}
+
+/* A dense comparison retains its original native header/body and source values.
+   On phones each row becomes one complete, labelled record, without horizontal drag. */
+:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] thead th {
   overflow-wrap: normal;
 }
-table.research-booktabs thead th {
-  border-bottom: 1px solid var(--color-text);
-  font-weight: 700;
-  color: var(--color-text);
-  vertical-align: bottom;
+@media screen and (max-width:760px){
+ :root .research-booktabs-wrap--records{width:100%}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table]{display:block;width:100%;min-width:0;max-width:100%;table-layout:auto;font-size:var(--type-table)}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] caption{display:block}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] thead{display:table-header-group;position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tbody{display:block}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot,:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot tr,:root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] tfoot td{display:block;width:auto;max-width:100%;white-space:normal}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr{display:grid;grid-template-columns:minmax(0,1fr);padding:.75rem 0;border-bottom:1px solid var(--color-border)}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr:last-child{border-bottom:0}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>:is(th,td){display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem;width:auto;min-width:0;max-width:none;padding:.35rem 0;text-align:left;white-space:normal;overflow-wrap:normal}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>th[scope="row"]{display:block;font-weight:var(--type-weight-label);padding-bottom:.6rem}
+ :root .research-booktabs-wrap--records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>td::before{text-align:left;content:attr(data-paper-label);color:var(--color-text-muted);font-weight:var(--type-weight-normal)}
 }
-table.research-booktabs tbody th[scope="row"] { font-weight: 600; }
-table.research-booktabs tbody tr + tr > * {
-  border-top: 1px solid color-mix(in srgb, var(--color-text) 13%, transparent);
-}
-table.research-booktabs :is(th,td)[data-numeric] {
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums lining-nums;
-}
-table.research-booktabs td.paper-main-value {
-  font-weight: 700;
-  font-size: inherit;
-}
-@media(max-width: 640px) {
-  table.research-booktabs { font-size: .86rem; }
-  table.research-booktabs :is(th,td) { padding: .56rem .6rem .56rem .15rem; }
+
+@media screen and (min-width:761px) and (max-width:1100px){
+ :root .research-booktabs-wrap--tablet-records{width:100%}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table]{display:block;width:100%;min-width:0;max-width:100%;table-layout:auto;font-size:var(--type-table)}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] caption{display:block}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] thead{display:table-header-group;position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tbody{display:block}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot,:root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot tr,:root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] tfoot td{display:block;width:auto;max-width:100%;white-space:normal}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr{display:grid;grid-template-columns:minmax(0,1fr);padding:.75rem 0;border-bottom:1px solid var(--color-border)}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr:last-child{border-bottom:0}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>:is(th,td){display:grid;grid-template-columns:minmax(0,1fr);gap:.25rem;width:auto;min-width:0;max-width:none;padding:.35rem 0;text-align:left;white-space:normal;overflow-wrap:normal}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>th[scope="row"]{display:block;font-weight:var(--type-weight-label);padding-bottom:.6rem}
+ :root .research-booktabs-wrap--tablet-records>table.research-booktabs[data-research-paper-table] :is(tbody,tfoot)>tr>td::before{text-align:left;content:attr(data-paper-label);color:var(--color-text-muted);font-weight:var(--type-weight-normal)}
 }

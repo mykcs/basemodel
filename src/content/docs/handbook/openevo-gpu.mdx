@@ -1,0 +1,16 @@
+---
+title: OpenEVO GPU 调度
+tableOfContents: false
+description: 训练排队、固定多卡资格和准时交还的独立证据要求。
+---
+
+import ExternalBrandMark from '../../../components/common/ExternalBrandMark';
+
+
+GPU6、GPU7 等卡号只是交谈时的标记；正式执行前必须核对用户授予的时间窗口、真实 GPU UUID 和主机占用。
+
+- <a href="https://github.com/mykcs/openevo-experiment/blob/main/docs/dev/experiment-reliability/GPU_TIME_WINDOW_BACKFILL.md"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/blob/main/docs/dev/experiment-reliability/GPU_TIME_WINDOW_BACKFILL.md" /> OpenEVO 时间窗口排程</a> 说明 CPU 预排可以做什么。
+- <a href="https://github.com/mykcs/zju-server/blob/main/docs/experiment-execution-policy.md"><ExternalBrandMark href="https://github.com/mykcs/zju-server/blob/main/docs/experiment-execution-policy.md" /> 科研服务器资源政策</a> 决定哪些物理操作受到授权。
+- Ray Placement Group 可以预留资源，但不代表自动交还、也不替科学运行资格作决定。
+
+当前排程预览不会启动 GPU，具体训练须由已有正式执行通道承担。

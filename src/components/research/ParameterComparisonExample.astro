@@ -46,23 +46,23 @@ document.querySelectorAll<HTMLElement>('[data-parameter-example]').forEach((root
 });
 </script>
 <style>
-.parameter-example{margin:2rem 0;padding:1.5rem 0;border-block:1px solid var(--line);color:var(--ink);font-size:1rem;line-height:1.8}
-.parameter-example h2{font-size:1.6rem;line-height:1.4;margin:0 0 1rem}
+.parameter-example{margin:2rem 0;padding:1.5rem 0;border-block:1px solid var(--line);color:var(--ink);font-size:var(--type-body);line-height:var(--type-leading-body)}
+.parameter-example h2{font-size:var(--type-section);line-height:var(--type-leading-heading);margin:0 0 1rem}
 .parameter-example>p{max-width:48rem}
 .parameter-example fieldset{border:0;padding:0;margin:1rem 0;display:flex;flex-wrap:wrap;gap:.75rem}
-.parameter-example legend{font-weight:700;margin-bottom:.6rem}
+.parameter-example legend{font-weight:var(--type-weight-label);margin-bottom:.6rem}
 .parameter-example label{padding:.6rem .8rem;border:1px solid var(--line);border-radius:var(--radius-control);cursor:pointer;display:flex;gap:.5rem;align-items:center;min-height:44px}
 .parameter-example label:has(:checked){border-color:var(--accent-deep);background:var(--surface-muted)}
 .parameter-example label:focus-within{outline:2px solid var(--accent-deep);outline-offset:3px}
 .parameter-example__comparisons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1rem}
 .parameter-example article{border:1px solid var(--line);background:var(--surface);padding:1rem;border-radius:var(--radius-panel);min-width:0}
 .parameter-example article[hidden]{display:none}
-.parameter-example h3{margin:0;font-size:1.2rem}
+.parameter-example h3{margin:0;font-size:var(--type-minor-heading)}
 .parameter-example svg{display:block;width:100%;max-width:360px;height:auto;fill:var(--accent-deep)}
 .parameter-example svg text{fill:var(--ink);font:14px sans-serif}
 .parameter-example__axis{fill:none;stroke:var(--line);stroke-width:1}
 .parameter-example__vector{fill:none;stroke:var(--accent-deep);stroke-width:3}
-.parameter-example dl{margin:0;display:grid;gap:.7rem}.parameter-example dt{font-weight:700}.parameter-example dd{margin:0}
+.parameter-example dl{margin:0;display:grid;gap:.7rem}.parameter-example dt{font-weight:var(--type-weight-label)}.parameter-example dd{margin:0}
 .parameter-example__fixed{border-left:3px solid var(--accent-deep);padding:.7rem 1rem;background:var(--surface-muted)}
-.parameter-example__caption{font-size:.875rem;line-height:1.7;color:var(--muted)}
+.parameter-example__caption{font-size:var(--type-caption);line-height:var(--type-leading-caption);color:var(--muted)}
 </style>

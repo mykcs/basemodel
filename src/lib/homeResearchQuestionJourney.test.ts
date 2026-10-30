@@ -15,14 +15,13 @@ describe('BaseModel wish-aligned homepage research journey', () => {
     expect(hero).toContain('先理解这项研究');
   });
 
-  it('orders the homepage as answer -> experiment progression -> next action', () => {
+  it('keeps the full chronology in Study and the home focused on answers and next actions', () => {
     const answer = home.indexOf('目前我们能说到哪里');
-    const journey = home.indexOf('我们做过哪些尝试');
     const next = home.indexOf('现在想继续哪一步');
     expect(answer).toBeGreaterThan(-1);
-    expect(journey).toBeGreaterThan(answer);
-    expect(next).toBeGreaterThan(journey);
-    expect(home).toContain('OPEN_EVO_EXPERIMENTS.map');
+    expect(next).toBeGreaterThan(answer);
+    expect(home).not.toContain('OPEN_EVO_EXPERIMENTS.map');
+    expect(home).toContain("'/research/seed-openevo/study/'");
   });
 
   it('keeps scientific uncertainty visible on the home summary', () => {

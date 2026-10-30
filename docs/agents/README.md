@@ -28,7 +28,11 @@ When a task asks **what quality must be met or how its acceptance is proved**, c
 
 ## Task bundles
 
+**人物姓名／匿名化（全仓库）：**任何页面、报告、会议来源、申请材料或其他涉及具体导师／前辈的改动，先读 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md)；这是唯一称谓规则 owner，执行检查为 `npm run audit:person-privacy`。
+
 ### User-facing page, copy, navigation, explanation, or feature
+
+**Exact visual-reference bundle:** If the owner asks to follow the “用实验回答 L 学长十问” page (fonts, spacing, question index, reading width), first read [`current/sitewide-typography-standard.md`](current/sitewide-typography-standard.md), inspect [`parameter-memory-results/index.astro`](../../src/pages/research/seed-openevo/study/parameter-memory-results/index.astro), and reuse [`research-article.css`](../../src/styles/research-article.css) with [`advisor-ten-approved-reader.css`](../../src/styles/advisor-ten-approved-reader.css). The canonical standard stays at its current owner; this router only makes the required files findable. Use `current/ui-change-visual-acceptance-gate.md` for 440px / 1440px rendered acceptance.
 
 Always load the relevant combination of:
 
@@ -143,6 +147,7 @@ Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence
 
 Read:
 
+- [CI performance implementation and qualification](../dev/CI/README.md) — sealed-build reuse, risk/duration scheduling, measured costs and rollback; provider and merge authority remain in current hosting/release owners.
 - [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — why BaseModel uses final-candidate-only Vercel instead of always-on CircleCI / GitHub Actions / Cloudflare CI; read before proposing a provider migration
 - [`current/hosting-architecture.md`](current/hosting-architecture.md)
 - [`current/deployment-policy.md`](current/deployment-policy.md)

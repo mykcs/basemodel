@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { SITE_READER_CONTRACTS, type ReaderAttentionMode } from '../../src/data/siteReaderContracts';
+import { persistJsonAttachment } from './evidence-json';
+
+const firstViewportMessageFits = (box: { y: number; height: number } | null, height: number) =>
+  box !== null && box.y < height && box.y + box.height <= height + 2;
 
 const viewports = [
   { name: 'desktop', width: 1280, height: 633 },
@@ -17,7 +21,9 @@ const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxH
 
 for (const viewport of viewports) {
   test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }) => {
-    test.setTimeout(120_000);
+    // This case visits all 71 route contracts, including hydration settlement.
+    // Allow the complete walk on cloud WebKit; reader budgets below stay fixed.
+    test.setTimeout(600_000);
     await page.setViewportSize({ width: viewport.width, height: viewport.height });
     const failures: string[] = [];
 
@@ -74,12 +80,17 @@ for (const viewport of viewports) {
       }
 
       if (contract.firstViewportSelector) {
-        const primary = page.locator(contract.firstViewportSelector).first();
-        if (!(await primary.isVisible())) {
+        const candidates = page.locator(contract.firstViewportSelector);
+        let primary = null;
+        for (let index = 0; index < await candidates.count(); index += 1) {
+          const candidate = candidates.nth(index);
+          if (await candidate.isVisible()) { primary = candidate; break; }
+        }
+        if (!primary) {
           failures.push(`${contract.id}: declared first-viewport message is not visible`);
         } else {
           const box = await primary.boundingBox();
-          if (!box || box.y >= viewport.height || box.y + box.height > viewport.height + 2) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
+          if (!firstViewportMessageFits(box, viewport.height)) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
         }
       }
 
@@ -106,7 +117,14 @@ for (const viewport of viewports) {
               && Number.parseFloat(style.opacity || '1') > 0;
           };
 
-          const interactive = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen).length;
+          const interactiveElements = [...root.querySelectorAll('a,button,input:not([type="hidden"]),select,textarea,summary')].filter(inFirstScreen);
+          const interactive = interactiveElements.length;
+          const interactiveTargets = interactiveElements.map((el) => ({
+            text: el.textContent?.replace(/\s+/g, ' ').trim().slice(0, 70) ?? '',
+            href: el.getAttribute('href') ?? '',
+            tag: el.tagName,
+            y: Math.round(el.getBoundingClientRect().top),
+          }));
           const primaryHeading = root.querySelector('h1');
           const primaryHeadingSize = primaryHeading ? Number.parseFloat(getComputedStyle(primaryHeading).fontSize) : 0;
           const headings = [...root.querySelectorAll('h1,h2,h3')].filter((el) => {
@@ -133,11 +151,11 @@ for (const viewport of viewports) {
             const rect = range.getBoundingClientRect();
             if (rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight) textChars += text.length;
           }
-          return { interactive, headings, textChars };
+          return { interactive, headings, textChars, interactiveTargets };
         });
 
         const budget = contract.firstViewportBudget ?? defaultBudgets[contract.attentionMode];
-        if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}`);
+        if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}; visible=${JSON.stringify(metrics.interactiveTargets)}`);
         if (metrics.headings > budget.maxHeadings) failures.push(`${contract.id}: ${metrics.headings} first-screen headings exceed budget ${budget.maxHeadings}`);
         if (metrics.textChars > budget.maxTextChars) failures.push(`${contract.id}: ${metrics.textChars} first-screen text characters exceed budget ${budget.maxTextChars}`);
       }
@@ -150,48 +168,68 @@ for (const viewport of viewports) {
   });
 }
 
+for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-effective-state-gdr', 'sd-lora-scaling', 'q17-directapply-analysis'] as const) {
+  test(`research result remains in the first viewport: ${variant} ${theme}`, async ({ page }, info) => {
+    await page.setViewportSize({ width: 1280, height: 633 });
+    await page.addInitScript(mode => localStorage.setItem('atlas-theme', mode), theme);
+    await page.goto(`/research/seed-openevo/study/capability-exploration/${variant}/`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    const selector = variant === 'sd-lora-scaling' ? '.scaling-hero__result' : variant === 'q17-directapply-analysis' ? '.q17-analysis__hero' : '[data-gdr-first-result]';
+    const message = page.locator(selector);
+    const before = await message.boundingBox();
+    expect(firstViewportMessageFits(before, 633)).toBe(true);
+    await page.screenshot({ path: info.outputPath('first-viewport-result.png') });
+    const legacy = await page.addStyleTag({ content: variant === 'q17-directapply-analysis'
+      ? '.research-route-context[data-reader-route="q17-directapply-analysis"] [data-reader-purpose]{max-width:75px!important}'
+      : variant === 'sd-lora-scaling'
+      ? '.scaling-hero h1{max-width:6ch!important;font-size:clamp(2.25rem,8vw,6rem)!important;line-height:.98!important}'
+      : '.paper{padding-top:34px!important}.paper h1{font-size:100px!important;max-width:10ch!important;line-height:1.04!important}' });
+    let broken;
+    let injectedHeading;
+    try {
+      if (variant === 'sd-lora-scaling') {
+        injectedHeading = await page.locator('.scaling-hero h1').evaluate(node => {
+          const css = getComputedStyle(node), box = node.getBoundingClientRect();
+          return { size: parseFloat(css.fontSize), measure: css.maxWidth, width: box.width, height: box.height };
+        });
+        expect(injectedHeading.size).toBeGreaterThan(60);
+      }
+      broken = await message.boundingBox();
+      expect(firstViewportMessageFits(broken, 633)).toBe(false);
+      if (variant === 'sd-lora-scaling') expect(broken!.y + broken!.height).toBeGreaterThan(633);
+      await page.screenshot({ path: info.outputPath('first-viewport-layout-negative.png') });
+    } finally { await legacy.evaluate(node => node.parentNode?.removeChild(node)); }
+    const restored = await message.boundingBox();
+    expect(firstViewportMessageFits(restored, 633)).toBe(true);
+    await persistJsonAttachment(info, 'first-viewport-result.json', { body: Buffer.from(JSON.stringify({ variant, theme, selector, viewport: { width: 1280, height: 633 }, before, broken, restored, injectedHeading, negativeKind: variant === 'q17-directapply-analysis' ? 'constrained purpose column' : variant === 'sd-lora-scaling' ? 'legacy heading size with a constrained 6ch title measure' : 'legacy heading geometry', negativeRejected: true })), contentType: 'application/json' });
+  });
+}
 
-test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+
+test('Study phone keeps all child destinations usable through native disclosures', async ({ page }) => {
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-
-  const visible = await page.locator('#main-content [data-experiment-primary]').evaluateAll((links) => links
-    .filter((el) => {
-      const rect = el.getBoundingClientRect();
-      const style = getComputedStyle(el);
-      const visibleHeight = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
-      return rect.width > 0 && rect.height > 0 && visibleHeight >= Math.min(12, Math.max(2, rect.height * 0.25))
-        && style.display !== 'none' && style.visibility !== 'hidden' && Number.parseFloat(style.opacity || '1') > 0;
-    })
-    .map((el) => el.getAttribute('data-experiment-primary')));
-
-  expect(visible).toEqual([
-    'gate-no-update',
-    '7b-long-run',
-    'successor-3b-1p7b',
-    'gdr-v1-1p7b',
-    'directapply-1p7b',
-    'bounded-effective-state-1p7b',
-    'stage1-learning-objectives',
-  ]);
-  const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
-  expect(visibleChildren).toBe(0);
-  const featured = page.locator('#main-content .experiment-mobile-featured--group');
-  await expect(featured).toHaveCount(1);
-  await expect(featured).toBeVisible();
-  await expect(featured.locator(':scope > strong')).toHaveText('SD-LoRA 加速');
-  const branchLinks = featured.locator('a');
-  await expect(branchLinks).toHaveCount(3);
-  await expect(branchLinks.nth(0)).toBeVisible();
-  await expect(branchLinks.nth(0)).toHaveText(/两条路线说明/);
-  await expect(branchLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
-  await expect(branchLinks.nth(1)).toBeVisible();
-  await expect(branchLinks.nth(1)).toHaveText(/Stable Reduction/);
-  await expect(branchLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
-  await expect(branchLinks.nth(2)).toBeVisible();
-  await expect(branchLinks.nth(2)).toHaveText(/Bounded Online Recurrence/);
-  await expect(branchLinks.nth(2)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
+  await expect(page.locator('[data-experiment-primary]')).toHaveCount(7);
+  const details = page.locator('[data-experiment-details]');
+  await expect(details).toHaveCount(7);
+  for (const detail of await details.all()) {
+    await expect(detail).not.toHaveAttribute('open', '');
+    const primaryHref = await detail.locator('..').locator('[data-experiment-primary]').getAttribute('href');
+    await detail.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(detail).toHaveAttribute('open', '');
+    const children = detail.locator('.experiment-children a');
+    expect(await children.count()).toBeGreaterThan(0);
+    for (const link of await children.all()) {
+      await expect(link).toBeVisible();
+      expect(await link.getAttribute('href')).not.toBe(primaryHref);
+    }
+    await detail.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(detail).not.toHaveAttribute('open', '');
+  }
+  await expect(page.locator('.experiment-mobile-featured')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
 });
 
 
@@ -200,6 +238,7 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
   for (const route of ['/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     const directApply = page.locator('[data-experiment-primary="directapply-1p7b"]').locator('..').locator('..');
+    await directApply.locator('[data-experiment-details] > summary').click();
     const expectedGroupLabel = 'SD-LoRA 加速';
     const group = directApply.locator('.experiment-child-group').filter({ hasText: expectedGroupLabel });
     await expect(group).toHaveCount(1);
@@ -322,3 +361,21 @@ test('briefing scales the whole 16:9 slide to iPhone width without horizontal sc
   expect(phoneAgainState.overflow).toBeLessThanOrEqual(2);
   expect(phoneAgainState.scale).toBeCloseTo(390 / 1280, 4);
 });
+
+for(const width of [390,1280])for(const theme of ['light','dark'] as const){
+  test(`same-panel first result retains every completed route and comparison boundary ${width} ${theme}`,async({page},info)=>{
+    const height=width===390?844:633;
+    await page.setViewportSize({width,height});await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/',{waitUntil:'networkidle'});
+    const result=page.locator('[data-gdr-first-result]');
+    for(const row of [
+      {id:'directApply',label:'普通 OpenEVO',score:'60.72',exact:'50/128'},
+      {id:'off',label:'OpenEVO + Bounded Online Recurrence',score:'45.98',exact:'32/128'},
+      {id:'on',label:'OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）',score:'20.77',exact:'10/128'},
+    ]){const entry=result.locator(`[data-gdr-final-row="${row.id}"]`);await expect(entry.locator('dt')).toHaveText(row.label);await expect(entry.locator('dd strong')).toHaveText(row.score);await expect(entry.locator('dd')).toContainText(row.exact);}
+    for(const boundary of ['同一冻结 128 题 Final','普通 OpenEVO 是历史前驱','预注册对照仅为 Bounded 与 + β-gating','训练分数另列','SEED 是外部论文参考','动态 α + β 尚未运行'])await expect(result).toContainText(boundary);
+    expect(firstViewportMessageFits(await result.boundingBox(),height)).toBe(true);
+    await page.screenshot({path:info.outputPath('same-panel-first-result.png')});
+    const full=page.locator('.paper-table-wrap--hero');await full.scrollIntoViewIfNeeded();await expect(full.locator('tbody tr')).toHaveCount(5);
+  });
+}

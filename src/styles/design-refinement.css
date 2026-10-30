@@ -10,31 +10,31 @@
 /* Editorial tone: research tool first, landing page second. */
 body { background: var(--bg); }
 
-h1 { letter-spacing: -.032em; }
-h2 { letter-spacing: -.018em; }
+h1 { letter-spacing: normal; }
+h2 { letter-spacing: normal; }
 
 .section-kicker,
 .eyebrow,
 .learning-start-kicker {
   color: var(--muted);
   text-transform: none;
-  letter-spacing: .01em;
-  font-size: .76rem;
-  font-weight: 700;
+  letter-spacing: normal;
+  font-size: var(--type-meta);
+  font-weight: var(--type-weight-label);
 }
 
 .page-header { padding: clamp(42px, 5vw, 64px) 0 30px; }
 .page-header h1 {
   max-width: 18ch;
-  font-size: clamp(2.1rem, 4.4vw, 3.65rem);
-  line-height: 1.06;
+  font-size: var(--type-page);
+  line-height: var(--type-leading-heading);
   margin-bottom: 14px;
 }
 .page-header .lede,
 .detail-subtitle,
 .paper-method-summary .lede {
   max-width: var(--reading-width);
-  line-height: 1.72;
+  line-height: var(--type-leading-body);
 }
 
 .section-heading { align-items: flex-start; }
@@ -307,7 +307,7 @@ h2 { letter-spacing: -.018em; }
 .guide-research-layer .guide-section-label {
   margin: 0 0 8px;
   color: var(--muted);
-  font-size: .76rem;
+  font-size: var(--type-meta);
   font-weight: 700;
 }
 
@@ -324,7 +324,7 @@ h2 { letter-spacing: -.018em; }
 @media (max-width: 720px) {
   .shell { width: min(var(--content-max), calc(100% - 28px)); }
   .page-header { padding-top: 34px; }
-  .page-header h1 { font-size: clamp(2rem, 11vw, 2.8rem); }
+  .page-header h1 { font-size: var(--type-page); }
   .section-heading { display: grid; grid-template-columns: 1fr; gap: 8px; }
   .site-main .guide-learning-page .primer-goal {
     padding: 16px 0 0;

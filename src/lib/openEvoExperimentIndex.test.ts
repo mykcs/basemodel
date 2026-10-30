@@ -16,16 +16,18 @@ describe('experiment-first Study index', () => {
     expect(new Set(OPEN_EVO_EXPERIMENTS.map((item) => item.id)).size).toBe(7);
     expect(source).toContain("from '../../data/openEvoExperimentNavigation'");
     expect(source).toContain('OPEN_EVO_EXPERIMENTS.map');
-    expect(source).toContain('directoryRowsFor(experiment.childLinks)');
+    expect(source).toContain('directoryRowsFor(uniqueChildrenFor(experiment))');
+    expect(source).toContain('child.href !== experiment.primaryHref');
+    expect(source).toContain('<details data-experiment-details={experiment.id}>');
     expect(source).toContain('data-experiment-primary={experiment.id}');
     expect(source).toContain('data-research-progression={experiment.id}');
     expect(source).toContain('data-progression-step="question"');
     expect(source).toContain('data-progression-step="result"');
     expect(source).toContain('data-progression-step="next"');
-    expect(source).toContain('.experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}');
-    expect(source).toContain('study-hero__mobile-thread');
-    expect(source).toContain('参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β');
-    expect(source).toContain('directoryRowsFor(experiment.childLinks.filter((child) => child.mobileFeatured))');
+    expect(source).not.toContain('.experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}');
+    expect(source).toContain('id="reader-entry"');
+    expect(source).toContain('id="experiment-directory"');
+    expect(source).not.toContain('directoryRowsFor(experiment.childLinks.filter((child) => child.mobileFeatured))');
   });
 
   it('keeps the historical gate-failure experiment attached to its blocked-update analysis and first-run evidence', () => {

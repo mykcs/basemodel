@@ -1,5 +1,7 @@
 # Repository Agent instructions
 
+Shared operating policy: follow [the central AGENTS.md](https://github.com/mykcs/.agents/blob/main/AGENTS.md) and [Capability Routing](https://github.com/mykcs/.agents/blob/main/docs/dev/CAPABILITY_ROUTING.md) for authorization reuse, tool fallbacks and engineering completion. This repository retains its scoped scientific, resource, privacy and release requirements.
+
 ## Historical Codex dialogue archive
 
 When prior product, deployment, or research-workbench decisions are relevant,
@@ -9,7 +11,11 @@ executable repository truth, or live provider state.
 
 This repository is frequently maintained by coding Agents through GitHub. This root `AGENTS.md` is the **unique repository-root Agent bootstrap authority** and the first repository file an Agent reads. Detailed topic policy belongs under `docs/agents/current/`; `docs/agents/README.md` is navigation-only and must not become a second mutable copy of Agent rules.
 
+**Visual-reference quick route — “用实验回答 L 学长十问”:** Before editing a research article to match this reference page, load [`sitewide-typography-standard.md`](docs/agents/current/sitewide-typography-standard.md), inspect the reference [`parameter-memory-results/index.astro`](src/pages/research/seed-openevo/study/parameter-memory-results/index.astro), then reuse the actual CSS owners [`research-article.css`](src/styles/research-article.css) and [`advisor-ten-approved-reader.css`](src/styles/advisor-ten-approved-reader.css). This is a navigation pointer, not another typography policy. Verify the rendered candidate at 440px mobile / 1440px desktop in both themes. Do not replace the existing source of truth with an improvised second font/spacing system.
+
 ## Product wish authority
+
+**人物隐私硬规则：**本仓库及网站涉及特定导师／前辈时只使用 `W 老师` 和 `L 学长`，不得写出具体姓名或未经审查的可识别身份。唯一规则 owner 为 [`docs/agents/current/person-reference-privacy-standard.md`](docs/agents/current/person-reference-privacy-standard.md)，`npm run audit:person-privacy` 在 CI 和构建前失败即停止；图片、链接与历史仍须人工审查。
 
 Before any user-facing product, copy, navigation, information-architecture, page-role, or major interaction decision, read [`docs/wish/LATEST.md`](docs/wish/LATEST.md).
 
@@ -107,6 +113,19 @@ main
 
 **Vercel is the only ordinary deployment provider and required final-candidate authority.** Public GitHub-hosted Actions is the ordinary automatic PR preflight compute lane. CircleCI and the Mac/OrbStack runner are explicit manual fallbacks; historical Cloudflare material is legacy/rollback evidence, not a normal release stage.
 
+### GitHub-first BaseModel execution (owner directive, 2026-10-20)
+
+**Default: GitHub plugin + GitHub Actions hosted runners + Vercel plugin. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
+
+- Read owners, current PRs and file history; create task branches, review changes, update source and open PRs through GitHub. Respect concurrent branches and compare exact SHAs before integration.
+- Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium and WebKit for full/global work; **do not claim WebKit passed unless an actual WebKit job ran**.
+- Use cloud Playwright outputs and retained GitHub Actions artifacts for screenshots, trace/video on failure, typography and figure geometry evidence. Where the existing workflow does not yet upload an artifact, explicitly state that limitation and improve the owning cloud workflow rather than silently falling back to the Mac.
+- Request a Vercel Preview/final gate on the exact accepted PR SHA, inspect the actual protected route (not a login page), then separately verify main and Production. GitHub status is not a substitute for rendered-page review.
+- RDC remains an exceptional fallback for MacBook-exclusive files, authorized Mac-controlled compute/server access, or a demonstrated plugin/cloud capability gap. Reuse explicit task-specific **or standing** user approval covering the same operation; never ask again solely because the Agent, session, or tool changed. If approval is absent or an actual action/object `DENY`/`HOLD` applies, stop the affected action rather than routing around it. Use the Mac's authenticated `gh`/provider CLI as a control plane only when cloud invocation is unavailable; keep CI/build/browser workloads on hosted runners and return to cloud-first afterward.
+
+This allocation applies to BaseModel website changes, including research figures and UI acceptance. It does **not** alter the project-level release/security gates, and is not permission to skip browser or scientific-evidence validation.
+
+
 Agent-control/docs-only changes are not website-production inputs. A provider `IGNORED`/`CANCELED` record is not publication evidence.
 
 ## Repository map
@@ -163,6 +182,7 @@ Preserve Vercel Preview `noindex`, Production canonical/hreflang identity, repos
 ## Startup-visible contract routes
 
 - Every user-facing page treats `human-thinking-web-expression-contract.md` as **mandatory for every user-facing page**; also route material UI work through `ui-design-principles.md` and `sitewide-visual-knowledge-architecture.md`.
+- Any typography, scientific figure/table, caption, or CSS type-scale change must use `docs/agents/current/sitewide-typography-standard.md`, the single shared token owner and generated-route typography audit; a passing build does not replace screenshot and browser acceptance.
 - Research publication/analysis work must keep `research-site-presentation-contract.md`, `site-reader-attention-contract.md`, and `research-result-reading-contract.md` directly discoverable from this root.
 - For non-trivial work, scan scenario-trigger-registry; repeat-correction work uses `REPEAT-CORRECTION` and `project-agent-operating-principles.md#correction-to-action-witness`.
 - **Provider writes are noun-bound at dispatch:** `open PR -> create_pull_request`; file/ref/branch mutation is not an acceptable substitute.

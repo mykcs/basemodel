@@ -94,7 +94,7 @@ describe('interactive research explainers', () => {
   });
 
   it('teaches WebShop as a changing website environment without borrowing dataset or experiment history', () => {
-    for (const term of ['OBSERVATION', 'AVAILABLE ACTIONS', 'AGENT SELECTED', 'ENVIRONMENT TRANSITION', 'REWARD / SCORE', 'search["black sports sweatshirt"]', 'click["Buy Now"]']) expect(explainer).toContain(term);
+    for (const term of ['OBSERVATION', 'AVAILABLE ACTIONS', 'AGENT SELECTED', 'ENVIRONMENT TRANSITION', 'REWARD / SCORE', 'search["waterproof breathable running shoes"]', 'click["Buy Now"]']) expect(explainer).toContain(term);
     expect(explainer).toContain('教学演示');
     expect(explainer).toContain('not a measured experiment result');
   });

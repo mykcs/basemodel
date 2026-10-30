@@ -74,7 +74,9 @@ for (const viewport of viewports) {
     expect(metrics.listGap, `research questions are detached from their heading: ${JSON.stringify(metrics)}`).toBeLessThanOrEqual(48);
     expect(metrics.firstCardWidth, `research question width collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
     expect(metrics.currentQ7Width, `current Q7 collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(600);
-    expect(metrics.listWidth, `question list collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(900);
+    // The shared 960px paper frame intentionally replaces the former >900px list.
+    // Require the list to use its actual content column while retaining the 600px per-card guard.
+    expect(metrics.listWidth, `question list collapsed: ${JSON.stringify(metrics)}`).toBeGreaterThanOrEqual(Math.min(900, metrics.currentQ7Width * .9));
 
     // Preview-only pixel probe. Capture the real 2048px Chromium render, then
     // resize that captured bitmap in-browser. The thumbnail is only a transport
