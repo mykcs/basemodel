@@ -2,6 +2,8 @@
 
 Last reviewed: **2026-09-28**
 
+**2026-10-30 opt-in candidate, not current authority:** [`docs/dev/CI/REVERSIBLE_HOSTING.md`](../../dev/CI/REVERSIBLE_HOSTING.md) documents a separate, manually dispatched, fail-closed Cloudflare Access standby. It does **not** change the required `public-ci-gate` + Vercel exact-head check, `main` Production, Vercel Authentication, release DNS, or current-source/public-repo policy. The Cloudflare standby cannot publish BaseModel bytes until a pre-existing Worker Access gate has passed anonymous HTTP probes; postdeploy Access and authorized browser checks remain required before any traffic switch. No owned custom domain is verified, so one-URL provider switching is not yet available.
+
 Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
 
 Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.

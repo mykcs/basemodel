@@ -7,7 +7,7 @@ const readText = (relativePath: string): string => readFileSync(new URL(relative
 const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePath)) as T;
 
 const allowedWorkflowFiles = [
-  'cloud-figure-visual-review.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
+  'cloud-figure-visual-review.yml', 'cloudflare-standby.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
 ];
 const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
 const assertCloudFigureSafety = (source: string) => {
@@ -184,6 +184,63 @@ describe('Vercel production deployment architecture', () => {
       source.replace('run: npm ci', 'run: vercel deploy --target=production'),
       source.replace('persist-credentials: false', 'persist-credentials: true'),
     ]) expect(() => assertCloudFigureSafety(bad)).toThrow();
+  });
+
+  it('keeps Cloudflare as manual, exact-main, protected-only standby with a pre-deploy security gate', () => {
+    const source = readText('../../.github/workflows/cloudflare-standby.yml');
+    const inspect = (candidate: string) => {
+      const workflow = parse(candidate);
+      expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
+      expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
+      expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');
+      expect(workflow.permissions).toEqual({ contents: 'read' });
+      expect(workflow.concurrency['cancel-in-progress']).toBe(false);
+      expect(Object.keys(workflow.jobs).sort()).toEqual(['build', 'deploy']);
+      const build = workflow.jobs.build;
+      const deploy = workflow.jobs.deploy;
+      expect(build.if).toBe("github.ref == 'refs/heads/main'");
+      expect(build.environment).toBeUndefined();
+      expect(JSON.stringify(build)).not.toMatch(/secrets\.|CLOUDFLARE_API_TOKEN|CLOUDFLARE_ACCOUNT_ID/);
+      expect(build.steps.some((s: { run?: string }) => s.run === 'npm run verify:workers:standby')).toBe(true);
+      expect(build.steps.some((s: { run?: string }) => s.run === 'npm run build:workers:standby')).toBe(true);
+      expect(deploy.environment).toBe('cloudflare-protected');
+      expect(deploy.needs).toBe('build');
+      expect(deploy.if).toContain("inputs.operation == 'deploy'");
+      expect(deploy.if).toContain("github.ref == 'refs/heads/main'");
+      const pre = deploy.steps.findIndex((s: { name: string }) => s.name === 'REQUIRE existing Cloudflare Access before deploying any site bytes');
+      const push = deploy.steps.findIndex((s: { name: string }) => s.name === 'Deploy only the pre-verified protected Worker (not Production cutover)');
+      const post = deploy.steps.findIndex((s: { name: string }) => s.name === 'REQUIRE anonymous routes still redirect to Cloudflare Access after deploying');
+      expect(pre).toBeGreaterThan(0);
+      expect(push).toBeGreaterThan(pre);
+      expect(post).toBeGreaterThan(push);
+      expect(deploy.steps[pre].run).toBe('node scripts/hosting/verify-cloudflare-access.mjs');
+      expect(deploy.steps[post].run).toBe('node scripts/hosting/verify-cloudflare-access.mjs');
+      expect(deploy.steps[push].env).toHaveProperty('CLOUDFLARE_API_TOKEN', '${{ secrets.CLOUDFLARE_STANDBY_API_TOKEN }}');
+      expect(deploy.steps[push].env).toHaveProperty('CLOUDFLARE_ACCOUNT_ID', '${{ secrets.CLOUDFLARE_STANDBY_ACCOUNT_ID }}');
+      expect(deploy.steps[push].run).toContain('wrangler@4.156.0 deploy --config wrangler.standby.jsonc');
+      for (const job of [build, deploy]) {
+        for (const step of job.steps) {
+          if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
+          if (step.uses?.startsWith('actions/checkout@')) expect(step.with['persist-credentials']).toBe(false);
+        }
+      }
+      const worker = JSON.parse(readText('../../wrangler.standby.jsonc'));
+      expect(worker.name).toBe('basemodel-access-standby');
+      expect(worker.workers_dev).toBe(true);
+      expect(worker.preview_urls).toBe(false);
+      expect(worker.assets.directory).toBe('./dist');
+      expect(worker.assets.run_worker_first).toBeUndefined();
+      expect(packageJson.scripts['build:workers:standby']).toContain('build:workers:shadow');
+    };
+    inspect(source);
+    for (const unsafe of [
+      source.replace('  workflow_dispatch:', '  pull_request:'),
+      source.replace("if: github.ref == 'refs/heads/main'", "if: github.ref == 'refs/heads/feature'"),
+      source.replace('environment: cloudflare-protected', 'environment: public'),
+      source.replace('REQUIRE existing Cloudflare Access before deploying any site bytes', 'Skip Access gate'),
+      source.replace('REQUIRE anonymous routes still redirect to Cloudflare Access after deploying', 'Skip post-deploy gate'),
+      source.replace('persist-credentials: false', 'persist-credentials: true'),
+    ]) expect(() => inspect(unsafe)).toThrow();
   });
 
   it('reconciles runner image drift without deleting the previous container', () => {

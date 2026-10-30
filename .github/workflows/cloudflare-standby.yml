@@ -1,0 +1,143 @@
+name: Protected Cloudflare Standby (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Build only (plan), or publish an already Access-protected Worker (deploy)'
+        type: choice
+        options: [plan, deploy]
+        default: plan
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basemodel-cloudflare-standby
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: standby-verified-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    outputs:
+      sha: ${{ steps.identity.outputs.sha }}
+    steps:
+      - name: Checkout exact trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind exact unmodified main identity
+        id: identity
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f 1)" = "$EXPECTED_SHA"
+          echo "sha=$EXPECTED_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Verify negative hosting contracts
+        run: npm run verify:workers:standby
+
+      - name: Build exact-head noindex standby with full deployment checks
+        run: npm run build:workers:standby
+
+      - name: Seal source identity with immutable artifact
+        env:
+          EXPECTED_SHA: ${{ steps.identity.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test -s dist/index.html
+          test -s dist/_redirects
+          test -s dist/_headers
+          test -n "$EXPECTED_SHA"
+          printf '%s\n' "$EXPECTED_SHA" > dist/standby-source-sha.txt
+
+      - name: Upload this run's static standby artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: basemodel-cloudflare-standby-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: standby-protected-deploy
+    needs: build
+    if: github.ref == 'refs/heads/main' && inputs.operation == 'deploy' && needs.build.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: cloudflare-protected
+    env:
+      CLOUDFLARE_PROTECTED_URL: ${{ vars.CLOUDFLARE_PROTECTED_URL }}
+    steps:
+      - name: Checkout exact tested source (no credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - name: Download exact run's tested artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: basemodel-cloudflare-standby-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist
+
+      - name: Revalidate source identity and static-only Worker settings
+        env:
+          EXPECTED_SHA: ${{ needs.build.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f 1)" = "$EXPECTED_SHA"
+          test "$(cat dist/standby-source-sha.txt)" = "$EXPECTED_SHA"
+          node --test scripts/hosting/*.test.mjs
+
+      - name: REQUIRE existing Cloudflare Access before deploying any site bytes
+        run: node scripts/hosting/verify-cloudflare-access.mjs
+
+      - name: Deploy only the pre-verified protected Worker (not Production cutover)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STANDBY_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_STANDBY_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          npx --yes wrangler@4.156.0 deploy --config wrangler.standby.jsonc
+
+      - name: REQUIRE anonymous routes still redirect to Cloudflare Access after deploying
+        run: node scripts/hosting/verify-cloudflare-access.mjs
+
+      - name: Summarize standby only
+        env:
+          EXPECTED_SHA: ${{ needs.build.outputs.sha }}
+        run: |
+          set -euo pipefail
+          echo "## Protected Cloudflare standby" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Source: \`$EXPECTED_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Access: anonymous root, index, asset, model-data probes passed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Authority: standby only; Vercel remains current Production" >> "$GITHUB_STEP_SUMMARY"
