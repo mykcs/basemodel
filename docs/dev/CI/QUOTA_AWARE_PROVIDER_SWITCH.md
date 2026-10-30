@@ -37,6 +37,8 @@ PR exact HEAD
 
 Cloudflare 候选门使用 `pull_request` + `contents:read` + 无 secrets，禁止 Preview/Production 发布；其 `wrangler.standby.jsonc` 继续强制 `preview_urls=false`、独立静态 Worker。`cloudflare-artifact-gate` 只证明离线 provider 兼容性，**不证明 Cloudflare Access 身份名单、部署成功、视觉交互**。不能把一个普通 Cloudflare 免费公开 Preview 当成私有 BaseModel 的验收环境。
 
+完整浏览器矩阵从同一次 GitHub Actions `run_id` / `run_attempt` 下载已封存的构建产物；12 个 Chromium/WebKit 分片在下载前按分片编号错峰数秒，减少同时请求同一个 Artifact 的压力。若下载仍失败，必须保留失败记录、整轮重新验证并重新生成该 attempt 的构建产物；不可借用另一轮的截图或只补写绿色结论。
+
 ## 切换权限的安全事务（必须串行执行，严禁直接删掉 Vercel 检查）
 
 1. 将候选 PR 与现行 `main` 同步到 exact HEAD；让 `public-ci-gate` 和 `cloudflare-artifact-gate` 在真实 GitHub Actions 完整 PASS，并确认新检查所属 GitHub Actions App ID 与现行 required context 的来源一致。任何 `skipped`、失败、stale head 都不算成功。

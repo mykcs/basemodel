@@ -69,6 +69,10 @@ const assertCloudFigureSafety = (source: string) => {
   expect(job.container.image).toMatch(new RegExp('^mcr\\.microsoft\\.com/playwright:v' + lock.packages['node_modules/@playwright/test']!.version.replaceAll('.', '\\.') + '-noble@sha256:[a-f0-9]{64}$'));
   const checkout = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
   expect(checkout.with.ref).toBe('${{ needs.plan.outputs.sha }}');
+  const stagger = job.steps.find((step: { name: string }) => step.name === 'Pace shared-artifact downloads across complete browser shards');
+  const sharedDownload = job.steps.find((step: { name: string }) => step.name === "Download this run's exact-head static artifact");
+  expect(stagger.run).toContain('sleep "$((3 * (offset + FIGURE_SHARD)))"');
+  expect(job.steps.indexOf(stagger) + 1).toBe(job.steps.indexOf(sharedDownload));
   const upload = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@'));
   expect(upload.if).toBe('always()');
   expect(upload.with.name).toContain('${{ needs.plan.outputs.sha }}');

@@ -289,6 +289,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Pace shared-artifact downloads across complete browser shards
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$FIGURE_BROWSER" in
+            chromium) offset=0 ;;
+            webkit) offset=4 ;;
+            *) echo 'Unsupported browser shard' >&2; exit 1 ;;
+          esac
+          test "$FIGURE_SHARD" -ge 1
+          test "$FIGURE_SHARD" -le "$FIGURE_SHARD_TOTAL"
+          sleep "$((3 * (offset + FIGURE_SHARD)))"
+
       - name: Download this run's exact-head static artifact
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
