@@ -1,16 +1,20 @@
 # Latest Agent handoff
 
-## 2026-10-29 Content reorganization candidate · PR #817
+## 2026-10-29 隐私后续与发布身份检查
 
-The existing reader-entry PR is being refreshed on current main for the owner-requested sitewide content organization. Home retains orientation and short findings; Study is the single chronological experiment directory; capability exploration becomes a four-topic lookup using its existing route registry. Native disclosures keep every experiment child reachable on phones, and the existing search gains canonical reader routes. Original science, evidence pages, approved three-article roles and public URLs remain intact.
+#958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准。
 
-Status: candidate only; exact-head cloud deterministic/build/browser and independent verification are still required. Historical typography records remain sealed, with separate exact-source content-review identities and new rendered acceptance. No Production acceptance or deployment is claimed.
+## 2026-10-30 BaseModel content reorganization · PR #817
+
+The owner-requested reorganization gives the Home, Study, research-topic directory and existing search distinct roles. The previous exact head passed Public CI (1,040 browser tests) and the complete Chromium/WebKit visual review (1,039 first-attempt tests per browser); scientific pages, evidence and public URLs remain intact.
+
+Status: the earlier preview candidate is based on `9982005b`; main has since advanced through #966. The owner approved publication on 2026-10-30. PR #817 is being refreshed and must pass current-base exact-head checks before merge. No Production deployment is claimed in this handoff.
 
 ## 2026-10-29 CI performance qualification
 
 [#814](https://github.com/mykcs/basemodel/pull/814) merged fail-early browser prerequisites, exact-source sealed static artifacts, duration-balanced full-title allocation and shared risk routing. [The CI implementation and measurement record](../dev/CI/README.md) owns behavior, positive/negative receipts, costs and rollback; hosting and release authority remain in the existing current owners. The sampled complete browser-workflow wait fell from 55.6 to 35.8 minutes, while summed Runner time rose 5.2%; no net full-run compute saving is claimed. [#962](https://github.com/mykcs/basemodel/pull/962) merged the typography consumer's shared-plan condition as `b2807e2`; current-base Public and complete Figure acceptance passed, including an explicitly recorded failed-only WebKit recovery. The independent #958 privacy work is preserved, including its merged auditor and existing image/external-identity follow-up. Scientific source/evidence and required check identities remain intact.
 
-## 2026-10-29 人物称谓隐私：待合入的标准候选
+## 2026-10-29 人物称谓隐私：历史候选记录
 
 历史快照（#958 合并前）：下段保留当时的候选状态；该候选现已作为 `1ed126c` 合入 main。此状态更新不代表历史、图片或外部链接已完全匿名，既有剩余事项见 [#963](https://github.com/mykcs/basemodel/issues/963)。
 

@@ -28,49 +28,49 @@ const boundedManifestHref = 'https://github.com/mykcs/openevo-experiment/blob/c5
 const betaControllerSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_gauge_invariant_beta_policy_v2_202609151320.py';
 const betaRuntimeSourceHref = 'https://github.com/mykcs/openevo-experiment/blob/c5e012814bb9509deb0e2cbc8d57a63e2b56889f/scripts/analysis/gated_delta_lora_effective_state_runtime_v1_202609151345.py';
 
-const wandbReportUrl = 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==';
+const wandbReportUrl = '/research/seed-openevo/evidence/source-index.json#wb-002';
 const wandbWorkspaceUrl = study.posthocAnalysis.wandbWorkspace;
-const panelHref = (panelDisplayName: string, panelSectionName: string) => {
-  const join = wandbWorkspaceUrl.includes('?') ? '&' : '?';
-  return `${wandbWorkspaceUrl}${join}panelDisplayName=${encodeURIComponent(panelDisplayName)}&panelSectionName=${encodeURIComponent(panelSectionName)}`;
-};
 const metricCharts = {
   taskScore: {
     title: t('WebShop Task Score · 160轮', 'WebShop Task Score · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/task-score.svg',
     href: wandbReportUrl,
-    linkText: t('打开 W&B Report ↗', 'Open W&B Report ↗'),
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组 OpenEVO 的 WebShop Task Score 160 轮静态曲线', 'Static 160-round WebShop Task Score curves for the three OpenEVO methods'),
   },
   loss: {
     title: t('SD-LoRA training loss · 累计 rollout', 'SD-LoRA training loss · cumulative rollout'),
     src: '/research/seed-openevo/evidence/wandb-threeway/loss-vs-rollout.svg',
     href: wandbReportUrl,
-    linkText: t('打开 W&B Report ↗', 'Open W&B Report ↗'),
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组 OpenEVO 的 SD-LoRA training loss 随累计 rollout 变化的静态曲线', 'Static SD-LoRA training-loss curves against cumulative rollouts for the three OpenEVO methods'),
   },
   taskVector: {
     title: 'Task Vector · Frobenius',
     src: '/research/seed-openevo/evidence/wandb-threeway/task-vector-frobenius.svg',
-    href: panelHref('Task Vector · Frobenius', '01 Overview · 三条路线'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验的 Task Vector Frobenius norm 静态曲线', 'Static Task Vector Frobenius norm curves for the three experiments'),
   },
   outputLength: {
     title: t('每一步输出长度 · 160轮', 'Tokens per step · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/tokens-per-step.svg',
-    href: panelHref('每一步输出长度', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验每一步 raw-completion token 数的 160 轮静态曲线', 'Static 160-round raw-completion tokens-per-step curves for the three experiments'),
   },
   steps: {
     title: t('平均任务步数', 'Steps per episode'),
     src: '/research/seed-openevo/evidence/wandb-threeway/steps-per-episode.svg',
-    href: panelHref('每个 Episode 的步骤数', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验每个 episode 的平均任务步数静态曲线', 'Static steps-per-episode curves for the three experiments'),
   },
   entropy: {
     title: t('行为 entropy · 160轮', 'Action-family entropy · 160 rounds'),
     src: '/research/seed-openevo/evidence/wandb-threeway/action-family-entropy.svg',
-    href: panelHref('Action-family entropy', '06 输出长度与任务路径'),
+    href: wandbWorkspaceUrl,
+    linkText: t('查看 W&B 来源索引', 'Open W&B source index'),
     alt: t('三组实验 160 轮 action-family Shannon entropy 静态曲线', 'Static 160-round action-family Shannon entropy curves for the three experiments'),
   },
   r200TaskScore: {
@@ -767,8 +767,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
   <p class="paper__links">{t('请参考 GitHub：', 'GitHub reference: ')}<a href={study.evidence.webshopEvaluatorSource} target="_blank" rel="noreferrer"><ExternalBrandMark href={study.evidence.webshopEvaluatorSource} />{t('WebShop evaluator 定义', 'WebShop evaluator definition')}</a></p>
   <MetricEvidenceFigure item={metricCharts.taskScore} />
   <p class="paper__chart-note">{t(
-    '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接仍指向原始观测入口。',
-    'Scale: this page consistently reports Task Score / 100. The native W&B scalar is 0–1; this publication figure only multiplies it by 100, so the curve shape, round positions, and relative relationships are unchanged. The W&B link still points to the original observability surface.',
+    '口径：本页统一使用 Task Score / 100。W&B 原始 scalar 是 0–1；这里的发布图只做 ×100 的线性换算，因此曲线形状、轮次位置和相对关系都不变。W&B 链接现指向匿名来源索引；原始观测入口按权限保留。',
+    'Scale: this page consistently reports Task Score / 100. The native W&B scalar is 0–1; this publication figure only multiplies it by 100, so the curve shape, round positions, and relative relationships are unchanged. The W&B link opens an anonymous source index; the original observability locator is retained with owner-only access.',
   )}</p>
   <p class="paper__boundary">{t(
     '单轮曲线抖动很大，因为每轮抽到的 WebShop 任务会变化。它适合看完整训练形状，但不适合只凭某一个峰值判断哪条路线更好；所以下一步把同一条轨迹按每 20 轮聚合。',
@@ -1004,8 +1004,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     'The previous section establishes the score pattern, including the R160–R199 continuation. We now move inward in a fixed order—optimization → parameter magnitude → Task Vector → spectrum and direction → output path → behavior distribution—and revisit the questions that previously stopped at R159 through R199. Each metric is defined before its evidence and interpretation.',
   )}</p>
   <p class="paper__links">
-    <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B Report（需要权限）', 'W&B Report (access required)')}</a>
-    <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('完整 W&B Workspace', 'Full W&B Workspace')}</a>
+    <a href={wandbReportUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbReportUrl} />{t('W&B 来源索引（原件需权限）', 'W&B source index (originals require permission)')}</a>
+    <a href={wandbWorkspaceUrl} target="_blank" rel="noreferrer"><ExternalBrandMark href={wandbWorkspaceUrl} />{t('W&B Workspace 来源索引', 'W&B Workspace source index')}</a>
   </p>
 
   <div class="paper__metric-step" id="loss">
@@ -1086,8 +1086,8 @@ accepted → UPDATE     rejected / no better state → KEEP PRIOR`}</code></pre>
     )}</p>
     <MetricEvidenceFigure item={metricCharts.taskVector} />
     <p class="paper__chart-note">{t(
-      '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接保留原始观测入口。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
-      'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link preserves the original observability surface. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
+      '采样口径：三条曲线都使用 R0–R159 的逐轮 Task Vector Frobenius，每条 160 个点，横轴密度和 y 轴量程完全一致。网页发布图按封存逐轮数据统一采样；W&B 链接提供匿名来源索引；原始观测入口按权限保留。下面的相关性统计只针对普通 OpenEVO 的 160 轮配对数据；另外两条曲线在这里用于比较逐轮更新幅度。',
+      'Sampling: all three curves use per-round Task Vector Frobenius over R0–R159, with 160 points per curve and a shared x-density and y-scale. The publication figure normalizes sampling from sealed per-round evidence, while the W&B link provides an anonymous index with permission-scoped original locators. The association statistics below use only the 160 paired rounds from ordinary OpenEVO; the other two curves are shown here for per-round update-magnitude comparison.',
     )}</p>
     <p class="paper__metric-label">{t('② 实验结果', '② Result')}</p>
     <div class="paper-table-wrap">

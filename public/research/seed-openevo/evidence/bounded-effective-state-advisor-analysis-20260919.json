@@ -6,7 +6,7 @@
   "gpu_used": false,
   "wandb": {
     "run_id": "f587a9687171dadb",
-    "workspace": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=aq3kg4ro7rf"
+    "workspace": "/research/seed-openevo/evidence/source-index.json#wb-006"
   },
   "source_artifact_sha256": {
     "parameter_score_association": "ff9155e4710b474b5dfa9dd98aac930162f861ec988b01c5f76399f93598638c",
@@ -134,5 +134,15 @@
     },
     "action_valid_rate": 1.0,
     "claim_boundary": "behavioral concentration only; not causal evidence and not token predictive entropy"
+  },
+  "privacy_presentation": {
+    "kind": "presentation_derivative",
+    "baseline_commit": "1ed126cbe2c799520fe365b98a105ef7aa79b7bd",
+    "original_sha256": "30ab5e0eac8179ba6411bb818c7b2057ad8975d11f24c83489360df69740acc0",
+    "locator_fields": [
+      "/wandb/workspace"
+    ],
+    "source_index": "/research/seed-openevo/evidence/source-index.json",
+    "boundary": "Only provider account/access locators are withheld. Measurements, run IDs, source SHAs and scientific-authority flags are unchanged. The original is preserved separately; this derivative is not the original receipt."
   }
 }

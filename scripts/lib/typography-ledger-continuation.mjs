@@ -83,8 +83,31 @@ const legacyRole = String.fromCodePoint(0x5b66, 0x957f);
 const publicAlias = `L ${legacyRole}`;
 const digest = content => createHash('sha256').update(content).digest('hex');
 
+// Exact privacy-only source continuation; historical proof bytes and all 5,537
+// declarations remain sealed. Only these reviewed source digest pairs are valid.
+export const reviewedPrivacyProofs = {
+  "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro": {
+    "before": "5367f3c8ebf07af4fbdc28681561f50f2fed676e19678aed471084361c2346aa",
+    "after": "2273259e4f4f1e9aea56c6b8bbea738af2e27b9b217231e6d0fa82cefab9dfb7"
+  },
+  "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro": {
+    "before": "a9a9ab570f0c64f2133806b57aa31e2354dbb1dfc21d379511cd49152331234a",
+    "after": "8f3dbf91e1feb870066772a1e863985e8a51c6d593b2e04a8de56d57519b7bd2"
+  },
+  "src/components/research/OpenEvo7BStage2AnalysisMap.astro": {
+    "before": "a717b5f46dc606c800b9ada0bd6f3eedbf0b289df22326b28915e2623b179cca",
+    "after": "d5bb89ebed8910d38b2e1696b83764b7801281db5067c241eeb9aafc0e36a690"
+  },
+  "src/components/research/SeedOpenEvoBriefingTechnicalNotes.astro": {
+    "before": "c5cd004479c18968435423a7e0a9028da2edc2641d01a0d0cb37e23e2d154a2e",
+    "after": "c41e0553c82b5fec3991b6bc5d0b63316f2787e7b45a7204e1c40848102fa7ae"
+  }
+};
+
 export function verifySealedProofWithEditorialAnonymization(proof, currentBytes, contentReview) {
   if (digest(currentBytes) === proof.sha256) return { editorialAliasOnly: false };
+  const privacy = reviewedPrivacyProofs[proof.file];
+  if (privacy && proof.sha256 === privacy.before && digest(currentBytes) === privacy.after) return { editorialPrivacyOnly: true };
   if (contentReview) {
     assert.match(contentReview.currentSourceSha256, /^[a-f0-9]{64}$/, 'Content review needs an exact source identity');
     assert.match(contentReview.priorSourceSha256, /^[a-f0-9]{64}$/, 'Content review must retain its prior source identity');
