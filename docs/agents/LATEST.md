@@ -1,5 +1,9 @@
 # Latest Agent handoff
 
+## 2026-10-30 Frontend tooling adoption · PR #967
+
+PR #967 is an open candidate, refreshed onto current main `8e0c1e94` after #972. It adopts the existing Astro/TypeScript/MDX stack with Lucide, prefixed Tailwind/daisyUI, Alpine CSP, Motion mini and an adapted shadcn/ui Button in live controls. Existing design tokens, scientific content and route contracts remain owners. The prior exact head passed Public CI, the local deploy verification/build and recorded browser review; those receipts do not transfer to the refreshed head. Vercel rejected the prior exact-head final gate with “Deployment rate limited — retry in 24 hours.” Re-run affected checks on the refreshed head; preserve the shared final-gate ref while another candidate owns it.
+
 ## 2026-10-30 SEED × OpenEVO UI release
 
 PR [#960](https://github.com/mykcs/basemodel/pull/960) is being updated onto the current `main` after #966 advanced it. Its two overlapping browser-test changes were combined by table identity and section, preserving the numeric evidence fixtures and testing the new retrospective discussion table. The affected Chromium suite passed locally (118 tests). Previous exact-head CI and Vercel receipts do not transfer to this updated candidate; use the live PR head for Public PR CI, Cloud Figure Visual Review, final-gate Preview, merge, and Production verification.
