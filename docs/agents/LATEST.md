@@ -1,14 +1,22 @@
 # Latest Agent handoff
 
+## 2026-10-30 Frontend tooling adoption · PR #967
+
+PR #967 is an open candidate, refreshed onto current main `8e0c1e94` after #972. It adopts the existing Astro/TypeScript/MDX stack with Lucide, prefixed Tailwind/daisyUI, Alpine CSP, Motion mini and an adapted shadcn/ui Button in live controls. Existing design tokens, scientific content and route contracts remain owners. The prior exact head passed Public CI, the local deploy verification/build and recorded browser review; those receipts do not transfer to the refreshed head. Vercel rejected the prior exact-head final gate with “Deployment rate limited — retry in 24 hours.” Re-run affected checks on the refreshed head; preserve the shared final-gate ref while another candidate owns it.
+
+## 2026-10-30 SEED × OpenEVO UI release
+
+PR [#960](https://github.com/mykcs/basemodel/pull/960) is being updated onto the current `main` after #966 advanced it. Its two overlapping browser-test changes were combined by table identity and section, preserving the numeric evidence fixtures and testing the new retrospective discussion table. The affected Chromium suite passed locally (118 tests). Previous exact-head CI and Vercel receipts do not transfer to this updated candidate; use the live PR head for Public PR CI, Cloud Figure Visual Review, final-gate Preview, merge, and Production verification.
+
 ## 2026-10-29 隐私后续与发布身份检查
 
 #958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准。
 
-## 2026-10-29 Frontend tooling adoption candidate
+## 2026-10-30 BaseModel content reorganization · PR #817
 
-Owner-authorized adoption proceeds from existing Astro/strict TypeScript/Starlight MDX to Lucide, prefixed Tailwind/daisyUI, Alpine CSP, Motion mini and an adapted shadcn/ui React Button. Live consumers are the workspace pane icons, shared CopyButton, research-context count/layout and Header mobile menu. Existing `tokens.css`, research copy/data, route contracts and semantic CSS owners remain authoritative; `current/css-architecture.md` owns the updated migration boundaries.
+The owner-requested reorganization gives the Home, Study, research-topic directory and existing search distinct roles. The previous exact head passed Public CI (1,040 browser tests) and the complete Chromium/WebKit visual review (1,039 first-attempt tests per browser); scientific pages, evidence and public URLs remain intact.
 
-Implementation `a83b5e2b` passed the type/static-build gates, 959 unit tests, all 2,088 Chromium/WebKit cases in one clean two-worker run with zero retries/skips, and eight independent rendered checks at 440×956/1440 in both themes. An earlier four-worker run stopped after a test-runner result-delivery stall; its failure and trace remain recorded separately. After integrating `main@9982005b`, 24 focused Chromium/WebKit checks passed with the newer research page; its scientific source and frozen table fixtures remain unchanged relative to main. The two inherited assertion repairs reuse PR #960 at `fd529174`: section identity replaces page-wide table positions, and formal-confirmation wording follows the current text. Exact-head hosted acceptance is tracked by the task PR; Production publication is separate.
+Status: current main advanced through #969 (`c9c5052f`) after #966. The prior refreshed head `c6adc11e` was superseded while exact-head checks were running; those partial checks are not merge evidence. The owner approved publication on 2026-10-30. PR #817 is refreshed again and must pass new current-base Public, Vercel and Figure acceptance before merge. No Production deployment is claimed.
 
 ## 2026-10-29 CI performance qualification
 

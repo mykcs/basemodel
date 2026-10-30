@@ -8,6 +8,7 @@ import {
   OPEN_EVO_SECONDARY_ROUTES,
   type LocalizedCopy,
   type OpenEvoExperimentChildLink,
+  type OpenEvoExperimentNavigationItem,
 } from '../../data/openEvoExperimentNavigation';
 
 interface Props { locale: Locale }
@@ -17,8 +18,11 @@ const zh = locale === 'zh';
 const t = (copy: LocalizedCopy) => zh ? copy.zh : copy.en;
 const p = (path: string) => localePath(locale, path);
 const studyIntro = zh
-      ? '上一轮留下的问题，决定下一轮为什么发生。第 07 项记录和L 学长开会时收敛的问题，第 08 项回到上游，重新检查 Stage1 到底该怎么学。'
-      : 'One experiment leaves the question for the next. Item 07 records the questions refined in the meeting; Item 08 moves upstream to re-check how Stage 1 should learn.';
+  ? 'OpenEVO 在 WebShop 中怎样学习、遇到了什么问题、下一轮因此改了什么。完整实验按研究演进排列；专题目录按机制与问题查找。'
+  : 'How OpenEVO learns in WebShop, which problems emerged, and what changed next. Experiments follow the research progression; topics provide lookup by mechanism and question.';
+const resumeExperiment = OPEN_EVO_EXPERIMENTS.at(-1)!;
+const uniqueChildrenFor = (experiment: OpenEvoExperimentNavigationItem) =>
+  [...new Map(experiment.childLinks.filter((child) => child.href !== experiment.primaryHref).map((child) => [child.href, child])).values()];
 
 type DirectoryRow =
   | { kind: 'link'; child: OpenEvoExperimentChildLink }
@@ -42,15 +46,22 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
 };
 ---
 
-<main class="experiment-index evo-approved-reader evo-reading-overview" data-ui-audit="layout" data-testid="experiment-first-study-index">
+<div class="experiment-index evo-approved-reader evo-reading-overview" data-ui-audit="layout" data-testid="experiment-first-study-index">
   <header class="study-hero">
-    <h1>{zh ? 'OpenEVO × WebShop：七次实验的研究演进' : 'OpenEVO × WebShop: seven experiments in one research progression'}</h1>
+    <h1>{zh ? 'OpenEVO × WebShop 实验目录' : 'OpenEVO × WebShop experiment directory'}</h1>
     <p class="study-hero__lede">{studyIntro}</p>
-    <p class="study-hero__mobile-thread" aria-label={zh ? '七次实验的研究演进' : 'Research progression across seven experiments'}>{zh
-      ? '参数没更新 → 长周期更新 → 小模型接口 → 候选准入 → 参数历史 → 固定 State / β → 和L 学长开会 → Stage1 学习方式'
-      : 'blocked updates → long run → smaller-model interface → candidate admission → parameter history → fixed State / β → meeting → Stage-1 learning'}</p>
+    <details data-study-reading-options>
+      <summary>{zh ? '研究文章与专题入口' : 'Articles and topic entry points'}</summary>
+    <nav id="reader-entry" aria-label={zh ? '研究阅读入口' : 'Research reading entry points'}>
+      <ul>
+        <li><a href={p('/research/seed-openevo/study/parameter-memory-results/')}>{zh ? '查看研究问题与回应结果' : 'Research questions and response results'}</a></li>
+        <li><a href={p(resumeExperiment.primaryHref)}>{zh ? '继续最近一组实验' : 'Continue with the latest experiment'}</a></li>
+        <li><a href={p('/research/seed-openevo/study/capability-exploration/')}>{zh ? '按研究专题查找' : 'Browse by research topic'}</a></li>
+      </ul>
+    </nav>
+    </details>
   </header>
-  <ol class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
+  <ol id="experiment-directory" class="experiment-tree" aria-label={zh ? '主要实验目录' : 'Major experiment index'}>
     {OPEN_EVO_EXPERIMENTS.map((experiment) => (
       <>
       {experiment.id === 'stage1-learning-objectives' && (
@@ -81,6 +92,8 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
             <strong>{t(experiment.title)}</strong>
             <span aria-hidden="true">→</span>
           </a>
+          <details data-experiment-details={experiment.id}>
+            <summary>{zh ? '研究问题、结果边界与相关页面' : 'Question, result boundary, and related pages'}</summary>
           <div class="experiment-node__progression" data-research-progression={experiment.id}>
             <p data-progression-step="question"><strong>{zh ? '当时的问题' : 'Question'}</strong><span>{t(experiment.researchQuestion)}</span></p>
             <p data-progression-step="intervention"><strong>{zh ? '这次改了什么' : 'Intervention'}</strong><span>{t(experiment.intervention)}</span></p>
@@ -89,7 +102,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
           </div>
           {experiment.lineageNote && <p class="experiment-node__relation">{t(experiment.lineageNote)}</p>}
           <ul class="experiment-children">
-            {directoryRowsFor(experiment.childLinks).map((row) => row.kind === 'link' ? (
+            {directoryRowsFor(uniqueChildrenFor(experiment)).map((row) => row.kind === 'link' ? (
               <li><a href={p(row.child.href)}>{t(row.child.label)} <span aria-hidden="true">→</span></a></li>
             ) : (
               <li class="experiment-child-group">
@@ -102,33 +115,20 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
               </li>
             ))}
           </ul>
+          </details>
 
         </article>
       </li>
       </>
     ))}
   </ol>
-  {OPEN_EVO_EXPERIMENTS.map((experiment) => <>
-          {directoryRowsFor(experiment.childLinks.filter((child) => child.mobileFeatured)).map((row) => row.kind === 'link' ? (
-            <p class="experiment-mobile-featured"><a href={p(row.child.href)}>{t(row.child.label)} <span aria-hidden="true">→</span></a></p>
-          ) : (
-            <div class="experiment-mobile-featured experiment-mobile-featured--group">
-              <strong>{experiment.number} · {t(row.label)}</strong>
-              <div>
-                {row.children.map((child) => <a href={p(child.href)}>{t(child.label)} <span aria-hidden="true">→</span></a>)}
-              </div>
-            </div>
-          ))}
-  </>)}
-  <p class="study-hero__lede study-hero__lede--after">{studyIntro}</p>
-
   <aside class="secondary-routes" aria-label={zh ? '跨实验入口' : 'Cross-experiment routes'}>
     <strong>{zh ? '跨实验入口' : 'Across experiments'}</strong>
     <nav>
       {OPEN_EVO_SECONDARY_ROUTES.map((item) => <a data-secondary-route={item.id} href={p(item.href)}>{t(item.label)}</a>)}
     </nav>
   </aside>
-</main>
+</div>
 
 <style>
   .experiment-index{color:var(--color-text)}
@@ -184,26 +184,26 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
     .study-hero h1{font-size:var(--article-title-size, 2.15rem);line-height:var(--article-title-leading, 1.02)}
     .study-hero__lede{margin-top:.4rem;font-size:var(--article-body-size, .96rem);line-height:var(--article-body-leading, 1.45)}
     .study-hero__mobile-thread{display:block;margin:.5rem 0 0;font-size:var(--type-meta);line-height:var(--type-leading-caption);color:var(--color-text-muted);white-space:normal;overflow-wrap:anywhere;font-family:var(--font-interface)}
-    .experiment-node{grid-template-columns:2.35rem minmax(0,1fr);gap:.5rem;padding:.2rem 0}
+    .experiment-node{grid-template-columns:2.35rem minmax(0,1fr);gap:.5rem;padding:1.5rem 0}
     .experiment-node__rail{justify-content:flex-start}
     .experiment-node__rail span{width:2.15rem;height:2.15rem}
     .experiment-node__rail::after{left:1.05rem;top:2.05rem;bottom:-.62rem}
     .experiment-node__main strong{font-size:var(--type-subsection);line-height:var(--type-leading-heading)}
     .meeting-node{padding:.3rem 0}
     .meeting-node h2{font-size:var(--article-section-size, 1.12rem);line-height:var(--type-leading-heading)}
-    .study-hero>.study-hero__lede{display:none}
+    .study-hero>.study-hero__lede{display:block}
     .study-hero__lede--after{display:block}
     .meeting-mobile-label{display:inline}
-    .meeting-node time,.meeting-node>article>p{display:none}
+    .meeting-node time,.meeting-node>article>p{display:block}
     .meeting-node details{margin-top:.2rem}
-    .experiment-node__progression,.experiment-node__relation,.experiment-children{display:none}
+    .experiment-node__progression,.experiment-node__relation,.experiment-children{display:block}
     .experiment-index .experiment-mobile-featured{display:block;margin:.55rem 0 0;font-size:var(--type-body);line-height:var(--type-leading-caption);color:var(--color-text)}
     .experiment-mobile-featured a{color:var(--color-text);text-underline-offset:.2em}
     .experiment-mobile-featured--group{padding-left:.65rem;border-left:1px solid var(--color-border)}
     .experiment-mobile-featured--group>strong{display:block;font-size:var(--type-minor-heading)}
     .experiment-mobile-featured--group>div{display:grid;gap:.12rem;margin-top:.2rem}
     .experiment-mobile-featured--group a{display:block;padding:.08rem 0}
-    .experiment-tree{min-height:calc(100svh - 14rem)}
+    .experiment-tree{min-height:0}
     .secondary-routes{display:block}
     .secondary-routes nav{justify-content:flex-start;margin-top:.65rem}
   }
