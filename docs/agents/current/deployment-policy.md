@@ -2,6 +2,8 @@
 
 Last reviewed: **2026-10-30**
 
+**Pending quota-aware migration:** The user wants Cloudflare-first, Vercel-as-fallback selection without making Vercel Hobby builds a permanent CI prerequisite. [The transition plan and fail-closed replacement gate](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) describe the candidate implementation. The actual ruleset and Production still require Vercel as documented below until a real exact-head Cloudflare artifact gate, protected main deployment, atomic ruleset replacement and post-merge authenticated acceptance have all passed. Never turn off an existing required check in anticipation of future CI evidence.
+
 ## Authority
 
 Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns the executable release/validation policy; the rationale file explains why the provider topology was chosen and when to reconsider it.

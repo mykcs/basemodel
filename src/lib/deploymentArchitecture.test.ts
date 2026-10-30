@@ -7,7 +7,7 @@ const readText = (relativePath: string): string => readFileSync(new URL(relative
 const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePath)) as T;
 
 const allowedWorkflowFiles = [
-  'cloud-figure-visual-review.yml', 'cloudflare-standby.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
+  'cloud-figure-visual-review.yml', 'cloudflare-candidate.yml', 'cloudflare-standby.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
 ];
 const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
 const assertCloudFigureSafety = (source: string) => {
@@ -261,6 +261,47 @@ describe('Vercel production deployment architecture', () => {
       source.replace('REQUIRE anonymous routes still redirect to Cloudflare Access after deploying', 'Skip post-deploy gate'),
       source.replace('persist-credentials: false', 'persist-credentials: true'),
     ]) expect(() => inspect(unsafe)).toThrow();
+  });
+
+  it('qualifies exact PR Cloudflare assets offline without secrets, Worker preview or deployment', () => {
+    const source = readText('../../.github/workflows/cloudflare-candidate.yml');
+    const check = (candidate: string) => {
+      const workflow = parse(candidate);
+      expect(Object.keys(workflow.on)).toEqual(['pull_request']);
+      expect(workflow.on.pull_request.types).toEqual(['opened', 'synchronize', 'reopened']);
+      expect(workflow.permissions).toEqual({ contents: 'read' });
+      expect(workflow.concurrency['cancel-in-progress']).toBe(true);
+      expect(Object.keys(workflow.jobs)).toEqual(['package', 'gate']);
+      const pack = workflow.jobs.package;
+      expect(pack['runs-on']).toBe('ubuntu-24.04');
+      expect(pack.environment).toBeUndefined();
+      expect(pack.env.CI_HEAD_SHA).toBe('${{ github.event.pull_request.head.sha }}');
+      const checkout = pack.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/checkout@'));
+      expect(checkout.with.ref).toBe('refs/pull/${{ github.event.pull_request.number }}/head');
+      expect(checkout.with['persist-credentials']).toBe(false);
+      expect(pack.steps.some((step: { run?: string }) => step.run === 'npm run verify:workers:standby')).toBe(true);
+      expect(pack.steps.some((step: { run?: string }) => step.run === 'npm run build:workers:standby')).toBe(true);
+      expect(pack.steps.some((step: { run?: string }) => step.run?.includes('node scripts/hosting/verify-worker-candidate.mjs'))).toBe(true);
+      const dry = pack.steps.find((step: { name?: string }) => step.name === 'Validate Worker bundle with Cloudflare Wrangler without deployment');
+      expect(dry.run).toContain('wrangler@4.156.0 deploy --dry-run --config wrangler.standby.jsonc');
+      for (const step of pack.steps) {
+        if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
+      }
+      const gate = workflow.jobs.gate;
+      expect(gate.name).toBe('cloudflare-artifact-gate');
+      expect(gate.if).toBe('always()');
+      expect(gate.needs).toEqual(['package']);
+      expect(gate.steps[0].run).toContain('test "$PACKAGE_RESULT" = success');
+      expect(JSON.stringify(workflow)).not.toMatch(/secrets\.|environment:|write-all|contents:write|wrangler.+deploy (?!--dry-run)|vercel deploy|git push/i);
+    };
+    check(source);
+    for (const bad of [
+      source.replace('deploy --dry-run --config', 'deploy --config'),
+      source.replace('contents: read', 'contents: write'),
+      source.replace('persist-credentials: false', 'persist-credentials: true'),
+      source.replace('name: cloudflare-artifact-gate', 'name: cloudflare-unchecked-gate'),
+      source.replace('refs/pull/${{ github.event.pull_request.number }}/head', 'refs/heads/main'),
+    ]) expect(() => check(bad)).toThrow();
   });
 
   it('reconciles runner image drift without deleting the previous container', () => {

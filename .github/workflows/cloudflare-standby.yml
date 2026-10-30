@@ -69,6 +69,11 @@ jobs:
           test -n "$EXPECTED_SHA"
           printf '%s\n' "$EXPECTED_SHA" > dist/standby-source-sha.txt
 
+      - name: Require exact same Cloudflare artifact contract as the PR gate
+        env:
+          EXPECTED_SHA: ${{ steps.identity.outputs.sha }}
+        run: node scripts/hosting/verify-worker-candidate.mjs
+
       - name: Upload this run's static standby artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -115,6 +120,7 @@ jobs:
           test "$(git ls-remote origin refs/heads/main | cut -f 1)" = "$EXPECTED_SHA"
           test "$(cat dist/standby-source-sha.txt)" = "$EXPECTED_SHA"
           node --test scripts/hosting/*.test.mjs
+          node scripts/hosting/verify-worker-candidate.mjs
 
       - name: REQUIRE existing Cloudflare Access before deploying any site bytes
         run: node scripts/hosting/verify-cloudflare-access.mjs
