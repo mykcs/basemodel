@@ -334,6 +334,7 @@ const intervalScale = (id: string) => {
                     <p>低秩参数更新有大小，也有方向。为了分析它们各自的重要性，我们对选定轮次的真实 Task Vector 做反向干预，在冻结 64 题上测量同一模型其他条件不变时的结果。</p>
                     <AdvisorTenEvidenceVisual variant="q07" />
                     <p>第 156 轮的方向反转使 Task Score 下降约 10.06 分，配对 95% 区间为下降 5.60–15.02 分，且在八次反转中通过预先设定的多重比较校正。这支持<strong>该模型状态、该轮更新和这批题目上的局部因果效应</strong>，没有证明所有更新方向都应采用相同的在线控制规则。<a href={checkpointEvidence.direction} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={checkpointEvidence.direction} />查看原方向干预实验和多重校正</a></p>
+                    <p class="evo-article__note" data-muon-related-link>这项局部方向干预引出了一个新问题：矩阵更新几何能否用于 OpenEVO？<a href="/research/seed-openevo/study/muon-update/">查看 Muon × OpenEVO 的独立研究方案</a>。新方法的 WebShop 训练仍为 NOT RUN。</p>
               </div>
               <div data-q17-diagnostics data-q17-topic="direction">
               <p>去掉最大的 8 个奇异方向时，R159 首次测量平均下降 41.37 分，95% 置信区间对应下降 30.61 至 51.81 分；更换随机设置后平均下降 37.52 分，置信区间对应下降 27.11 至 47.88 分；R129 两次也均下降。这说明这些方向影响所测任务行为，不能推成“所有记忆只有八维”。</p>
