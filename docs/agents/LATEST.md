@@ -1,18 +1,24 @@
 # Latest Agent handoff
 
-## 2026-10-30 受保护 Cloudflare 备用线路：已纳入仓库，尚未启用
+## 2026-10-30 托管与验收更新：Cloudflare 受保护备用站已部署、Vercel 为 Hobby
 
-[PR #970](https://github.com/mykcs/basemodel/pull/970) 已将**手动、按需启用**的 Cloudflare Workers Static Assets + Access 备用线路合入 `main`。这只是备用发布工程，**不代表** Cloudflare 网站或 Access 策略已实际部署、通过授权用户登录验收或承接正式流量。Vercel 仍是唯一现行 Production 服务商，原访问保护保留；`public-ci-gate` 和 `Vercel` 的精确提交门禁不变。目前未验证自有域名，因此不能声称已能同一网址无缝切换。
+[PR #972](https://github.com/mykcs/basemodel/pull/972) 已合入 `main@8e0c1e94`。2026-10-30 的 [Cloudflare 备用部署 Action #41044575890](https://github.com/mykcs/basemodel/actions/runs/41044575890) 成功：原站身份 `main@e7eee109` 的构建产物通过部署前后匿名 Access 拒绝检查，并有受保护页面及手机验收证据。**这是手动按需部署的私有 standby，不是当前 Vercel Production，也不是 PR 的免费预览或可替换 `Vercel` 必需检查。** 未验证自有域名和 DNS 切换，不能宣称同一网址无缝切换。
 
-具体部署权威见 [现行托管架构](current/hosting-architecture.md) 和 [可逆发布运行手册](../dev/CI/REVERSIBLE_HOSTING.md)；实际服务商、DNS 和 Access 实时配置始终优先于此交接记录。
+经 Vercel 项目关联实时核对，当前 `wangrui92-team` 的 `basemodel-preview` 为 **Hobby**；旧文档里 “Vercel Pro” 的称呼已过时。#971 的准确 HEAD 之前遭到 `Deployment rate limited — retry in 24 hours`，这不是源码测试失败；继续使用 GitHub Actions `public-ci-gate` 做开发验收，额度恢复后才请求一名写入者持有的 `ci/vercel-gate-final` 精确提交供应商检查，不能绕过受保护主分支。实际额度及供应商部署身份以实时接口为准。操作权威见 [`current/hosting-architecture.md`](current/hosting-architecture.md)、[`current/deployment-policy.md`](current/deployment-policy.md)、[可逆发布运行手册](../dev/CI/REVERSIBLE_HOSTING.md)。
 
 ## 2026-10-30 SEED × OpenEVO UI release
 
-PR [#960](https://github.com/mykcs/basemodel/pull/960) 已合入 `main@db6496354417381f6f934b57d887142b73d9099d`：SEED 与 OpenEVO 的两阶段、九组对应操作已通过当时的精确提交验收，Vercel Production `dpl_HPYJJgecqphxqYMB2jCBzkCMufRh` 为 READY，既定桌面与手机视觉检查通过。这是 #960 发布时的封存收据；随后 #970 已推进 `main`，不能把旧收据当作新 HEAD 或当前生产服务的实时身份，仍须查询现行 GitHub/Vercel 对象。
+PR [#960](https://github.com/mykcs/basemodel/pull/960) 已合入 `main@db6496354417381f6f934b57d887142b73d9099d`：SEED 与 OpenEVO 的两阶段、九组对应操作已通过当时的精确提交验收，Vercel Production `dpl_HPYJJgecqphxqYMB2jCBzkCMufRh` 为 READY，既定桌面与手机视觉检查通过。这是 #960 发布时的封存收据；此后 `main` 经 #817、#972 等继续演进，不能把旧收据当作新 HEAD 或当前生产服务的实时身份，仍须查询现行 GitHub/Vercel 对象。
 
 ## 2026-10-29 隐私后续与发布身份检查
 
 #958 已合入 `main@1ed126cb`，#959 研究页面保留。#963 后续候选恢复现有 SVG 的分享 PNG、将当前 W&B 账号入口改为匿名来源索引，并保留逐字节原件、哈希与未改动的科研 payload；[`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md) 拥有语义与风险清单入口。图片人工确认、历史公开副本、外部账号与平台别名仍是明确残余，不宣称完全匿名。#964 的只读 GitHub 部署镜像告警与 Vercel 实际 alias/READY 验收各司其职，执行及恢复由 [`current/deployment-policy.md`](current/deployment-policy.md) 拥有。当前候选的合并/发布状态以准确 HEAD 的 CI 和 Vercel 实时对象为准。
+
+## 2026-10-30 BaseModel content reorganization · PR #817
+
+The owner-requested reorganization gives the Home, Study, research-topic directory and existing search distinct roles. The previous exact head passed Public CI (1,040 browser tests) and the complete Chromium/WebKit visual review (1,039 first-attempt tests per browser); scientific pages, evidence and public URLs remain intact.
+
+Status: [PR #817](https://github.com/mykcs/basemodel/pull/817) 已于 2026-10-30 合入 `main@e7eee10998509936acce147d600b6e432fd7c683`，发布后续身份必须按实时 Vercel Production 供应商对象单独核实；旧候选 `c6adc11e` 及其局部检查不再是当前 SHA 的合并/发布证据。用户已批准的 #817 内容整合状态为已合并，不再列作待合并任务。
 
 ## 2026-10-29 CI performance qualification
 
@@ -124,7 +130,7 @@ mykcs/openevo-experiment         = scientific experiment/result authority
 
 Ordinary working refs are not Vercel deployment-enabled. They receive automatic **Public PR CI**: read-only exact-head deterministic validation plus the shared risk-based browser planner; non-UI work allocates zero browser runners, bounded UI work allocates one, and full/global browser work is native Playwright-sharded over eight independent Chromium shards with one worker each and retries=0. `public-ci-gate` is required merge evidence. Hosted Vercel acceptance is requested only after that exact-head check is green through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Vercel then performs the static production build and proves provider deployability on that same SHA instead of rerunning the deterministic/browser suite. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Merge readiness therefore requires both `public-ci-gate` and `Vercel`.** CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
 
-Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Cloudflare legacy monitoring is not an active Production monitor; PR #970 adds a separate manual Access-protected standby candidate, not a deployed or activated alternative. There is no active anonymous external Production monitor.
+Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Cloudflare Workers + Access 已存在独立的**受保护、手动部署 standby**（2026-10-30 Action #41044575890）；旧 Cloudflare 页面/监控残留才属于 legacy。Standby 不参与日常 PR、现行 Vercel Production 或必需提供商门禁。没有公开匿名 Production 监控。
 
 The 2026-09-21 de-duplication qualification measured the same provider phase before/after: exact-head Vercel BUILDING→READY fell from **507.7 s to 14.170 s** (97.209% reduction, 35.83× faster), and merged Production fell from **633.3 s to 16.608 s** (97.378% reduction, 38.13× faster). No test population, retries, assertion threshold, or build-machine tier changed.
 

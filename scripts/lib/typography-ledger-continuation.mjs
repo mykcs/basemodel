@@ -104,10 +104,18 @@ export const reviewedPrivacyProofs = {
   }
 };
 
-export function verifySealedProofWithEditorialAnonymization(proof, currentBytes) {
+export function verifySealedProofWithEditorialAnonymization(proof, currentBytes, contentReview) {
   if (digest(currentBytes) === proof.sha256) return { editorialAliasOnly: false };
   const privacy = reviewedPrivacyProofs[proof.file];
   if (privacy && proof.sha256 === privacy.before && digest(currentBytes) === privacy.after) return { editorialPrivacyOnly: true };
+  if (contentReview) {
+    assert.match(contentReview.currentSourceSha256, /^[a-f0-9]{64}$/, 'Content review needs an exact source identity');
+    assert.match(contentReview.priorSourceSha256, /^[a-f0-9]{64}$/, 'Content review must retain its prior source identity');
+    assert(contentReview.reason?.trim(), 'Content review needs its semantic reason');
+    assert.equal(digest(currentBytes), contentReview.currentSourceSha256,
+      `Content reorganization owner changed beyond the reviewed source: ${proof.file}`);
+    return { editorialAliasOnly: false, historicalObservationInvalidated: true };
+  }
   assert(aliasOnlyProofOwners.has(proof.file), `Sealed typography owner changed: ${proof.file}`);
   const text = currentBytes.toString('utf8');
   assert(text.includes(publicAlias), `No supported editorial anonymization in: ${proof.file}`);

@@ -1,10 +1,10 @@
 # Hosting architecture — required Public PR CI + Vercel provider gate + manual fallbacks
 
-Last reviewed: **2026-09-28**
+Last reviewed: **2026-10-30**
 
-**2026-10-30 opt-in candidate, not current authority:** [`docs/dev/CI/REVERSIBLE_HOSTING.md`](../../dev/CI/REVERSIBLE_HOSTING.md) documents a separate, manually dispatched, fail-closed Cloudflare Access standby. It does **not** change the required `public-ci-gate` + Vercel exact-head check, `main` Production, Vercel Authentication, release DNS, or current-source/public-repo policy. The Cloudflare standby cannot publish BaseModel bytes until a pre-existing Worker Access gate has passed anonymous HTTP probes; postdeploy Access and authorized browser checks remain required before any traffic switch. No owned custom domain is verified, so one-URL provider switching is not yet available.
+**2026-10-30 protected standby deployed; not current release authority:** [`docs/dev/CI/REVERSIBLE_HOSTING.md`](../../dev/CI/REVERSIBLE_HOSTING.md) records the separate, manually dispatched, fail-closed Cloudflare Access standby. [GitHub Actions #41044575890](https://github.com/mykcs/basemodel/actions/runs/41044575890) deployed the exact `main@e7eee109` artifact only after anonymous Access pre-probes; postdeploy probes also passed and representative authenticated-browser/mobile routes were inspected. It does **not** change required `public-ci-gate` + Vercel exact-head checks, `main` Production, Vercel Authentication, release DNS, or public-repo policy. No owned custom domain is verified, so one-URL provider switching is not yet available.
 
-Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
+Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel (linked team currently Hobby, verified 2026-10-30) owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
 
 Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
 
@@ -103,7 +103,7 @@ Provider authentication, bearer tokens, share/access query parameters, account I
 
 ## Legacy hosting — not ordinary workflow
 
-Historical Cloudflare deployment snapshots, Pages helpers, Workers shadow-build paths, and the retired Production-smoke implementation remain migration/fallback/history residue and are not ordinary deployment authority. No Cloudflare surface actively monitors private Production.
+The **deployed Cloudflare Workers + Access standby** is a separate protected, manually dispatched fallback, sealed in [`docs/dev/CI/REVERSIBLE_HOSTING.md`](../../dev/CI/REVERSIBLE_HOSTING.md) and verified by Action #41044575890. It is not an ordinary PR Preview, required check or current Production. Historical Cloudflare deployment snapshots, Pages helpers, older Workers shadow builds and retired Production-smoke code are legacy residue; no Cloudflare surface is an anonymous monitor of Vercel Production.
 
 Only load or mention legacy hosting when:
 

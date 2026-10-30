@@ -38,7 +38,7 @@ const briefingTechnicalRoute = read('../pages/research/seed-openevo/study/briefi
 const readerContractsSource = read('../data/siteReaderContracts.ts');
 const harness2Study = read('../components/research/OpenEvoHarness2MiniStudy.astro');
 const resultNote = read('../components/research/OpenEvoWebShopResultNote.astro');
-const resultNoteRoute = read('../pages/research/seed-openevo/study/results/[note].astro');
+const resultNoteMetadata = read('../data/openEvoWebShopNoteMetadata.ts');
 const legacyStage2Journey = read('../components/research/OpenEvoLegacyStage2ResearchJourney.astro');
 const trainingDesign = read('../components/research/SeedOpenEvoTrainingDesignOverview.astro');
 const experimentSelector = read('../components/research/OpenEvoExperimentSelector.astro');
@@ -215,7 +215,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(briefing).toContain('Task Vector、GDR、DirectApply / No-GDR');
     expect(briefingNotes).toContain('4. Task Vector：从 SD-LoRA 更新到真实参数方向');
     expect(mechanismMap).toContain('作为 Task Vector');
-    expect(capabilityLobby).toContain('Task Vectors and parameter themes');
+    expect(capabilityLobby).toContain('CAPABILITY_TOPIC_GROUPS');
 
     expect(gdrDirectApply).toContain('历史 GDR-v1 / DirectApply');
     expect(gdrDirectApply).toContain('Gated-Delta SD-LoRA');
@@ -233,7 +233,7 @@ describe('sitewide normalization first repair batch', () => {
     expect(benchmarkNote).toContain('历史设计记录：');
     expect(benchmarkNote).toContain('/study/capability-exploration/openevo-2-0/');
     expect(resultNote).toContain('历史机制实验的结论与证据边界');
-    expect(resultNoteRoute).toContain('OpenEVO WebShop 历史机制实验的结论与证据边界');
+    expect(resultNoteMetadata).toContain('OpenEVO WebShop 历史机制实验的结论与证据边界');
   });
 
   it('keeps ALFWorld route metadata object-first in both locales', () => {
