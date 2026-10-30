@@ -2,15 +2,15 @@
 export const CAPABILITY_READER_ROUTES = [
   {
     "route": "",
-    "coverage": "rebuilt",
+    "coverage": "self-contained",
     "owner": "OpenEvoCapabilityMapLobby",
     "label": {
-      "zh": "研究入口",
-      "en": "Research gateway"
+      "zh": "研究专题目录",
+      "en": "Research topic directory"
     },
     "purpose": {
-      "zh": "先看到最新固定同题诊断，再选择历史、新设计或参数机制路径。",
-      "en": "See the latest same-task diagnostic first, then choose the historical, successor-design, or parameter-mechanism path."
+      "zh": "按参数学习、状态与加速、机制诊断、历史档案查找已有研究；结果与科学边界由各原始页面维护。",
+      "en": "Find existing research by learning, state and acceleration, mechanism diagnosis, or historical records; original pages own the results and scientific boundaries."
     }
   },
   {
@@ -340,3 +340,29 @@ export const CAPABILITY_READER_ROUTES = [
 ] as const;
 
 export type CapabilityReaderRoute = typeof CAPABILITY_READER_ROUTES[number]['route'];
+
+/** One topical home per canonical research page. Chronology remains in Study. */
+export const CAPABILITY_TOPIC_GROUPS = [
+  { id: 'learning', label: { zh: '参数学习与实验结果', en: 'Parameter learning and results' }, routes: [
+    'stage1-learning-objectives', 'openevo-2-0', 'openevo-2-0/report',
+    'stage2-ceiling', 'q17-directapply-analysis',
+  ] },
+  { id: 'state', label: { zh: '长期状态与计算加速', en: 'Long-term state and acceleration' }, routes: [
+    'sd-lora-history', 'sd-lora-scaling', 'sd-lora-equivalence',
+    'sd-lora-history-novelty', 'sd-lora-present-function', 'sd-lora-future-learning',
+    'sd-lora-bounded-state', 'sd-lora-bounded-acceleration',
+  ] },
+  { id: 'mechanisms', label: { zh: '更新机制与行为诊断', en: 'Update mechanisms and behavior' }, routes: [
+    'gdr-directapply', 'gated-delta-sd-lora', 'bounded-effective-state-gdr',
+    'mechanism-1-0', 'q17-directapply-frontier', 'text-memory',
+  ] },
+  { id: 'history', label: { zh: '历史实验与技术档案', en: 'Historical experiments and records' }, routes: [
+    'first-run', 'openevo-2-0/exploration', 'openevo-2-0/harness-2-0',
+    'stage1-previous', 'stage2-256-window', 'stage2-7b-analysis', 'archive',
+  ] },
+] as const;
+
+/** Existing bookmarks still resolve; directories/search use the content owner. */
+export const CAPABILITY_ROUTE_ALIASES: Readonly<Record<string, string>> = {
+  'stage1-evolution': 'openevo-2-0/exploration',
+};

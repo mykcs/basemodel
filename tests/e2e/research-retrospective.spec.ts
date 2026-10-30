@@ -45,6 +45,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await expect(report.locator('#history')).toContainText('冻结的 128 题终评没有运行');
       await expect(report.locator('#ability')).toContainText(/导师接收意愿与招生指标分别通过何种正式程序/);
       await expect(report.locator('#ability')).toContainText('科研检验与招生决定不能相互替代');
+      await expect(report.locator('#ability')).toContainText('不能据此宣称方法已成功或博士资格已经获得认可');
       await expect(report.locator('#spoken')).toBeVisible();
       await context.close();
     });

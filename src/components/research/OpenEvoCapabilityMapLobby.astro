@@ -3,163 +3,64 @@ import "../../styles/research-article.css";
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ResearchOrientation from './ResearchOrientation.astro';
-import ResearchJourney from './ResearchJourney.astro';
-import ResearchDepth from './ResearchDepth.astro';
-import ResearchTaskContext from './ResearchTaskContext.astro';
-import { OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS } from '../../data/openEvoDirectApplyLiveDynamics';
+import { CAPABILITY_READER_ROUTES, CAPABILITY_TOPIC_GROUPS } from '../../data/capabilityReaderRoutes';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const zh = locale === 'zh';
 const t = (cn: string, en: string) => zh ? cn : en;
 const p = (path: string) => localePath(locale, path);
-const firstRunHref = p('/research/seed-openevo/study/capability-exploration/first-run/');
-const archiveHref = p('/research/seed-openevo/study/capability-exploration/archive/');
-const redesignHref = p('/research/seed-openevo/study/capability-exploration/openevo-2-0/');
-const successorExplorationHref = p('/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/');
-const successorReportHref = p('/research/seed-openevo/study/capability-exploration/openevo-2-0/report/');
-const stage1EvolutionHref = p('/research/seed-openevo/study/capability-exploration/stage1-evolution/');
-const stage2AnalysisHref = p('/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/');
-const mechanismHref = p('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
-const vanillaSdLoraHref = p('/research/seed-openevo/flow/sd-lora/');
-const sdLoraHistoryHref = p('/research/seed-openevo/study/capability-exploration/sd-lora-history/');
-const gdrDirectApplyHref = p('/research/seed-openevo/study/capability-exploration/gdr-directapply/');
-const gatedDeltaHref = p('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/');
-const directApplyAnalysisHref = p('/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/');
-const sdLoraScalingHref = p('/research/seed-openevo/study/capability-exploration/sd-lora-scaling/');
-const directApplyFinal = OPEN_EVO_DIRECT_APPLY_LIVE_DYNAMICS;
-const archiveLinks = [
-  { href: p('/research/seed-openevo/study/capability-exploration/stage1-previous/'), label: t('历史 Stage 1', 'Historical Stage 1') },
-  { href: stage1EvolutionHref, label: t('兼容旧书签：初始经验设计过程', 'Legacy bookmark: initial-experience design history') },
-  { href: p('/research/seed-openevo/study/capability-exploration/stage2-256-window/'), label: t('旧 Stage 2：256-window 设计', 'Old Stage 2: 256-window design') },
-  { href: p('/research/seed-openevo/study/capability-exploration/stage2-ceiling/'), label: 'Ceiling-1.0' },
-  { href: p('/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/'), label: t('Harness 诊断记录', 'Harness diagnostic record') },
-];
-const terms = zh ? [
-  { term: 'OpenEvo', meaning: '让模型从自己走出的轨迹中继续学习；这里的“能力探索”是在 WebShop 上逐步验证它能学到什么。' },
-  { term: 'Stage 1', meaning: '先让当前模型自己跑任务，收集第一批可学习经验；这一阶段先看模型原本能做到什么。' },
-  { term: 'Stage 2', meaning: '在 Stage1 证据经过分析和封存后，才允许进入的后续自进化阶段；“准备好”不等于“自动开始”。' },
-  { term: 'Harness', meaning: '模型与 WebShop 环境之间的公共接口规则。它应该帮助合法交互，但不能偷偷教购物策略。' },
-] : [
-  { term: 'OpenEvo', meaning: 'A framework where a model keeps learning from trajectories it produced itself; this area tests that idea step by step on WebShop.' },
-  { term: 'Stage 1', meaning: 'The model first acts on its own to create an initial experience corpus, revealing what it can already do before downstream evolution.' },
-  { term: 'Stage 2', meaning: 'A later self-evolution phase that can start only after Stage-1 evidence is sealed and separately authorized.' },
-  { term: 'Harness', meaning: 'The shared interface between the model and WebShop. It should enable legal interaction without teaching a shopping strategy.' },
-];
-const steps = zh ? [
-  {
-    id: 'first-run', kicker: '第一代问题', title: '第一轮：OpenEvo 能不能真的持续更新？',
-    summary: '从初始经验到后续学习，观察 7B / 3B 的参数更新、失败和容量限制。',
-    detail: '这轮实验告诉我们“系统能跑起来”，也暴露了购物动作接口、更新规则和参数容量会影响结论。',
-    outcome: '研究重点从“跑通”转向“怎样让比较更公平、起跑线更可信”。', state: '历史证据',
-    href: firstRunHref, hrefLabel: '进入第一轮实验', mapChoice: 'first-run',
-  },
-  {
-    id: 'redesign', kicker: '第二代问题', title: '重新设计：两种模型使用相同购物接口，各自表现怎样？',
-    summary: '固定一套不提供具体购物解法的接口。两种模型各完成 1,440 次尝试，再用同一套方法分析已有记录。',
-    detail: '这一代分别检查模型的购物表现与接口转换动作时的错误，再固定两种模型共用的运行规则。',
-    outcome: '我们获得更可比的 Stage1 起跑线，也保留真实绕路作为历史证据。', state: '新一轮设计',
-    href: redesignHref, hrefLabel: '进入 3B + 1.7B 学习实验', mapChoice: 'redesign',
-  },
-  {
-    id: 'mechanism-1-0', kicker: '第三代问题', title: 'Mechanism-1.0：分数变了以后，参数里到底发生了什么？',
-    summary: '把学习留下的参数变化加上或移除，与同幅度随机修改比较，检查哪些变化影响购物表现。',
-    detail: '只有真实参数方向优于同幅度随机修改的证据达到预设门槛，才可申请用它指导后续学习。',
-    outcome: '研究从“能走多高”推进到“能不能解释、验证并控制自我进化”。', state: '当前主实验', current: true,
-    href: mechanismHref, hrefLabel: '进入 Mechanism-1.0', mapChoice: 'mechanism-1-0',
-  },
-] : [
-  { id: 'first-run', kicker: 'FIRST QUESTION', title: 'First run: can OpenEvo sustain real updates?', summary: 'Follow the older Stage 1 → Stage 2 run and see what the 7B / 3B paths revealed about learning and capacity.', detail: 'The run showed that the system can evolve, but also that action interfaces, update rules, and parameter capacity can change what a result means.', outcome: 'The next question became how to make starting points and comparisons more defensible.', state: 'Historical evidence', href: firstRunHref, hrefLabel: 'Open the first experiment', mapChoice: 'first-run' },
-  { id: 'redesign', kicker: 'SECOND QUESTION', title: 'Redesign: where do 3B and 1.7B start under one shared harness?', summary: 'Freeze one strategy-neutral harness, collect 1,440 trajectories per model, then apply the same post-hoc analysis.', detail: 'This separates model capability from broken action serialization and splits the same evidence into exploration and report/paper reading modes.', outcome: 'We get a more defensible Stage-1 starting comparison while keeping the real detours as history.', state: 'Current successor', href: redesignHref, hrefLabel: 'Open the 3B + 1.7B successor', mapChoice: 'redesign' },
-  { id: 'mechanism-1-0', kicker: 'THIRD QUESTION', title: 'Mechanism-1.0: after scores move, what changed inside the parameters?', summary: 'Use Task Vectors and parameter themes for causal interventions rather than descriptive plots alone.', detail: 'Only preregistered direction-specific causal evidence can be fed back into a later OpenEvo step.', outcome: 'The research moves from “how high can it go?” to “can we explain, validate, and control self-improvement?”', state: 'Current primary program', current: true, href: mechanismHref, hrefLabel: 'Open Mechanism-1.0', mapChoice: 'mechanism-1-0' },
-];
+const root = '/research/seed-openevo/study/capability-exploration/';
+const groups = CAPABILITY_TOPIC_GROUPS.map((group) => ({
+  ...group,
+  pages: group.routes.map((route) => {
+    const entry = CAPABILITY_READER_ROUTES.find((item) => item.route === route);
+    if (!entry) throw new Error(`Missing research directory entry: ${route}`);
+    return entry;
+  }),
+}));
 ---
 <section data-copy-review class="map-lobby evo-approved-reader evo-reading-overview" data-testid="openevo-capability-map-lobby" data-reader-page="lobby" data-ui-audit="contrast layout">
   <div class="map-lobby__first-screen">
-  <ResearchOrientation
-    locale={locale}
-    layout="focus"
-    title={t("OpenEvo 的 WebShop 学习实验", "OpenEvo WebShop learning experiments")}
-    lede={t("DirectApply 已经完整跑完 160 轮，并在训练结束后只做了一次冻结 128 题 final：Task Score 60.72 / 100，50 / 128 道题完整成功。此前 R127→R128 的同题复测仍然重要，因为它告诉我们单轮曲线的大跌不能直接当成同幅度的能力下降。", "DirectApply completed all 160 rounds and one frozen 128-task final: 60.72 / 100, with 50 / 128 exact successes. The earlier R127→R128 same-task check shows why a round-to-round drop is not the same as an equal loss of capability.")}
-    question={t("去掉 GDR 的短期二次筛选以后，DirectApply 长跑最后表现怎样？这个结果能不能说明 GDR 更差？", "How did the full DirectApply run end after removing GDR's short-horizon veto, and does that result show that GDR is worse?")}
-    why={t("完整训练曲线回答“训练过程中发生了什么”，冻结 final 回答“最终状态在固定 128 题上表现怎样”。但历史 GDR final 不是同一个冻结题集，所以 DirectApply 的 60.72 不能直接减去 GDR 的 37.60 当作方法效果。", "The full training curve answers what happened during learning, while the frozen final measures the completed state on one fixed 128-task panel. The historical GDR final used a different frozen panel, so DirectApply 60.72 minus GDR 37.60 is not a causal method effect.")}
-    start={t("DirectApply 的完整 R0–R159 曲线和 final 是主结果；R127→R128 同题诊断解释局部波动，Gated-Delta 页面负责当前参数机制与四轮配对资格结果。", "The complete R0–R159 DirectApply trajectory and final are the main result; the R127/R128 same-task diagnostic explains a local fluctuation, while the Gated-Delta route owns the current parameter mechanism and sealed four-round paired qualification.")}
-    finish={t("这里负责研究导航；详细诊断和因果实验分别在对应子页。", "This page is the research gateway; detailed diagnostics and causal experiments stay on their dedicated routes.")}
-    state={t("DirectApply 的 160 轮训练和一次冻结 final 已封存；它自己的最终结果已确定，但 DirectApply 与 GDR-v1 谁更好仍没有同题 final 对照。", "DirectApply's 160 training rounds and one frozen final are sealed. Its own endpoint is now known, but DirectApply versus GDR-v1 still lacks a same-panel final comparison.")}
-    stateTone="authorized"
-    actionHref={directApplyAnalysisHref}
-    actionLabel={t("查看 DirectApply 完整实验分析", "Open the complete DirectApply analysis")}
-  />
+    <ResearchOrientation
+      locale={locale} layout="focus"
+      title={t('OpenEVO 研究专题', 'OpenEVO research topics')}
+      lede={t('参数怎样学习、长期状态怎样保存、更新为什么有效：已有研究按问题归类，实验发生顺序保留在实验目录。', 'Find research on parameter learning, long-term state, and update mechanisms. The experiment directory keeps the chronological progression.')}
+      question={t('同一条研究线里的实验、方法解释和历史记录分别在哪里？', 'Where are the experiments, method explanations, and historical records?')}
+      why={t('实验顺序与专题查找服务不同任务；每个研究页面在本目录只归入一个主题。', 'Chronology and topic lookup serve different tasks; each research page has one topical home here.')}
+      start={t('按主题进入原研究页面。', 'Choose a topic to open its original research page.')}
+      finish={t('具体结果、原始来源与比较边界由链接的研究页给出。', 'Linked research pages own the results, original sources, and comparison boundaries.')}
+      state={t('目录分类不代表实验完成状态，也不授予实验执行权限。', 'Directory categories do not state experiment completion or grant execution authority.')}
+      stateTone="historical"
+      actionHref={p('/research/seed-openevo/study/')}
+      actionLabel={t('按时间查看实验', 'Browse experiments chronologically')}
+    />
   </div>
-
-  <aside class="map-lobby__latest-evidence" data-latest-evidence="q17-directapply-final">
-    <div>
-      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('最新封口结果', 'Latest sealed result')}</p>
-      <strong>{t('DirectApply 跑完 160 轮，冻结终评 60.72 / 100', 'DirectApply completed 160 rounds; frozen final = 60.72 / 100')}</strong>
-      <p>{t(`Stage2 共 ${directApplyFinal.sealedRounds} 轮、${directApplyFinal.formalRollouts.toLocaleString('en-US')} 次 WebShop 尝试；训练后只做一次冻结 128 题 final，完整成功 ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount}（${directApplyFinal.finalSuccess.toFixed(2)}%）。`, `Stage 2 completed ${directApplyFinal.sealedRounds} rounds and ${directApplyFinal.formalRollouts.toLocaleString('en-US')} WebShop attempts. The frozen 128-task final was measured exactly once, with ${directApplyFinal.finalExactSuccessCount} / ${directApplyFinal.finalValidCount} exact successes (${directApplyFinal.finalSuccess.toFixed(2)}%).`)}</p>
-      <p>{t('这完成了 DirectApply 自己的结果，但没有完成 GDR-v1 的同题 final；历史 GDR 37.60 与 DirectApply 60.72 不是同一冻结题集，不能直接当方法差。', 'This closes the DirectApply endpoint, not a same-panel GDR-v1 final. Historical GDR 37.60 and DirectApply 60.72 come from different frozen panels and are not a causal method delta.')}</p>
-
-    </div>
-    <a href={directApplyAnalysisHref}>{t('查看完整实验分析 →', 'Open the complete experiment analysis →')}</a>
-  </aside>
-
-  <aside class="map-lobby__latest-evidence" data-latest-evidence="sd-lora-history-series">
-    <div>
-      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('新专题入口', 'New research series')}</p>
-      <strong>{t('SD-LoRA：从不断增长的历史，到固定大小的学习状态', 'SD-LoRA: from growing history to a fixed-size learning state')}</strong>
-      <p>{t('把 Vanilla 机制、计算变慢、严格等价、历史新颖度、当前函数、未来学习与 bounded state 拆成七个连续问题。现在已经有两条不同的加速结果：Stable Reduction 仍保留全部历史 component，约 2×；Bounded Online Recurrence 把历史折成固定 rank128 state，在封存 R150–R159 窗口里平均约 37×。它们不是同一条优化曲线，Gated-Delta 也另算一条。', 'Follow seven connected questions: Vanilla mechanics, compute scaling, strict equivalence, history novelty, present function, future learning, and bounded state. There are now two distinct acceleration results: Stable Reduction keeps the full component history at about 2×, while Bounded Online Recurrence folds history into a fixed rank-128 state and averages about 37× in the sealed R150–R159 window. They are not one optimization curve, and Gated-Delta is separate too.')}</p>
-    </div>
-    <a href={sdLoraHistoryHref}>{t('进入 SD-LoRA 专题总览 →', 'Open the SD-LoRA series →')}</a>
-  </aside>
-
-  <aside class="map-lobby__latest-evidence map-lobby__latest-evidence--compute" data-latest-evidence="sd-lora-scaling">
-    <div>
-      <p class="map-lobby__latest-evidence-meta">2026-09-12 · {t('SD-LoRA 计算诊断', 'SD-LoRA compute diagnostic')}</p>
-      <strong>{t('历史 component 越多，下一次参数更新越慢', 'More historical components make the next parameter update slower')}</strong>
-      <p>{t('固定同一个 1.7B 模型、47+47 条训练样本和 94 个 optimizer steps，只改变历史 component 数：K=1 时 44.05 秒，K=148 时 969.17 秒；增长主要发生在 forward / backward。', 'Holding the same 1.7B model, 47+47 training examples, and 94 optimizer steps fixed, changing only prior component count raises update time from 44.05 seconds at K=1 to 969.17 seconds at K=148; most growth is in forward / backward.')}</p>
-    </div>
-    <a href={sdLoraScalingHref}>{t('查看 SD-LoRA 计算扩展性 →', 'Open SD-LoRA compute scaling →')}</a>
-  </aside>
-
-  <ResearchTaskContext locale={locale} />
-
-  <ResearchJourney
-    locale={locale}
-    title={t("三类研究问题", "Three research questions")}
-    intro={t('每一步都保留前一步的证据，但不会把旧轨迹冒充成新实验数据。', 'Each generation keeps the evidence from the previous one without relabeling old trajectories as new experimental data.')}
-    steps={steps}
-  />
-
-  <details class="map-lobby__terms">
-    <summary>{t('术语参考（可选）', 'Terminology reference (optional)')}</summary>
-    <dl>{terms.map((item) => <div><dt>{item.term}</dt><dd>{item.meaning}</dd></div>)}</dl>
-  </details>
-
-  <aside class="map-lobby__current-ablation" data-current-ablation="gated-delta-sd-lora">
-    <div><small>{t('当前参数机制与资格结果', 'Current parameter mechanism and qualification result')}</small><strong>{t('Gated-Delta SD-LoRA：四轮配对资格实验已封存', 'Gated-Delta SD-LoRA: four-round paired qualification sealed')}</strong><p>{t('旧 GDR-v1 的 candidate 放行实验已经单独归档。当前 Gated-Delta 会在真实 WebShop learning opportunity 上直接写入 LoRA 参数；四轮 Vanilla-vs-GDR 配对资格实验也已全部封存。在冻结 D1 schedule 上，512 次/臂汇总 reward 为 Vanilla 0.7051、GDR 0.7407，完整成功为 173 / 512 对 248 / 512。这个结论只属于当前冻结资格实验，不代表普遍优于 Vanilla，也不是 final-panel 结果。', 'The historical GDR-v1 candidate-admission experiment is archived separately. Current Gated-Delta writes LoRA parameters directly at real WebShop learning opportunities, and all four Vanilla-vs-GDR paired qualification rounds are now sealed. On the frozen D1 schedule, pooled reward across 512 attempts per arm is 0.7051 for Vanilla and 0.7407 for GDR; exact success is 173 / 512 versus 248 / 512. This claim belongs only to the frozen qualification, not universal superiority over Vanilla or a final-panel result.')}</p></div>
-    <a href={gatedDeltaHref}>{t('查看 Gated-Delta 机制与四轮结果 →', 'Open Gated-Delta mechanism and four-round results →')}</a>
-  </aside>
-
-  <ResearchDepth
-    locale={locale}
-    kind="method"
-    summary={t("学习实验报告、设计过程与 7B 参数专题", "Learning report, design history, and 7B parameter analysis")}
-    intro={t("实验报告汇总设置与结果；设计过程解释修改原因；7B 专题检查历史参数变化。", "The report summarizes setup and results; design history explains revisions; the 7B study examines historical parameter changes.")}
-  >
-    <nav class="map-lobby__deep-links" aria-label={t('专题研究地图', 'Focused research maps')}>
-      <a href={directApplyAnalysisHref} data-deep-dive="q17-directapply-analysis"><small>{t('Q17 · 完整分析', 'Q17 · COMPLETE ANALYSIS')}</small><strong>{t('DirectApply：160 轮、Final 与 D1 压缩诊断', 'DirectApply: 160 rounds, final, and D1 compression diagnosis')}</strong><span>{t('把最终训练曲线、唯一一次冻结终评、R127 / R128 同题诊断和 K64 / K80 / K96 行为保持放在一页。', 'Read the final training trajectory, one frozen final, R127/R128 same-task diagnostic, and K64/K80/K96 function preservation on one page.')}</span></a>
-      <a href={vanillaSdLoraHref} data-deep-dive="vanilla-sd-lora"><small>{t('Stage2 · 参数机制', 'STAGE 2 · PARAMETER MECHANISM')}</small><strong>{t('Vanilla SD-LoRA 一轮到底怎么工作？', 'How does one Vanilla SD-LoRA round work?')}</strong><span>{t('从 128 次 rollout 开始，看成功轨迹怎样变成训练数据、参数方向怎样累计、下一轮又怎样接着用。', 'Start from 128 rollouts and follow how successful trajectories become training data, parameter directions accumulate, and the next round continues.')}</span></a>
-      <a href={gatedDeltaHref} data-deep-dive="gated-delta-sd-lora"><small>{t('Stage2 · 当前参数机制', 'STAGE 2 · CURRENT PARAMETER MECHANISM')}</small><strong>{t('Gated-Delta SD-LoRA：State 怎样被连续写入？', 'Gated-Delta SD-LoRA: how is State written recurrently?')}</strong><span>{t('沿 learning event → factor-local signal → optimizer-aware state → learned β 的推导，再查看已经封存的四轮 paired D1 资格结果与它的结论边界。', 'Follow the derivation from learning event to factor-local signal, optimizer-aware state, and learned β, then inspect the sealed four-round paired D1 qualification and its claim boundary.')}</span></a>
-      <a href={gdrDirectApplyHref} data-deep-dive="gdr-directapply"><small>{t('Stage2 · 历史机制消融', 'STAGE 2 · HISTORICAL ABLATION')}</small><strong>{t('历史 GDR-v1 / DirectApply：44 个 candidate 为什么只采用 7 个？', 'Historical GDR-v1 / DirectApply: why were only 7 of 44 candidates adopted?')}</strong><span>{t('只看旧 candidate-admission gate、DirectApply 对照和 final 不可直接相减的实验边界。', 'Read only the historical candidate-admission rule, DirectApply contrast, and the frozen-final comparability boundary.')}</span></a>
-      <a href={successorExplorationHref} data-deep-dive="successor-exploration"><small>{t('第二代 · 探索版', 'SECOND GENERATION · EXPLORATION')}</small><strong>{t('看假设怎样被证伪、回退和重新冻结', 'See how hypotheses were falsified, backtracked, and refrozen')}</strong><span>{t('适合想知道“为什么最后会变成现在这套 Harness”的读者。', 'Best when you want to know why the current harness ended up this way.')}</span></a>
-      <a href={successorReportHref} data-deep-dive="successor-report"><small>{t('第二代 · 报告版', 'SECOND GENERATION · REPORT')}</small><strong>{t("实验设置、结果与结论范围", "Experiment setup, results, and claim scope")}</strong><span>{t('适合汇报、论文讨论和快速核对当前结论。', 'Best for presentations, paper discussion, and fast claim checking.')}</span></a>
-      <a href={stage2AnalysisHref} data-deep-dive="stage2-7b-analysis"><small>{t('第一代 · 参数证据', 'FIRST GENERATION · PARAMETER EVIDENCE')}</small><strong>{t("7B 的参数更新、变化方向与容量限制", "7B parameter updates, update directions, and capacity limits")}</strong><span>{t('保留为 Mechanism-1.0 的前序参数证据。', 'Preserved as predecessor parameter evidence for Mechanism-1.0.')}</span></a>
-    </nav>
-  </ResearchDepth>
-
-  <ResearchDepth locale={locale} kind="history" summary={t('历史 / 证据：旧 Stage1、旧 Stage2、Ceiling-1.0 与兼容入口', 'History / evidence: old Stage 1, old Stage 2, Ceiling-1.0, and legacy entries')}>
-    <div class="map-lobby__archive" data-archive-tier="history-evidence"><p>{t("这里保存旧实验记录、技术档案和兼容书签；它们用于追溯证据，不是新的主要实验入口。", "This layer preserves old experiment records, technical archives, and legacy bookmarks for evidence tracing; they are not new primary experiments.")}</p><a class="map-lobby__archive-main" href={archiveHref}>{t('打开完整实验档案 →', 'Open the full experiment archive →')}</a><nav aria-label={t('实验档案链接', 'Experiment archive links')}>{archiveLinks.map((item) => <a href={item.href}>{item.label}</a>)}</nav></div>
-  </ResearchDepth>
+  <p class="map-lobby__archive" data-reader-context data-reader-task data-reader-purpose>{t('研究对象是模型执行搜索、点击和购买的 WebShop 模拟购物任务。', 'The research studies models searching, clicking, and buying in the WebShop shopping simulator.')} <a href={p('/research/seed-openevo/flow/webshop/')}>{t('WebShop 任务与评分', 'WebShop tasks and scoring')}</a></p>
+  <nav class="map-lobby__archive" aria-label={t('研究主题', 'Research topics')} data-topic-navigation>
+    <ul>{groups.map((group) => <li><a href={`#topic-${group.id}`}>{group.label[locale]}</a></li>)}</ul>
+  </nav>
+  {groups.map((group) => (
+    <section class="map-lobby__archive" id={`topic-${group.id}`} aria-labelledby={`topic-${group.id}-title`} data-topic-group={group.id}>
+      <h2 id={`topic-${group.id}-title`}>{group.label[locale]}</h2>
+      <ul>
+        {group.pages.map((entry) => (
+          <li data-topic-route={entry.route}>
+            <a href={p(`${root}${entry.route}/`)}>{entry.label[locale]}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+  <div class="map-lobby__archive">
+    <h2>{t('方法背景与研究文章', 'Background and research articles')}</h2>
+    <p><a href={p('/research/seed-openevo/flow/')}>{t('SEED / OpenEVO 方法与任务环境', 'SEED / OpenEVO methods and task environments')}</a></p>
+    <ol>
+      <li><a href={p('/research/seed-openevo/study/openevo-methods/')}>{t('OpenEVO 的参数记忆方法', 'OpenEVO parameter-memory methods')}</a></li>
+      <li><a href={p('/research/seed-openevo/study/advisor-questions/')}>{t('L 学长十问：问题与背景', 'Ten research questions and their background')}</a></li>
+      <li><a href={p('/research/seed-openevo/study/parameter-memory-results/')}>{t('我们的回应实验', 'Our response experiments')}</a></li>
+    </ol>
+  </div>
 </section>
 <style>
 .map-lobby{display:block}.map-lobby__first-screen{min-height:0}.map-lobby__latest-evidence{width:min(1120px,calc(100% - 2rem));margin:1.5rem auto 2.2rem;padding:.9rem 0 .9rem 1.1rem;border-left:3px solid var(--accent-deep);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.4rem;align-items:end}.map-lobby__latest-evidence div{min-width:0}.map-lobby__latest-evidence-meta{margin:0;color:var(--muted);font-size:var(--type-body);font-weight:var(--type-weight-label);line-height:var(--type-leading-caption)}.map-lobby .map-lobby__latest-evidence .map-lobby__latest-evidence-meta{font-size:var(--type-body);line-height:var(--type-leading-caption)}.map-lobby__latest-evidence strong{display:block;margin:.25rem 0;font-size:var(--article-section-size,clamp(1.25rem,2.1vw,1.7rem));line-height:var(--type-leading-heading);letter-spacing:normal;font-weight:var(--type-weight-heading)}.map-lobby__latest-evidence p{max-width:54rem;margin:.35rem 0 0;color:var(--muted);font-size:var(--article-body-size, 1rem);line-height:var(--article-body-leading, 1.58)}.map-lobby__latest-evidence>a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent-deep);font-weight:var(--type-weight-label);text-underline-offset:.2em}.map-lobby .map-lobby__latest-evidence>a{font-size:var(--type-body)}.map-lobby__latest-evidence>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.map-lobby__terms{width:min(1120px,calc(100% - 2rem));margin:1rem auto;border-block:1px solid var(--line)}.map-lobby__terms>summary{padding:.8rem 0;color:var(--muted);font-size:var(--type-body);font-weight:var(--type-weight-label);cursor:pointer}.map-lobby__terms dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:0 0 .8rem}.map-lobby__terms dl>div{padding:.7rem;border-top:1px solid var(--line)}.map-lobby__terms dt{font-weight:var(--type-weight-label)}.map-lobby__terms dd{margin:.25rem 0 0;color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-body)}.map-lobby__current-ablation{width:min(1120px,calc(100% - 2rem));margin:1rem auto;padding:1rem 1.15rem;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1rem;align-items:center;border:1px solid var(--accent-deep);border-radius:var(--radius-panel);background:var(--surface-muted)}.map-lobby__current-ablation div{min-width:0}.map-lobby__current-ablation small{display:block;color:var(--accent-deep);letter-spacing:normal;font-family:var(--font-interface);font-size:var(--type-body);font-weight:var(--type-weight-label);line-height:var(--type-leading-caption)}.map-lobby__current-ablation strong{display:block;margin:.28rem 0;font-size:var(--type-minor-heading);line-height:var(--type-leading-heading);font-weight:var(--type-weight-heading)}.map-lobby__current-ablation p{margin:0;max-width:48rem;color:var(--muted);font-size:var(--article-body-size, 1rem);line-height:var(--article-body-leading, 1.55)}.map-lobby__current-ablation>a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent-deep);font-weight:var(--type-weight-label);text-underline-offset:.2em}.map-lobby__current-ablation>a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.map-lobby__deep-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}.map-lobby__deep-links>a{display:grid;gap:.28rem;padding:.72rem;border-left:2px solid var(--line);background:var(--surface-muted);color:inherit;text-decoration:none}.map-lobby__deep-links>a:hover,.map-lobby__deep-links>a:focus-visible{border-left-color:var(--accent);background:var(--surface)}.map-lobby__deep-links>a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.map-lobby__deep-links small{color:var(--accent-deep);letter-spacing:normal;font-family:var(--font-interface);font-size:var(--type-body);font-weight:var(--type-weight-label);line-height:var(--type-leading-caption)}.map-lobby__deep-links strong{font-size:var(--type-body);line-height:var(--type-leading-heading);font-weight:var(--type-weight-heading)}.map-lobby__deep-links span{color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-caption)}.map-lobby__archive>p{margin:0;max-width:52rem;color:var(--muted);font-size:var(--article-body-size, 1rem);line-height:var(--article-body-leading, 1.5)}.map-lobby__archive-main{display:inline-flex;margin-top:.55rem;color:var(--accent-deep);font-size:var(--type-body);font-weight:var(--type-weight-label);text-underline-offset:.2em}.map-lobby__archive nav{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin-top:.65rem}.map-lobby__archive nav a{color:var(--accent-deep);font-size:var(--type-body);text-underline-offset:.2em}@media(max-width:760px){.map-lobby__latest-evidence,.map-lobby__current-ablation,.map-lobby__terms{width:min(100% - 1rem,1120px)}.map-lobby__latest-evidence{grid-template-columns:1fr;gap:.5rem;padding-left:.85rem}.map-lobby__current-ablation{grid-template-columns:1fr;gap:.5rem}.map-lobby__terms dl,.map-lobby__deep-links{grid-template-columns:1fr}.map-lobby__archive nav{display:grid}}
@@ -168,4 +69,8 @@ const steps = zh ? [
 .map-lobby :is(.map-lobby__latest-evidence p,.map-lobby__current-ablation p,.map-lobby__archive>p){font-size:var(--type-body)}
 .map-lobby .map-lobby__latest-evidence strong{font-size:var(--article-section-size, var(--type-article-section))}
 .map-lobby .map-lobby__current-ablation strong,.map-lobby .map-lobby__deep-links strong{font-size:var(--type-minor-heading)}
+
+.map-lobby>[data-topic-group],.map-lobby>[data-topic-navigation],.map-lobby>.map-lobby__archive{width:min(1120px,calc(100% - 2rem));margin:1.5rem auto}
+.map-lobby>[data-topic-navigation]>ul{display:flex;flex-wrap:wrap;gap:.5rem 1rem;list-style:none;margin:0;padding:0}
+.map-lobby [data-topic-route] a{display:flex;align-items:center;box-sizing:border-box;min-height:44px;padding:.35rem 0}
 </style>

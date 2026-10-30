@@ -1099,7 +1099,7 @@ test('Landscape label gate rejects injected 9px ECharts axis/legend text',async(
 });
 // These witnesses came from exact source-to-scoped-DOM matching, not a blanket
 // assumption that every literal size is a defect. Keep concurrent rewrites out.
-type ScopedMigrationWitness = {file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null};
+type ScopedMigrationWitness = {lineageId?:string;file:string;selector:string;route:string;text:string;minimum:number;role:string;maximumVisibleWidth:number|null;minimumVisibleWidth:number|null;ordinaryFace?:boolean;codeFaceException?:{kind:'SEMANTIC_CODE_OR_CONFIG';file:string;selector:string;producer:string;scope:string};readerOwner?:'article'|'product';faceOwner?:'system-sans'|'paper-serif'|'interface';maximumWeight?:number;localViewport?:boolean;visibilityContainerSelector?:string;maximumVisibleContainerWidth?:number|null;minimumVisibleContainerWidth?:number|null;minimumApplicableWidth?:number|null;maximumApplicableWidth?:number|null};
 const historicalScopedMigrationWitnesses = JSON.parse(readFileSync(new URL('../../docs/agents/evidence/sitewide-typography/2026-10-22/scoped-migration-witnesses.json', import.meta.url), 'utf8')).witnesses as ScopedMigrationWitness[];
 const flowRoute = '/research/seed-openevo/flow/';
 // Preserve the 2026-10-22 historical witness receipt byte-for-byte. The 2026-10-29
@@ -1119,7 +1119,32 @@ const currentFlowWitnesses: ScopedMigrationWitness[] = [
   {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__boundary',route:flowRoute,text:'本阶段不再调用 Stage 1 的外部高能力教师模型 API。',minimum:12,role:'boundary',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoMissionHero.astro',selector:'.mission-hero.mission-hero--compact .mission-hero__lede',route:flowRoute,text:'两套方法都先借助外部高能力教师',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null},
 ];
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)),...currentFlowWitnesses];
+// These exact roles were removed with duplicate directory content; retain their
+// immutable historical receipt and measure the replacement Study lede instead.
+const obsoleteContentWitness = (row: ScopedMigrationWitness) =>
+  (row.file === 'src/pages/_bodies/home-v2.astro' && ['.journey-number', '.journey-list p'].includes(row.selector)) ||
+  (row.file === 'src/components/research/OpenEvoExperimentIndex.astro' && row.selector === '.study-hero__mobile-thread');
+const currentContentWitnesses: ScopedMigrationWitness[] = [
+  {file:'src/components/research/OpenEvoExperimentIndex.astro',selector:'.study-hero__lede',route:'/research/seed-openevo/study/',text:'OpenEVO 在 WebShop 中怎样学习',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null,readerOwner:'article',faceOwner:'system-sans'},
+];
+// ResearchTaskContext no longer appears in the topic directory. Exercise the
+// same unchanged producer, text and role floors at its surviving mechanism page;
+// keep the historical snapshot immutable.
+const tutorialWitnessMoves = new Map([
+  ['d6ef87c2179ef7d0737d', '.task-example figcaption'],
+  ['9d0f44155112bf6ea92d', '.task-example__number'],
+]);
+if (historicalScopedMigrationWitnesses.filter(row=>tutorialWitnessMoves.has(row.lineageId??'')).length !== 2)
+  throw Error('Expected the two sealed task-context witness identities');
+const currentWitnessRoute = (row: ScopedMigrationWitness): ScopedMigrationWitness => {
+  const selector=tutorialWitnessMoves.get(row.lineageId??'');
+  if(!selector)return row;
+  if(row.route!=='/research/seed-openevo/study/capability-exploration/' ||
+    row.file!=='src/components/research/ResearchTaskContext.astro' || row.selector!==selector)
+    throw Error('Unexpected task-context witness identity');
+  return {...row,route:'/research/seed-openevo/study/capability-exploration/mechanism-1-0/'};
+};
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{
@@ -1134,10 +1159,12 @@ const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
   const routeWitnesses = scopedMigrationWitnesses.filter(row => row.route === route);
   test('confirmed scoped typography readers '+route, async ({page}, info)=>{
-    // Six viewport/theme passes over 120+ historical witnesses can exceed the
-    // normal 90s total test budget even when individual assertions succeed.
-    // Keep every witness and all six views; extend only the dense-route budget.
-    if (routeWitnesses.length >= 120) test.setTimeout(180_000);
+    // Six viewport/theme passes over a dense page can exceed the normal 90s
+    // budget even when individual assertions succeed. The research-results
+    // reader has many nested disclosures and tables; its exact-head browser
+    // receipt reached the final viewport before timing out. Keep all witnesses
+    // and views, extending only that route and other very dense routes.
+    if (routeWitnesses.length >= 120 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
@@ -1147,7 +1174,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
       const receipts=[];let faceNegative=false,weightNegative=false;
       for(const row of routeWitnesses.filter(row=>(row.minimumApplicableWidth==null||width>=row.minimumApplicableWidth)&&(row.maximumApplicableWidth==null||width<=row.maximumApplicableWidth))){
         const checksFace=row.ordinaryFace!==false && Boolean(row.faceOwner || row.ordinaryFace);
-        const liveText=route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
+        const liveText=row.text==='OpenEVO 基础能力探索实验'?'研究专题':route==='/research/seed-openevo/flow/webshop/'&&row.selector==='.heldout span'&&row.text==='保留候选池'?'500':row.text;
         const node=page.locator(row.selector).filter({hasText:liveText}).first();
         await expect(node).toBeAttached();
         const container=row.visibilityContainerSelector

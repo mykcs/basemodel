@@ -45,7 +45,7 @@ assert(
   'HARDEN-HOME-001',
   home.includes('SeedOpenEvoMissionHero')
     && home.includes('currentAnswers')
-    && home.includes('OPEN_EVO_EXPERIMENTS.map')
+    && !home.includes('OPEN_EVO_EXPERIMENTS.map')
     && home.includes('nextActions')
     && home.includes("'/research/seed-openevo/flow/'")
     && home.includes("'/research/seed-openevo/study/run/'")
@@ -73,12 +73,12 @@ assert(
 );
 assert('HARDEN-HOME-002', !home.includes('<strong>18</strong>') && !home.includes('<strong>5</strong>') && !home.includes('<strong>3</strong>'), 'home no longer contains hard-coded demo counts');
 const answerIndex = home.indexOf('home-answer');
-const journeyIndex = home.indexOf('home-journey');
+const studyDirectoryLink = home.includes("'/research/seed-openevo/study/'");
 const nextIndex = home.indexOf('home-next');
 assert(
   'HARDEN-HOME-003',
-  answerIndex >= 0 && journeyIndex > answerIndex && nextIndex > journeyIndex && !home.includes('<SeedUseCaseStrip'),
-  'home preserves answer → experiment progression → next action order without repeating the global SEED use-case navigation strip',
+  answerIndex >= 0 && nextIndex > answerIndex && studyDirectoryLink && !home.includes('<SeedUseCaseStrip'),
+  'home preserves answers and next actions while the full experiment directory has one Study owner',
 );
 
 const paperIndex = read('src/pages/_bodies/papers-index.astro');

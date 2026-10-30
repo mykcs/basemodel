@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
-import { intelligenceTypographyDelta } from './lib/typography-intelligence-ui-delta.mjs';
+import { intelligenceTypographyDelta, contentReorganizationProofs } from './lib/typography-intelligence-ui-delta.mjs';
 import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
@@ -87,6 +87,14 @@ const scope = config.match(/scopedStyleStrategy:\s*['"](class|attribute|where)['
 assert.equal(ledger.observationSnapshot.scopedStyleStrategy, scope, 'Observation compiler scoping must match current Astro config');
 const changedProducerTransitionIds = new Set();
 const invalidatedTransitionIds = new Set();
+const contentReorganizationInvalidatedProofs = new Set();
+// Enforce every advertised exact-source identity, even without an old transition.
+for (const [file, review] of Object.entries(contentReorganizationProofs)) {
+  assert.match(review.priorSourceSha256, /^[a-f0-9]{64}$/, 'Prior source identity is provenance, not a new observation');
+  assert(review.reason?.trim(), 'Content reorganization requires a reason');
+  assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex'), review.currentSourceSha256,
+    `Content reorganization source changed beyond its reviewed identity: ${file}`);
+}
 for (const [transitionId, transition] of Object.entries(ledger.baselineReconciliation.currentOwnerTransitions ?? {})) {
   for (const proof of [transition.policy, transition.currentProducer, ...transition.currentOwnerEvidence]) {
     if (ownerDelta.changedOwnerProofs[proof.file]) {
@@ -97,7 +105,8 @@ for (const [transitionId, transition] of Object.entries(ledger.baselineReconcili
       changedProducerTransitionIds.add(transitionId);
       continue;
     }
-    verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)));
+    const verified = verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)), contentReorganizationProofs[proof.file]);
+    if (verified.historicalObservationInvalidated) contentReorganizationInvalidatedProofs.add(proof.file);
   }
   const formerTupleExists = source.some(row => identity(row) === identity(transition.oldSourceTuple));
   assert.equal(formerTupleExists, Boolean(transition.retainedLocalTuple), 'Removed versus retained local tuple must match actual current inventory');
@@ -126,4 +135,4 @@ assert.deepEqual([...changedProducerTransitionIds].sort(), [...expectedTransitio
 assert.deepEqual([...invalidatedTransitionIds].sort(), [...ownerDelta.invalidatedHistoricalTransitionIds].sort(), 'Missing historical consumer invalidation');
 assert.deepEqual(ledger.observationSnapshot.mappingErrors, []);
 for (const observation of ledger.consumerObservations.map(decode)) assert(rows.some(row => row.id === observation.id));
-console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
+console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, contentReorganizationInvalidatedProofs: [...contentReorganizationInvalidatedProofs], historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
