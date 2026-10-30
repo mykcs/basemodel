@@ -119,3 +119,34 @@ export const intelligenceTypographyDelta = {
     'c456cc9f9f70015ad0a2', 'cdc689fb99035347c410',
   ],
 };
+
+/** Exact content-only source changes; historical observations stay historical.
+ * All typography declarations remain reconciled against the sealed inventory.
+ * Changed rendered surfaces require their separate cloud browser receipts. */
+export const contentReorganizationProofs = {
+  "src/pages/_bodies/home-v2.astro": {
+    "currentSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
+    "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",
+    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+  },
+  "src/components/research/OpenEvoCapabilityMapLobby.astro": {
+    "currentSourceSha256": "21584e442fe25685e6da1469de6cbb0154fbee488dc85b73162e52b25e7e4e40",
+    "priorSourceSha256": "01d74f8b0111f8cf7d72792667c0ba57c718ba507a91d3df8bb021c1f980763e",
+    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+  },
+  "src/components/research/OpenEvoExperimentIndex.astro": {
+    "currentSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
+    "priorSourceSha256": "455b90e842f5e920d52fb4ce012699243a83f3943e04a81130acf8fdcdb80e21",
+    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+  },
+  "src/components/research/SeedOpenEvoResearchNav.astro": {
+    "currentSourceSha256": "20083c9a182beaa07fc8cab0391e030a40ee6f82ef9a9578cccf72592e0f3c21",
+    "priorSourceSha256": "3de89eb8b19d7194438899e0e6020ddc888b1fd088868a6aea8e7168f0049aac",
+    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+  },
+  "src/pages/research/seed-openevo/study/results/[note].astro": {
+    "currentSourceSha256": "d6633cdd26a1a81d3b97acd328e50ae76996332ff1f6ab9e2ec7a473f6ba302d",
+    "priorSourceSha256": "dbbffb949d767a511308e5e89e997f6a7b334406e9cd94703c4491afc0dc9a06",
+    "reason": "Move unchanged result-note metadata to its canonical shared module for page rendering and search. Historical rendered observations require fresh browser evidence."
+  }
+};

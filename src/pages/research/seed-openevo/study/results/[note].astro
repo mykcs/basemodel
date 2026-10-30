@@ -1,4 +1,5 @@
 ---
+import { OPEN_EVO_WEBSHOP_NOTE_META } from '../../../../../data/openEvoWebShopNoteMetadata';
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import OpenEvoWebShopResultNote, { type OpenEvoWebShopResultNoteId } from '../../../../../components/research/OpenEvoWebShopResultNote.astro';
 import OpenEvoWebShopBenchmarkNote, { type OpenEvoWebShopBenchmarkNoteId } from '../../../../../components/research/OpenEvoWebShopBenchmarkNote.astro';
@@ -35,56 +36,7 @@ export function getStaticPaths() {
 }
 
 const note = Astro.params.note!;
-const meta: Record<string, { title: string; description: string }> = {
-  'webshop-training': {
-    title: 'WebShop 的任务与评测规则',
-    description: '解释 WebShop 的观察（observation）、动作（action）和奖励（reward），以及小型商品世界（small world）、合成任务目标（synthetic goals）、SEED 任务划分和最终评分。',
-  },
-  'seed-training': {
-    title: 'SEED 在 WebShop 上怎样训练',
-    description: '解释 SEED 怎样把事后经验整理成技能（hindsight skill），再通过监督微调（SFT）和 GRPO 更新模型，以及训练与推理阶段的边界。',
-  },
-  'openevo-training': {
-    title: 'OpenEvo 怎样从经验更新自己',
-    description: '解释 OpenEvo 的任务边界（task boundary）、经验载体（experience carrier）、验证（validation）和下一版本（successor revision）怎样连接起来。',
-  },
-  'why-it-kept-failing': {
-    title: '早期迁移实验的失败原因',
-    description: '回看早期迁移实验（H1.16–H1.29）：经验载体（carrier）、交互长度（horizon）、动作过滤（action filtering）、理想动作标签（oracle labels）和任务身份（task identity）分别造成了什么影响。',
-  },
-  'first-positive-transfer': {
-    title: '第一次可靠的新任务迁移',
-    description: '历史实验 H1.38B 在 goal_idx ≥ 500 的任务 ID 不重叠面板（task-ID-disjoint panel）上得到第一代正向迁移信号；它不是 SEED 官方保留任务结果。',
-  },
-  'independent-replication': {
-    title: '新任务迁移的独立复现',
-    description: '历史实验 H1.39 换一批任务 ID 不重叠的新任务后，再次观察到普通 LoRA（ordinary LoRA）和 SD-LoRA 相对基础模型（BASE）的正向迁移。',
-  },
-  'second-generation': {
-    title: '第二代连续学习的结果边界',
-    description: '历史实验 H1.40 中，E2 的新经验和 G2 适配器（adapter）都真实存在，但新经验获取（acquisition）、旧能力保持（retention）和已有收益保持（preservation）没有同时通过，因此 T2 没有打开。',
-  },
-  'measurement-boundary': {
-    title: '机制比较的测量边界',
-    description: '历史实验 H1.41–H1.42 区分测量无效（measurement-invalid）的结果、没有打开的 T2，以及仍然可以保留的上游机制证据。',
-  },
-  'current-conclusion': {
-    title: 'OpenEVO WebShop 历史机制实验的结论与证据边界',
-    description: '保留历史机制实验的证据边界；H1.41/H1.42 编号继续留在正文和证据链接中，当前研究结论由 Results 主页面维护。',
-  },
-  'benchmark-first': {
-    title: '为什么还需要一场正式的 WebShop 比较？',
-    description: '现有实验已经回答一部分机制问题并复现第一代内部迁移；还缺 OpenEvo 与 SEED 在同一套官方保留任务上的正式比较。',
-  },
-  'seed-faithful-benchmark': {
-    title: '怎样才算和 SEED 公平比较？',
-    description: '固定 WebShop 小型商品世界（small world）、任务边界、任务目标顺序（goal ordering）、交互规则、评估任务身份和评分方式。',
-  },
-  'openevo-benchmark-design': {
-    title: 'OpenEvo 的不同进化方式应该怎样比较？',
-    description: '把经验载体和反馈密度拆成两个实验变量，在公平比较之后再检验原生路径（Native）、参数化路径（Param）、稀疏反馈（Sparse）与密集反馈（Dense）等变体。',
-  },
-};
+const meta = OPEN_EVO_WEBSHOP_NOTE_META;
 const current = meta[note];
 if (!current) throw new Error(`Unknown result note: ${note}`);
 ---

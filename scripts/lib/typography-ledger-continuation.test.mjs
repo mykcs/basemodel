@@ -70,3 +70,16 @@ test('exact editorial alias substitutions preserve sealed source owner proofs', 
   assert.throws(() => verifySealedProofWithEditorialAnonymization(proof, Buffer.from(after + '/* font-size: 4px */')), /beyond the exact/);
   assert.throws(() => verifySealedProofWithEditorialAnonymization({ ...proof, file: 'src/styles/tokens.css' }, Buffer.from(after)), /Sealed typography owner changed/);
 });
+
+test('reviewed content changes invalidate observations and remain pinned to exact bytes', () => {
+  const before = Buffer.from('<p>Old directory</p>');
+  const after = Buffer.from('<p>Canonical directory</p>');
+  const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+  const proof = { file: 'src/components/research/OpenEvoExperimentIndex.astro', sha256: hash(before) };
+  const review = { priorSourceSha256: hash(before), currentSourceSha256: hash(after), reason: 'Remove duplicate entries; retain all typography declarations' };
+  assert.deepEqual(verifySealedProofWithEditorialAnonymization(proof, after, review),
+    { editorialAliasOnly: false, historicalObservationInvalidated: true });
+  assert.throws(() => verifySealedProofWithEditorialAnonymization(proof, Buffer.from('unreviewed change'), review), /beyond the reviewed source/);
+  assert.throws(() => verifySealedProofWithEditorialAnonymization(proof, after, { ...review, reason: '' }), /semantic reason/);
+  assert.throws(() => verifySealedProofWithEditorialAnonymization(proof, after), /No supported editorial anonymization/);
+});
