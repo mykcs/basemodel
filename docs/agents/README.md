@@ -26,6 +26,18 @@ Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`
 
 When a task asks **what quality must be met or how its acceptance is proved**, consult [`docs/standards/README.md`](../standards/README.md) and [ACCEPTANCE_MAP](../standards/ACCEPTANCE_MAP.md). This is a short owner/check index, not a second Agent rule system or a universal pre-read. The [open gaps](../standards/OPEN_GAPS.md) route to their **existing** PR owners.
 
+## Shared website learning and feedback
+
+This is navigation to shared policy owners and historical feedback, not a second writable preference model. Load only the row needed by the current task; use prior feedback when its failure family is relevant.
+
+| Task trigger | Current shared authority (load first) | Prior owner feedback / evidence (only when relevant) |
+| --- | --- | --- |
+| Substantial or durable user-facing content/copy | [Human Expression Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md) | [Shared content-expression learning](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md); [BaseModel-specific experience](https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel) |
+| Material website design / information-flow decision | [Human-thinking website expression lens](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md) | [Shared design preferences](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/design/LEARNED_PREFERENCES.md) |
+| Material website engineering | [Cross-site Engineering Standard](https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md) | [Shared engineering practices](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md); [BaseModel-specific experience](https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel) |
+
+Direct owner feedback and conversation closeout belong to central `.agents/docs/learning`. BaseModel retains current Wish, Reader Contracts, scientific/product authority, source audits, browser tests, and route-specific guards. Historical feedback and the retired local preference-retrieval engine are not authoritative current policies.
+
 ## Task bundles
 
 **人物姓名／匿名化（全仓库）：**任何页面、报告、会议来源、申请材料或其他涉及具体导师／前辈的改动，先读 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md)；这是唯一称谓规则 owner，执行检查为 `npm run audit:person-privacy`。

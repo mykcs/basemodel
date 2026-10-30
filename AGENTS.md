@@ -36,38 +36,7 @@ For project quality targets and evidence routing, use [BaseModel Standards](docs
 
 ## Central website learning
 
-For substantial/durable user-facing website content artifacts, read the current shared human-expression standard before the first substantial draft:
-
-- https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md
-
-When prior owner feedback or failure-family evidence matters, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md
-
-For BaseModel-specific research-archive roles, OpenEVO/SEED research framing, or returning-researcher context, also read the site-specific learned experience:
-
-- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
-
-This site-specific learning is evidence/interpretation only. Current BaseModel Wish, Reader Contracts, scientific authority, source, and tests remain the project-side truth.
-
-For material design decisions, read the shared semantic web-expression / information-flow lens first:
-
-- https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md
-
-When prior owner feedback or design failure evidence matters, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/design/LEARNED_PREFERENCES.md
-
-For material website-engineering work, read the current shared Engineering Standard first:
-
-- https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md
-
-When prior engineering failures/evidence matter, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md
-- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
-
-Direct owner feedback and conversation closeout are centralized in `.agents/docs/learning`. BaseModel owns its current Wish, scientific/product authority, Reader Contracts, source audits, browser tests, and route-specific guards. It no longer owns a second dynamic preference model/retrieval engine. Central preference evidence never overrides scientific/factual/security truth.
+For substantive website writing, material design or engineering work, use the matching standards and on-demand feedback links in [the shared learning routes](docs/agents/README.md#shared-website-learning-and-feedback). Keep prior feedback as evidence, never above current Wish, Reader Contracts, scientific authority, code, tests or provider truth.
 
 ## Fast start
 
