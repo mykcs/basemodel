@@ -6,7 +6,7 @@
     "deploymentEnabled": {
       "*": false,
       "**/*": false,
-      "main": true,
+      "main": false,
       "ci/vercel-gate-final": true
     }
   },

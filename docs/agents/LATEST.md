@@ -114,25 +114,26 @@ BaseModel PR #851 仍按 **① OpenEVO 方法 → ② L 学长十问 → ③ 我
 
 PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② L 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作L 学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
 
-未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head、CI 与 Vercel 的实时状态。
+未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head、两项独立 CI 检查、Cloudflare Worker 的实时部署 SHA 与 Access 登录态；若使用 Vercel 回退，再核对 Vercel 实际版本。
 
 ## Current architecture
 
 ```text
 GitHub `mykcs/basemodel`          = public website source of truth
-ordinary working PR/ref           -> required Public PR CI; no Vercel Preview compute
-final current-base PR candidate   -> persistent exact-SHA Vercel provider gate
-main                              -> Vercel Production
-Production                        -> https://basemodel-preview.vercel.app
+ordinary working PR/ref           -> public-ci-gate + cloudflare-artifact-gate; no provider deployment
+final current-base PR candidate   -> both exact-head GitHub checks + strict current-base
+main                              -> protected Cloudflare on-demand release (default)
+Cloudflare site                   -> https://basemodel-access-standby.gemini202405.workers.dev/
+Vercel fallback                   -> https://basemodel-preview.vercel.app (manual release, last known-good retained)
 
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-**Live CI control plane (verified 2026-09-21 at `main@d747a658008566e8ba82df50d5dc35fb87e53534`):** protected `main` keeps strict current-base semantics and requires **both** `public-ci-gate` (GitHub Actions app 15368) and `Vercel` (app 8329). CircleCI has no ordinary merge authority.
+**Cloudflare-first target control plane (2026-10-30):** protected `main` keeps strict current-base semantics and requires **both** `public-ci-gate` and `cloudflare-artifact-gate` (GitHub Actions app 15368). CircleCI and Vercel have no ordinary merge authority. **Confirm live ruleset ID `22224550` after the staged migration; this repository text is not proof that the control-plane switch has been applied.**
 
-Ordinary working refs are not Vercel deployment-enabled. They receive automatic **Public PR CI**: read-only exact-head deterministic validation plus the shared risk-based browser planner; non-UI work allocates zero browser runners, bounded UI work allocates one, and full/global browser work is native Playwright-sharded over eight independent Chromium shards with one worker each and retries=0. `public-ci-gate` is required merge evidence. Hosted Vercel acceptance is requested only after that exact-head check is green through `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`, which pins `ci/vercel-gate-base` to live `main` and moves persistent `ci/vercel-gate-final` to the exact PR head. Vercel then performs the static production build and proves provider deployability on that same SHA instead of rerunning the deterministic/browser suite. Proven docs/governance-only `main` changes remain ignored so they cannot replace Production. **Merge readiness therefore requires both `public-ci-gate` and `Vercel`.** CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
+Ordinary working refs and ordinary `main` merges are not Vercel deployment-enabled. Automatic PR evidence is **Public PR CI** (read-only deterministic validation plus risk-based actual Chromium/WebKit coverage) alongside **Cloudflare artifact CI** (same-head Worker build/route/security/dry-run without deployment). The two required checks must succeed on the exact current head, with no skipped allocated browser work or mixed-attempt evidence. **Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`.** Then select the release provider explicitly: Cloudflare's protected main-only workflow by default, or authenticated manual Vercel publishing when Cloudflare quota/health requires fallback. The previous Vercel `ci/vercel-gate-final` alias is retained for optional diagnostics, not required per-PR spend. CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
 
-Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`. Cloudflare deployment and monitoring paths are legacy/rollback/provider-specific tooling; there is no active anonymous external Production monitor.
+Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`; [current provider switch operation](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md). Both provider sites stay authentication-protected; there is no anonymous Production monitor.
 
 The 2026-09-21 de-duplication qualification measured the same provider phase before/after: exact-head Vercel BUILDING→READY fell from **507.7 s to 14.170 s** (97.209% reduction, 35.83× faster), and merged Production fell from **633.3 s to 16.608 s** (97.378% reduction, 38.13× faster). No test population, retries, assertion threshold, or build-machine tier changed.
 

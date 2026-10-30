@@ -19,10 +19,10 @@ describe('read-only Production identity alarm', () => {
     const fetcher: typeof fetch = async () => new Response(JSON.stringify(replies.shift()), { status: 200 });
     expect((await inspectProductionMirror({ repository: 'mykcs/basemodel', token: 'test', fetcher })).deployment_id).toBe(1);
   });
-  it('runs on main and Production events with read-only permissions and no new secrets', () => {
+  it('runs only on Vercel Production or explicit request, never on ordinary Cloudflare main merges', () => {
     const workflow = parse(readFileSync(new URL('../../.github/workflows/production-identity.yml', import.meta.url), 'utf8'));
-    expect(Object.keys(workflow.on).sort()).toEqual(['deployment_status', 'push', 'workflow_dispatch']);
-    expect(workflow.on.push.branches).toEqual(['main']);
+    expect(Object.keys(workflow.on).sort()).toEqual(['deployment_status', 'workflow_dispatch']);
+    expect(workflow.on.push).toBeUndefined();
     expect(workflow.permissions).toEqual({ contents: 'read', deployments: 'read' });
     expect(workflow.concurrency.group).toBe("${{ github.event_name == 'deployment_status' && github.event.deployment.environment != 'Production' && format('production-identity-skip-{0}', github.run_id) || 'production-identity' }}");
     expect(workflow.concurrency['cancel-in-progress']).toBe(true);

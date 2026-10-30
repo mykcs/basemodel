@@ -27,9 +27,9 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('makes Vercel the exact-head acceptance provider while keeping CircleCI manual-only', () => {
+  it('keeps Vercel manual-only on main while using Cloudflare exact-head acceptance and CircleCI manual-only', () => {
     expect(vercel.buildCommand).toBe('npm run build');
-    expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
+    expect(vercel.git?.deploymentEnabled?.main).toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
@@ -55,9 +55,9 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('required Public PR CI + Vercel provider gate + manual fallbacks');
+    expect(architecture).toContain('Cloudflare-first with authenticated Vercel fallback');
     expect(architecture).toContain('Public PR CI owns required **repository/browser acceptance**');
-    expect(architecture).toContain('Vercel owns required **provider build/deploy acceptance**');
+    expect(architecture).toContain('`cloudflare-artifact-gate`');
     expect(publicPrWorkflow).toContain('pull_request:');
     expect(publicPrWorkflow).toContain('name: public-plan');
     expect(publicPrWorkflow).toContain("CI_UNIFIED_BROWSER: '1'");
@@ -80,12 +80,12 @@ describe('hosting architecture ownership', () => {
     expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps Cloudflare fallback surfaces outside the ordinary release path', () => {
-    expect(architecture).toContain('Legacy hosting — not ordinary workflow');
-    expect(architecture).toContain('no anonymous external Production monitor');
+  it('keeps Cloudflare default with a protected Vercel standby and no anonymous monitor', () => {
+    expect(architecture).toContain('Cloudflare is the normal protected Production release surface');
+    expect(architecture).toContain('No anonymous Production monitor');
     expect(latest).not.toContain('production-smoke');
-    expect(latest).toContain('`public-ci-gate` is required merge evidence');
-    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
+    expect(latest).toContain('Automatic PR evidence is **Public PR CI**');
+    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`');
   });
 
   it('retains a static-only non-production Workers shadow option', () => {

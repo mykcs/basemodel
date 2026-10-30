@@ -2,6 +2,8 @@
 
 状态（2026-10-30）：**Cloudflare Access 保护的备用站已经部署并通过有界验收；尚未切换正式入口。Vercel 仍是唯一正式发布端。** 这份操作说明不授权更改域名、DNS、GitHub 仓库可见性、账单套餐或访问政策。当前执行架构以 [`hosting-architecture.md`](../../agents/current/hosting-architecture.md) 和实际 GitHub/Vercel/Cloudflare 设置为准。
 
+新增的“配额不足时快速选 Cloudflare 或 Vercel”目标和不降级 GitHub required checks 的迁移事务，见 [配额感知双平台 CI/发布方案](QUOTA_AWARE_PROVIDER_SWITCH.md)。该文档处于资格验证阶段，不代表已停用旧 `Vercel` 必需检查或已关闭 Vercel 生产自动构建。
+
 ## 给不熟悉部署的同学
 
 - **网站本体**：一份 Astro 静态源码，分别打包到两家服务商；不能让两份版本偷偷分叉。
