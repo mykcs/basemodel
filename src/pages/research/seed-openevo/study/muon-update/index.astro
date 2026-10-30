@@ -25,13 +25,16 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
         <span><strong>工程反例</strong> Newton–Schulz 不等于 top-r SVD</span>
         <span><strong>新机制</strong> 假设与评测方案，尚未正式运行</span>
       </div>
+      <details class="muon-related-disclosure"><summary>关联研究与来源</summary>
       <nav class="muon-related" aria-label="关联研究">
         <a href="/research/seed-openevo/study/advisor-questions/#q07">L 学长十问中的研究问题 <span aria-hidden="true">↗</span></a>
         <a href={q17}>已完成的回应实验 <span aria-hidden="true">↗</span></a>
         <a href={notion} target="_blank" rel="noopener noreferrer">Notion 研究记录 <span aria-hidden="true">↗</span></a>
       </nav>
+      </details>
     </header>
 
+    <details class="muon-toc-disclosure"><summary>本篇目录</summary>
     <nav class="evo-article__toc" aria-label="Muon 研究篇章目录">
       <h2>目录</h2>
       <ol>
@@ -43,6 +46,7 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
         <li><a href="#references">来源与后续研究</a></li>
       </ol>
     </nav>
+    </details>
 
     <section class="evo-article__section" id="evidence">
       <h2>1 已观察到的更新方向效应</h2>
@@ -209,6 +213,8 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
 .muon-related{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.5rem;margin:1rem 0 0;font-size:var(--type-body-small)}
 .muon-related a{display:inline-block;text-decoration:none;border-bottom:1px solid var(--paper-line);padding:.25rem 0}
 .muon-related a:hover{text-decoration:underline}
+.muon-article .muon-related-disclosure,.muon-article .muon-toc-disclosure{margin:.8rem 0 0}
+.muon-article .muon-related-disclosure>summary,.muon-article .muon-toc-disclosure>summary{cursor:pointer;font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-ink);text-decoration:underline;text-underline-offset:.2em}
 .muon-article .muon-booktabs{width:100%;min-width:700px}
 .muon-booktabs th:first-child{width:26%}
 .muon-booktabs td{line-height:var(--type-leading-caption)}
