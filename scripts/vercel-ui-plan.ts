@@ -32,6 +32,8 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/wait-for-cloud-figure-artifact.mjs',
   'scripts/wait-for-cloud-figure-artifact.test.mjs',
   '.github/workflows/cloud-figure-visual-review.yml',
+  '.github/workflows/cloudflare-standby.yml',
+  'wrangler.standby.jsonc',
   'scripts/ci-ui-test-timings-202609061200.json',
   'scripts/ci-ui-test-timings-202609152256.json',
   '.github/workflows/self-hosted-ci.yml',
@@ -155,6 +157,7 @@ export function planHostedUi(files: string[]): HostedUiPlan {
     || file.startsWith('.github/runner/')
     || file.startsWith('scripts/ci-ui-test-timings-')
     || file.startsWith('scripts/verify-cloud-figure-evidence')
+    || file.startsWith('scripts/hosting/')
     || file.startsWith('tests/e2e/')
     || file.startsWith('tests/fixtures/'))) {
     return {
