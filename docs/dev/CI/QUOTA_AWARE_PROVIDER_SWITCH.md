@@ -1,6 +1,6 @@
 # BaseModel 配额感知双服务商：固定 CI、可切换发布与回退
 
-状态：**迁移候选；不可把本文件当成已完成的生产切换。** 本文件记录 2026-10-30 用户新增的工程愿望、已实现的候选代码和必须按顺序完成的现场手续。活跃状态以 GitHub 的 `main` ruleset、Actions、Cloudflare Access、Vercel 和真实登录浏览器为准。当前 Vercel 仍然是 Production 和必需检查，Cloudflare 为受保护的手动备用端。
+状态：**双服务商源码合同已形成；实际切换以线上门禁与生产验收为准。** 本文件记录 2026-10-30 用户新增的工程愿望、已实现的候选代码和必须按顺序完成的现场手续。活跃状态以 GitHub 的 `main` ruleset、Actions、Cloudflare Access、Vercel 和真实登录浏览器为准。PR #975 通过前，旧 Vercel 必需检查仍可能生效；不能根据本文件宣称线上控制面已完成迁移。
 
 ## 愿望（WHY）
 
@@ -23,13 +23,15 @@ PR exact HEAD
 
 与旧架构的区别：**Vercel 必需 `Vercel` PR 检查在 Cloudflare 通道通过完整资格认证后从 ruleset 替换出去；它不再耗费每个最终 PR 的 Hobby 部署额度。** Vercel 平台和现有登录门保留，不在普通 PR 中自动构建。两边的发布端都有自己的实际登录验收，不能用 Wrangler `--dry-run` 冒充真正发布成功。
 
+源码同时把 `vercel.json` 的 `git.deploymentEnabled.main` 置为 `false`，从源头停止普通合并后自动触发 Vercel；`ci/vercel-gate-final` 保留为**可选**的手动 Vercel Provider 验证入口。生产身份检查不再在每次 `main` push 时比较 Cloudflare 新 SHA 和故意停留在旧版本的 Vercel 回退站，只在 Vercel 部署状态或显式手动检查时触发。此配置不会删除现有 Vercel Production、DNS 或认证。
+
 ## 已落地的候选实现
 
 | 检查/操作 | 做什么 | 是否产生服务商部署 | 额度性质 |
 | --- | --- | --- | --- |
 | `public-ci-gate` | 精确 PR head 的完整仓库与分级浏览器测试 | 否 | 公开仓库标准 GitHub-hosted CI |
 | `cloudflare-artifact-gate` | 从同一 PR head 验证 Cloudflare 静态构建与路由/安全设置，最后执行 Wrangler `deploy --dry-run` | **否**，没有 Cloudflare/Vercel 发布凭据 | 额外一份 GitHub 构建；未来可以在同一流水线共享产物后优化 |
-| `Protected Cloudflare Standby (manual)` → `plan` | 从当前 `main` 打包、封存 SHA、验证与 PR 一致的 Worker 契约 | 否 | GitHub 构建 |
+| `Protected Cloudflare Site (manual)` → `plan` | 从当前 `main` 打包、封存 SHA、验证与 PR 一致的 Worker 契约 | 否 | GitHub 构建 |
 | 同一工作流 → `deploy` | 先验证现有 Access、只发布已封存 main 产物、再次验证 Access | 仅受保护 Cloudflare Worker | 仅在操作员选择时消耗 Worker 发布额度 |
 | `node scripts/request-vercel-final-gate.mjs <PR>` | 旧的最终候选 Vercel Preview 门 | 是 | **在旧 ruleset 生效期间仍然必须**；切换后仅按需走回退路线 |
 
@@ -44,6 +46,22 @@ Cloudflare 候选门使用 `pull_request` + `contents:read` + 无 secrets，禁�
 5. 通过生产登录的首页、`/research/seed-openevo/flow/`、结果页、旧路径重定向、JSON、SVG、iPhone 18 Pro Max 交互与匿名拒绝检查。将 Cloudflare 设为日常读者入口；再评估是否关闭 Vercel `main` 的**自动** Git 发布以节省额度。**必须先证明已有独立 Vercel 手动恢复发布办法可行**；不删除 Vercel 项目、授权或旧站。
 
 其中第 2、4、5 步需要真实线上证据，不得把 `plan`、PR 已创建、静态构建或匿名 302 单独写成“迁移完成”。每次改 GitHub control plane 都先读回有无其他窗口已经修改，避免覆盖并行操作者。
+
+### 低成本快速操作（只操作已经授权的现有项目）
+
+**发布 Cloudflare：** 先核对目前 Worker 的 `standby-source-sha.txt` 和仓库 `main` 的 SHA；如果已相同直接使用现有站点，不产生部署。不同且需要更新时，从 GitHub 已授权操作端显式运行：
+
+```bash
+gh workflow run cloudflare-standby.yml -R mykcs/basemodel --ref main -f operation=deploy
+```
+
+等待同一次运行的 `standby-verified-build`、`standby-protected-deploy` 全绿后，重新核对源 SHA、四条未登录 Access 探针与真实登录浏览器（包括移动端）。`plan` 只构建和检查，不发布。
+
+**切到现成的 Vercel 回退：** 不执行任何命令，直接使用原有登录保护的 Vercel URL，明确告知其部署 SHA 可能比 Cloudflare 旧。**只有 Vercel 也需要更新时**，使用已有授权 CLI 和经过确认的项目工作目录：先确认 `main` 精确 SHA、无未提交/未跟踪产物、已链接的是预期 Vercel 项目，再执行 `vercel deploy --prod` 一次；读取真实 Production SHA、登录后页面与 Vercel Authentication，若不符合则恢复既有成功版本。绝不以 Vercel Git 自动 PR/`main` 触发代替明确选择，也不为“看看能否发布”创建额外部署。
+
+**快速切换目前指换两条已存在的链接或显式发布其中一个服务商**，不是同域名自动换源；自动流量切换仍需要受控自有域名，尚未获授权实施。
+
+读者可查看 `/development/` 的中文 CI 流程和双服务商入口；这次更新属于正文结构变化，已在 `typography-intelligence-ui-delta.mjs` 中用前后 SHA 明确使旧 `/development/` 视觉观测失效。**必须在新的 Cloudflare exact-main 部署上重新做桌面/iPhone 18 Pro Max 页面与链接验收**，不能继承历史排版截图的 PASS。
 
 ## 操作员快速选择卡
 

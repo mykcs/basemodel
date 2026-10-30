@@ -9,7 +9,7 @@ Human-facing projection: [`/development/`](/development/) explains the same arch
 
 ## One-sentence decision
 
-**Use public GitHub Actions as the required, read-only, risk-adaptive repository/browser acceptance (`0` browser runners for skip, `1` for focused, `8` for full); keep Vercel as the separately required exact-head provider build/deploy authority; spend zero Vercel compute on ordinary working pushes; keep the Mac, CircleCI, and Cloudflare out of the ordinary critical path.**
+**Use GitHub-hosted Actions for two exact-head required checks: risk-adaptive deterministic/real-browser `public-ci-gate` and an offline, secret-free Cloudflare Worker package/security `cloudflare-artifact-gate`. Publish explicitly to Access-protected Cloudflare by default; keep authenticated Vercel as a manually chosen, last-known-good release fallback. No required Vercel Preview for ordinary Cloudflare PRs, no automatic Vercel `main` Git builds, and no Mac/GPU CI dependency.** The [quota-aware operation and safe ruleset switch](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) must be completed in the live GitHub control plane before it becomes effective.
 
 **Live capacity note (2026-10-30):** the linked Vercel team is currently Hobby. PR #967 previously received `Deployment rate limited — retry in 24 hours`, but a later shared final gate reached READY at 11:42 UTC; the old failure does not prove the quota remains exhausted. The shared gate is currently in use by PR #973, so wait for that owner before requesting another candidate. Ordinary branches are already excluded before deployment creation by `git.deploymentEnabled` in `vercel.json`.
 
@@ -17,7 +17,7 @@ The optimization target is not "find the provider with the largest free quota." 
 
 > **minimum total cost and waiting time per trustworthy merged change, without weakening exact-head/current-base acceptance.**
 
-## Current topology
+## Previous Vercel-first topology (historical until live cutover)
 
 ```text
 ordinary research/fix/docs/feature PR push

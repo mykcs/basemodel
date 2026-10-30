@@ -1,4 +1,4 @@
-name: Protected Cloudflare Standby (manual)
+name: Protected Cloudflare Site (manual)
 
 on:
   workflow_dispatch:
@@ -125,7 +125,7 @@ jobs:
       - name: REQUIRE existing Cloudflare Access before deploying any site bytes
         run: node scripts/hosting/verify-cloudflare-access.mjs
 
-      - name: Deploy only the pre-verified protected Worker (not Production cutover)
+      - name: Publish only the pre-verified Access-protected Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_STANDBY_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_STANDBY_ACCOUNT_ID }}
@@ -138,12 +138,12 @@ jobs:
       - name: REQUIRE anonymous routes still redirect to Cloudflare Access after deploying
         run: node scripts/hosting/verify-cloudflare-access.mjs
 
-      - name: Summarize standby only
+      - name: Summarize protected release
         env:
           EXPECTED_SHA: ${{ needs.build.outputs.sha }}
         run: |
           set -euo pipefail
-          echo "## Protected Cloudflare standby" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Protected Cloudflare site release" >> "$GITHUB_STEP_SUMMARY"
           echo "- Source: \`$EXPECTED_SHA\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- Access: anonymous root, index, asset, model-data probes passed" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Authority: standby only; Vercel remains current Production" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Authority: Cloudflare protected site; complete source-SHA/browser acceptance before declaring release" >> "$GITHUB_STEP_SUMMARY"

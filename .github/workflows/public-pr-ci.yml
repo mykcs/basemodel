@@ -231,7 +231,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-focused
+          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-focused-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ci-browser-inventory/*.json
             test-results/**
@@ -318,7 +318,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}
+          name: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             figure-inventory/*.json
             test-results/**/*.png
@@ -388,7 +388,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-extras
+          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-extras-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ci-browser-extras/*.json
             dist/__qa__/core-research-visual-signatures.json
@@ -444,7 +444,7 @@ jobs:
         if: needs.plan.outputs.mode == 'full'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
-          pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}
+          pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: raw-shards
           merge-multiple: false
 
@@ -462,7 +462,7 @@ jobs:
         id: evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-figure-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ needs.plan.outputs.sha }}
+          name: basemodel-figure-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: accepted-evidence/
           if-no-files-found: error
           retention-days: ${{ contains(needs.plan.outputs.head_ref, 'typography') && 7 || 3 }}

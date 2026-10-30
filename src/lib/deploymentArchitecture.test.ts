@@ -72,6 +72,16 @@ const assertCloudFigureSafety = (source: string) => {
   const upload = job.steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@'));
   expect(upload.if).toBe('always()');
   expect(upload.with.name).toContain('${{ needs.plan.outputs.sha }}');
+  const attemptSuffix = '-${{ github.run_id }}-${{ github.run_attempt }}';
+  expect(upload.with.name).toBe('figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}' + attemptSuffix);
+  const aggregateDownload = aggregate.steps.find((step: { name: string }) => step.name === 'Download every allocated timed shard');
+  expect(aggregateDownload.with.pattern).toBe('figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}' + attemptSuffix);
+  const aggregateUpload = aggregate.steps.find((step: { name: string }) => step.name === 'Upload complete verified browser evidence');
+  expect(aggregateUpload.with.name).toBe('basemodel-figure-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ needs.plan.outputs.sha }}' + attemptSuffix);
+  for (const [laneName, suffix] of [['browser', '-focused'], ['extras', '-extras']] as const) {
+    const auxiliary = workflow.jobs[laneName].steps.find((step: { uses?: string }) => step.uses?.startsWith('actions/upload-artifact@'));
+    expect(auxiliary.with.name).toBe('basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}' + suffix + attemptSuffix);
+  }
   const run = job.steps.find((step: { name: string }) => step.name === 'Run complete UI and research figure acceptance shard');
   expect(run.env.MAX_FAILURES).toBe("${{ contains(needs.plan.outputs.head_ref, 'typography') && '0' || '1' }}");
   const executable = JSON.stringify(workflow);
@@ -203,10 +213,12 @@ describe('Vercel production deployment architecture', () => {
       source.replace('    runs-on: ubuntu-24.04', '    runs-on: ubuntu-24.04\n    environment: production'),
       source.replace('run: npm ci', 'run: vercel deploy --target=production'),
       source.replace('persist-credentials: false', 'persist-credentials: true'),
+      source.replace('figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}', 'figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}'),
+      source.replace('pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}', 'pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}'),
     ]) expect(() => assertCloudFigureSafety(bad)).toThrow();
   });
 
-  it('keeps Cloudflare as manual, exact-main, protected-only standby with a pre-deploy security gate', () => {
+  it('keeps Cloudflare as manually selected, exact-main, protected release with pre/post Access gates', () => {
     const source = readText('../../.github/workflows/cloudflare-standby.yml');
     const inspect = (candidate: string) => {
       const workflow = parse(candidate);
@@ -214,6 +226,7 @@ describe('Vercel production deployment architecture', () => {
       expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
       expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');
       expect(workflow.permissions).toEqual({ contents: 'read' });
+      expect(workflow.name).toBe('Protected Cloudflare Site (manual)');
       expect(workflow.concurrency['cancel-in-progress']).toBe(false);
       expect(Object.keys(workflow.jobs).sort()).toEqual(['build', 'deploy']);
       const build = workflow.jobs.build;
@@ -228,7 +241,7 @@ describe('Vercel production deployment architecture', () => {
       expect(deploy.if).toContain("inputs.operation == 'deploy'");
       expect(deploy.if).toContain("github.ref == 'refs/heads/main'");
       const pre = deploy.steps.findIndex((s: { name: string }) => s.name === 'REQUIRE existing Cloudflare Access before deploying any site bytes');
-      const push = deploy.steps.findIndex((s: { name: string }) => s.name === 'Deploy only the pre-verified protected Worker (not Production cutover)');
+      const push = deploy.steps.findIndex((s: { name: string }) => s.name === 'Publish only the pre-verified Access-protected Worker');
       const post = deploy.steps.findIndex((s: { name: string }) => s.name === 'REQUIRE anonymous routes still redirect to Cloudflare Access after deploying');
       expect(pre).toBeGreaterThan(0);
       expect(push).toBeGreaterThan(pre);
@@ -238,6 +251,8 @@ describe('Vercel production deployment architecture', () => {
       expect(deploy.steps[push].env).toHaveProperty('CLOUDFLARE_API_TOKEN', '${{ secrets.CLOUDFLARE_STANDBY_API_TOKEN }}');
       expect(deploy.steps[push].env).toHaveProperty('CLOUDFLARE_ACCOUNT_ID', '${{ secrets.CLOUDFLARE_STANDBY_ACCOUNT_ID }}');
       expect(deploy.steps[push].run).toContain('wrangler@4.156.0 deploy --config wrangler.standby.jsonc');
+      expect(JSON.stringify(deploy.steps)).toContain('Cloudflare protected site; complete source-SHA/browser acceptance');
+      expect(JSON.stringify(deploy.steps)).not.toContain('Vercel remains current Production');
       for (const job of [build, deploy]) {
         for (const step of job.steps) {
           if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
@@ -464,14 +479,17 @@ describe('Vercel production deployment architecture', () => {
     expect(buildCloudflare).toContain('Legacy/fallback Cloudflare validation only');
   });
 
-  it('keeps ordinary working refs free and reserves Vercel for exact-SHA gate refs plus main', () => {
+  it('keeps ordinary working refs and main Git merges free of Vercel deployments while reserving manual fallback', () => {
     expect(vercelConfig.git?.deploymentEnabled).toEqual({
       '*': false,
       '**/*': false,
-      main: true,
+      main: false,
       'ci/vercel-gate-final': true,
     });
     expect(vercelConfig.github?.autoJobCancelation).toBe(true);
+    const identity = parse(readText('../../.github/workflows/production-identity.yml'));
+    expect(Object.keys(identity.on).sort()).toEqual(['deployment_status', 'workflow_dispatch']);
+    expect(identity.jobs.identity.steps.find((step: { run?: string }) => step.run === 'node scripts/verify-production-identity.mjs')).toBeDefined();
   });
 
   it('does not maintain GitHub Actions dependencies through Dependabot', () => {
