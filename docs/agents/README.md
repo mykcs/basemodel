@@ -42,6 +42,7 @@ Always load the relevant combination of:
 - [`current/human-thinking-web-expression-contract.md`](current/human-thinking-web-expression-contract.md) — semantic HTML/visual expression and information-density contract;
 - [`current/audience-centered-technical-copy.md`](current/audience-centered-technical-copy.md) — site-wide technical-copy baseline;
 - [`current/sitewide-visual-knowledge-architecture.md`](current/sitewide-visual-knowledge-architecture.md) — whole-site knowledge journey and route roles.
+- [`current/intelligence-ui-design-standard.md`](current/intelligence-ui-design-standard.md) — Intelligence UI method/research comparison content: identical shared labels, independent paired cells, explicit assumptions, evidence and falsification; load when building or revising those comparisons.
 - [`current/experiment-lineage-map-visual-standard.md`](current/experiment-lineage-map-visual-standard.md) — required specialization when a research UI expresses experiment lineage, roguelike routes, scientific amendments, engineering fixes, blockers, or evidence nodes.
 
 #### Writing stack: load by responsibility

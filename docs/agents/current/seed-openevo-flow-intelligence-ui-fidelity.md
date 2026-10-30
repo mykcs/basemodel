@@ -2,7 +2,8 @@
 
 Status: **original dark screenshots received; faithful Astro reconstruction in review; visual acceptance NOT_VERIFIED** (2026-10-29)
 Scope: `/research/seed-openevo/flow/` — specifically the two-stage SEED (left) × OpenEVO (right) training comparison.  
-Source-of-truth for the general procedure: [website-improve / human-thinking web expression](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md). The user’s repeated negative feedback remains in the [private .agents case](https://github.com/mykcs/.agents/blob/main/docs/learning/projects/basemodel/2026-10-23-advisor-intelligence-ui-site-fidelity-regression.md); do not replicate the private RAW here.
+Source-of-truth for the general procedure: [website-improve / human-thinking web expression](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md).
+Content and symmetric-comparison semantics are owned by [Intelligence UI design standard](intelligence-ui-design-standard.md); this file retains only the Flow route's source-specific fidelity and acceptance evidence. The user’s repeated negative feedback remains in the [private .agents case](https://github.com/mykcs/.agents/blob/main/docs/learning/projects/basemodel/2026-10-23-advisor-intelligence-ui-site-fidelity-regression.md); do not replicate the private RAW here.
 
 ## Requested outcome
 
