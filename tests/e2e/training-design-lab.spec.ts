@@ -21,7 +21,7 @@ async function noPageOverflow(page: Page) {
 }
 
 for (const route of routes) {
-  test(`training design is integrated into the flow map on ${route}`, async ({ page }) => {
+  test(`training design is integrated into the flow map on ${route}`, async ({ page }, testInfo) => {
     test.skip(!routeInScope(route), 'outside hosted focused route scope');
 
     for (const viewport of [{ width: 1440, height: 1000 }, { width: 440, height: 956 }]) {
@@ -32,9 +32,33 @@ for (const route of routes) {
       await expect(root).toBeVisible();
       await expect(root.locator('h2')).toContainText('SEED × OpenEVO 两阶段学习范式');
       await expect(root.locator('[data-intelligence-comparison] [data-stage]')).toHaveCount(2);
-      await expect(root.locator('[data-intelligence-comparison] [data-axis]')).toHaveCount(8);
-      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__action').first()).toContainText('外部高能力教师模型 API（GLM-5.2）');
-      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__action').last()).toContainText('外部高能力教师模型 API（MiniMax-M3）');
+      await expect(root.locator('[data-intelligence-comparison] [data-axis]')).toHaveCount(9);
+      await expect(root.locator('.intelligence-intro__count')).toContainText('2 个阶段 · 9 组对应操作');
+      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__action')).toHaveText(['调用外部高能力教师模型 API', '调用外部高能力教师模型 API']);
+      await expect(root.locator('[data-axis="external-teacher"] .intelligence-method__vendor')).toHaveText(['（GLM-5.2）', '（MiniMax-M3）']);
+      await expect(root.locator('[data-axis="initial-state"] .intelligence-method__action')).toHaveText(['形成 Stage 2 的初始状态', '形成 Stage 2 的初始状态']);
+      await expect(root.locator('[data-axis="online-signal"] .intelligence-method__boundary')).toHaveText(['本阶段不再调用 Stage 1 的外部高能力教师模型 API。', '本阶段不再调用 Stage 1 的外部高能力教师模型 API。']);
+
+      const geometry = await root.evaluate((node) => {
+        const showcase = node.querySelector('.intelligence-showcase')!.getBoundingClientRect();
+        const stage = node.querySelector('.intelligence-stage')!.getBoundingClientRect();
+        const [seed, evo] = Array.from(node.querySelectorAll('[data-axis="initial-collection"] .intelligence-method')).map((element) => element.getBoundingClientRect());
+        return { showcaseWidth: showcase.width, stageWidth: stage.width, seedX: seed!.x, seedY: seed!.y, evoX: evo!.x, evoY: evo!.y };
+      });
+      expect(geometry.showcaseWidth).toBeGreaterThan(geometry.stageWidth);
+      if (viewport.width > 720) {
+        expect(geometry.showcaseWidth).toBeGreaterThan(viewport.width * 0.9);
+        expect(geometry.evoX).toBeGreaterThan(geometry.seedX + 150);
+        expect(Math.abs(geometry.evoY - geometry.seedY)).toBeLessThan(2);
+      } else {
+        expect(geometry.evoY).toBeGreaterThan(geometry.seedY + 100);
+      }
+      if (viewport.width === 1440) {
+        await root.locator('.intelligence-showcase').screenshot({
+          path: testInfo.outputPath('seed-openevo-original-reference-comparison-desktop.png'),
+          animations: 'disabled',
+        });
+      }
       const researchNav = page.locator('[data-research-navigation][data-research-track="flow"]');
       if (viewport.width <= 720) {
         const mobileDirectory = researchNav.locator('.research-navigation__mobile');
@@ -85,6 +109,13 @@ test('training design stays legible in dark theme and reduced motion', async ({ 
 
   const root = page.locator('#training-design');
   await expect(root).toBeVisible();
+  const canvas = await root.locator('.intelligence-showcase').evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { background: style.backgroundColor, borderRadius: style.borderRadius, color: style.color };
+  });
+  expect(canvas.background).toBe('rgb(13, 13, 14)');
+  expect(canvas.borderRadius).not.toBe('0px');
+  expect(canvas.color).toBe('rgb(237, 237, 238)');
   const ambientAnimations = await root.evaluate((node) => node.getAnimations({ subtree: true }).filter((animation) => {
     const iterations = animation.effect?.getTiming().iterations;
     return animation.playState === 'running' && iterations === Infinity;
