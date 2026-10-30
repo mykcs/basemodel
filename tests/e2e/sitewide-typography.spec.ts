@@ -1114,8 +1114,8 @@ const obsoleteFlowWitness = (row: ScopedMigrationWitness) => row.route === flowR
 );
 const currentFlowWitnesses: ScopedMigrationWitness[] = [
   {file:'src/components/research/SeedOpenEvoResearchHub.astro',selector:'.mission-section__heading h2',route:flowRoute,text:'01 SEED × OpenEVO 两阶段学习范式',minimum:21,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null,faceOwner:'system-sans'},
-  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-stage__header h3',route:flowRoute,text:'学习信号与能力初始化',minimum:18,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null},
-  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__action',route:flowRoute,text:'Qwen 自主采集 WebShop 任务轨迹',minimum:14,role:'method',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-stage__header h4',route:flowRoute,text:'外部经验引导的能力初始化',minimum:18,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__action',route:flowRoute,text:'采集 WebShop 任务轨迹',minimum:14,role:'method',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__boundary',route:flowRoute,text:'本阶段不再调用 Stage 1 的外部高能力教师模型 API。',minimum:12,role:'boundary',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoMissionHero.astro',selector:'.mission-hero.mission-hero--compact .mission-hero__lede',route:flowRoute,text:'两套方法都先借助外部高能力教师',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null},
 ];
@@ -1159,10 +1159,12 @@ const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=
 for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) {
   const routeWitnesses = scopedMigrationWitnesses.filter(row => row.route === route);
   test('confirmed scoped typography readers '+route, async ({page}, info)=>{
-    // Six viewport/theme passes over 120+ historical witnesses can exceed the
-    // normal 90s total test budget even when individual assertions succeed.
-    // Keep every witness and all six views; extend only the dense-route budget.
-    if (routeWitnesses.length >= 120) test.setTimeout(180_000);
+    // Six viewport/theme passes over a dense page can exceed the normal 90s
+    // budget even when individual assertions succeed. The research-results
+    // reader has many nested disclosures and tables; its exact-head browser
+    // receipt reached the final viewport before timing out. Keep all witnesses
+    // and views, extending only that route and other very dense routes.
+    if (routeWitnesses.length >= 120 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);

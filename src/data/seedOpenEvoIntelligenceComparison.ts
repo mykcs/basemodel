@@ -19,6 +19,8 @@ export interface ComparisonRow {
   axis: BilingualCopy;
   sharedAction: BilingualCopy;
   similarity: 'same-operation' | 'same-role-different-mechanism';
+  /** Label describing this specific relationship, identical for both sides. */
+  relationLabel?: BilingualCopy;
   tone: 'environment' | 'experience' | 'optimization' | 'model' | 'accepted';
   seed: MethodDetail;
   openEvo: MethodDetail;
@@ -37,11 +39,6 @@ export interface ComparisonStage {
 
 const copy = (zh: string, en: string): BilingualCopy => ({ zh, en });
 
-const taskTrajectoryExplanation = copy(
-  '模型在环境里逐步选动作；保存任务、观察、动作和最终结果。每题 8 次尝试，共 180 题。',
-  'The model chooses actions in the environment and records tasks, observations, actions, and outcomes: 180 tasks × 8 attempts each.',
-);
-
 const externalTeacherExplanation = copy(
   '任务结束后才分析已保存轨迹；不在执行任务时替 Qwen 选动作。',
   'Reviews the saved trajectory after the task ends; it does not choose actions for Qwen during the task.',
@@ -56,24 +53,25 @@ export const seedOpenEvoIntelligenceComparison: ComparisonStage[] = [
   {
     id: 'stage-1',
     number: '01',
-    name: copy('学习信号与能力初始化', 'Learning signals and capability initialization'),
-    promise: copy('先完成任务，再借助外部教师把完整经历变成可学习的经验，训练出下一阶段的起点。', 'Complete tasks, then use an external teacher to turn full episodes into learnable experience and train the starting state for Stage 2.'),
+    name: copy('外部经验引导的能力初始化', 'Capability initialization guided by external experience'),
+    promise: copy('先让模型做题，再请更强的外部教师总结经验，最后把经验转化为初始能力。', 'First let the model attempt tasks, then ask an external teacher to analyze the experience and turn it into an initial capability.'),
     result: copy('产物：经过初始参数训练的模型或适配器，以及可追溯的轨迹与学习信号。', 'Output: initially trained model parameters or adapters, plus traceable trajectories and learning signals.'),
     rows: [
       {
         id: 'initial-collection',
         axis: copy('采集任务轨迹', 'Collect task trajectories'),
-        sharedAction: copy('Qwen 自主采集 WebShop 任务轨迹', 'Qwen independently collects WebShop task trajectories'),
+        sharedAction: copy('采集 WebShop 任务轨迹', 'Collect WebShop task trajectories'),
         similarity: 'same-operation',
         tone: 'environment',
-        seed: { explanation: taskTrajectoryExplanation },
-        openEvo: { explanation: taskTrajectoryExplanation },
+        seed: { explanation: copy('Qwen 在 WebShop 中执行任务；论文默认规模为 180 道任务 × 8 次采样。', 'Qwen runs tasks in WebShop; the paper uses 180 tasks × 8 samples by default.') },
+        openEvo: { explanation: copy('Qwen 在 WebShop 中执行任务；Ceiling-1.0 对应阶段也是 180 道任务 × 8 次采样。', 'Qwen runs tasks in WebShop; the corresponding Ceiling-1.0 phase also uses 180 tasks × 8 samples.') },
       },
       {
         id: 'external-teacher',
         axis: copy('引入外部教师', 'Use an external teacher'),
-        sharedAction: copy('外部高能力教师模型 API', 'External high-capability teacher-model API'),
+        sharedAction: copy('调用外部高能力教师模型 API', 'Call an external high-capability teacher-model API'),
         similarity: 'same-operation',
+        relationLabel: copy('共同角色，模型不同', 'Same role, different models'),
         tone: 'experience',
         seed: {
           replaceableTeacher: copy('（GLM-5.2）', ' (GLM-5.2)'),
@@ -114,23 +112,37 @@ export const seedOpenEvoIntelligenceComparison: ComparisonStage[] = [
           explanation: copy('用冻结的轨迹与教师分析进行初始参数适配；此步发生在 Stage 2 持续演化之前。', 'Adapt initial parameters with sealed trajectories and teacher analysis, before Stage-2 continual evolution begins.'),
         },
       },
+      {
+        id: 'initial-state',
+        axis: copy('进入持续演化的起点', 'Starting state for continual evolution'),
+        sharedAction: copy('形成 Stage 2 的初始状态', 'Form the initial state for Stage 2'),
+        similarity: 'same-role-different-mechanism',
+        relationLabel: copy('初始状态不同', 'Different initial states'),
+        tone: 'accepted',
+        seed: {
+          explanation: copy('主要得到一个既能执行任务、又能分析轨迹的策略模型。', 'The main output is a policy model that can both act and analyze trajectories.'),
+        },
+        openEvo: {
+          explanation: copy('得到带有 OPSD 参数更新及 Text Memory、Skill Bundle、Agent System 的初始 Agent 状态。', 'The initial agent state includes OPSD parameter updates and Text Memory, Skill Bundle, and Agent System.'),
+        },
+      },
     ],
   },
   {
     id: 'stage-2',
     number: '02',
     name: copy('内部反馈驱动的持续演化', 'Continual evolution from internal feedback'),
-    promise: copy('从新的任务结果里反复生成学习信号、更新可持续状态，再用更新后的系统做下一轮任务。', 'Repeatedly derive learning signals from new outcomes, update persistent state, and use that state for the next round.'),
+    promise: copy('不再为每轮经验分析调用 Stage 1 的外部大模型 API，转而利用新轨迹和当前系统自身的能力反复改进。', 'Stop calling the Stage-1 external model API for each new episode; use fresh trajectories and the current system to improve repeatedly.'),
     result: copy('产物：供下一轮使用的参数状态；OpenEVO 还可以保存经过准入的非参数经验状态。', 'Output: parameter state for the next round; OpenEVO can additionally retain admitted non-parametric experience.'),
     rows: [
       {
         id: 'online-collection',
         axis: copy('采集新任务轨迹', 'Collect new task trajectories'),
-        sharedAction: copy('当前策略自主采集新的 WebShop 任务轨迹', 'The current policy independently collects new WebShop trajectories'),
+        sharedAction: copy('采集新的 WebShop 任务轨迹', 'Collect new WebShop task trajectories'),
         similarity: 'same-operation',
         tone: 'environment',
-        seed: { explanation: copy('用本轮策略做新任务，记录动作与结果；模型更新后才进入后续采样。', 'Run new tasks with the current policy, record actions and results, and sample later rounds after policy updates.') },
-        openEvo: { explanation: copy('用本轮参数与已采用的经验状态做新任务，记录动作与结果。', 'Run new tasks with the current parameters and admitted experience state, recording actions and results.') },
+        seed: { explanation: copy('由当前策略执行任务，采集它自己实际产生的新轨迹。', 'The current policy executes tasks and collects trajectories from its own actions.') },
+        openEvo: { explanation: copy('由当前策略执行任务，采集它自己实际产生的新轨迹。', 'The current policy executes tasks and collects trajectories from its own actions.') },
       },
       {
         id: 'online-signal',

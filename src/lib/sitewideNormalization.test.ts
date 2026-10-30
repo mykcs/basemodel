@@ -181,10 +181,10 @@ describe('sitewide normalization first repair batch', () => {
     expect(legacyStage2Journey).not.toContain("content:'→'");
     expect(legacyStage2Journey).not.toContain('grid-template-columns:repeat(2,minmax(0,1fr))}.legacy-journey__timeline');
 
-    expect(trainingDesign).toContain('.intelligence-stage--stage-1::after');
-    expect(trainingDesign).toContain('.intelligence-stage--stage-1::before');
-    expect(trainingDesign).toContain('@container reading-overview (max-width:650px)');
-    expect(trainingDesign).toContain('.intelligence-row__pair,.intelligence-columns{grid-template-columns:1fr}');
+    expect(trainingDesign).toContain('.intelligence-stage-stack{display:grid;gap:1.5rem');
+    expect(trainingDesign).toContain('.intelligence-stage{min-width:0;padding:');
+    expect(trainingDesign).toContain('@media(max-width:720px){');
+    expect(trainingDesign).toContain('.intelligence-row__pair{grid-template-columns:1fr');
     expect(trainingDesign).not.toContain('responsibility-flow');
 
     expect(experimentSelector).toContain('@media(max-width:980px){.experiment-selector__flow{grid-template-columns:1fr}');
