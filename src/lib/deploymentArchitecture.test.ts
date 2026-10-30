@@ -7,7 +7,7 @@ const readText = (relativePath: string): string => readFileSync(new URL(relative
 const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePath)) as T;
 
 const allowedWorkflowFiles = [
-  'cloud-figure-visual-review.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
+  'cloud-figure-visual-review.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
 ];
 const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
 const assertCloudFigureSafety = (source: string) => {

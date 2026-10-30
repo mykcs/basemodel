@@ -43,40 +43,36 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   const retrospective = route === '/research/seed-openevo/recent-challenges/'
     && await target.evaluate(el => Boolean(el.closest('[data-research-retrospective]')));
   if (retrospective) {
-    // Section identity keeps an inserted discussion table from shifting the
-    // immutable numeric fixtures onto a different table.
+    // Keep numeric receipts bound to their evidence sections while checking
+    // both newly added editorial tables by identity and content.
     const identity = await target.evaluate(el => {
-      const scope = document.querySelector('[data-research-retrospective]')!;
-      const numericTables = [...scope.querySelectorAll('#findings table, #history table')];
-      return {
-        advisor: Boolean(el.closest('#advisor')),
-        questions: Boolean(el.closest('#questions')),
-        numericIndex: numericTables.indexOf(el),
-        numericCount: numericTables.length,
-        advisorCount: scope.querySelectorAll('#advisor table').length,
-        questionCount: scope.querySelectorAll('#questions table').length,
-        tableCount: scope.querySelectorAll('table').length,
-      };
+      const root = el.closest('[data-research-retrospective]')!;
+      const numericTables = [...root.querySelectorAll('#findings table, #history table')];
+      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
+      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
+      return { kind: 'numeric', numericIndex: numericTables.indexOf(el), numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
     });
     expect(identity.numericCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
-    expect(identity.advisorCount).toBe(1);
-    expect(identity.questionCount).toBe(1);
-    expect(identity.tableCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length + 2);
-    if (identity.advisor) {
-      expect(await target.locator('thead th').allTextContents()).toEqual(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
-      expect(await target.locator('tbody th').allTextContents()).toEqual(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
-      await expect(target.locator('tbody tr')).toHaveCount(4);
-      await expect(target).toContainText('必须分开正式确认');
-      await expect(target).toContainText('现有转写不构成录取承诺');
-    } else if (identity.numericIndex >= 0) {
-      expect(cellTexts, 'retrospective source-bound numeric table '+identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
-    } else {
-      expect(identity.questions, 'only the declared evidence tables, discussion table and question map are allowed').toBe(true);
+    expect(identity.totalTables).toBe(RETROSPECTIVE_NUMERIC_CELLS.length + 2);
+    if (identity.kind === 'numeric') {
+      expect(identity.numericIndex, 'only declared numeric evidence sections are allowed').toBeGreaterThanOrEqual(0);
+      expect(cellTexts, 'retrospective source-bound numeric table ' + identity.numericIndex).toEqual(RETROSPECTIVE_NUMERIC_CELLS[identity.numericIndex]);
+    } else if (identity.kind === 'questions') {
       expect(await target.locator('tbody th').allTextContents()).toEqual(RETROSPECTIVE_QUESTION_LABELS);
       await expect(target.locator('tbody tr')).toHaveCount(10);
       for (const row of await target.locator('tbody tr').all()) {
         await expect(row.locator('td')).not.toHaveText('');
         await expect(row.locator('a')).toHaveCount(1);
+      }
+    } else {
+      await expect(target.locator('thead th')).toHaveText(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
+      await expect(target.locator('tbody th')).toHaveText(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
+      await expect(target.locator('tbody tr')).toHaveCount(4);
+      await expect(target).toContainText('必须分开正式确认');
+      await expect(target).toContainText('现有转写不构成录取承诺');
+      for (const row of await target.locator('tbody tr').all()) {
+        await expect(row.locator('td')).toHaveCount(2);
+        for (const cell of await row.locator('td').all()) await expect(cell).not.toHaveText('');
       }
     }
   } else if (freshQ01) {
@@ -183,6 +179,13 @@ for (const route of routes) {
       expect(overflow).toBeLessThanOrEqual(2);
       const nativeTables = page.locator('table');
       if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
+      if (route === '/research/seed-openevo/recent-challenges/') {
+        await expect(nativeTables).toHaveCount(7);
+        await expect(page.locator('#advisor table')).toHaveCount(1);
+        await expect(page.locator('#findings table')).toHaveCount(4);
+        await expect(page.locator('#history table')).toHaveCount(1);
+        await expect(page.locator('#questions table')).toHaveCount(1);
+      }
       for (let index = 0; index < await nativeTables.count(); index++) {
         const target = nativeTables.nth(index);
         if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
