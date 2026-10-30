@@ -10,6 +10,21 @@
 - **保留退路**：Cloudflare 上线也不删除 Vercel 项目、不解除 Vercel Authentication、不删除原域名。
 - **真正的统一网址切换**：只有使用一个自己控制 DNS 的域名才能实现“不换链接就换后台”。当前项目仅验证到 `basemodel-preview.vercel.app`，还没有可以操作的自有域名，故不能声称一键切换同一个网址。
 
+## 快速切换操作卡（当前只有两个不同的登录网址）
+
+2026-10-30 的实际控制目标：**当一个站点不可用时，让已授权的读者尽快使用另一条已验证的链接继续阅读；保留原站和回退能力。** 这不是零停机、同一域名自动切流的 SLA。负责人先查 GitHub、Vercel、Cloudflare 的实时发布状态，不凭本文件的历史 SHA 假设两边已同步。
+
+| 想做什么 | 最短安全路径 | 硬性验收 |
+| --- | --- | --- |
+| **继续使用现行正式站** | 访问 `https://basemodel-preview.vercel.app/`；保持 Vercel Authentication | 登录用户能看首页、研究主路径、JSON/静态资源；匿名用户不能直接看到页面 |
+| **启用 Cloudflare 备用链接** | 若已部署的备用 SHA 与要展示的版本相同且 Access/内容复验通过，可直接向指定读者提供下方备用 URL，**无需重新构建**。版本过旧则手动运行 `Protected Cloudflare Standby (manual)` → `plan`、核验后 → `deploy` | 先读回 `main`、两端真实部署 SHA，部署时 Access 前后无 Cookie 4 路径 PASS；有权限的浏览器再检查首页、科研页、旧路由、JSON、SVG、手机视口 |
+| **从 Cloudflare 回切 Vercel** | 将给读者的入口链接重新指向仍受保护的 `https://basemodel-preview.vercel.app/`，不删除 Cloudflare、也不关闭任一登录门 | Vercel 正式别名 READY 且真实登录页正常；登记回切时间、原因和当前版本 |
+| **未来想同一网址切服务商** | 先取得可控的自有域名，再独立设计绑定、TLS、两个平台身份认证、DNS/路由切换、缓存 TTL 和回滚；现阶段**未实施** | 切流前后登录门、资源地址、重定向、版本和域名验证都通过；不能声称 DNS 无传播延迟 |
+
+当前备用 URL：`https://basemodel-access-standby.gemini202405.workers.dev/`（生产 Worker，已加 Access）；现行正式 URL：`https://basemodel-preview.vercel.app/`（Vercel Authentication）。**只切给读者的入口链接，并不会自动同步两个服务商的内容。** 一个平台失效不能成为关闭另一平台登录门的理由。旧 `pages.dev` 或 shadow 等历史地址不在这张受保护入口清单，必须另行排查公开历史副本。
+
+**值班者的四项读回证据：** ① 精确 Git commit SHA 和平台部署版本；② 匿名登录门（包括资源文件）拒绝/跳转；③ 已授权浏览器核心路由与手机视口；④ 入口链接、决定人、切换时刻、异常与回退记录。缺一项不得向他人声称双平台等价或成功切流。GitHub Actions 的公开仓库免费标准 Runner 用于 CI，不能把这张卡当作增加 Vercel 自动部署、修改仓库可见性或自动购买套餐的批准。
+
 ## 已实现的仓库端开关
 
 | 入口 | 动作 | 是否发布 | 是否修改正式网站 |
