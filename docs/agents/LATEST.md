@@ -8,7 +8,7 @@
 
 The owner-requested reorganization gives the Home, Study, research-topic directory and existing search distinct roles. The previous exact head passed Public CI (1,040 browser tests) and the complete Chromium/WebKit visual review (1,039 first-attempt tests per browser); scientific pages, evidence and public URLs remain intact.
 
-Status: the earlier preview candidate is based on `9982005b`; main has since advanced through #966. The owner approved publication on 2026-10-30. PR #817 is being refreshed and must pass current-base exact-head checks before merge. No Production deployment is claimed in this handoff.
+Status: current main advanced through #969 (`c9c5052f`) after #966. The prior refreshed head `c6adc11e` was superseded while exact-head checks were running; those partial checks are not merge evidence. The owner approved publication on 2026-10-30. PR #817 is refreshed again and must pass new current-base Public, Vercel and Figure acceptance before merge. No Production deployment is claimed.
 
 ## 2026-10-29 CI performance qualification
 
