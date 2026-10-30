@@ -1,4 +1,4 @@
-// Artifact integrity and native Playwright shard coverage. This is not a visual verdict.
+// Artifact integrity and complete Playwright shard coverage. This is not a visual verdict.
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, lstatSync } from 'node:fs';
 import { join, resolve, relative, isAbsolute } from 'node:path';
@@ -21,7 +21,7 @@ export function population(report, executed = false) {
   const rows = [];
   const visit = suite => {
     for (const spec of suite.specs ?? []) for (const test of spec.tests ?? []) {
-      if (executed && (test.status !== 'expected' || test.expectedStatus !== 'passed' || test.results?.length !== 1 || test.results[0].status !== 'passed'))
+      if (executed && (test.status !== 'expected' || test.expectedStatus !== 'passed' || test.results?.length !== 1 || test.results[0].status !== 'passed' || (test.results[0].retry ?? 0) !== 0))
         fail(`Not a clean first-attempt pass: ${spec.title}`);
       rows.push(JSON.stringify([spec.file, spec.line, spec.column, spec.title, test.projectName]));
     }
@@ -37,9 +37,42 @@ export function verifyCoverage(expected, shards) {
   if (new Set(union).size !== union.length) fail('Duplicate executed test across shards');
   if (JSON.stringify([...union].sort()) !== JSON.stringify([...expected].sort())) fail('Missing or unexpected executed tests');
 }
+export function resolveFigureShardTotal(env = process.env) {
+  // Retained four-shard receipts remain valid without a new environment field.
+  // New topologies must supply their total to every producer and verifier.
+  const raw = env.FIGURE_SHARD_TOTAL ?? '4';
+  const total = Number(raw);
+  if (typeof raw !== 'string' || !/^[1-9][0-9]*$/.test(raw) || !Number.isSafeInteger(total) || total > 16)
+    fail('FIGURE_SHARD_TOTAL must be an integer in [1,16]');
+  return total;
+}
 const identity = (item, sha, browser) => {
   if (!/^[a-f0-9]{40}$/.test(sha ?? '') || !['chromium','webkit'].includes(browser) || item.sha !== sha || item.browser !== browser) fail('Wrong evidence identity');
 };
+function resolveBaselineRequirement(env) {
+  const value = env.FIGURE_REQUIRE_BASELINE;
+  if (value !== undefined && value !== '0' && value !== '1') fail('FIGURE_REQUIRE_BASELINE must be 0 or 1');
+  return value === '1';
+}
+function baselineContract(manifest) {
+  if (manifest.baselineRequired !== undefined && typeof manifest.baselineRequired !== 'boolean') fail('Invalid baseline requirement');
+  return manifest.baselineRequired === true;
+}
+export function verifyBaselineEvidence(item, sha, browser) {
+  identity(item,sha,browser);
+  if (typeof item.route !== 'string' || !item.route.startsWith('/') || !Array.isArray(item.baseline) || item.baseline.length !== 2)
+    fail('Missing two default-reading baseline records');
+  const widths = new Set();
+  for (const row of item.baseline) {
+    if (!row || ![390,1440].includes(row.width) || widths.has(row.width) || row.theme !== 'light' ||
+        row.state !== 'default-before-evidence-capture' || row.assertionStatus !== 'PASS' || row.defaultStatePreserved !== true ||
+        !Number.isFinite(row.documentOverflowX) || row.documentOverflowX > 2 ||
+        !Number.isSafeInteger(row.paperTablesChecked) || row.paperTablesChecked < 0)
+      fail('Invalid or unproven default-reading baseline');
+    widths.add(row.width);
+  }
+  return item.route;
+}
 function entries(root, paths) {
   return paths.map(path => {
     const data = readFileSync(safe(root, path));
@@ -88,32 +121,46 @@ export function verifyScientificEvidence(root, paths, sha, browser) {
 export function run(mode, root, output, env = process.env) {
   const sha = env.FIGURE_SOURCE_SHA, browser = env.FIGURE_BROWSER;
   identity({ sha, browser }, sha, browser);
+  const total = resolveFigureShardTotal(env);
+  const requireBaseline = resolveBaselineRequirement(env);
   if (mode === 'shard') {
     const shard = Number(env.FIGURE_SHARD);
-    if (![1,2,3,4].includes(shard)) fail('Invalid shard');
+    if (typeof env.FIGURE_SHARD !== 'string' || !/^[1-9][0-9]*$/.test(env.FIGURE_SHARD) || !Number.isSafeInteger(shard) || shard > total) fail('Invalid shard');
     const expected = population(json(join(root,'figure-inventory/expected-playwright.json')));
     const executed = population(json(join(root,'figure-inventory/playwright-run.json')), true);
     if (executed.some(id => !expected.includes(id))) fail('Shard contains unknown tests');
     const paths = [...walk(join(root,'test-results')), ...walk(join(root,'figure-inventory'))]
       .map(path => relative(root,path)).filter(path => !path.split(/[\\/]/).some(part => part.startsWith('.'))).filter(path => /\.(png|json|zip|webm|md)$/.test(path) && !path.endsWith('evidence-manifest.json'));
-    const manifest = { sha,browser,shard,total:4,expected,executed,entries:entries(root,paths) };
+    if (requireBaseline) for (const path of paths.filter(path => path.endsWith('sitewide-figure-table.json')))
+      verifyBaselineEvidence(json(safe(root,path)),sha,browser);
+    const manifest = { sha,browser,shard,total,baselineRequired:requireBaseline,expected,executed,entries:entries(root,paths) };
     writeFileSync(join(root,'figure-inventory/evidence-manifest.json'),JSON.stringify(manifest,null,2));
     return;
   }
   if (mode === 'roundtrip') {
     const manifest = json(join(root,'evidence-manifest.json'));
+    if (manifest.shards !== total) fail('Wrong aggregate shard total');
+    if (requireBaseline && !baselineContract(manifest)) fail('Missing required baseline contract');
     verifyManifest(root,manifest,sha,browser);
+    if (baselineContract(manifest)) {
+      const routes = manifest.entries.filter(entry => entry.path.endsWith('sitewide-figure-table.json'))
+        .map(entry => verifyBaselineEvidence(json(safe(root,entry.path)),sha,browser)).sort();
+      if (!routes.length || new Set(routes).size !== routes.length || !Array.isArray(manifest.baselineRoutes) ||
+          JSON.stringify(routes) !== JSON.stringify(manifest.baselineRoutes)) fail('Downloaded baseline route coverage differs');
+    }
     console.log(`Verified ${manifest.entries.length} downloaded files for ${sha} ${browser}; ${manifest.tests} tests`);
     return;
   }
   if (mode !== 'aggregate' || !output) fail('Expected shard, aggregate or roundtrip');
   const directories = readdirSync(root,{withFileTypes:true});
-  if (directories.length !== 4 || directories.some(entry => !entry.isDirectory())) fail('Require all four shard artifacts');
+  if (directories.length !== total || directories.some(entry => !entry.isDirectory())) fail(`Require all ${total} shard artifacts`);
   const manifests = [], allPaths = [], inventories = [], routeEvidence = [], seenShards = new Set();
   for (const dir of directories) {
     const source = join(root,dir.name), manifest = json(join(source,'figure-inventory/evidence-manifest.json'));
     verifyManifest(source,manifest,sha,browser);
-    if (manifest.total !== 4 || ![1,2,3,4].includes(manifest.shard) || seenShards.has(manifest.shard)) fail('Duplicate or invalid shard');
+    if (requireBaseline && !baselineContract(manifest)) fail('Missing required baseline producer contract');
+    if (manifests.length && baselineContract(manifest) !== baselineContract(manifests[0])) fail('Baseline contract differs across shards');
+    if (manifest.total !== total || !Number.isSafeInteger(manifest.shard) || manifest.shard < 1 || manifest.shard > total || seenShards.has(manifest.shard)) fail('Duplicate or invalid shard total/index');
     seenShards.add(manifest.shard);
     const expected = population(json(join(source,'figure-inventory/expected-playwright.json')));
     const executed = population(json(join(source,'figure-inventory/playwright-run.json')),true);
@@ -138,13 +185,18 @@ export function run(mode, root, output, env = process.env) {
   const expectedRoutes = inventory.routes.filter(item => item.figures.length || item.tables || item.nonfigure_svgs.length).map(item => item.route).sort();
   const actualRoutes = routeEvidence.map(({item}) => item.route).sort();
   if (JSON.stringify(actualRoutes) !== JSON.stringify(expectedRoutes)) fail('Incomplete per-route visual evidence');
+  const baselineRequired = requireBaseline || baselineContract(manifests[0]);
+  if (baselineRequired && !expectedRoutes.length) fail('Missing required baseline routes');
   for (const {item,prefix} of routeEvidence) {
+    if (baselineRequired) verifyBaselineEvidence(item,sha,browser);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       if (!item.evidence.some(row => row.width===width && row.theme===theme && Array.isArray(row.tables))) fail('Missing viewport/theme measurement');
     }
     for (const row of item.evidence) if (row.visible && row.png && !allPaths.includes(`${prefix}/${row.png}`)) fail('Missing declared figure PNG');
   }
-  const manifest = {sha,browser,tests:manifests[0].expected.length,shards:4,visualStatus:'NEEDS_VISUAL_REVIEW',readerStatus:'NEEDS_READER',entries:entries(output,allPaths)};
+  const manifest = {sha,browser,tests:manifests[0].expected.length,shards:total,baselineRequired,
+    ...(baselineRequired ? {baselineRoutes:expectedRoutes} : {}),
+    visualStatus:'NEEDS_VISUAL_REVIEW',readerStatus:'NEEDS_READER',entries:entries(output,allPaths)};
   writeFileSync(join(output,'evidence-manifest.json'),JSON.stringify(manifest,null,2));
   console.log(`Complete ${browser}: ${manifest.tests} first-attempt tests; ${manifest.entries.length} evidence files`);
 }

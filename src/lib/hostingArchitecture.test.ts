@@ -60,9 +60,9 @@ describe('hosting architecture ownership', () => {
     expect(architecture).toContain('Vercel owns required **provider build/deploy acceptance**');
     expect(publicPrWorkflow).toContain('pull_request:');
     expect(publicPrWorkflow).toContain('name: public-plan');
-    expect(publicPrWorkflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
-    expect(publicPrWorkflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
-    expect(publicPrWorkflow).toContain('CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}');
+    expect(publicPrWorkflow).toContain("CI_UNIFIED_BROWSER: '1'");
+    expect(publicPrWorkflow).toContain('include: ${{ fromJSON(needs.plan.outputs.matrix_json) }}');
+    expect(publicPrWorkflow).toContain('FIGURE_SHARD_TOTAL: ${{ matrix.total }}');
     expect(publicPrWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(reviewPreviewWorkflow).toContain('name: Fast Review Preview');
     expect(reviewPreviewWorkflow).toContain('name: review-preflight');

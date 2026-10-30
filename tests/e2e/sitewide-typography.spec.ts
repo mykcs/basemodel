@@ -1164,7 +1164,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
     // reader has many nested disclosures and tables; its exact-head browser
     // receipt reached the final viewport before timing out. Keep all witnesses
     // and views, extending only that route and other very dense routes.
-    if (routeWitnesses.length >= 120 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
+    if (routeWitnesses.length >= 70 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
