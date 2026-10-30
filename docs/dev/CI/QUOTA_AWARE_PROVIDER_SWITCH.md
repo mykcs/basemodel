@@ -1,12 +1,12 @@
 # BaseModel 配额感知双服务商：固定 CI、可切换发布与回退
 
-状态：**双服务商源码合同已形成；实际切换以线上门禁与生产验收为准。** 本文件记录 2026-10-30 用户新增的工程愿望、已实现的候选代码和必须按顺序完成的现场手续。活跃状态以 GitHub 的 `main` ruleset、Actions、Cloudflare Access、Vercel 和真实登录浏览器为准。PR #975 通过前，旧 Vercel 必需检查仍可能生效；不能根据本文件宣称线上控制面已完成迁移。
+状态：**GitHub 双重门禁已切换到 Cloudflare-first；实际网页版本以受保护 Worker 的已发布 SHA 和登录验收为准。** 2026-10-30 [PR #975](https://github.com/mykcs/basemodel/pull/975) 合并为 `6f60ff67007021ab7025e5d7ff6c111e07a60f36`。现场发现 GitHub 同时有规则集与旧式分支保护，已分别把 `Vercel` App 8329 替换为 `cloudflare-artifact-gate` App 15368，均继续严格要求 `public-ci-gate` App 15368。每次最新 `main` 仍须独立发布并登录验收。
 
 ## 愿望（WHY）
 
 当 Vercel Hobby 的每日部署次数、Cloudflare 的 Worker/构建额度或某家的故障阻碍开发时，**可在两个服务商之间快速选一个工作**，不依赖 Mac 长期开机，不为同一 PR 反复部署，不牺牲测试、隐私或回退。默认优先 Cloudflare，Vercel 保留可用的兜底发布能力。这是“按配额与健康状况选择发布商”，**不是**把两家的免费额度叠成一个无限池，也不是在服务商故障时开放匿名访问。
 
-## 目标拓扑（全部完成迁移后才生效）
+## 当前目标拓扑（合并控制面已切换；每次网站发布单独验收）
 
 ```text
 PR exact HEAD
@@ -21,7 +21,7 @@ PR exact HEAD
 用户入口：Cloudflare Access URL ⇄ Vercel Authentication URL（目前只能换链接）
 ```
 
-与旧架构的区别：**Vercel 必需 `Vercel` PR 检查在 Cloudflare 通道通过完整资格认证后从 ruleset 替换出去；它不再耗费每个最终 PR 的 Hobby 部署额度。** Vercel 平台和现有登录门保留，不在普通 PR 中自动构建。两边的发布端都有自己的实际登录验收，不能用 Wrangler `--dry-run` 冒充真正发布成功。
+与旧架构的区别：**Vercel 必需 `Vercel` PR 检查在 Cloudflare 通道通过完整资格认证后从规则集和旧式分支保护都替换出去；它不再耗费每个最终 PR 的 Hobby 部署额度。** Vercel 平台和现有登录门保留，不在普通 PR 中自动构建。两边的发布端都有自己的实际登录验收，不能用 Wrangler `--dry-run` 冒充真正发布成功。
 
 源码同时把 `vercel.json` 的 `git.deploymentEnabled.main` 置为 `false`，从源头停止普通合并后自动触发 Vercel；`ci/vercel-gate-final` 保留为**可选**的手动 Vercel Provider 验证入口。生产身份检查不再在每次 `main` push 时比较 Cloudflare 新 SHA 和故意停留在旧版本的 Vercel 回退站，只在 Vercel 部署状态或显式手动检查时触发。此配置不会删除现有 Vercel Production、DNS 或认证。
 
@@ -43,8 +43,8 @@ Cloudflare 候选门使用 `pull_request` + `contents:read` + 无 secrets，禁�
 
 1. 将候选 PR 与现行 `main` 同步到 exact HEAD；让 `public-ci-gate` 和 `cloudflare-artifact-gate` 在真实 GitHub Actions 完整 PASS，并确认新检查所属 GitHub Actions App ID 与现行 required context 的来源一致。任何 `skipped`、失败、stale head 都不算成功。
 2. 用当前已授权、**受 Cloudflare Access 保护**的 `basemodel-access-standby` 进行候选工作流的 `main` 受保护发布，不允许把未经合并的 PR 上传现有备用 Worker，也不能先创建公开 preview。读回执行 SHA、部署状态、匿名多路径登录挑战、Access 策略和有权限浏览器真实页面/交互。
-3. 再次读取 GitHub `main-pr-gate` 规则集（ID `22224550`），**一次原子更新**只替换 `Vercel` (App 8329) 为 `cloudflare-artifact-gate` (GitHub Actions App 15368)；保留 `public-ci-gate`、strict、PR/review/其他规则和 no-bypass。修改前备份原始规则 JSON 与可恢复操作。若 API 无管理权限，则停在当前 Vercel 门，不能借助其他路径绕过真实权限拒绝。
-4. 用一个新鲜、与最新 `main` 对齐的真实 PR 验证两个必需 GitHub Actions 检查在新的 ruleset 下都产生 PASS、Vercel 失败/缺失**不会**阻塞合并；再读回 ruleset 确认；执行一次正常合并并用 Cloudflare 受保护流程部署 exact merged SHA。
+3. 分别读取 GitHub `main-pr-gate` 规则集（ID `22224550`）**以及** `branches/main/protection/required_status_checks` 旧式分支保护。两套门禁都可能独立要求 Vercel。先备份各自原始配置，再分别只将 `Vercel` (App 8329) 替换为 `cloudflare-artifact-gate` (GitHub Actions App 15368)，保留 `public-ci-gate`、strict、PR/review、其他规则和 no-bypass；两处各自 GET/readback。任何一处仍要求 Vercel 都不能宣称切换完成；实际 API 拒绝时停止该操作。
+4. 用一个新鲜、与最新 `main` 对齐的真实 PR 验证两个必需 GitHub Actions 检查在两套新保护规则下都产生 PASS、Vercel 失败/缺失**不会**阻塞合并；再读回 ruleset 确认；执行一次正常合并并用 Cloudflare 受保护流程部署 exact merged SHA。
 5. 通过生产登录的首页、`/research/seed-openevo/flow/`、结果页、旧路径重定向、JSON、SVG、iPhone 18 Pro Max 交互与匿名拒绝检查。将 Cloudflare 设为日常读者入口；再评估是否关闭 Vercel `main` 的**自动** Git 发布以节省额度。**必须先证明已有独立 Vercel 手动恢复发布办法可行**；不删除 Vercel 项目、授权或旧站。
 
 其中第 2、4、5 步需要真实线上证据，不得把 `plan`、PR 已创建、静态构建或匿名 302 单独写成“迁移完成”。每次改 GitHub control plane 都先读回有无其他窗口已经修改，避免覆盖并行操作者。
