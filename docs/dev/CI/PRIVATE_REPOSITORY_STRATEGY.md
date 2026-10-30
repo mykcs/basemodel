@@ -2,7 +2,7 @@
 
 状态：**迁移提案／待验证**，官方限额于 2026-10-30 复核。此文属于 BaseModel 的 `docs/dev/` 决策说明，不代替 `docs/agents/current/hosting-architecture.md` 的**当前**执行架构、仓库脚本、GitHub 必需检查和 Vercel 实时配置。**本提案不自动改变仓库可见性、CI、账单或站点访问权限。**
 
-**实时补充（2026-10-30）：** 仓库仍为 Public；Vercel 当前链接团队为 Hobby。PR #967 的准确候选收到 `Deployment rate limited — retry in 24 hours`，所以最终 Vercel 检查暂时未能运行。最近 24 小时的部署列表有 149 条记录，但列表包含被忽略而取消的部署对象，不是权威配额计数；Vercel 未向当前只读工具提供准确剩余额度。仓库的 `vercel.json` 已在创建部署前关闭普通分支，只开放 `main` 与共享 `ci/vercel-gate-final`；忽略构建规则继续作为第二层保护。不要反复请求最终 gate。
+**实时补充（2026-10-30）：** 仓库仍为 Public；Vercel 当前链接团队为 Hobby。PR #967 的准确候选曾收到 `Deployment rate limited — retry in 24 hours`；但 11:42 UTC 另一候选的共享最终 gate 已达到 READY，说明该失败不是当前持续限额的证据。部署列表有 149 条近 24 小时记录，但包含被忽略而取消的部署对象，不能当作权威配额计数；当前只读工具未提供准确剩余额度。共享 `ci/vercel-gate-final` 目前指向另一候选，必须等它的写入者完成后再请求本 PR 的最终检查。仓库的 `vercel.json` 已在创建部署前关闭普通分支，只开放 `main` 与共享 gate；忽略构建规则继续作为第二层保护。
 
 ## 先说结论
 
