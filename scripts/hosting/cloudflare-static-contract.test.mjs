@@ -13,6 +13,9 @@ test('mirrors every Vercel redirect and keeps 307/308 semantics', () => {
   assert.match(rendered, /^\/research\/seed-openevo\/results\/\* \/research\/seed-openevo\/study\/results\/:splat 308$/m);
   assert.match(rendered, /^\/en\/models\/:id \/models\/:id\/ 307$/m);
   assert.match(rendered, /^\/en\/lab https:\/\/fuhuo-20260419\.vercel\.app\/docs\/machines 308$/m);
+  const dynamicIndex = lines.findIndex((line) => /(?:\*|:[A-Za-z][\w-]*)/.test(line.split(' ')[0]));
+  assert.equal(dynamicIndex, lines.length - 5, 'all static rules must precede five dynamic rules; Cloudflare otherwise exhausts the dynamic-rule budget');
+  assert.equal(lines.slice(dynamicIndex).length, 5);
 });
 
 test('keeps security headers and applies non-indexing across the standby', () => {

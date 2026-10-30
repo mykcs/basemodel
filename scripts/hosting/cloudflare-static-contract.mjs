@@ -20,6 +20,8 @@ export function renderRedirects(config) {
     '# Generated from vercel.json by scripts/hosting/cloudflare-static-contract.mjs.',
     '# Do not manually diverge from the Vercel route contract.',
   ];
+  const staticRules = [];
+  const dynamicRules = [];
   for (const [index, rule] of config.redirects.entries()) {
     const source = assertRuleToken(rule.source, `redirect[${index}].source`);
     const destination = assertRuleToken(rule.destination, `redirect[${index}].destination`);
@@ -35,10 +37,15 @@ export function renderRedirects(config) {
     // Vercel's :path* uses Cloudflare's wildcard :splat capture.
     const cloudSource = source.replace(/:([A-Za-z][\w-]*)\*/g, '*');
     const cloudDestination = destination.replace(/:([A-Za-z][\w-]*)\*/g, ':splat');
-    if (cloudSource.includes(':') || cloudSource.includes('*')) dynamicCount += 1;
-    lines.push(`${cloudSource} ${cloudDestination} ${rule.permanent ? 308 : 307}`);
+    const isDynamic = cloudSource.includes(':') || cloudSource.includes('*');
+    if (isDynamic) dynamicCount += 1;
+    // Cloudflare's parser treats rules after the first dynamic match as part
+    // of the dynamic budget. Emit all exact routes first or it may silently
+    // stop parsing a long Vercel list before the last redirect.
+    (isDynamic ? dynamicRules : staticRules).push(`${cloudSource} ${cloudDestination} ${rule.permanent ? 308 : 307}`);
   }
   if (dynamicCount > 100) throw new Error('Cloudflare dynamic redirect budget exceeded');
+  lines.push(...staticRules, ...dynamicRules);
   return `${lines.join('\n')}\n`;
 }
 
