@@ -1114,8 +1114,8 @@ const obsoleteFlowWitness = (row: ScopedMigrationWitness) => row.route === flowR
 );
 const currentFlowWitnesses: ScopedMigrationWitness[] = [
   {file:'src/components/research/SeedOpenEvoResearchHub.astro',selector:'.mission-section__heading h2',route:flowRoute,text:'01 SEED × OpenEVO 两阶段学习范式',minimum:21,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null,faceOwner:'system-sans'},
-  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-stage__header h3',route:flowRoute,text:'学习信号与能力初始化',minimum:18,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null},
-  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__action',route:flowRoute,text:'Qwen 自主采集 WebShop 任务轨迹',minimum:14,role:'method',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-stage__header h4',route:flowRoute,text:'外部经验引导的能力初始化',minimum:18,role:'heading',minimumVisibleWidth:null,maximumVisibleWidth:null},
+  {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__action',route:flowRoute,text:'采集 WebShop 任务轨迹',minimum:14,role:'method',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoTrainingDesignOverview.astro',selector:'.intelligence-method__boundary',route:flowRoute,text:'本阶段不再调用 Stage 1 的外部高能力教师模型 API。',minimum:12,role:'boundary',minimumVisibleWidth:null,maximumVisibleWidth:null},
   {file:'src/components/research/SeedOpenEvoMissionHero.astro',selector:'.mission-hero.mission-hero--compact .mission-hero__lede',route:flowRoute,text:'两套方法都先借助外部高能力教师',minimum:14,role:'prose',minimumVisibleWidth:null,maximumVisibleWidth:null},
 ];

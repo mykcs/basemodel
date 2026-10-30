@@ -41,7 +41,7 @@ describe("integrated SEED × OpenEvo training design", () => {
 
   it("keeps the Stage-1 operational boundary and parameter protocol visible", () => {
     expect(missionHero).toContain('Qwen2.5-3B-Instruct');
-    for (const term of ['Qwen 自主采集 WebShop 任务轨迹', '外部高能力教师模型 API', '不在执行任务时替 Qwen 选动作', '监督微调（SFT）· 3 轮', '初始参数蒸馏（OPSD）']) {
+    for (const term of ['采集 WebShop 任务轨迹', '调用外部高能力教师模型 API', '不在执行任务时替 Qwen 选动作', '监督微调（SFT）· 3 轮', '初始参数蒸馏（OPSD）', '形成 Stage 2 的初始状态']) {
       expect(comparisonData).toContain(term);
     }
     expect(comparisonData).not.toContain('GLM / Kimi / MiniMax');
@@ -77,7 +77,8 @@ describe("integrated SEED × OpenEvo training design", () => {
       expect(source).not.toContain("border-radius:14px");
     }
     expect(training).toContain("var(--font-mono)");
-    expect(training).toContain("var(--radius-panel)");
+    expect(training).toContain("--iui-edge:#343436");
+    expect(training).toContain("font-size:var(--type-section)");
     expect(nav).toContain("var(--radius-panel)");
     expect(nav).not.toContain("border-radius:var(--radius-feature)");
     expect(disclosure).toContain("var(--radius-control)");

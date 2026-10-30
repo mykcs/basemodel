@@ -165,7 +165,7 @@ for (const matrix of [
     await expect(diagram).toBeVisible();
     await expect(diagram.locator('[data-stage]')).toHaveCount(2);
     const rows = diagram.locator('[data-axis]');
-    await expect(rows).toHaveCount(8);
+    await expect(rows).toHaveCount(9);
 
     const witness = await diagram.evaluate((root) => {
       const issues: string[] = [];
