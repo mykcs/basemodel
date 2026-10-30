@@ -48,6 +48,8 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
     </nav>
     </details>
 
+    <p class="muon-reader-bridge">先分清三层证据：Q07 与 Q17 是真实的历史参数干预；Newton–Schulz 与 top-r SVD 的差异是工程反例；Muon-inspired 的 WebShop 训练与公平能力评估仍是 <strong>NOT RUN</strong>。前两类都不是新方法的成绩。下文先核对实测，再讨论低秩几何和可证伪的后续对照。</p>
+
     <section class="evo-article__section" id="evidence">
       <h2>1 已观察到的更新方向效应</h2>
       <p>OpenEVO 在完成 WebShop 任务后，从经验中训练 SD-LoRA 参数更新。模型能不能完成购物任务，最终仍要看同题 Task Score 和完整成功。更新的大小、谱形状和方向可以帮助解释能力变化，但单靠这些几何数值，还不能代替行为评测。</p>
@@ -215,6 +217,7 @@ const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
 .muon-related a:hover{text-decoration:underline}
 .muon-article .muon-related-disclosure,.muon-article .muon-toc-disclosure{margin:.8rem 0 0}
 .muon-article .muon-related-disclosure>summary,.muon-article .muon-toc-disclosure>summary{cursor:pointer;font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-ink);text-decoration:underline;text-underline-offset:.2em}
+.muon-reader-bridge{margin:1.1rem 0 1.7rem;padding:.85rem 1rem;border-left:3px solid var(--paper-line);background:var(--paper);font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-muted)}
 .muon-article .muon-booktabs{width:100%;min-width:700px}
 .muon-booktabs th:first-child{width:26%}
 .muon-booktabs td{line-height:var(--type-leading-caption)}
