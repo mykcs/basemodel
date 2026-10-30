@@ -10,8 +10,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
 <AppLayout
   title={t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}
   description={t(
-    'BaseModel 当前使用 GitHub、GitHub Actions、Vercel、CircleCI，以及 ChatGPT 的 GitHub 与 Remote Desktop Commander 插件完成开发、CI、发布和恢复。',
-    'How BaseModel uses GitHub, GitHub Actions, Vercel, CircleCI, and ChatGPT with the GitHub and Remote Desktop Commander plugins for development, CI, release, and recovery.',
+    'BaseModel 使用 GitHub Actions 做双重代码验收，优先由 Cloudflare Access 保护的网站发布，Vercel 保留按额度切换的受保护回退。',
+    'BaseModel uses two GitHub Actions acceptance gates, ships normally through a Cloudflare Access-protected site, and preserves Vercel as a quota-aware protected fallback.',
   )}
   locale={locale}
 >
@@ -20,8 +20,8 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <h1>{t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}</h1>
       <p class="lede">
         {t(
-          '我们在 ChatGPT 网页端发起和审阅工作，用 GitHub 管代码；GitHub Actions 负责代码与浏览器验收，Vercel 负责真实供应商构建和受保护的 Production。',
-          'We start and review work in ChatGPT and keep the code in GitHub; GitHub Actions owns repository and browser acceptance, while Vercel owns the real provider build and access-protected Production.',
+          '在 GitHub 保存源码和版本，GitHub Actions 自动做浏览器测试和 Cloudflare 构建检查。合并后按额度选择：默认发布到受 Cloudflare Access 保护的新站；Vercel 旧站继续保留，必要时手动更新。',
+          'GitHub stores the source and history. GitHub Actions automatically tests browsers and validates a Cloudflare build. After merging, we normally ship to the Cloudflare Access-protected site; the existing Vercel site remains available for deliberate fallback.',
         )}
       </p>
     </header>
@@ -32,16 +32,17 @@ const t = (cn: string, en: string) => zh ? cn : en;
         <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
         <li data-role="source"><span>02</span><div><strong>GitHub</strong><small>{t('源码、分支、PR、main', 'source, branches, PRs, main')}</small></div></li>
         <li data-role="accept"><span>03</span><div><strong>GitHub Actions</strong><small>{t('代码 + 浏览器验收', 'repository + browser acceptance')}</small></div></li>
-        <li data-role="provider"><span>04</span><div><strong>Vercel Preview</strong><small>{t('真实供应商构建', 'real provider build')}</small></div></li>
-        <li data-role="ship"><span>05</span><div><strong>Vercel Production</strong><small>{t('main 上线', 'ship main')}</small></div></li>
+        <li data-role="provider"><span>04</span><div><strong>Cloudflare artifact</strong><small>{t('离线检查；不部署', 'offline check; no deploy')}</small></div></li>
+        <li data-role="ship"><span>05</span><div><strong>Cloudflare / Vercel</strong><small>{t('按额度选择发布商', 'choose a release provider')}</small></div></li>
         <li data-role="observe"><span>06</span><div><strong>{t('授权核验', 'Authorized verification')}</strong><small>{t('只通过受保护访问检查 Production', 'inspect Production through protected access only')}</small></div></li>
       </ol>
       <p class="system-boundary">
         {t(
-          '普通 push 只跑公开 GitHub Actions，不会启动 Vercel。真正准备合并时，才在代码与浏览器验收已经通过后再花一次 Vercel 供应商构建。',
-          'Ordinary pushes use public GitHub Actions without starting Vercel. Only a merge-ready candidate that already passed repository and browser acceptance spends one Vercel provider build.',
+          '普通 PR 和 main 合并不再自动部署到 Vercel。两道 GitHub 检查都不使用发布额度；只有明确选择发布 Cloudflare 或 Vercel 时才消耗对应服务商的额度。',
+          'Ordinary PRs and main merges do not auto-deploy to Vercel. Neither GitHub check consumes a provider deployment; only an explicitly selected Cloudflare or Vercel release does.',
         )}
       </p>
+      <p class="system-boundary">{t('两条受保护的入口（版本可能不同）：', 'Two protected destinations (versions may differ):')} <a href="https://basemodel-access-standby.gemini202405.workers.dev/">Cloudflare Access</a> · <a href="https://basemodel-preview.vercel.app/">Vercel Authentication</a></p>
     </section>
 
     <section class="development-handbook" aria-labelledby="development-handbook-title">
@@ -57,10 +58,10 @@ const t = (cn: string, en: string) => zh ? cn : en;
         <article><h3>{t('GitHub 插件', 'GitHub plugin')}</h3><p>{t('让 Agent 直接读写仓库、PR、检查状态和评论。能走 API 的控制面优先走 API，不靠浏览器反复点按钮。', 'It lets the Agent read and write repositories, pull requests, checks, and comments directly. Provider control planes use APIs first instead of repeated browser clicking.')}</p></article>
         <article><h3>Remote Desktop Commander</h3><p>{t('需要真实文件系统、终端、Git、Node、Playwright 或本机 CLI 时，通过授权的电脑执行。它是开发工具；只有主 CI 不可用时，才作为手动恢复路径。', 'When the work needs the real filesystem, terminal, Git, Node, Playwright, or a local CLI, it runs on an authorized computer. It is a development tool and only becomes a manual recovery path when the primary CI is unavailable.')}</p></article>
         <article><h3>GitHub</h3><p>{t('源码的唯一主线。分支、PR、main、required check 和可审计历史都在这里。合并只认当前候选 SHA 的验收结果。', 'The source-of-truth repository. Branches, PRs, main, required checks, and auditable history live here. Merge acceptance belongs to the current candidate SHA.')}</p></article>
-        <article><h3>Vercel</h3><p>{t('负责 BaseModel 的真实供应商构建和正式部署。最终候选先在 GitHub Actions 完成代码与浏览器验收，再让 Vercel 只验证同一个 exact head 能否真正构建和部署；main 负责 Production。', 'It owns the real provider build and Production deployment. A final candidate first completes repository and browser acceptance in GitHub Actions, then Vercel only proves that the same exact head can really build and deploy; main owns Production.')}</p></article>
-        <article><h3>Cloudflare</h3><p>{t('当前不负责 BaseModel 的普通部署或线上监控。Pages / Workers 只保留为历史、回退或供应商专项工具；私有 Production 不再接受匿名外部巡检。', 'Cloudflare is not part of ordinary BaseModel deployment or live monitoring. Pages / Workers remain only as historical, rollback, or provider-specific tools; private Production no longer accepts anonymous external probes.')}</p></article>
+        <article><h3>Vercel</h3><p>{t('保留已有的 Vercel Authentication 登录保护与上一份可用的网站。普通 PR 和 main 合并不自动花 Hobby 部署额度；Cloudflare 不可用或额度受限时，再显式手动发布 Vercel。', 'Keeps Vercel Authentication and the last known-good website. Ordinary PRs and main merges do not automatically spend Hobby deployments; a Vercel release is selected manually when Cloudflare is unavailable or quota-constrained.')}</p></article>
+        <article><h3>Cloudflare</h3><p>{t('默认发布到现有的受 Cloudflare Access 保护的 Worker。候选先在 GitHub Actions 做不带密钥的静态构建与 dry-run；发布必须从 main 手动触发，发布前后检查匿名访问会被挡住。', 'The normal release destination is the existing Cloudflare Access-protected Worker. GitHub Actions checks the candidate offline without secrets; publishing is a deliberate main-only action with anonymous-access checks before and after deployment.')}</p></article>
         <article><h3>CircleCI</h3><p>{t('2026-09-08，CircleCI credits 已耗尽，因此它退出普通 PR/main 流程。已经验证过的配置仍保留，只在需要独立恢复或交叉验证时显式手动触发。', 'On 2026-09-08, the CircleCI credit balance was exhausted, so it left the ordinary PR/main path. The qualified configuration remains available only for explicit manual recovery or cross-checking.')}</p></article>
-        <article><h3>GitHub Actions</h3><p>{t('承担日常 PR 的确定性检查和浏览器验收。普通 PR 先在公开托管 runner 上完成 public-ci-gate；Mac/OrbStack 只保留为手动恢复环境，不需要个人电脑一直在线等任务。', 'It owns everyday PR deterministic and browser acceptance. Ordinary PRs complete public-ci-gate on public hosted runners; Mac/OrbStack remains manual recovery only, so a personal computer does not need to stay online waiting for jobs.')}</p></article>
+        <article><h3>GitHub Actions</h3><p>{t('公开托管 runner 必须同时通过 public-ci-gate（代码与真实浏览器）和 cloudflare-artifact-gate（Worker 安全构建）。缺少任何一个都不能合并；Mac/OrbStack 只是手动恢复，不必一直开机。', 'Hosted runners require both public-ci-gate (repository and real browsers) and cloudflare-artifact-gate (secure Worker build). Neither can be skipped to merge; Mac/OrbStack remains manual recovery only.')}</p></article>
       </div>
     </section>
 
@@ -74,16 +75,16 @@ const t = (cn: string, en: string) => zh ? cn : en;
       </p>
       <ol class="ci-steps">
         <li><strong>{t('普通分支只开发。', 'Ordinary branches are for development.')}</strong><span>{t('research、fix、docs 等分支可以继续迭代，不因为每个 push 都消耗 Vercel Preview。', 'research, fix, docs, and other working branches can keep moving without paying for a Vercel Preview on every push.')}</span></li>
-        <li><strong>{t('最终候选才请求 Vercel。', 'Only a final candidate requests Vercel.')}</strong><span>{t('候选必须与当前 main 对齐，并把验收状态绑定到同一个 exact SHA。', 'The candidate must be current with main, and acceptance must bind to that exact SHA.')}</span></li>
-        <li><strong>{t('测试范围按风险升级。', 'Browser scope escalates with risk.')}</strong><span>{t('非 UI 改动可以不跑浏览器；局部页面只跑映射测试；共享、全局或无法判断的改动会完整跑 Chromium。', 'Non-UI changes can skip browsers; bounded page changes use mapped tests; shared, global, or uncertain changes run the full Chromium matrix.')}</span></li>
-        <li><strong>{t('合并要过两道 exact-head 门。', 'Merging requires two exact-head gates.')}</strong><span>{t('public-ci-gate 负责代码与浏览器验收，Vercel 负责真实供应商构建与部署。两个都必须绑定当前 SHA；旧的 green 不能借用。', 'public-ci-gate owns repository and browser acceptance; Vercel owns real provider build and deployment. Both must bind to the current SHA; an older green result cannot be borrowed.')}</span></li>
-        <li><strong>{t('合并后再核验受保护的 Production。', 'Verify protected Production after merge.')}</strong><span>{t('Vercel 发布 main；Agent 先核对部署身份与 READY 状态，确需看页面时再走授权访问。私有站点不再用匿名外部探针当证据。', 'Vercel ships main; the Agent first verifies deployment identity and READY state, then uses authorized access only when page inspection is needed. Anonymous external probes are no longer release evidence for the private site.')}</span></li>
+        <li><strong>{t('两道检查，不发布网站。', 'Two checks, zero deployments.')}</strong><span>{t('public-ci-gate 检查代码和浏览器；cloudflare-artifact-gate 验证 Worker 构建与安全设置。都绑定同一个最新 SHA。', 'public-ci-gate checks code and browsers; cloudflare-artifact-gate checks the Worker build and security settings. Both bind to the same current SHA.')}</span></li>
+        <li><strong>{t('浏览器范围按风险升级。', 'Browser scope escalates with risk.')}</strong><span>{t('非 UI 改动可不跑浏览器；局部页面跑映射测试；全局或未知改动跑完整 Chromium 和 WebKit。全部已分配测试必须通过。', 'Non-UI changes can skip browsers, bounded changes get mapped tests, and global/unknown changes run the complete Chromium and WebKit coverage. Every allocated test must pass.')}</span></li>
+        <li><strong>{t('合并必须同 SHA 双绿。', 'Merge only when both gates pass on the same SHA.')}</strong><span>{t('两道检查必须在最新、与 main 对齐的 PR 提交上通过；不能用旧的 green 或混合不同重试轮次的截图蒙混过关。', 'Both gates must pass on the latest PR head, current with main; old green checks and screenshots from mismatched retry attempts do not count.')}</span></li>
+        <li><strong>{t('按额度发布，实际看页面。', 'Choose a provider, then verify the live site.')}</strong><span>{t('默认手动发布 Cloudflare，验证部署 SHA、登录和真实页面交互；只有 Cloudflare 受限时才手动更新 Vercel。旧站始终可回退。', 'Publish to Cloudflare explicitly by default and verify the deployed SHA, login and real browser interactions. Update Vercel manually only when Cloudflare is constrained, keeping the existing fallback.')}</span></li>
       </ol>
 
       <details class="technical-detail">
         <summary>{t('Agent 执行时用到的 exact-head 细节', 'Exact-head details used by the Agent')}</summary>
-        <p>{t('真正准备合并时，Agent 运行', 'When a PR is genuinely ready, the Agent runs')} <code>node scripts/request-vercel-final-gate.mjs &lt;PR_NUMBER&gt;</code>{zh ? '。' : '.'}</p>
-        <p>{t('这个 helper 先确认当前 head 的', 'The helper first confirms exact-head')} <code>public-ci-gate</code> {t('已经成功，再把', 'success, then pins')} <code>ci/vercel-gate-base</code> {t('固定到当前 main，并把持久的', 'to live main and moves persistent')} <code>ci/vercel-gate-final</code> {t('移动到同一个 PR head。', 'to the same PR head.')}</p>
+        <p>{t('合并前，严格检查当前 PR HEAD 同时取得', 'Before merge, verify the current PR HEAD has both')} <code>public-ci-gate</code> {t('和', 'and')} <code>cloudflare-artifact-gate</code> {t('的 GitHub Actions 成功状态。', 'successful GitHub Actions checks.')}</p>
+        <p>{t('Cloudflare 发布从受保护的 main 工作流', 'Cloudflare is released only from the protected main workflow')} <code>cloudflare-standby.yml</code> {t('显式选择 deploy；Vercel 的', 'with explicit deploy. Vercel’s')} <code>ci/vercel-gate-final</code> {t('仅在需要备用商验收时使用，不再是普通合并门槛。', 'is optional fallback validation, no longer an ordinary merge requirement.')}</p>
       </details>
     </section>
 
@@ -92,10 +93,10 @@ const t = (cn: string, en: string) => zh ? cn : en;
       <ol class="change-flow">
         <li><span>1</span><div><strong>{t('在 ChatGPT 里说清楚要改什么', 'Describe the change in ChatGPT')}</strong><p>{t('人负责目标、反馈和最终判断。', 'The human owns the goal, feedback, and final judgment.')}</p></div></li>
         <li><span>2</span><div><strong>{t('Agent 在 GitHub / 本机完成实现', 'The Agent implements through GitHub / the local machine')}</strong><p>{t('仓库读写优先 GitHub 插件；文件、终端和本机工具需要时用 Remote Desktop Commander。', 'Repository operations prefer the GitHub plugin; filesystem, terminal, and local tools use Remote Desktop Commander when needed.')}</p></div></li>
-        <li><span>3</span><div><strong>{t('先做便宜的本地检查', 'Run cheap local checks first')}</strong><p>{t('类型检查、单元测试和静态 build 在本地完成；这些检查通过后才请求托管计算。', 'Type checks, unit tests, and the static build catch predictable problems before hosted compute is spent.')}</p></div></li>
-        <li><span>4</span><div><strong>{t('最终候选再跑一次 Vercel 供应商验收', 'Run one Vercel provider acceptance on the final candidate')}</strong><p>{t('浏览器测试已经由 public-ci-gate 完成；这里不重复整套测试，只确认同一个 exact head 能被 Vercel 真正构建和部署。', 'Browser tests are already owned by public-ci-gate; this stage does not rerun the whole suite and only proves the same exact head can really build and deploy on Vercel.')}</p></div></li>
+        <li><span>3</span><div><strong>{t('先做便宜的静态检查', 'Start with inexpensive static checks')}</strong><p>{t('能快速发现的类型、单元与安全问题先处理；日常正式 CI 在 GitHub 云端运行，不依赖个人 Mac。', 'Catch type, unit and safety problems early; regular required CI runs on GitHub-hosted runners, not the owner’s Mac.')}</p></div></li>
+        <li><span>4</span><div><strong>{t('跑完两道 GitHub 检查', 'Complete both GitHub checks')}</strong><p>{t('同一提交通过代码/浏览器验收和 Cloudflare Worker 离线验收，不触发任何服务商部署。', 'The same commit must pass repository/browser and offline Cloudflare Worker acceptance, without triggering either provider deployment.')}</p></div></li>
         <li><span>5</span><div><strong>{t('通过后合并 main', 'Merge to main after acceptance')}</strong><p>{t('如果 main 或候选变了，就重新验当前 SHA。', 'If main or the candidate changes, acceptance is repeated on the new current SHA.')}</p></div></li>
-        <li><span>6</span><div><strong>{t('核验受保护的 Production', 'Verify protected Production')}</strong><p>{t('确认 Vercel 正式部署的身份和 READY 状态；需要页面级检查时使用授权访问，不再依赖匿名公开探针。', 'Confirm the Vercel Production deployment identity and READY state; use authorized access for page-level checks instead of anonymous public probes.')}</p></div></li>
+        <li><span>6</span><div><strong>{t('选择服务商，登录验收', 'Choose the provider and verify with login')}</strong><p>{t('Cloudflare 默认、Vercel 回退；按需发布 exact main，确认 SHA、未登录用户被拒绝、桌面与手机页面真实可用。', 'Cloudflare by default, Vercel for fallback. Publish the exact main only when needed and verify its SHA, anonymous denial and real desktop/mobile functionality.')}</p></div></li>
       </ol>
     </section>
 

@@ -99,23 +99,22 @@ BaseModel is a research decision system connecting Base Model â†’ SEED/OpenEvo â
 
 ```text
 ordinary PR
-  -> required Public PR CI (`public-ci-gate`)
-  -> deterministic validation + risk-based browser coverage
+  -> required Public PR CI (`public-ci-gate`): deterministic + risk-based real browsers
+  -> required `cloudflare-artifact-gate`: exact-head Worker build, route/security checks and no-deploy dry-run
 
 final current-base candidate
-  -> `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`
-  -> exact-head Vercel provider gate
+  -> both required GitHub Actions checks green on the same head with strict base freshness
 
 main
-  -> Vercel Production
-  -> https://basemodel-preview.vercel.app
+  -> on-demand protected Cloudflare deployment (default): https://basemodel-access-standby.gemini202405.workers.dev/
+  -> on-demand Vercel Production recovery: https://basemodel-preview.vercel.app/
 ```
 
-**Vercel is the only ordinary deployment provider and required final-candidate authority.** Public GitHub-hosted Actions is the ordinary automatic PR preflight compute lane. CircleCI and the Mac/OrbStack runner are explicit manual fallbacks; historical Cloudflare material is legacy/rollback evidence, not a normal release stage.
+**Cloudflare is the default release provider; Vercel remains an authenticated, manually published fallback.** Do not trigger Vercel Git deployments for ordinary Cloudflare PRs or `main` merges, or spend Cloudflare deploy quota for dry-run checks. Actual release requires protected exact-main deployment, source SHA readback, anonymous Access denial and real authenticated browser checks; `READY` or a green PR alone is not enough. Preserve Vercel's last known-good Production and existing authentication. The live ruleset, not this file alone, determines cutover authority; [quota-aware switch and fail-closed migration](docs/dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) owns the exact instructions. CircleCI and Mac/OrbStack are explicit manual CI fallbacks only.
 
 ### GitHub-first BaseModel execution (owner directive, 2026-10-20)
 
-**Default: GitHub plugin + GitHub Actions hosted runners + Vercel plugin. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
+**Default: GitHub plugin + GitHub Actions hosted runners + protected Cloudflare release; Vercel plugin only for on-demand fallback. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
 
 - Read owners, current PRs and file history; create task branches, review changes, update source and open PRs through GitHub. Respect concurrent branches and compare exact SHAs before integration.
 - Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium and WebKit for full/global work; **do not claim WebKit passed unless an actual WebKit job ran**.
@@ -187,7 +186,7 @@ Preserve Vercel Preview `noindex`, Production canonical/hreflang identity, repos
 - For non-trivial work, scan scenario-trigger-registry; repeat-correction work uses `REPEAT-CORRECTION` and `project-agent-operating-principles.md#correction-to-action-witness`.
 - **Provider writes are noun-bound at dispatch:** `open PR -> create_pull_request`; file/ref/branch mutation is not an acceptable substitute.
 - **Before the first compound shell call**, select `/bin/bash` when Bash syntax is required; The requested shell is not execution proof, so verify the interpreter that actually launched.
-- Multi-PR releases follow the `parallel/stacked integration policy`; Ordinary completion reports are **Vercel-first** and still separate source, exact-head acceptance, merge, and Production.
+- Multi-PR releases follow the `parallel/stacked integration policy`; ordinary completion reports are **Cloudflare-first**, distinguish source, exact-head acceptance, merge and real protected Production browser evidence, and identify Vercel's possibly older standby SHA separately.
 - LYG2171 public ownership has moved to fuhuo: public users go to https://fuhuo-20260419.vercel.app/docs/machines and https://fuhuo-20260419.vercel.app/docs/server-governance. BaseModel exposes only a generic public topology and must not receive new live LYG2171 facts.
 
 ## Collaboration and documentation

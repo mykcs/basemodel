@@ -1,14 +1,16 @@
-# Hosting architecture — required Public PR CI + Vercel provider gate + manual fallbacks
+# Hosting architecture — Cloudflare-first with authenticated Vercel fallback
 
 Last reviewed: **2026-10-29**
 
+**2026-10-30 target architecture, requiring live control-plane verification:** Cloudflare is the normal protected Production release surface; the existing Vercel Production is kept as a protected, manually refreshed fallback. Every PR must pass two separate GitHub-hosted exact-head checks (`public-ci-gate` and `cloudflare-artifact-gate`); the latter packages the Worker and runs an offline deploy dry-run, without Vercel Hobby or Cloudflare publication. Ordinary `main` updates no longer trigger Vercel Git deployment (`vercel.json` disables `main`). A new release is an explicit Cloudflare protected workflow dispatch or an optional authenticated Vercel CLI/API action. [The dual-provider migration SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) requires live ruleset `22224550` to be read back and post-merge Access/visual/browser acceptance. If its live ruleset still requires `Vercel`, **the legacy policy below remains the actual current merge authority**, no matter what this branch proposes.
+
 **2026-10-30 protected standby deployed; not current release authority:** [`docs/dev/CI/REVERSIBLE_HOSTING.md`](../../dev/CI/REVERSIBLE_HOSTING.md) records the separate, manually dispatched, fail-closed Cloudflare Access standby. [GitHub Actions #41044575890](https://github.com/mykcs/basemodel/actions/runs/41044575890) deployed the exact `main@e7eee109` artifact only after anonymous Access pre-probes; postdeploy probes also passed and representative authenticated-browser/mobile routes were inspected. It does **not** change required `public-ci-gate` + Vercel exact-head checks, `main` Production, Vercel Authentication, release DNS, or public-repo policy. No owned custom domain is verified, so one-URL provider switching is not yet available.
 
-Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
+Status: **Cloudflare-first repository contract; live cutover depends on exact-head qualification, ruleset readback and protected main release.** Public GitHub Actions owns required exact-head deterministic/browser and Cloudflare candidate checks on hosted runners. Vercel keeps its last approved Production and credentials for deliberate fallback; CircleCI and Mac/OrbStack remain manual CI recovery. No anonymous Production monitor is active.
 
 Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
 
-## Current decision
+## Previous Vercel-first architecture (historical reference; superseded only after live cutover)
 
 ```text
 GitHub = source of truth
@@ -73,7 +75,7 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to both complete canonical engine populations. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 
 
-Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`. Production is intentionally access-protected and is also emitted as `noindex`; it still uses the stable project domain/canonical. `vercel.json` must not disable `main`.
+Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`. Production is intentionally access-protected and is also emitted as `noindex`; it still uses the stable project domain/canonical. The historical automatic-Production rule required `main` enabled; the quota-aware target explicitly disables only automatic Git `main` deploys without removing manual Vercel deployment or its existing Production.
 
 ## Manual fallback surfaces
 
