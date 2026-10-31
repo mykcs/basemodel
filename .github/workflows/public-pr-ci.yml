@@ -77,7 +77,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
 
       - name: Bind exact candidate identity
         env:
@@ -123,7 +123,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -201,7 +201,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -274,7 +274,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -371,7 +371,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -450,7 +450,7 @@ jobs:
         if: needs.plan.outputs.mode == 'full'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           package-manager-cache: false
 
       - name: Download every allocated timed shard

@@ -103,6 +103,16 @@ test('one automatic workflow runs draft heads and the former figure entrypoint i
   assert.doesNotMatch(pilot, /name: (?:figure-raw-|basemodel-figure-)|public-ci-gate/);
 });
 
+test('all public CI jobs pin the same exact Node patch for artifact provenance', () => {
+  const workflow = publicCi();
+  const setupNodeCount = (workflow.match(/uses: actions\/setup-node@/g) ?? []).length;
+  const versions = [...workflow.matchAll(/^\s+node-version: '([^']+)'$/gm)].map((match) => match[1]);
+  assert.equal(versions.length, setupNodeCount, 'every setup-node step must specify a Node version');
+  assert.ok(setupNodeCount > 1, 'artifact producer and consumers must both be covered');
+  assert.ok(versions.every((version) => /^24\.\d+\.\d+$/.test(version)), 'floating Node versions can drift between CI shards');
+  assert.equal(new Set(versions).size, 1, 'artifact producers and consumers must use the identical Node patch');
+});
+
 test('all consumers wait for the same successful preflight and bind the frozen source and producer attempt', () => {
   const workflow = publicCi();
   const plan = job(workflow, 'plan');

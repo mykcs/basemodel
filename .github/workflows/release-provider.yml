@@ -131,7 +131,7 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
         run: |
           set -euo pipefail
-          STAGED_URL="$(npx --yes vercel@59.17.0 deploy --prod --skip-domain --yes --no-color --archive=tgz --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID")"
+          STAGED_URL="$(npx --yes vercel@59.17.0 deploy --prod --skip-domain --yes --no-color --archive=tgz --scope "$RELEASE_TEAM_ID")"
           STAGED_URL="$STAGED_URL" node -e 'const u=new URL(process.env.STAGED_URL); if(u.protocol!=="https:" || !/^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(u.hostname) || u.pathname!=="/" || u.search || u.hash)process.exit(1)' \
             || { echo '::error::Unexpected Vercel staged deployment URL; do not promote'; exit 1; }
           echo "url=$STAGED_URL" >> "$GITHUB_OUTPUT"
@@ -157,7 +157,7 @@ jobs:
         run: |
           set -euo pipefail
           for route in / /research/seed-openevo/flow/ /development/ /model-data/catalog.json; do
-            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --deployment "$STAGED_URL" --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
+            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --deployment "$STAGED_URL" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
             test "$STATUS" = 200 || { echo "::error::Staged route $route did not return 200"; exit 1; }
           done
 
@@ -165,7 +165,7 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
           STAGED_URL: ${{ steps.stage.outputs.url }}
-        run: npx --yes vercel@59.17.0 promote "$STAGED_URL" --yes --no-color --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID"
+        run: npx --yes vercel@59.17.0 promote "$STAGED_URL" --yes --no-color --scope "$RELEASE_TEAM_ID"
 
       - name: REQUIRE canonical Vercel Authentication after promotion
         run: node scripts/hosting/verify-vercel-auth.mjs
@@ -184,7 +184,7 @@ jobs:
         run: |
           set -euo pipefail
           for route in / /research/seed-openevo/flow/ /development/ /model-data/catalog.json; do
-            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
+            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
             test "$STATUS" = 200 || { echo "::error::Production route $route did not return 200"; exit 1; }
           done
 

@@ -340,6 +340,7 @@ describe('Vercel production deployment architecture', () => {
       expect(steps[stage]!.run).toContain('vercel@59.17.0 deploy --prod --skip-domain');
       expect(steps[promote]!.run).toContain('vercel@59.17.0 promote');
       expect(steps[stage]!.env).toHaveProperty('VERCEL_TOKEN', '${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}');
+      expect(JSON.stringify(deploy)).not.toMatch(/--token\s/);
       expect(JSON.stringify(deploy)).not.toContain('BASEMODEL_REVIEW_VERCEL_TOKEN');
       expect(JSON.stringify(deploy)).not.toContain('CLOUDFLARE_STANDBY_API_TOKEN');
       expect(steps.find(s => s.name === 'Revalidate main before any Vercel quota is spent')?.run).toContain('git ls-remote origin refs/heads/main');
