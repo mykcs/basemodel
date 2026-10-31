@@ -3,6 +3,8 @@
 Status: **current and mandatory for UI-affecting work**
 Audience: coding Agents, frontend Agents, review Agents, browser-verification Agents
 
+> **Current hosting authority (Cloudflare-first, 2026-10-30):** Ordinary PRs require exact-head `public-ci-gate` and `cloudflare-artifact-gate` on GitHub-hosted runners, neither of which deploys the site. After merging a release candidate, publish only from protected `main` via Cloudflare `plan → deploy`, then verify the deployed SHA, Access rejection without login, and authenticated routes at desktop/440×956 mobile. Vercel Preview/Production language retained below for historical failure analysis or an explicitly selected protected fallback is **not** an ordinary required gate. The detailed current contract is [QUOTA_AWARE_PROVIDER_SWITCH.md](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md).
+
 ## Why this document exists
 
 A sitewide visual redesign passed the repository build and Vercel deployment, but the owner had to open the Preview to discover that some dark-mode cards were almost unreadable. The immediate bug was a light-only white fallback combined with dark-theme text, but the durable failure was procedural:
@@ -70,9 +72,9 @@ The classifier includes committed, staged, unstaged, and untracked paths relativ
 
 When a shared/global change requires WebKit, run the preflight on supported macOS, Ubuntu, or Debian. Do not downgrade the candidate to Chromium-only merely because the current execution environment lacks a supported WebKit runtime; keep the cross-browser boundary explicit until a suitable runner is available.
 
-Only after this pre-provider gate passes should an Agent move a ref that can create a Vercel Preview/Production deployment. Vercel remains the exact-head deployment/environment check and final product inspection layer, not the ordinary first place to discover theme, overflow, navigation, hydration, or geometry regressions.
+After this pre-provider gate, obtain the two required **exact-head GitHub Actions** checks without publishing either provider. Only an accepted `main` release proceeds through the protected Cloudflare `plan → deploy` workflow and a separate logged-in production-page review. An explicitly selected Vercel fallback may use its own manual Preview/Production route, but it is not ordinary merge authority.
 
-A GitHub/Vercel commit status is not by itself proof that a deployment object was created or a build ran. When deployment usage/quota matters, distinguish the provider status callback from live Vercel deployment records.
+A GitHub status callback, a Cloudflare `--dry-run` or a provider READY label does not prove a new production deployment, its deployed source SHA, or real visual acceptance. Record those layers separately.
 
 When a visual bug escapes to Preview, Production, owner inspection, or external browser QA, add or extend an executable regression for the failure class and keep it wired into the existing gate. Fixing only the visible specimen is not closeout.
 
@@ -294,18 +296,18 @@ This executes the same gate in Chromium and WebKit.
 
 #### Hosted-runner boundary
 
-The repository-owned Vercel browser gate is **Chromium-only**. Vercel's hosted build image is Amazon Linux 2023, while Playwright's WebKit Linux binaries target supported Ubuntu/Debian environments and can require ABI/versioned libraries that AL2023 does not provide. Do not make the Vercel Preview gate fragile by installing Ubuntu WebKit fallback binaries or ad-hoc library shims there.
+The default GitHub-hosted Public PR CI supplies the required Chromium/WebKit evidence for the applicable UI risk class. A formerly mandatory, now **optional Vercel fallback** browser gate remains Chromium-only because Vercel's Amazon Linux 2023 image cannot safely substitute Ubuntu/Debian Playwright WebKit libraries. Do not move WebKit to that fallback merely to produce another provider badge.
 
-When WebKit is required, run `npm run test:ui:all` on a Playwright-supported macOS, Ubuntu, or Debian runner. Keep that cross-browser evidence separate from the Vercel exact-head deployment result.
+When WebKit is required, run `npm run test:ui:all` on a supported GitHub-hosted macOS, Ubuntu, or Debian runner. Keep the cross-browser result separate from the Cloudflare artifact dry-run and the later protected production release.
 
-A narrowly defined **cascade-preserving CSS composition refactor** may use `npm run audit:css` + `npm run test:ui` + exact-head Preview review instead of WebKit when all of the following are true:
+A narrowly defined **cascade-preserving CSS composition refactor** may use `npm run audit:css` + `npm run test:ui` as its focused local browser preflight instead of a separate local WebKit run only when all of the following are true:
 
 1. no CSS declaration, selector, token value, media query, typography rule, animation rule, or responsive rule changes;
 2. no declaration is moved between owners in a way that changes selector scope;
 3. the existing global import order is preserved exactly and `npm run audit:css` proves the canonical graph;
-4. the full hosted Chromium matrix and exact-head Preview pass.
+4. the required exact-head `public-ci-gate` and `cloudflare-artifact-gate` pass; any cross-browser jobs actually required by that PR's risk class have run successfully.
 
-This exception is for import/composition structure only. The moment a change alters rendered CSS semantics, selector ownership, cascade order, theme values, typography, navigation behavior, or layout, classify upward and require `npm run test:ui:all` on a supported runner.
+This local-preflight exception does **not** waive the remote required checks. The moment a change alters rendered CSS semantics, selector ownership, cascade order, theme values, typography, navigation behavior, or layout, classify upward and require `npm run test:ui:all` on a supported runner.
 
 ### Layer 3 — failure evidence
 
@@ -317,20 +319,18 @@ Playwright is configured to retain on failure:
 
 Do not report only “Playwright failed.” Inspect the first failing route/theme/viewport and identify whether the root cause is color pairing, clipping, overlap, overflow, or state transition.
 
-### Layer 4 — exact-head Preview inspection
+### Layer 4 — exact-main protected production inspection
 
-After automated checks pass:
+After the required exact-head PR checks pass, review the candidate's actual rendered artifact or supported cloud browser output without using an unprotected provider preview. Once that candidate is merged and a real publication is requested:
 
-- confirm Vercel built the exact intended commit;
-- inspect the real protected Preview or generate a temporary share link;
-- before accepting any screenshot/DOM measurement, prove the browser is on the intended application surface with a route-specific sentinel such as the expected H1, `data-testid`, canonical route marker, or equivalent product-owned element;
-- if a protected Preview lands on a Vercel login/SSO/access interstitial, establish the authorized Preview/share session and rerun the check; the authentication page does **not** count as route visual evidence even when it returns HTTP 200 or produces a valid screenshot;
-- review the primary changed routes in both themes;
-- verify the intended visual hierarchy and subjective design quality.
+- confirm Cloudflare's protected `plan → deploy` published the **current intended `main` SHA**, and read back `/standby-source-sha.txt` through the authenticated browser;
+- confirm anonymous requests to representative page and asset paths receive the expected Cloudflare Access login challenge before and after deployment;
+- before accepting a screenshot/DOM measurement, prove the browser reached the intended product route with a route-specific sentinel such as the expected H1, `data-testid` or canonical route marker;
+- if the browser shows an Access/SSO interstitial, establish a **normally authorized** session and rerun the product check; the login screen is not route visual evidence;
+- review changed primary routes in both themes and the desktop/440×956 CSS viewports, including their principal interactions and visual hierarchy;
+- keep the existing authenticated Vercel version as a separate, potentially older fallback. Inspect it only when a Vercel fallback release is explicitly selected.
 
-A Vercel READY badge proves deployment, not visual acceptance.
-
-The Preview review is the final product judgment, not the first bug detector.
+Green PR checks, Wrangler `--dry-run`, provider READY, and anonymous 302 all prove **different, incomplete** parts of publication. Final product acceptance requires the authenticated target-page witness.
 
 ---
 
@@ -363,10 +363,10 @@ The shared route, layer, and evidence components are the reference implementatio
 | Change type | Minimum required verification |
 |---|---|
 | copy-only with no length/layout effect | normal deterministic Gate |
-| cascade-preserving global CSS import/composition refactor with no declaration/token/order change | `npm run audit:css` + `npm run test:ui` + exact-head Preview review |
+| cascade-preserving global CSS import/composition refactor with no declaration/token/order change | `npm run audit:css` + `npm run test:ui` + required exact-head GitHub gates |
 | local component style or layout | `npm run test:ui` |
 | theme tokens / changed global CSS declarations / typography | `npm run test:ui:all` on a supported runner |
-| shared visual primitive / header / navigation / workspace shell | `npm run test:ui:all` on a supported runner + exact-head Preview review |
+| shared visual primitive / header / navigation / workspace shell | `npm run test:ui:all` on a supported runner + required exact-head GitHub gates; inspect protected Cloudflare after release |
 | animation or responsive rewrite | `npm run test:ui:all` on a supported runner + reduced-motion and mobile interaction review |
 | docs-only Agent policy | no browser run unless runtime-owned files also changed |
 
@@ -386,8 +386,9 @@ For UI-affecting work, the Agent must report separately:
 pre-provider UI preflight
 static Gate
 browser UI safety gate
-exact-head Vercel deployment
-real Preview inspection
+exact-head public-ci-gate + cloudflare-artifact-gate
+protected Cloudflare exact-main plan/deploy (only for a real release)
+authenticated Cloudflare route/desktop/phone inspection
 remaining subjective review boundary
 ```
 
@@ -400,25 +401,27 @@ Pre-provider: risk class + exact candidate/base + PASS/FAIL
 UI safety: Chromium, light/dark, iPhone 18 Pro Max 440×956 + desktop 1440, Chinese representative routes + English sample routes
 Cross-browser: WebKit included / not included and why
 Artifacts: no failures, or trace/screenshot path for the first failure
-Preview: exact commit and routes inspected
+Cloudflare release: deployed main SHA and Access anonymous-denial result; authenticated routes/viewport inspected
 ```
 
 ---
 
 ## 8. Cost-aware automation boundary
 
-The repository deliberately does not install/run the full cross-browser Playwright matrix in every hosted Preview build. That protects build time and quota and avoids turning every data/docs edit into browser work.
+The repository runs risk-selected Chromium/WebKit checks on GitHub-hosted runners while keeping provider publication separate from pull-request review. This protects both browser coverage and Cloudflare/Vercel quota.
 
-The compromise is intentional:
+The allocation is intentional:
 
 - `preflight:ui` is the pre-provider orchestrator for UI-affecting candidate trees;
-- `verify:deploy` always protects the static UI contract through Vitest;
+- `verify:deploy` protects the static UI contract through Vitest;
 - the scenario trigger makes `test:ui` mandatory for UI-affecting work;
-- the Vercel hosted UI gate may run the focused Chromium matrix for UI branch families, but must not attempt WebKit on Amazon Linux 2023;
-- `test:ui:all` remains the cross-browser command for supported macOS/Ubuntu/Debian runners when the change classification requires it;
-- `verify:v2` continues to include the complete E2E suite;
+- exact-head `public-ci-gate` and `cloudflare-artifact-gate` are required on GitHub; no PR build should deploy to Cloudflare or Vercel;
+- `test:ui:all` supplies cross-browser evidence on supported hosted runners for the applicable change class;
+- `verify:v2` includes the complete E2E suite;
 - screenshots/traces/videos are retained when browser checks fail;
-- exact-head Preview inspection remains required before owner acceptance.
+- actual protected Cloudflare release and desktop/mobile authenticated-page inspection happen **after** an accepted `main` deployment, not in place of PR gates.
+
+The old Vercel-hosted Chromium-only entry remains an optional fallback when explicitly chosen; it is not an automatic main or PR release step.
 
 Do not solve a visual-regression problem by blindly adding an expensive or unsupported full browser matrix to every unrelated deployment. Trigger it precisely when the changed surface requires it and run each browser on an environment that actually supports it.
 
@@ -431,7 +434,7 @@ Do not solve a visual-regression problem by blindly adding an expensive or unsup
 - browser UI matrix and geometry/contrast audit: `tests/e2e/ui-safety.spec.ts`;
 - pre-provider risk classifier/orchestrator and escaped-regression registry: `scripts/preflight-ui.ts`;
 - pre-provider gate wiring regression: `src/lib/preVercelUiGate.test.ts`;
-- hosted Chromium trigger: `scripts/vercel-ui-gate.mjs`;
+- optional historical Vercel-hosted Chromium trigger: `scripts/vercel-ui-gate.mjs`;
 - Playwright failure artifacts: `playwright.config.ts`;
 - commands: `package.json` (`preflight:ui:plan`, `preflight:ui`, `test:ui`, `test:ui:all`);
 - shared auditable visual primitives: `src/components/visual/*`;
