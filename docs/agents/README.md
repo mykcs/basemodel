@@ -26,6 +26,18 @@ Root [`/AGENTS.md`](../../AGENTS.md) is the unique bootstrap/invariant layer. [`
 
 When a task asks **what quality must be met or how its acceptance is proved**, consult [`docs/standards/README.md`](../standards/README.md) and [ACCEPTANCE_MAP](../standards/ACCEPTANCE_MAP.md). This is a short owner/check index, not a second Agent rule system or a universal pre-read. The [open gaps](../standards/OPEN_GAPS.md) route to their **existing** PR owners.
 
+## Shared website learning and feedback
+
+This is navigation to shared policy owners and historical feedback, not a second writable preference model. Load only the row needed by the current task; use prior feedback when its failure family is relevant.
+
+| Task trigger | Current shared authority (load first) | Prior owner feedback / evidence (only when relevant) |
+| --- | --- | --- |
+| Substantial or durable user-facing content/copy | [Human Expression Standard](https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md) | [Shared content-expression learning](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md); [BaseModel-specific experience](https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel) |
+| Material website design / information-flow decision | [Human-thinking website expression lens](https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md) | [Shared design preferences](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/design/LEARNED_PREFERENCES.md) |
+| Material website engineering | [Cross-site Engineering Standard](https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md) | [Shared engineering practices](https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md); [BaseModel-specific experience](https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel) |
+
+Direct owner feedback and conversation closeout belong to central `.agents/docs/learning`. BaseModel retains current Wish, Reader Contracts, scientific/product authority, source audits, browser tests, and route-specific guards. Historical feedback and the retired local preference-retrieval engine are not authoritative current policies.
+
 ## Task bundles
 
 **人物姓名／匿名化（全仓库）：**任何页面、报告、会议来源、申请材料或其他涉及具体导师／前辈的改动，先读 [`current/person-reference-privacy-standard.md`](current/person-reference-privacy-standard.md)；这是唯一称谓规则 owner，执行检查为 `npm run audit:person-privacy`。
@@ -148,15 +160,15 @@ Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence
 Read:
 
 - [CI performance implementation and qualification](../dev/CI/README.md) — sealed-build reuse, risk/duration scheduling, measured costs and rollback; provider and merge authority remain in current hosting/release owners.
-- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — why BaseModel uses final-candidate-only Vercel instead of always-on CircleCI / GitHub Actions / Cloudflare CI; read before proposing a provider migration
+- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — measured provider alternatives and historical rationale; current Cloudflare-first selection and safe switching live in [`../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md`](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md)
 - [`current/hosting-architecture.md`](current/hosting-architecture.md)
 - [`current/deployment-policy.md`](current/deployment-policy.md)
 - [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)
 - [`current/multi-pr-semantic-integration-playbook.md`](current/multi-pr-semantic-integration-playbook.md) when PRs overlap or ship together
 
-Vercel owns exact-head final acceptance and Production. Repeated UI/copy/slide review may use the non-authoritative prebuilt review Preview lane from current deployment policy; that viewing surface is not merge evidence. Historical Vercel pilot/adoption records are under `history/`; Cloudflare files in `current/` are conditional rollback/provider-specific runbooks, not normal release authority.
+Current merge authority is two exact-head GitHub Actions checks: `public-ci-gate` and `cloudflare-artifact-gate`, with strict current-base protection. Default publication is a separate, protected Cloudflare `main` workflow; Vercel remains an authenticated, manually updated fallback. Repeated UI/copy/slide review may use a non-authoritative review Preview, but it never substitutes for merge or logged-in production acceptance. Historical Vercel pilot/adoption records are under `history/`; older Cloudflare Pages/shadow helpers are legacy, distinct from the active protected Worker.
 
-For a red Vercel/provider status, first use [`current/provider-failure-attribution-runbook.md`](current/provider-failure-attribution-runbook.md) to bind the exact deployed SHA and first failing execution phase before assigning blame or changing architecture. Its dated incident evidence is [`history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md).
+For a red *selected provider* status (including optional Vercel fallback), first use [`current/provider-failure-attribution-runbook.md`](current/provider-failure-attribution-runbook.md) to bind the exact deployed SHA and first failing execution phase before assigning blame or changing architecture. Its dated incident evidence is [`history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md).
 
 For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For Vercel billing, `Overdue`, unexplained Build CPU, or spend-reduction work, read [`history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 
@@ -226,14 +238,15 @@ If two current documents disagree, resolve against executable/live truth and upd
 ## Current deployment authority
 
 ```text
-GitHub source
-├─ deployment-eligible non-main -> Vercel Preview
-└─ main                         -> Vercel Production -> https://basemodel-preview.vercel.app
+PR exact head -> public-ci-gate + cloudflare-artifact-gate (GitHub Actions; no provider publish)
+current-base + both checks green -> merge to main
+main -> protected Cloudflare Worker (explicit release, default)
+     -> authenticated Vercel fallback (explicit update only)
 ```
 
-Branch eligibility is executable policy in `vercel.json`. Preview must be `noindex`; Production is the stable canonical identity. Temporary share links are ephemeral and must not be persisted in repository text or GitHub collaboration surfaces.
+The current release contract is [`../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md`](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) and `vercel.json` disables ordinary Git `main` deployment. Cloudflare Access and Vercel Authentication protect different URLs; a single-domain automatic switch has not been established. Offline checks cannot prove live Worker SHA, Access or authenticated browser behavior. Temporary share links must not be persisted in repository text or GitHub collaboration surfaces.
 
-Cloudflare Pages/Direct Upload/Workers material is loaded only for explicit rollback, retirement, Cloudflare-specific reproduction, or unexpected legacy-provider activity.
+Legacy Cloudflare Pages/Direct Upload/shadow Workers material is for explicit rollback or historical investigation; it does not replace the active protected Cloudflare Worker workflow.
 
 ## Repository-write hygiene
 
