@@ -9,6 +9,13 @@ on:
         options: [plan, deploy]
         default: plan
         required: true
+  workflow_call:
+    inputs:
+      operation:
+        description: 'The provider selector reuses this exact protected release path'
+        type: string
+        default: plan
+        required: true
 
 permissions:
   contents: read

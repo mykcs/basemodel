@@ -52,7 +52,9 @@ The prefix is not determined only by the file extension. A Markdown change can s
 1. **Ordinary working branch:** no Vercel deployment while iterating; both required GitHub checks run.
 2. **Accepted candidate:** merge only with the two required checks green on the same current SHA. Neither check deploys a website.
 3. **Cloudflare default release:** explicitly dispatch `cloudflare-standby.yml` from protected `main` only when the published SHA needs updating. Verify Access before/after and the logged-in site.
+   After the provider selector merges, `release-provider.yml` with `provider=cloudflare` routes to this same workflow; `operation=plan` remains the no-publish default.
 4. **Vercel fallback:** existing `ci/vercel-gate-final` and `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` remain an **optional** real Vercel provider-build route. The alias must already exist and move byte-for-byte to the accepted PR SHA; creating a fresh alias may not trigger a build. This is no longer ordinary merge authority.
+   The provider selector's `provider=vercel` is a separate protected **Production** path after `vercel-protected` Environment setup and authenticated staged verification; it does not use or modify `ci/vercel-gate-final`.
 5. **`[vercel-preview]`:** historical/review marker only, not a deployment switch. Docs/governance-only changes should not publish a new site on either provider.
 6. If this document disagrees with `vercel.json`, workflows, live branch protection, or the provider state, executable/live truth wins and the documentation needs repair.
 

@@ -51,6 +51,30 @@ Cloudflare 候选门使用 `pull_request` + `contents:read` + 无 secrets，禁�
 
 ### 低成本快速操作（只操作已经授权的现有项目）
 
+#### GitHub 同一个按钮选择服务商（新控制入口）
+
+合并切换器 PR 后，进入 [BaseModel GitHub Actions](https://github.com/mykcs/basemodel/actions/workflows/release-provider.yml) → **Run workflow**，分支必须选 `main`：
+
+| 输入 | 选项 | 含义 |
+| --- | --- | --- |
+| `provider` | `cloudflare`（默认） / `vercel` | 只选这次要更新的受保护服务商，另一家原封不动 |
+| `operation` | `plan`（默认） / `deploy` | `plan` 仅 GitHub-hosted 静态构建、不占两家的发布次数；`deploy` 才明确消耗选中服务商的额度 |
+
+命令行等价入口（不用靠 Mac 常驻）：
+
+```bash
+gh workflow run release-provider.yml -R mykcs/basemodel --ref main -f provider=cloudflare -f operation=plan
+# 确认确实需要更新后，明确选择其中一家：
+gh workflow run release-provider.yml -R mykcs/basemodel --ref main -f provider=cloudflare -f operation=deploy
+gh workflow run release-provider.yml -R mykcs/basemodel --ref main -f provider=vercel -f operation=deploy
+```
+
+Cloudflare 选项**复用**现行 `cloudflare-standby.yml`（Access 前后拦截 + exact-main 成品验证），保留原来的 Cloudflare 独立按钮；切换器不复制第二套 Worker 发布逻辑。Vercel 选项使用 **先暂存、再推广**：先验证 Vercel Authentication 和当前 `main`，通过专用受保护环境建立未赋予正式域名的 Production 候选，读取 Vercel 官方 API 校验项目、READY 与 Git 提交 SHA，逐路径确认未登录用户被拦截、授权路由 HTTP 200，最后才 `vercel promote` 赋予原 Vercel 正式别名。上线后继续检查原域名的 SSO、精确 SHA 与授权路由；人类登录后的真实页面和 iPhone 18 Pro Max 视觉仍要另验。平台或身份检查失败应停在未推广的候选，不得绕过门锁直接上线。
+
+**Vercel 首次启用需要一次性控制台设置；没有配置不能声称它的一键 `deploy` 已跑通。** 在 GitHub 为本仓库建立 `vercel-protected` Environment，约束 `main` 发布分支、按已有安全审批要求配置保护；Environment 下设置独立 Production 专用 `BASEMODEL_PROTECTED_VERCEL_TOKEN` secret，以及 `BASEMODEL_PROTECTED_VERCEL_PROJECT_ID`、`BASEMODEL_PROTECTED_VERCEL_TEAM_ID` variables。值必须从实际已受 Vercel Authentication 保护的 `basemodel-preview` 项目和已授权管理端获得。切勿使用专供 Fast Review 的 `BASEMODEL_REVIEW_VERCEL_TOKEN`，也勿把项目 ID、Token 或账号详情写入公开源码。缺少任何值时 Vercel 发布拒绝执行；`plan` 不需要凭据。首次 `deploy` 只能在两道 GitHub CI 已通过且主分支最新、余额允许、旧站正常时进行单次验证。
+
+**省额度的最短路径：** 若目标服务商已经有满意的版本，**只改给授权读者发送的链接**，不需要跑 `deploy`；需要同步新版本时先核对其源 SHA，不相同才点 `deploy`。一个按钮只是选择哪家发布，不能自动把两个网址合成一个、偷用另一家的免费额度或关掉登录保护。Vercel Hobby 只能回滚到上一版 Production 的能力与历史部署保留限制须以当前官方套餐核对；切换前保留原版本信息。
+
 **发布 Cloudflare：** 先核对目前 Worker 的 `standby-source-sha.txt` 和仓库 `main` 的 SHA；如果已相同直接使用现有站点，不产生部署。不同且需要更新时，从 GitHub 已授权操作端显式运行：
 
 ```bash
@@ -59,7 +83,7 @@ gh workflow run cloudflare-standby.yml -R mykcs/basemodel --ref main -f operatio
 
 等待同一次运行的 `standby-verified-build`、`standby-protected-deploy` 全绿后，重新核对源 SHA、四条未登录 Access 探针与真实登录浏览器（包括移动端）。`plan` 只构建和检查，不发布。
 
-**切到现成的 Vercel 回退：** 不执行任何命令，直接使用原有登录保护的 Vercel URL，明确告知其部署 SHA 可能比 Cloudflare 旧。**只有 Vercel 也需要更新时**，使用已有授权 CLI 和经过确认的项目工作目录：先确认 `main` 精确 SHA、无未提交/未跟踪产物、已链接的是预期 Vercel 项目，再执行 `vercel deploy --prod` 一次；读取真实 Production SHA、登录后页面与 Vercel Authentication，若不符合则恢复既有成功版本。绝不以 Vercel Git 自动 PR/`main` 触发代替明确选择，也不为“看看能否发布”创建额外部署。
+**切到现成的 Vercel 回退：** 不执行任何命令，直接使用原有登录保护的 Vercel URL，明确告知其部署 SHA 可能比 Cloudflare 旧。**只有 Vercel 也需要更新时**，优先走上述统一按钮的 Vercel `deploy`（先满足一次性 Environment 配置）；若按钮尚未配置，原有已授权 CLI/平台直连仍是安全兜底：确认当前 `main`、本地无未追踪产物、已链接的正式项目无误后显式部署一次，并按真实 SHA/登录页/内容验收。绝不为普通 Git 合并恢复自动部署或额外刷 Hobby 限额。
 
 **快速切换目前指换两条已存在的链接或显式发布其中一个服务商**，不是同域名自动换源；自动流量切换仍需要受控自有域名，尚未获授权实施。
 

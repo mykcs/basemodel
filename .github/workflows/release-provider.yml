@@ -1,0 +1,200 @@
+name: Protected Site - Choose Cloudflare or Vercel
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: 'Choose one protected release destination; neither changes the other'
+        type: choice
+        options: [cloudflare, vercel]
+        default: cloudflare
+        required: true
+      operation:
+        description: 'Plan uses GitHub only; deploy deliberately spends the selected provider quota'
+        type: choice
+        options: [plan, deploy]
+        default: plan
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: basemodel-protected-provider-release
+  cancel-in-progress: false
+
+jobs:
+  cloudflare:
+    name: Cloudflare - existing Access-protected release
+    if: github.ref == 'refs/heads/main' && inputs.provider == 'cloudflare'
+    uses: ./.github/workflows/cloudflare-standby.yml
+    with:
+      operation: ${{ inputs.operation }}
+    secrets: inherit
+
+  vercel_plan:
+    name: Vercel - secret-free exact-main candidate
+    if: github.ref == 'refs/heads/main' && inputs.provider == 'vercel'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    outputs:
+      sha: ${{ steps.identity.outputs.sha }}
+    steps:
+      - name: Checkout exact trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Bind current main identity
+        id: identity
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f 1)" = "$EXPECTED_SHA"
+          echo "sha=$EXPECTED_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Verify deployable static site without provider credentials
+        run: npm run build
+
+      - name: Summarize no-spend plan
+        env:
+          EXPECTED_SHA: ${{ steps.identity.outputs.sha }}
+        run: |
+          set -euo pipefail
+          echo "## Vercel provider plan" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Exact main: \`$EXPECTED_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Static build: PASS; provider deployment: NOT ATTEMPTED" >> "$GITHUB_STEP_SUMMARY"
+
+  vercel_deploy:
+    name: Vercel - staged private production release
+    needs: vercel_plan
+    if: github.ref == 'refs/heads/main' && inputs.provider == 'vercel' && inputs.operation == 'deploy' && needs.vercel_plan.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: vercel-protected
+    env:
+      VERCEL_PROTECTED_URL: https://basemodel-preview.vercel.app/
+      RELEASE_PROJECT_ID: ${{ vars.BASEMODEL_PROTECTED_VERCEL_PROJECT_ID }}
+      RELEASE_TEAM_ID: ${{ vars.BASEMODEL_PROTECTED_VERCEL_TEAM_ID }}
+      REVIEW_PROJECT_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout the exact tested source without git credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.vercel_plan.outputs.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Revalidate main before any Vercel quota is spent
+        env:
+          EXPECTED_SHA: ${{ needs.vercel_plan.outputs.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f 1)" = "$EXPECTED_SHA"
+
+      - name: Setup Node 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+
+      - name: REQUIRE existing Vercel Authentication before publishing
+        run: node scripts/hosting/verify-vercel-auth.mjs
+
+      - name: Bind dedicated existing protected Production project
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$VERCEL_TOKEN" || { echo '::error::Configure BASEMODEL_PROTECTED_VERCEL_TOKEN in protected GitHub environment'; exit 1; }
+          test -n "$RELEASE_PROJECT_ID" && test -n "$RELEASE_TEAM_ID" || { echo '::error::Protected Vercel project/team vars missing'; exit 1; }
+          test -z "$REVIEW_PROJECT_ID" || test "$RELEASE_PROJECT_ID" != "$REVIEW_PROJECT_ID" || { echo '::error::Review project cannot be Production'; exit 1; }
+          mkdir -p .vercel
+          node -e 'const fs=require("fs"); fs.writeFileSync(".vercel/project.json", JSON.stringify({projectId:process.env.RELEASE_PROJECT_ID,orgId:process.env.RELEASE_TEAM_ID})+"\n")'
+
+      - name: Stage protected production deployment without moving the live alias
+        id: stage
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          STAGED_URL="$(npx --yes vercel@59.17.0 deploy --prod --skip-domain --yes --no-color --archive=tgz --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID")"
+          STAGED_URL="$STAGED_URL" node -e 'const u=new URL(process.env.STAGED_URL); if(u.protocol!=="https:" || !/^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(u.hostname) || u.pathname!=="/" || u.search || u.hash)process.exit(1)' \
+            || { echo '::error::Unexpected Vercel staged deployment URL; do not promote'; exit 1; }
+          echo "url=$STAGED_URL" >> "$GITHUB_OUTPUT"
+          echo "- Staged candidate: $STAGED_URL (not yet promoted)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: REQUIRE exact Vercel source and project identity before promotion
+        id: stage_identity
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+          VERCEL_DEPLOYMENT_LOOKUP_URL: ${{ steps.stage.outputs.url }}
+          EXPECTED_SHA: ${{ needs.vercel_plan.outputs.sha }}
+        run: node scripts/hosting/verify-vercel-deployment.mjs --github-output
+
+      - name: REQUIRE staged URL stays private
+        env:
+          VERCEL_PROTECTED_URL: ${{ steps.stage.outputs.url }}
+        run: node scripts/hosting/verify-vercel-auth.mjs
+
+      - name: Verify authorized staged routes before promotion
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+          STAGED_URL: ${{ steps.stage.outputs.url }}
+        run: |
+          set -euo pipefail
+          for route in / /research/seed-openevo/flow/ /development/ /model-data/catalog.json; do
+            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --deployment "$STAGED_URL" --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
+            test "$STATUS" = 200 || { echo "::error::Staged route $route did not return 200"; exit 1; }
+          done
+
+      - name: Promote the verified staged deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+          STAGED_URL: ${{ steps.stage.outputs.url }}
+        run: npx --yes vercel@59.17.0 promote "$STAGED_URL" --yes --no-color --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID"
+
+      - name: REQUIRE canonical Vercel Authentication after promotion
+        run: node scripts/hosting/verify-vercel-auth.mjs
+
+      - name: REQUIRE canonical alias points to the exact staged Git SHA
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+          VERCEL_DEPLOYMENT_LOOKUP_URL: https://basemodel-preview.vercel.app/
+          EXPECTED_SHA: ${{ needs.vercel_plan.outputs.sha }}
+          EXPECTED_DEPLOYMENT_ID: ${{ steps.stage_identity.outputs.id }}
+        run: node scripts/hosting/verify-vercel-deployment.mjs
+
+      - name: Verify authorized Production routes after promotion
+        env:
+          VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          for route in / /research/seed-openevo/flow/ /development/ /model-data/catalog.json; do
+            STATUS="$(npx --yes vercel@59.17.0 curl "$route" --token "$VERCEL_TOKEN" --scope "$RELEASE_TEAM_ID" -- -o /dev/null -w '%{http_code}')"
+            test "$STATUS" = 200 || { echo "::error::Production route $route did not return 200"; exit 1; }
+          done
+
+      - name: Summarize private release with outstanding visual acceptance
+        env:
+          EXPECTED_SHA: ${{ needs.vercel_plan.outputs.sha }}
+        run: |
+          set -euo pipefail
+          echo "## Vercel protected Production release" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Checked-out exact main: \`$EXPECTED_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Alias: https://basemodel-preview.vercel.app/" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Anonymous SSO challenge and authenticated four-route HTTP checks: PASS" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Complete logged-in desktop/iPhone visual QA and Vercel deployment metadata must still be checked before calling this accepted" >> "$GITHUB_STEP_SUMMARY"

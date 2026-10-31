@@ -167,6 +167,7 @@ const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   || file === 'scripts/vercel-ui-plan.ts'
   || file === '.github/workflows/self-hosted-ci.yml'
   || file === '.github/workflows/public-pr-ci.yml'
+  || file === '.github/workflows/release-provider.yml'
   || file === '.github/workflows/review-preview.yml'
   || file === '.circleci/config.yml'
   || file === 'scripts/ci-circleci-prepare.sh'

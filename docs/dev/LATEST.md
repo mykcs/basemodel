@@ -8,6 +8,8 @@ BaseModel develops a research website that helps readers understand models, meth
 
 当前发布分工：GitHub Actions 做两道 PR 门禁；**Cloudflare Workers + Access 是默认受保护的手动发布端**（只从已合并的 `main` 显式发布、前后检查 Access）；**Vercel Authentication 保护的旧 Production 保持可用，按配额与健康状况手动回退/更新**。普通 PR 和 `main` 不再自动触发 Vercel 部署。CircleCI 和 Mac runner 只保留故障恢复用途；不让本地 Mac 或科研 GPU 承担日常 CI。没有为普通 PR 自动打开额外 Cloudflare/Vercel 构建。
 
+**双平台手动选择器候选：** `release-provider.yml` 将在合并后提供 `provider=cloudflare|vercel` + `operation=plan|deploy` 单一 GitHub Actions 入口；Cloudflare 直接复用原 Access 受保护工作流，Vercel 先暂存、确认官方 Production 身份与登录拦截才推广。Vercel `deploy` 要先完成独立 `vercel-protected` Environment/生产专用密钥的设置，未验证前不当作已开通。操作与安全限制见 [配额感知切换 SOP](CI/QUOTA_AWARE_PROVIDER_SWITCH.md)。
+
 **2026-10-30 首次受保护 Worker 发布（历史记录）**：[`CI/REVERSIBLE_HOSTING.md`](CI/REVERSIBLE_HOSTING.md) 的 Cloudflare Workers + Access 备用线路已在 [GitHub Actions #41044575890](https://github.com/mykcs/basemodel/actions/runs/41044575890) 从固定 `main@e7eee109` 成功部署；上传前后 4/4 匿名 Access 跳转 PASS，已有授权会话浏览器完成首页、研究页、JSON、SVG、旧路由及 iPhone 18 Pro Max 视口的代表性验收。GitHub `cloudflare-protected` Environment 保存仅限独立 Worker 的凭据，`main` 限定；原 Vercel 正式发布与访问保护维持不变。**同日控制面切换：** [PR #975](https://github.com/mykcs/basemodel/pull/975) 合并为 `6f60ff67`；GitHub `main-pr-gate` 规则集和旧式 `main` 分支保护都实际替换为上述两项检查，保留严格 current-base 与既有审查限制。当前 Worker 部署 SHA、最新发布验收与可切换步骤必须按 [配额感知操作手册](CI/QUOTA_AWARE_PROVIDER_SWITCH.md) 实时读回。尚无自有域名，因此只能切换两个不同受保护网址，不能声称同一网址一键切换。
 
 **已取代的旧设想：** 2026-10-29 提出的“低频时将仓库改为私有”仅保留在 [`CI/PRIVATE_REPOSITORY_STRATEGY.md`](CI/PRIVATE_REPOSITORY_STRATEGY.md) 作为历史比较；**当前不执行私有化**。若未来出现必须隐藏源码的真实需求，重新评估源代码公开风险、私有 CI 额度和等价验收，再另行决策。现有站点对外链接和访问策略由 [`CI/REVERSIBLE_HOSTING.md`](CI/REVERSIBLE_HOSTING.md) 指引；没有自有域名时只能**切换不同受保护网址**，无法把 `.vercel.app` 变成 `.workers.dev`。
