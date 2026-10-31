@@ -49,14 +49,15 @@ describe('UI visual acceptance gate contract', () => {
     expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
   });
 
-  it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary, semantic-release, and UI fix branch families', () => {
+  it('keeps the optional Vercel fallback Chromium-only while GitHub CI owns current browser coverage', () => {
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain('fix\\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)');
     expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
     expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', '--only-shell', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');
-    expect(policy).toContain('repository-owned Vercel browser gate is **Chromium-only**');
+    expect(policy).toContain('**optional Vercel fallback** browser gate remains Chromium-only');
+    expect(policy).toContain('The default GitHub-hosted Public PR CI supplies the required Chromium/WebKit evidence');
     expect(policy).toContain('Playwright-supported macOS, Ubuntu, or Debian runner');
     expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
@@ -218,10 +219,10 @@ describe('UI visual acceptance gate contract', () => {
     }
   });
 
-  it('rejects protected Preview authentication interstitials as product visual evidence', () => {
+  it('rejects protected Cloudflare Access/SSO interstitials as product visual evidence', () => {
     expect(policy).toContain('route-specific sentinel');
-    expect(policy).toContain('Vercel login/SSO/access interstitial');
-    expect(policy).toContain('does **not** count as route visual evidence');
+    expect(policy).toContain('if the browser shows an Access/SSO interstitial');
+    expect(policy).toContain('the login screen is not route visual evidence');
   });
 
   it('records the owner-first-discovery anti-pattern and exact commands', () => {
