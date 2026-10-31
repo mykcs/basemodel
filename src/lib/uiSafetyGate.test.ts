@@ -58,7 +58,8 @@ describe('UI visual acceptance gate contract', () => {
     expect(vercelUiGate).not.toContain('--project=webkit');
     expect(policy).toContain('**optional Vercel fallback** browser gate remains Chromium-only');
     expect(policy).toContain('The default GitHub-hosted Public PR CI supplies the required Chromium/WebKit evidence');
-    expect(policy).toContain('Playwright-supported macOS, Ubuntu, or Debian runner');
+    expect(policy).toContain('run from a Playwright-supported runner:');
+    expect(policy).toContain('macOS, Ubuntu, or Debian');
     expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
