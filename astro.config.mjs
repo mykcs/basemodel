@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 
 const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
@@ -18,6 +19,7 @@ export default defineConfig({
   // meaningful spaces between adjacent inline elements. Preserve the Astro 6
   // HTML-aware behavior so the framework upgrade does not change rendered copy.
   compressHTML: true,
+  vite: { plugins: [tailwindcss()] },
   // The native /sitemap.xml owns indexing policy. Explicitly configure the
   // sitemap integration so Starlight cannot add an unfiltered second sitemap.
   integrations: [react(), sitemap({ filter: () => false }), starlight({

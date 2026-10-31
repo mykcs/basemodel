@@ -68,28 +68,27 @@ BaseModel is a research decision system connecting Base Model → SEED/OpenEvo �
 
 ```text
 ordinary PR
-  -> required Public PR CI (`public-ci-gate`)
-  -> deterministic validation + risk-based browser coverage
+  -> required Public PR CI (`public-ci-gate`): deterministic + risk-based real browsers
+  -> required `cloudflare-artifact-gate`: exact-head Worker build, route/security checks and no-deploy dry-run
 
 final current-base candidate
-  -> `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`
-  -> exact-head Vercel provider gate
+  -> both required GitHub Actions checks green on the same head with strict base freshness
 
 main
-  -> Vercel Production
-  -> https://basemodel-preview.vercel.app
+  -> on-demand protected Cloudflare deployment (default): https://basemodel-access-standby.gemini202405.workers.dev/
+  -> on-demand Vercel Production recovery: https://basemodel-preview.vercel.app/
 ```
 
-**Vercel is the only ordinary deployment provider and required final-candidate authority.** Public GitHub-hosted Actions is the ordinary automatic PR preflight compute lane. CircleCI and the Mac/OrbStack runner are explicit manual fallbacks; historical Cloudflare material is legacy/rollback evidence, not a normal release stage.
+**Cloudflare is the default release provider; Vercel remains an authenticated, manually published fallback.** Do not trigger Vercel Git deployments for ordinary Cloudflare PRs or `main` merges, or spend Cloudflare deploy quota for dry-run checks. Actual release requires protected exact-main deployment, source SHA readback, anonymous Access denial and real authenticated browser checks; `READY` or a green PR alone is not enough. Preserve Vercel's last known-good Production and existing authentication. The live ruleset, not this file alone, determines cutover authority; [quota-aware switch and fail-closed migration](docs/dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) owns the exact instructions. CircleCI and Mac/OrbStack are explicit manual CI fallbacks only.
 
 ### GitHub-first BaseModel execution (owner directive, 2026-10-20)
 
-**Default: GitHub plugin + GitHub Actions hosted runners + Vercel plugin. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
+**Default: GitHub plugin + GitHub Actions hosted runners + protected Cloudflare release; Vercel plugin only for on-demand fallback. Do not use Remote Desktop Commander (RDC) or the owner's MacBook as the routine execution path for BaseModel.** The presence of an authorized device is not itself a reason to route work to it.
 
 - Read owners, current PRs and file history; create task branches, review changes, update source and open PRs through GitHub. Respect concurrent branches and compare exact SHAs before integration.
-- Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium; **do not claim WebKit passed unless an actual WebKit job ran**.
+- Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium and WebKit for full/global work; **do not claim WebKit passed unless an actual WebKit job ran**.
 - Use cloud Playwright outputs and retained GitHub Actions artifacts for screenshots, trace/video on failure, typography and figure geometry evidence. Where the existing workflow does not yet upload an artifact, explicitly state that limitation and improve the owning cloud workflow rather than silently falling back to the Mac.
-- Request a Vercel Preview/final gate on the exact accepted PR SHA, inspect the actual protected route (not a login page), then separately verify main and Production. GitHub status is not a substitute for rendered-page review.
+- Require both exact-head GitHub checks (`public-ci-gate` and `cloudflare-artifact-gate`) before merge. For release, inspect the actual protected Cloudflare page (not an Access login page) at the deployed `main` SHA; use a Vercel Preview/Production check only when explicitly choosing that authenticated fallback. GitHub status is not a substitute for rendered-page review.
 - RDC remains an exceptional fallback for MacBook-exclusive files, authorized Mac-controlled compute/server access, or a demonstrated plugin/cloud capability gap. Reuse explicit task-specific **or standing** user approval covering the same operation; never ask again solely because the Agent, session, or tool changed. If approval is absent or an actual action/object `DENY`/`HOLD` applies, stop the affected action rather than routing around it. Use the Mac's authenticated `gh`/provider CLI as a control plane only when cloud invocation is unavailable; keep CI/build/browser workloads on hosted runners and return to cloud-first afterward.
 
 This allocation applies to BaseModel website changes, including research figures and UI acceptance. It does **not** alter the project-level release/security gates, and is not permission to skip browser or scientific-evidence validation.
@@ -127,11 +126,11 @@ npm run build
 
 For material UI/theme/layout/responsive/navigation changes, follow the UI acceptance policy and run the strongest relevant browser gate (`npm run test:ui`, or `npm run test:ui:all` for shared/global work).
 
-Normal flow: read current owners → inspect overlapping work/executable truth → make one coherent change → validate → push one coherent PR update → request the persistent exact-head Vercel gate only for the final candidate → inspect Preview → merge once → verify Production separately. A clean merge, green status, or READY deployment alone does not prove combined-product acceptance.
+Normal flow: read current owners → inspect overlapping work/executable truth → make one coherent change → validate → push one coherent PR update → require both current-base GitHub checks on the exact head → merge once → explicitly publish protected `main` to the selected provider → verify deployment SHA, access protection and real pages. Do not request the Vercel gate for an ordinary Cloudflare release. A clean merge, green status, or provider READY alone does not prove combined-product acceptance.
 
-## Vercel build-budget boundary
+## Provider quota and release boundary
 
-Vercel builds are finite resources. Ordinary working pushes should spend zero Vercel build compute; reuse the same PR for corrections, move the existing persistent final-gate ref only when the exact candidate is ready, and aim for one accepted Production build per release batch. Do not create noop/provider-wakeup commits or use provider-triggering refs as scratch space.
+Ordinary PRs and `main` merges spend no Vercel deployment quota, and Cloudflare artifact checks are dry-run only. Reuse the same PR for corrections; publish the selected provider only on explicit release need, after reading its live quota and deployed SHA. The persistent Vercel final-gate ref is optional fallback tooling, not a prerequisite for Cloudflare merges or releases. Do not create noop/provider-wakeup commits or use provider-triggering refs as scratch space.
 
 ## Product / research invariants
 
@@ -156,7 +155,7 @@ Preserve Vercel Preview `noindex`, Production canonical/hreflang identity, repos
 - For non-trivial work, scan scenario-trigger-registry; repeat-correction work uses `REPEAT-CORRECTION` and `project-agent-operating-principles.md#correction-to-action-witness`.
 - **Provider writes are noun-bound at dispatch:** `open PR -> create_pull_request`; file/ref/branch mutation is not an acceptable substitute.
 - **Before the first compound shell call**, select `/bin/bash` when Bash syntax is required; The requested shell is not execution proof, so verify the interpreter that actually launched.
-- Multi-PR releases follow the `parallel/stacked integration policy`; Ordinary completion reports are **Vercel-first** and still separate source, exact-head acceptance, merge, and Production.
+- Multi-PR releases follow the `parallel/stacked integration policy`; ordinary completion reports are **Cloudflare-first**, distinguish source, exact-head acceptance, merge and real protected Production browser evidence, and identify Vercel's possibly older standby SHA separately.
 - LYG2171 public ownership has moved to fuhuo: public users go to https://fuhuo-20260419.vercel.app/docs/machines and https://fuhuo-20260419.vercel.app/docs/server-governance. BaseModel exposes only a generic public topology and must not receive new live LYG2171 facts.
 
 ## Collaboration and documentation

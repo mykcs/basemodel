@@ -71,7 +71,7 @@ const commandMenuLabels = {
   searchGuide: m.nav.searchGuide,
 };
 ---
-<Tag class="site-header" data-site-header>
+<Tag class="site-header" data-site-header x-data="mobileNavigation" x-on:keydown.escape.window="closeAndRestore" x-on:resize.window="onViewportChange">
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">BM</span>
@@ -115,13 +115,13 @@ const commandMenuLabels = {
 
     <slot name="search"><CommandMenu locale={locale} labels={commandMenuLabels} /></slot>
     {switchHref && <a class="lang-switch" href={switchHref} aria-label={m.nav.switchLangLabel} hreflang={otherLocale === 'zh' ? 'zh-CN' : 'en'}>{m.nav.switchLang}</a>}
-    <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+    <button class="menu-toggle" type="button" aria-label={m.nav.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle x-bind:aria-expanded="open" x-on:click="toggle">
       <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
     <button class="theme-toggle" type="button" aria-label={m.nav.toggleTheme} title={m.nav.toggleTheme} aria-pressed="false" data-theme-toggle data-dark-label={m.nav.toggleLightTheme} data-light-label={m.nav.toggleDarkTheme}>◐</button>
   </div>
 
-  <div class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true" x-bind:aria-hidden="closed" x-bind:class="panelClass" x-on:click="closeOnNavigation">
     <div class="shell mobile-menu__inner">
       <section class="mobile-menu__section" aria-labelledby="mobile-journeys-title">
         <div class="mobile-menu__heading">
@@ -157,27 +157,38 @@ const commandMenuLabels = {
 </Tag>
 
 <script>
+  import Alpine from '@alpinejs/csp';
+
   const menuToggle = document.querySelector<HTMLElement>('[data-menu-toggle]');
   const mobileMenu = document.querySelector<HTMLElement>('[data-mobile-menu]');
   const resourceMenu = document.querySelector<HTMLDetailsElement>('[data-resource-menu]');
 
-  const setMobileMenu = (open: boolean, restoreFocus = false) => {
-    mobileMenu?.classList.toggle('is-open', open);
-    mobileMenu?.setAttribute('aria-hidden', String(!open));
-    menuToggle?.setAttribute('aria-expanded', String(open));
-    document.documentElement.classList.toggle('mobile-nav-open', open);
-    if (open) {
-      requestAnimationFrame(() => mobileMenu?.querySelector<HTMLElement>('a')?.focus());
-    } else if (restoreFocus) {
-      menuToggle?.focus();
-    }
-  };
-
-  menuToggle?.addEventListener('click', () => {
-    setMobileMenu(!mobileMenu?.classList.contains('is-open'));
-  });
-
-  mobileMenu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setMobileMenu(false)));
+  // The CSP build keeps declarative menu state without requiring unsafe-eval.
+  // Alpine owns this static Header only; React islands retain their own state.
+  Alpine.data('mobileNavigation', () => ({
+    open: false,
+    get closed() { return String(!this.open); },
+    get panelClass() { return this.open ? 'is-open' : ''; },
+    setOpen(open: boolean, restoreFocus = false) {
+      this.open = open;
+      document.documentElement.classList.toggle('mobile-nav-open', open);
+      if (open) {
+        requestAnimationFrame(() => mobileMenu?.querySelector<HTMLElement>('a')?.focus());
+      } else if (restoreFocus) {
+        menuToggle?.focus();
+      }
+    },
+    toggle() { this.setOpen(!this.open); },
+    closeAndRestore() { if (this.open) this.setOpen(false, true); },
+    closeOnNavigation(event: Event) {
+      if (event.target instanceof Element && event.target.closest('a')) this.setOpen(false);
+    },
+    onViewportChange() {
+      if (window.matchMedia('(min-width: 1081px)').matches) this.setOpen(false);
+    },
+    destroy() { document.documentElement.classList.remove('mobile-nav-open'); },
+  }));
+  Alpine.start();
 
   document.addEventListener('click', (event) => {
     if (!resourceMenu?.open || resourceMenu.contains(event.target as Node)) return;
@@ -191,7 +202,6 @@ const commandMenuLabels = {
       resourceMenu.open = false;
       if (focusWasInside) resourceMenu.querySelector<HTMLElement>('summary')?.focus();
     }
-    if (mobileMenu?.classList.contains('is-open')) setMobileMenu(false, true);
   });
 
   const themeToggles = [...document.querySelectorAll<HTMLElement>('[data-theme-toggle], [data-theme-toggle-mobile]')];

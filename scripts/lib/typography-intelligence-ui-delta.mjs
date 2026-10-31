@@ -124,6 +124,11 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/DevelopmentWorkflowPage.astro": {
+    "currentSourceSha256": "63ded467e6c88a0b08479b47c55c6c6c681579e1e657d6442b76bb2610229b10",
+    "priorSourceSha256": "3f632f3ce25508787dd2aa0799aa0de7345f70c2e8b3fea4dcfd149cfa7d2d0e",
+    "reason": "Quota-aware Cloudflare-first and Vercel fallback explanations replace outdated human-facing CI text without changing sealed typography CSS declarations. Historical /development/ consumer screenshots are invalidated; exact-head browser geometry and authenticated release inspection are required."
+  },
   "src/pages/_bodies/home-v2.astro": {
     "currentSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
     "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",

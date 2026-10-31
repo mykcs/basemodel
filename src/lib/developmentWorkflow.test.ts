@@ -23,11 +23,16 @@ describe('human-facing development workflow', () => {
 
   it('keeps the current BaseModel CI authority and fallbacks honest', () => {
     expect(page).toContain('repository + browser acceptance');
-    expect(page).toContain('real provider build');
+    expect(page).toContain('offline check; no deploy');
     expect(page).toContain('ci/vercel-gate-final');
     expect(page).toContain('public-ci-gate');
-    expect(page).toContain('Cloudflare is not part of ordinary BaseModel deployment or live monitoring');
+    expect(page).toContain('cloudflare-artifact-gate');
+    expect(page).toContain('The normal release destination is the existing Cloudflare Access-protected Worker');
+    expect(page).toContain('Ordinary PRs and main merges do not auto-deploy to Vercel');
+    expect(page).toContain('basemodel-access-standby.gemini202405.workers.dev');
+    expect(page).toContain('basemodel-preview.vercel.app');
     expect(page).toContain('Mac/OrbStack remains manual recovery only');
+    expect(page).not.toContain('Cloudflare is not part of ordinary BaseModel deployment');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');
     expect(page).not.toContain('final-candidate CI + Preview');
   });

@@ -2,7 +2,11 @@
 
 Last reviewed: **2026-10-30**
 
-## Authority
+**Cloudflare-first repository target — verify live authority before relying on it.** The user chooses a release provider by quota/health, normally Cloudflare and exceptionally Vercel. On PRs, require BOTH `public-ci-gate` and offline `cloudflare-artifact-gate` (real GitHub Actions App 15368) for the exact head with strict current-base branch protection; neither check publishes or needs provider secrets. On `main`, publish explicitly through the existing `cloudflare-standby.yml` protected Environment and verify the Worker source SHA, Cloudflare Access anonymous refusal and authenticated pages/interactions. `vercel.json` disables automatic Git `main` deploy but leaves the Vercel project, existing protected Production and manual authenticated CLI/API fallback intact. The Vercel identity alarm runs on Vercel deployment status or explicit dispatch, **not** on ordinary Cloudflare-only merges. [The complete staged cutover, provider selector and rollback](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) define the control-plane transaction.
+
+**2026-10-30 control-plane readback:** PR #975's exact head passed both required GitHub Actions checks and merged as `6f60ff67`. BOTH active ruleset `22224550` and legacy `main` branch protection were independently changed from `Vercel` App 8329 to `cloudflare-artifact-gate` App 15368, retaining strict `public-ci-gate`. The effective PR merge state became `CLEAN`. This proves merge authority, **not** that the Worker has the latest source. Every release must still verify exact-main Cloudflare deployment, Access and real logged-in pages. The historical Vercel-first contract below documents existing fallback/rollback mechanics, and must not be read as an instruction to spend a Vercel Preview on every future Cloudflare PR after the live cutover.
+
+## Previous Vercel-first authority (historical/fallback; no longer required by current GitHub protection)
 
 Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns the executable release/validation policy; the rationale file explains why the provider topology was chosen and when to reconsider it.
 
@@ -22,7 +26,7 @@ final non-draft current-base candidate
 -> CircleCI automatic PR/main workflows disabled; API-triggered manual fallback only
 
 main
--> Vercelduction
+-> Vercel Production
 -> static production build of the already-accepted merge tree
 -> https://basemodel-preview.vercel.app
 -> access-protected Production; verify through Vercel control plane and authenticated access
@@ -36,7 +40,7 @@ manual recovery only
 
 Qualification evidence: PR #766 kept the full-risk Public PR CI green and reduced exact-head Vercel BUILDING→READY from **507.7 s to 14.170 s**; the following Production build reduced from **633.3 s to 16.608 s**. The Standard 4 vCPU / 8 GB build tier was unchanged.
 
-**Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for access-protected Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare Workers + Access is a separately deployed **private, manually dispatched standby** (PR #972, Action #41044575890), not a second ordinary PR Preview, required check, Production entry or monitoring authority; older Cloudflare paths remain legacy/rollback tooling.
+**Required acceptance is intentionally split instead of duplicated.** Public GitHub-hosted Actions owns deterministic and browser acceptance on the exact PR head. Vercel remains the required provider build/deploy authority on that same SHA and for access-protected Production. CircleCI remains explicit API-triggered fallback, the Mac/OrbStack workflow remains self-hosted manual fallback, and Cloudflare is legacy/rollback/provider-specific tooling rather than a second deployment or monitoring authority.
 
 ### Exact-head and current-base acceptance
 
@@ -135,7 +139,7 @@ Changes to Public PR CI, planner, Vercel gate tooling, deployment config, Circle
 
 ### Budget-first execution
 
-The linked Vercel team was **Hobby** on 2026-10-30 (not Pro); verify the actual account and quota again before publication. The official Hobby limit is 100 deployments created per 86,400 seconds ([Vercel limits](https://vercel.com/docs/limits)). `Ignored Build Step` is not a reliable substitute for preventing deployment creation, so retain the existing `git.deploymentEnabled` ordinary-branch gate. If the provider reports `Deployment rate limited`, stop new Vercel requests until the provider permits them; Public CI and source work continue. Vercel is metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
+Vercel deployments are quota-metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
 
@@ -248,7 +252,7 @@ latest intended base
 ├─ focused worker branch / Draft PR B ├─> explicit integration/release head
 └─ focused worker branch / Draft PR C ┘        -> one exact-head combined Preview
                                                -> one accepted merge to main
-                                               -> one Vercelduction build
+                                               -> one Vercel Production build
                                                -> one post-release route/metadata audit
 ```
 
@@ -328,7 +332,7 @@ After the accepted exact head is current with `main`:
 
 ```text
 merge to main
--> Vercelduction build
+-> Vercel Production build
 -> https://basemodel-preview.vercel.app
 -> verify indexability, canonical/hreflang, robots/sitemap, representative routes and interaction
 ```
@@ -391,7 +395,7 @@ Vercel deployment triggers: total / READY / ERROR / CANCELED / ignored when know
 Vercel Preview + exact head
 Preview route/metadata acceptance
 Merged to main
-Vercelduction deployment + public verification
+Vercel Production deployment + public verification
 External boundary, only when it materially blocked or changed the result
 ```
 

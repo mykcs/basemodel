@@ -1,7 +1,5 @@
 name: Production identity alarm
 on:
-  push:
-    branches: [main]
   deployment_status:
   workflow_dispatch:
 permissions:
@@ -23,7 +21,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: '24'
-      - name: Compare live main with Vercel's GitHub Production mirror
+      - name: Compare Vercel Production only after an explicit Vercel release or identity request
         run: node scripts/verify-production-identity.mjs
         env:
           GITHUB_TOKEN: ${{ github.token }}

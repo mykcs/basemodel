@@ -1,7 +1,16 @@
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+
+const extrasMode = process.argv[2] === 'extras';
+if (process.argv.length > (extrasMode ? 3 : 2)) {
+  console.error('Usage: node scripts/ci-ui-gate.mjs [extras]');
+  process.exit(2);
+}
+if (extrasMode) {
+  rmSync(join(process.env.CI_BROWSER_EXTRAS_DIR || 'ci-browser-extras', 'public-extras-proof.json'), { force: true });
+}
 
 const base = process.env.CI_BASE_SHA?.trim();
 const head = process.env.CI_HEAD_SHA?.trim() || 'HEAD';
@@ -26,6 +35,10 @@ const shardIndex = parsePositiveInteger('CI_BROWSER_SHARD_INDEX', 1);
 const shardTotal = parsePositiveInteger('CI_BROWSER_SHARD_TOTAL', 1);
 if (shardIndex > shardTotal) {
   console.error('[ci-ui-gate] CI_BROWSER_SHARD_INDEX cannot exceed CI_BROWSER_SHARD_TOTAL');
+  process.exit(2);
+}
+if (extrasMode && (shardIndex !== 1 || shardTotal !== 1)) {
+  console.error('[ci-ui-gate] extras is one unsharded seven-case owner');
   process.exit(2);
 }
 const primaryShard = shardIndex === 1;
@@ -99,6 +112,11 @@ if (forceFull) {
   console.log('[ci-ui-gate] force-full fallback canary enabled');
 }
 
+if (extrasMode && plan.mode === 'focused') {
+  console.error('[ci-ui-gate] extras requires full applicability');
+  process.exit(1);
+}
+
 if (plan.mode === 'skip') {
   console.log('[ci-ui-gate] no browser-relevant changes; PASS');
   process.exit(0);
@@ -133,7 +151,11 @@ const browserEnv = {
 const installArgs = ['playwright', 'install'];
 if (installWithDeps) installArgs.push('--with-deps');
 installArgs.push('chromium');
-run('npx', installArgs);
+if (extrasMode && process.env.CI_UNIFIED_PREFLIGHT === '1') {
+  console.log('[ci-ui-gate] unified extras uses the pinned browser image');
+} else {
+  run('npx', installArgs);
+}
 
 const ciInfrastructureChanged = plan.changedFiles.some((file) => (
   file === 'scripts/ci-ui-gate.mjs'
@@ -166,10 +188,60 @@ const labRelevant = forceFull || ciInfrastructureChanged || plan.changedFiles.so
   || file === 'tests/e2e/lab-playwright.config.ts'
 ));
 
-if (primaryShard) {
+if (primaryShard && process.env.CI_UNIFIED_PREFLIGHT !== '1') {
   run('node', ['scripts/ui-overflow-preflight.mjs'], browserEnv);
+} else if (process.env.CI_UNIFIED_PREFLIGHT === '1') {
+  console.log('[ci-ui-gate] overflow preflight belongs to the exact-source unified producer');
 } else {
   console.log('[ci-ui-gate] overflow preflight is owned by shard 1');
+}
+
+if (extrasMode) {
+  if (plan.mode !== 'full') {
+    console.error('[ci-ui-gate] extras requires full applicability');
+    process.exit(1);
+  }
+  const { canonicalJsonTests, requireExactCases } = await import('./ci-ui-test-list.mjs');
+  const directory = process.env.CI_BROWSER_EXTRAS_DIR || 'ci-browser-extras';
+  mkdirSync(directory, { recursive: true });
+  const proofPath = join(directory, 'public-extras-proof.json');
+  const suites = [
+    { name: 'core', file: 'core-research-visual-signatures.capture.spec.ts', count: 1,
+      args: ['tests/e2e/core-research-visual-signatures.capture.spec.ts', '--output=test-results/public-core'] },
+    { name: 'lab', file: 'lab-server-visual-qa.spec.ts', count: 6,
+      args: ['--config', 'tests/e2e/lab-playwright.config.ts'] },
+  ];
+  const accepted = [];
+  try {
+    for (const suite of suites) {
+      const canonicalPath = join(directory, suite.name + '-canonical.json');
+      const reportPath = join(directory, suite.name + '-executed.json');
+      const common = ['playwright', 'test', ...suite.args, '--project=chromium', '--workers=1', '--retries=0', '--max-failures=1'];
+      const invoke = (extra, path) => {
+        // Never qualify from a report left by an earlier invocation.
+        writeFileSync(path, '{}\n');
+        run('npx', [...common, ...extra], { ...browserEnv, PLAYWRIGHT_JSON_OUTPUT_FILE: resolve(path) });
+        return canonicalJsonTests(JSON.parse(readFileSync(path, 'utf8')), { browser: 'chromium', executed: !extra.includes('--list') });
+      };
+      const expected = invoke(['--list', '--reporter=json'], canonicalPath);
+      if (expected.length !== suite.count || expected.some(item => item.specFile !== suite.file)) throw new Error(`Unexpected ${suite.name} population: require ${suite.count} cases from ${suite.file}`);
+      if (suite.name === 'core' && expected[0].title !== 'capture accepted core research screenshot signatures') throw new Error('Unexpected core signature identity');
+      const actual = invoke(['--reporter=list,json'], reportPath);
+      requireExactCases(expected, actual);
+      accepted.push({ name: suite.name, cases: actual.length, canonical: canonicalPath, report: reportPath, identities: actual.map(item => item.id) });
+    }
+    writeFileSync(proofPath, JSON.stringify({
+      schemaVersion: 1, head, base,
+      run: process.env.GITHUB_RUN_ID ?? null, attempt: process.env.GITHUB_RUN_ATTEMPT ?? null,
+      producerAttempt: process.env.CI_BUILD_RUN_ATTEMPT ?? null,
+      browser: 'chromium', cases: accepted.reduce((sum, suite) => sum + suite.cases, 0), suites: accepted,
+    }, null, 2) + '\n');
+  } catch (error) {
+    console.error('[ci-ui-gate] extras FAIL:', error.message);
+    process.exit(1);
+  }
+  console.log('[ci-ui-gate] Public-only extras: 1 core capture + 6 Lab cases PASS');
+  process.exit(0);
 }
 
 if (plan.mode === 'focused') {

@@ -32,11 +32,11 @@ describe('Vercel build-budget contract', () => {
     expect(mustRunAcceptanceBuild({ VERCEL_ENV: 'production' })).toBe(false);
   });
 
-  it('spends hosted Preview compute only on explicit exact-SHA gate refs', () => {
+  it('blocks automatic Git deployments on main and spends Preview compute only on explicit fallback gate refs', () => {
     const enabled = vercel.git?.deploymentEnabled ?? {};
     expect(enabled['*']).toBe(false);
     expect(enabled['**/*']).toBe(false);
-    expect(enabled.main).toBe(true);
+    expect(enabled.main).toBe(false);
     expect(enabled['ci/vercel-gate-final']).toBe(true);
     expect(enabled['ci/vercel-gate-base']).toBeUndefined();
     expect(enabled['ci/vercel-gate-*']).toBeUndefined();
@@ -110,13 +110,13 @@ describe('Vercel build-budget contract', () => {
     expect(vercelWorkflow).toContain('VERCEL_GIT_PREVIOUS_SHA');
   });
 
-  it('makes ordinary deployment reporting Vercel-first', () => {
-    expect(root).toContain('Vercel is the only ordinary deployment provider');
-    expect(root).toContain('Ordinary completion reports are **Vercel-first**');
-    expect(latest).toContain('`public-ci-gate` is required merge evidence');
-    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
-    expect(deploymentPolicy).toContain('Vercel-first completion report');
-    expect(deploymentPolicy).toContain('Do not include Cloudflare in an ordinary completion report');
+  it('makes ordinary deployment reporting Cloudflare-first and Vercel an explicit fallback', () => {
+    expect(root).toContain('Cloudflare is the default release provider');
+    expect(root).toContain('ordinary completion reports are **Cloudflare-first**');
+    expect(latest).toContain('Automatic PR evidence is **Public PR CI**');
+    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`');
+    expect(deploymentPolicy).toContain('Cloudflare-first repository target');
+    expect(deploymentPolicy).toContain('not** on ordinary Cloudflare-only merges');
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 

@@ -1144,7 +1144,18 @@ const currentWitnessRoute = (row: ScopedMigrationWitness): ScopedMigrationWitnes
     throw Error('Unexpected task-context witness identity');
   return {...row,route:'/research/seed-openevo/study/capability-exploration/mechanism-1-0/'};
 };
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute),...currentFlowWitnesses,...currentContentWitnesses];
+// Preserve the immutable 2026-10-22 typography receipt. The /development/
+// consumer now shows the Cloudflare-first operating contract rather than the
+// retired Vercel-only command. Measure its surviving semantic <code> reader
+// at all six viewports/themes, keeping the original lineage, role and floor.
+const currentDevelopmentWitness = (row: ScopedMigrationWitness): ScopedMigrationWitness => {
+  if (row.route !== '/development/' || row.lineageId !== '8dfedef48465ccec9258') return row;
+  if (row.file !== 'src/components/DevelopmentWorkflowPage.astro' || row.selector !== 'code' ||
+      row.text !== 'node scripts/request-vercel-final-gate.mjs <PR_NUMBER>')
+    throw Error('Unexpected historical /development/ code witness identity');
+  return {...row,text:'docs/agents/current/ci-provider-decision.md'};
+};
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute).map(currentDevelopmentWitness),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{
@@ -1164,7 +1175,7 @@ for (const route of [...new Set(scopedMigrationWitnesses.map(row=>row.route))]) 
     // reader has many nested disclosures and tables; its exact-head browser
     // receipt reached the final viewport before timing out. Keep all witnesses
     // and views, extending only that route and other very dense routes.
-    if (routeWitnesses.length >= 120 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
+    if (routeWitnesses.length >= 70 || route === '/research/seed-openevo/study/results/') test.setTimeout(180_000);
     for (const width of [390,768,1440]) for (const theme of ['light','dark']) {
       await page.setViewportSize({width,height:900});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);

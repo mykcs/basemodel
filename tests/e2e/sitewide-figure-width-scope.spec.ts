@@ -1,7 +1,7 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { createHash } from 'node:crypto';
 import { RETROSPECTIVE_NUMERIC_CELLS, RETROSPECTIVE_QUESTION_LABELS } from '../fixtures/open-evo-research-retrospective-tables';
-import { captureFigureEvidence, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
+import { captureFigureEvidence, prepareFigureEvidence, recordFigureEvidenceProfile, revealEvidenceReadingState, settleFigureHydration } from './figure-evidence';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
@@ -62,10 +62,16 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     // both newly added editorial tables by identity and content.
     const identity = await target.evaluate(el => {
       const root = el.closest('[data-research-retrospective]')!;
-      const numericTables = [...root.querySelectorAll('#findings table, #history table')];
-      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
-      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1, numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
-      return { kind: 'numeric', numericIndex: numericTables.indexOf(el), numericCount: numericTables.length, totalTables: root.querySelectorAll('table').length };
+      const header = [...el.querySelectorAll('thead th')].map(cell => cell.textContent?.trim());
+      const advisorSummaryHeader = ['需要回答的议题', '已经可检查的事实', '仍未过关的地方'];
+      const numericTables = [...root.querySelectorAll('#findings table, #history table')]
+        .filter(table => JSON.stringify([...table.querySelectorAll('thead th')].map(cell => cell.textContent?.trim())) !== JSON.stringify(advisorSummaryHeader));
+      const numericCount = numericTables.length;
+      const totalTables = root.querySelectorAll('table').length;
+      if (el.closest('#advisor')) return { kind: 'advisor', numericIndex: -1, numericCount, totalTables };
+      if (el.closest('#questions')) return { kind: 'questions', numericIndex: -1, numericCount, totalTables };
+      if (JSON.stringify(header) === JSON.stringify(advisorSummaryHeader)) return { kind: 'advisor', numericIndex: -1, numericCount, totalTables };
+      return { kind: 'numeric', numericIndex: numericTables.indexOf(el), numericCount, totalTables };
     });
     expect(identity.numericCount).toBe(RETROSPECTIVE_NUMERIC_CELLS.length);
     expect(identity.totalTables).toBe(RETROSPECTIVE_NUMERIC_CELLS.length + 2);
@@ -166,6 +172,31 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
   expect(await target.locator('..').evaluate(node => getComputedStyle(node).overflowX)).not.toMatch(/hidden|clip/);
 }
 
+/** The original non-capture assertions, shared without changing thresholds. */
+async function assertDefaultFigureSurface(page: Page, route: string) {
+  const documentOverflowX = await page.evaluate(() =>
+    document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(documentOverflowX).toBeLessThanOrEqual(2);
+  const nativeTables = page.locator('table');
+  if (route === '/research/seed-openevo/recent-challenges/') {
+    await expect(nativeTables).toHaveCount(7);
+    await expect(page.locator('#advisor table')).toHaveCount(1);
+    await expect(page.locator('#findings table')).toHaveCount(4);
+    await expect(page.locator('#history table')).toHaveCount(1);
+    await expect(page.locator('#questions table')).toHaveCount(1);
+  }
+  if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
+  let paperTablesChecked = 0;
+  for (let index = 0; index < await nativeTables.count(); index++) {
+    const target = nativeTables.nth(index);
+    if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) {
+      await expectPaperGrammar(target, route, index);
+      paperTablesChecked++;
+    }
+  }
+  return { documentOverflowX, paperTablesChecked };
+}
+
 const captureAudit = process.env.CLOUD_FIGURE_AUDIT === '1';
 const root = join(process.cwd(), 'dist');
 function discover(dir: string): string[] {
@@ -189,26 +220,45 @@ test('visual-route audit covers all source-rendered graphics/table routes', () =
 for (const route of routes) {
   test('research figure/table route remains viewport-safe: ' + route, async ({ page }, testInfo) => {
     if (captureAudit) testInfo.setTimeout(600_000); // Full per-object capture includes dense tables; the ordinary overflow probe keeps its original budget.
+    const routeStarted = performance.now();
     const evidence = [];
+    const baseline = [];
+    // Preserve the exact ordinary two-width light/default-reading acceptance
+    // before opening evidence disclosures or selecting any comparison case.
+    // Source-owned open details remain open; application hydration stays real.
+    if (captureAudit) {
+      for (const width of [390, 1440]) {
+        await page.addInitScript(value => localStorage.setItem('atlas-theme', value), 'light');
+        await page.setViewportSize({ width, height: 900 });
+        const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
+        expect(response?.status()).toBe(200);
+        const sourceState = await page.evaluate(() => ({
+          theme: localStorage.getItem('atlas-theme'),
+          rootTheme: document.documentElement.getAttribute('data-theme'),
+          openDetails: [...document.querySelectorAll('details')].filter(node => node.open).length,
+          closedDetails: [...document.querySelectorAll('details')].filter(node => !node.open).length,
+          checkedRadios: document.querySelectorAll('input[type="radio"]:checked').length,
+        }));
+        expect(sourceState.theme).toBe('light');
+        const checks = await assertDefaultFigureSurface(page, route);
+        baseline.push({ width, theme: 'light', state: 'default-before-evidence-capture',
+          assertionStatus: 'PASS', ...checks, defaultStatePreserved: true, sourceState });
+      }
+      expect(baseline.map(entry => entry.width), 'both default-reading probes must finish before evidence preparation').toEqual([390, 1440]);
+    }
+    const baselineCompleted = performance.now();
     for (const theme of (captureAudit ? ['light', 'dark'] : ['light'])) {
     for (const width of (captureAudit ? [390, 768, 1440] : [390, 1440])) {
       await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
       await page.setViewportSize({ width, height: 900 });
       const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
-      const overflow = await page.evaluate(() =>
-        document.documentElement.scrollWidth - document.documentElement.clientWidth);
-      expect(overflow).toBeLessThanOrEqual(2);
+      const { documentOverflowX: overflow } = await assertDefaultFigureSurface(page, route);
       const nativeTables = page.locator('table');
       if (route === retrospectiveRoute) {
         await expect(nativeTables).toHaveCount(retrospectiveCaptions.length);
         const captions = (await nativeTables.locator('caption').allTextContents()).map(text => text.trim());
         expect(captions.sort(), 'each declared native caption appears exactly once').toEqual([...retrospectiveCaptions].sort());
-      }
-      if (route === responseRoute) await expect(page.locator('[data-q01-fresh448] table')).toHaveCount(1);
-      for (let index = 0; index < await nativeTables.count(); index++) {
-        const target = nativeTables.nth(index);
-        if (await target.getAttribute('data-research-paper-table') !== null && await target.isVisible()) await expectPaperGrammar(target, route, index);
       }
       if (captureAudit) {
         await page.evaluate(() => {
@@ -228,7 +278,9 @@ for (const route of routes) {
           const kind=await figure.evaluate(el=>el.tagName.toLowerCase()==='figure'?'figure':el.closest('figure')?'inside-figure':'nonfigure-svg');
           if(kind==='inside-figure') continue;
           const index=kind==='figure'?figureIndex++:svgIndex++;
-          const readingState=await revealEvidenceReadingState(figure);
+          const prepared=await prepareFigureEvidence(figure);
+          try {
+          const readingState=prepared.readingState;
           const visible = await figure.isVisible();
           const png = `${kind}-${index}-${width}-${theme}.png`;
           const details = await figure.evaluate(el => ({
@@ -244,18 +296,19 @@ for (const route of routes) {
             })),
           }));
           if (visible) {
-            await captureFigureEvidence(figure,testInfo.outputPath(png));
+            await captureFigureEvidence(figure,testInfo.outputPath(png),prepared);
             if (width === 1440 && theme === 'light') {
               const grayscale = await page.addStyleTag({content:'html { filter: grayscale(1) !important; }'});
-              await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-grayscale.png`));
+              await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-grayscale.png`),prepared);
               await grayscale.evaluate(node => node.parentNode?.removeChild(node));
               await page.emulateMedia({media:'print'});
-              if (await figure.isVisible()) await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-print.png`));
+              if (await figure.isVisible()) await captureFigureEvidence(figure,testInfo.outputPath(`${kind}-${index}-print.png`),prepared);
               await page.emulateMedia({media:'screen'});
             }
           }
           evidence.push({route,kind,index,width,theme,...details,visible,png:visible?png:null,
             status:'NEEDS_VISUAL_REVIEW',state:readingState});
+          } finally { await prepared.dispose(); }
         }
         expect(figureIndex).toBe(figureCount);
         await expect(page.locator('figure')).toHaveCount(figureCount);
@@ -263,7 +316,9 @@ for (const route of routes) {
         const tableCount=await page.locator('table').count();
         for(let index=0;index<tableCount;index++){
           const target=page.locator('table').nth(index);
-          const readingState=await revealEvidenceReadingState(target);
+          const prepared=await prepareFigureEvidence(target);
+          try {
+          const readingState=prepared.readingState;
           const visible=await target.isVisible();
           const alternative=await target.evaluate(el=>({
             phone:Boolean(el.closest('.advisor-viz__q03-phone-table')),
@@ -296,16 +351,17 @@ for (const route of routes) {
           if (await target.getAttribute('data-research-paper-table') !== null && visible) await expectPaperGrammar(target, route, index);
           tables.push({...table,visible,state:visible?readingState:alternative.phone?'source-owned phone-only table; desktop data chart visible':'source-owned compact rental catalog excluded from this page'});
           if(visible) {
-            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`));
+            await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-${width}-${theme}.png`),prepared);
             if(width===1440 && theme==='light' && await target.getAttribute('data-research-paper-table') !== null) {
               await target.evaluate(node=>(node as HTMLElement).style.filter='grayscale(1)');
-              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-grayscale.png`));
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-grayscale.png`),prepared);
               await target.evaluate(node=>(node as HTMLElement).style.removeProperty('filter'));
               await page.emulateMedia({media:'print'});
-              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-print.png`));
+              await captureFigureEvidence(target,testInfo.outputPath(`table-${table.index}-print.png`),prepared);
               await page.emulateMedia({media:'screen'});
             }
           }
+          } finally { await prepared.dispose(); }
         }
         await expect(page.locator('table')).toHaveCount(tableCount);
         evidence.push({route,width,theme,tables,rootOverflow:overflow});
@@ -313,9 +369,15 @@ for (const route of routes) {
     }
     }
     if (captureAudit) writeFileSync(testInfo.outputPath('sitewide-figure-table.json'),JSON.stringify({
-      sha:process.env.FIGURE_SOURCE_SHA,browser:testInfo.project.name,route,evidence,
+      sha:process.env.FIGURE_SOURCE_SHA,browser:testInfo.project.name,route,baseline,evidence,
       boundary:'Screenshots and geometry are review inputs; no automatic visual or scientific PASS.',
     },null,2)+'\n');
+    recordFigureEvidenceProfile(testInfo.outputPath('route-timing'), {
+      kind: 'route', route, baselineChecks: baseline.length,
+      baselineMs: baselineCompleted - routeStarted,
+      captureLoopMs: performance.now() - baselineCompleted,
+      totalMs: performance.now() - routeStarted,
+    });
   });
 }
 

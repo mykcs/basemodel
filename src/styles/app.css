@@ -6,6 +6,7 @@
  */
 
 /* Foundation. */
+@import './tailwind.css';
 @import './global.css';
 
 /* Product systems and retained compatibility debt, in validated order. */

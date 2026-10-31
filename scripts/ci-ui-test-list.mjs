@@ -135,8 +135,9 @@ export function timedAssignments(cases, shardTotal, timings = {}) {
 }
 
 export function runTimedCli(args, { spawn = spawnSync, env = process.env } = {}) {
-  const [suite, browser, indexRaw, totalRaw, canonicalPath, timingsPath, reportPath] = args;
-  if (args.length !== 7 || !['test:ui', 'test:ui:all'].includes(suite) || !['chromium', 'webkit'].includes(browser) || !/^[1-9][0-9]*$/.test(indexRaw ?? '') || !/^[1-9][0-9]*$/.test(totalRaw ?? '')) throw new Error('Usage: timed <test:ui|test:ui:all> <chromium|webkit> <index> <total> <canonical-json> <timings-json> <report-json>');
+  const [suite, browser, indexRaw, totalRaw, canonicalPath, timingsPath, reportPath, maxFailuresRaw = '1'] = args;
+  if (![7, 8].includes(args.length) || !['test:ui', 'test:ui:all'].includes(suite) || !['chromium', 'webkit'].includes(browser) || !/^[1-9][0-9]*$/.test(indexRaw ?? '') || !/^[1-9][0-9]*$/.test(totalRaw ?? '') || !['0', '1'].includes(maxFailuresRaw)) throw new Error('Usage: timed <test:ui|test:ui:all> <chromium|webkit> <index> <total> <canonical-json> <timings-json> <report-json> [max-failures: 0|1]');
+  const maxFailures = Number(maxFailuresRaw);
   const index = Number(indexRaw), total = Number(totalRaw);
   if (!Number.isSafeInteger(index) || !Number.isSafeInteger(total) || index > total) throw new Error('Invalid shard index/total');
   if (new Set([canonicalPath, timingsPath, reportPath].map(path => resolve(path))).size !== 3) throw new Error('Canonical, timings and execution report must be different files');
@@ -153,14 +154,14 @@ export function runTimedCli(args, { spawn = spawnSync, env = process.env } = {})
   if ([listPath, selectionPath].some(path => [canonicalPath, timingsPath, reportPath].some(input => resolve(input) === path))) throw new Error('Output path collides with an input/report');
   mkdirSync(dirname(resolve(reportPath)), { recursive: true });
   const summary = { schemaVersion: 1, suite, browser, shard: index, total,
-    canonicalCount: canonical.length, selectedCount: assigned.length,
+    canonicalCount: canonical.length, selectedCount: assigned.length, maxFailures,
     estimatedLoadSeconds: allocation.loads[index - 1], estimatedLoadsSeconds: allocation.loads,
     unknownWeightSeconds: allocation.unknownWeight,
     unknown: allocation.unknownTests, assigned, grep,
     timingsSource: receipt.source ?? { run: receipt.source_run, attempt: receipt.source_attempt, commit: receipt.baseline_commit, profile: receipt.profile }, executionReport: basename(reportPath),
   };
   writeFileSync(selectionPath, JSON.stringify(summary, null, 2) + '\n');
-  const common = ['run', suite, '--', `--project=${browser}`, `--grep=${grep}`, '--workers=1', '--retries=0'];
+  const common = ['run', suite, '--', `--project=${browser}`, `--grep=${grep}`, '--workers=1', '--retries=0', `--max-failures=${maxFailures}`];
   const invoke = (extra, jsonPath) => {
     // A stale report from a previous attempt can never qualify this invocation.
     writeFileSync(jsonPath, '{}\n');
