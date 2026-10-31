@@ -36,38 +36,7 @@ For project quality targets and evidence routing, use [BaseModel Standards](docs
 
 ## Central website learning
 
-For substantial/durable user-facing website content artifacts, read the current shared human-expression standard before the first substantial draft:
-
-- https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD.md
-
-When prior owner feedback or failure-family evidence matters, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/content/HUMAN_EXPRESSION.md
-
-For BaseModel-specific research-archive roles, OpenEVO/SEED research framing, or returning-researcher context, also read the site-specific learned experience:
-
-- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
-
-This site-specific learning is evidence/interpretation only. Current BaseModel Wish, Reader Contracts, scientific authority, source, and tests remain the project-side truth.
-
-For material design decisions, read the shared semantic web-expression / information-flow lens first:
-
-- https://github.com/mykcs/myk-skills/blob/main/website-improve/references/human-thinking-web-expression.md
-
-When prior owner feedback or design failure evidence matters, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/design/LEARNED_PREFERENCES.md
-
-For material website-engineering work, read the current shared Engineering Standard first:
-
-- https://github.com/mykcs/.codex/blob/main/website-governance/ENGINEERING_STANDARD.md
-
-When prior engineering failures/evidence matter, also read:
-
-- https://github.com/mykcs/.agents/blob/main/docs/learning/shared/engineering/LEARNED_PRACTICES.md
-- https://github.com/mykcs/.agents/tree/main/docs/learning/projects/basemodel
-
-Direct owner feedback and conversation closeout are centralized in `.agents/docs/learning`. BaseModel owns its current Wish, scientific/product authority, Reader Contracts, source audits, browser tests, and route-specific guards. It no longer owns a second dynamic preference model/retrieval engine. Central preference evidence never overrides scientific/factual/security truth.
+For substantive website writing, material design or engineering work, use the matching standards and on-demand feedback links in [the shared learning routes](docs/agents/README.md#shared-website-learning-and-feedback). Keep prior feedback as evidence, never above current Wish, Reader Contracts, scientific authority, code, tests or provider truth.
 
 ## Fast start
 
@@ -119,7 +88,7 @@ main
 - Read owners, current PRs and file history; create task branches, review changes, update source and open PRs through GitHub. Respect concurrent branches and compare exact SHAs before integration.
 - Execute TypeScript, lint, build, unit tests, Chromium and (when required and supported) WebKit using GitHub Actions/cloud runners. Current required Public PR CI covers Chromium and WebKit for full/global work; **do not claim WebKit passed unless an actual WebKit job ran**.
 - Use cloud Playwright outputs and retained GitHub Actions artifacts for screenshots, trace/video on failure, typography and figure geometry evidence. Where the existing workflow does not yet upload an artifact, explicitly state that limitation and improve the owning cloud workflow rather than silently falling back to the Mac.
-- Request a Vercel Preview/final gate on the exact accepted PR SHA, inspect the actual protected route (not a login page), then separately verify main and Production. GitHub status is not a substitute for rendered-page review.
+- Require both exact-head GitHub checks (`public-ci-gate` and `cloudflare-artifact-gate`) before merge. For release, inspect the actual protected Cloudflare page (not an Access login page) at the deployed `main` SHA; use a Vercel Preview/Production check only when explicitly choosing that authenticated fallback. GitHub status is not a substitute for rendered-page review.
 - RDC remains an exceptional fallback for MacBook-exclusive files, authorized Mac-controlled compute/server access, or a demonstrated plugin/cloud capability gap. Reuse explicit task-specific **or standing** user approval covering the same operation; never ask again solely because the Agent, session, or tool changed. If approval is absent or an actual action/object `DENY`/`HOLD` applies, stop the affected action rather than routing around it. Use the Mac's authenticated `gh`/provider CLI as a control plane only when cloud invocation is unavailable; keep CI/build/browser workloads on hosted runners and return to cloud-first afterward.
 
 This allocation applies to BaseModel website changes, including research figures and UI acceptance. It does **not** alter the project-level release/security gates, and is not permission to skip browser or scientific-evidence validation.
@@ -157,11 +126,11 @@ npm run build
 
 For material UI/theme/layout/responsive/navigation changes, follow the UI acceptance policy and run the strongest relevant browser gate (`npm run test:ui`, or `npm run test:ui:all` for shared/global work).
 
-Normal flow: read current owners → inspect overlapping work/executable truth → make one coherent change → validate → push one coherent PR update → request the persistent exact-head Vercel gate only for the final candidate → inspect Preview → merge once → verify Production separately. A clean merge, green status, or READY deployment alone does not prove combined-product acceptance.
+Normal flow: read current owners → inspect overlapping work/executable truth → make one coherent change → validate → push one coherent PR update → require both current-base GitHub checks on the exact head → merge once → explicitly publish protected `main` to the selected provider → verify deployment SHA, access protection and real pages. Do not request the Vercel gate for an ordinary Cloudflare release. A clean merge, green status, or provider READY alone does not prove combined-product acceptance.
 
-## Vercel build-budget boundary
+## Provider quota and release boundary
 
-Vercel builds are finite resources. Ordinary working pushes should spend zero Vercel build compute; reuse the same PR for corrections, move the existing persistent final-gate ref only when the exact candidate is ready, and aim for one accepted Production build per release batch. Do not create noop/provider-wakeup commits or use provider-triggering refs as scratch space.
+Ordinary PRs and `main` merges spend no Vercel deployment quota, and Cloudflare artifact checks are dry-run only. Reuse the same PR for corrections; publish the selected provider only on explicit release need, after reading its live quota and deployed SHA. The persistent Vercel final-gate ref is optional fallback tooling, not a prerequisite for Cloudflare merges or releases. Do not create noop/provider-wakeup commits or use provider-triggering refs as scratch space.
 
 ## Product / research invariants
 
