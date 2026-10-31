@@ -7,7 +7,7 @@ const readText = (relativePath: string): string => readFileSync(new URL(relative
 const readJson = <T>(relativePath: string): T => JSON.parse(readText(relativePath)) as T;
 
 const allowedWorkflowFiles = [
-  'cloud-figure-visual-review.yml', 'cloudflare-candidate.yml', 'cloudflare-standby.yml', 'production-identity.yml', 'public-pr-ci.yml', 'review-preview.yml', 'self-hosted-ci.yml',
+  'cloud-figure-visual-review.yml', 'cloudflare-candidate.yml', 'cloudflare-standby.yml', 'production-identity.yml', 'public-pr-ci.yml', 'release-provider.yml', 'review-preview.yml', 'self-hosted-ci.yml',
 ];
 const assertWorkflowFiles = (files: string[]) => expect([...files].sort()).toEqual(allowedWorkflowFiles);
 const assertCloudFigureSafety = (source: string) => {
@@ -226,7 +226,9 @@ describe('Vercel production deployment architecture', () => {
     const source = readText('../../.github/workflows/cloudflare-standby.yml');
     const inspect = (candidate: string) => {
       const workflow = parse(candidate);
-      expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
+      expect(Object.keys(workflow.on).sort()).toEqual(['workflow_call', 'workflow_dispatch']);
+      expect(workflow.on.workflow_call.inputs.operation.default).toBe('plan');
+      expect(workflow.on.workflow_call.inputs.operation.required).toBe(true);
       expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
       expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');
       expect(workflow.permissions).toEqual({ contents: 'read' });
@@ -278,6 +280,86 @@ describe('Vercel production deployment architecture', () => {
       source.replace('environment: cloudflare-protected', 'environment: public'),
       source.replace('REQUIRE existing Cloudflare Access before deploying any site bytes', 'Skip Access gate'),
       source.replace('REQUIRE anonymous routes still redirect to Cloudflare Access after deploying', 'Skip post-deploy gate'),
+      source.replace('persist-credentials: false', 'persist-credentials: true'),
+    ]) expect(() => inspect(unsafe)).toThrow();
+  });
+
+  it('makes quota-aware switching a single main-only manual selector without weakening provider locks', () => {
+    const source = readText('../../.github/workflows/release-provider.yml');
+    const inspect = (candidate: string) => {
+      const workflow = parse(candidate);
+      expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
+      expect(workflow.on.workflow_dispatch.inputs.provider.options).toEqual(['cloudflare', 'vercel']);
+      expect(workflow.on.workflow_dispatch.inputs.provider.default).toBe('cloudflare');
+      expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
+      expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');
+      expect(workflow.permissions).toEqual({ contents: 'read' });
+      expect(workflow.concurrency['cancel-in-progress']).toBe(false);
+      expect(Object.keys(workflow.jobs)).toEqual(['cloudflare', 'vercel_plan', 'vercel_deploy']);
+      const cloud = workflow.jobs.cloudflare;
+      expect(cloud.if).toContain("github.ref == 'refs/heads/main'");
+      expect(cloud.if).toContain("inputs.provider == 'cloudflare'");
+      expect(cloud.uses).toBe('./.github/workflows/cloudflare-standby.yml');
+      expect(cloud.with.operation).toBe('${{ inputs.operation }}');
+      expect(cloud.secrets).toBe('inherit');
+
+      const plan = workflow.jobs.vercel_plan;
+      const deploy = workflow.jobs.vercel_deploy;
+      expect(plan.if).toContain("github.ref == 'refs/heads/main'");
+      expect(plan.if).toContain("inputs.provider == 'vercel'");
+      expect(plan.environment).toBeUndefined();
+      expect(JSON.stringify(plan)).not.toMatch(/secrets\.|VERCEL_TOKEN|CLOUDFLARE_API_TOKEN/);
+      expect(plan.steps.some((s: { run?: string }) => s.run === 'npm run build')).toBe(true);
+      expect(deploy.environment).toBe('vercel-protected');
+      expect(deploy.needs).toBe('vercel_plan');
+      expect(deploy.if).toContain("inputs.operation == 'deploy'");
+      expect(deploy.if).toContain("github.ref == 'refs/heads/main'");
+      expect(deploy.env.VERCEL_PROTECTED_URL).toBe('https://basemodel-preview.vercel.app/');
+      const steps = deploy.steps as { name: string; run?: string; env?: Record<string, string>; uses?: string; with?: Record<string, unknown> }[];
+      const index = (name: string) => steps.findIndex(step => step.name === name);
+      const before = index('REQUIRE existing Vercel Authentication before publishing');
+      const stage = index('Stage protected production deployment without moving the live alias');
+      const sourceIdentity = index('REQUIRE exact Vercel source and project identity before promotion');
+      const afterStage = index('REQUIRE staged URL stays private');
+      const authorized = index('Verify authorized staged routes before promotion');
+      const promote = index('Promote the verified staged deployment');
+      const after = index('REQUIRE canonical Vercel Authentication after promotion');
+      const afterIdentity = index('REQUIRE canonical alias points to the exact staged Git SHA');
+      expect(before).toBeGreaterThan(0);
+      expect(stage).toBeGreaterThan(before);
+      expect(sourceIdentity).toBeGreaterThan(stage);
+      expect(afterStage).toBeGreaterThan(stage);
+      expect(authorized).toBeGreaterThan(afterStage);
+      expect(promote).toBeGreaterThan(authorized);
+      expect(after).toBeGreaterThan(promote);
+      expect(afterIdentity).toBeGreaterThan(after);
+      expect(steps[sourceIdentity]!.run).toContain('verify-vercel-deployment.mjs --github-output');
+      expect(steps[afterIdentity]!.run).toBe('node scripts/hosting/verify-vercel-deployment.mjs');
+      expect(steps[before]!.run).toBe('node scripts/hosting/verify-vercel-auth.mjs');
+      expect(steps[after]!.run).toBe('node scripts/hosting/verify-vercel-auth.mjs');
+      expect(steps[stage]!.run).toContain('vercel@59.17.0 deploy --prod --skip-domain');
+      expect(steps[promote]!.run).toContain('vercel@59.17.0 promote');
+      expect(steps[stage]!.env).toHaveProperty('VERCEL_TOKEN', '${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}');
+      expect(JSON.stringify(deploy)).not.toMatch(/--token\s/);
+      expect(JSON.stringify(deploy)).not.toContain('BASEMODEL_REVIEW_VERCEL_TOKEN');
+      expect(JSON.stringify(deploy)).not.toContain('CLOUDFLARE_STANDBY_API_TOKEN');
+      expect(steps.find(s => s.name === 'Revalidate main before any Vercel quota is spent')?.run).toContain('git ls-remote origin refs/heads/main');
+      for (const job of [plan, deploy]) for (const step of job.steps) {
+        if (step.uses) expect(step.uses).toMatch(/^actions\/[a-z-]+@[a-f0-9]{40}$/);
+        if (step.uses?.startsWith('actions/checkout@')) expect(step.with['persist-credentials']).toBe(false);
+      }
+    };
+    inspect(source);
+    for (const unsafe of [
+      source.replace('  workflow_dispatch:', '  push:'),
+      source.replace('  contents: read', '  contents: write'),
+      source.replace("if: github.ref == 'refs/heads/main' && inputs.provider == 'vercel'", "if: inputs.provider == 'vercel'"),
+      source.replace('environment: vercel-protected', 'environment: public'),
+      source.replace('deploy --prod --skip-domain', 'deploy --prod'),
+      source.replace('REQUIRE staged URL stays private', 'Skip staged SSO check'),
+      source.replace('REQUIRE exact Vercel source and project identity before promotion', 'Skip source identity'),
+      source.replace('REQUIRE canonical Vercel Authentication after promotion', 'Skip canonical SSO check'),
+      source.replace('REQUIRE canonical alias points to the exact staged Git SHA', 'Skip alias identity'),
       source.replace('persist-credentials: false', 'persist-credentials: true'),
     ]) expect(() => inspect(unsafe)).toThrow();
   });
