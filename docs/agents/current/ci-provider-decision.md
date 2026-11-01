@@ -1,21 +1,16 @@
-# BaseModel CI provider decision — fast, cheap, exact-head
+# BaseModel CI/provider decision — default Vercel publication, quota-aware Cloudflare standby
 
-Last reviewed: **2026-10-30**
+Last reviewed: **2026-11-01**
 
-Status: **current provider-selection rationale for `mykcs/basemodel`**.  
-Executable authority remains `vercel.json`, repository scripts/tests, the live GitHub ruleset, [`hosting-architecture.md`](hosting-architecture.md), and [`deployment-policy.md`](deployment-policy.md). If this rationale disagrees with executable or live control-plane state, executable/live state wins and this document must be corrected in the same closeout.
+Status: **current provider-role decision**. The user's latest choice is **Vercel as the default manually released Production site** and **Cloudflare Workers + Access as the protected fallback**. This is a release preference, not permission to make Vercel a compulsory PR build or to resume automatic Git `main` deployments.
 
-Human-facing projection: [`/development/`](/development/) explains the same architecture for readers. That webpage is a presentation layer, not a second CI authority; Agents must continue to read this document plus executable/live state.
+The two exact-head required merge checks remain `public-ci-gate` (repository, privacy, deterministic and real Chromium/WebKit acceptance) plus `cloudflare-artifact-gate` (secret-free Worker package/security dry-run). Both run on GitHub Actions hosted runners, independent of the selected release provider. The live GitHub protections, rather than a dated prose snapshot, enforce the checks.
 
-## One-sentence decision
+The single `.github/workflows/release-provider.yml` entry now defaults to `provider=vercel` and safe `operation=plan`; operators explicitly select `deploy` to publish. Vercel uses the existing authenticated Production project with staged source/identity/SSO verification. Cloudflare remains deployable on the same selector and stays Access-protected. When the preferred provider has a quota outage, use the already accepted standby version or deliberately update it; do not halt PR development or weaken protection. The two hostnames do not share automatic traffic switching.
 
-**Use GitHub-hosted Actions for two exact-head required checks: risk-adaptive deterministic/real-browser `public-ci-gate` and an offline, secret-free Cloudflare Worker package/security `cloudflare-artifact-gate`. Publish explicitly to Access-protected Cloudflare by default; keep authenticated Vercel as a manually chosen, last-known-good release fallback. No required Vercel Preview for ordinary Cloudflare PRs, no automatic Vercel `main` Git builds, and no Mac/GPU CI dependency.** The [quota-aware operation and safe ruleset switch](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) must be completed in the live GitHub control plane before it becomes effective.
+Evidence: [#979](https://github.com/mykcs/basemodel/pull/979), [#980](https://github.com/mykcs/basemodel/pull/980), successful Vercel [release run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998). Actual Production reader acceptance still requires authenticated browser checks and the deployed SHA. Current operational owner: [quota-aware provider-switch SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md); [hosting architecture](hosting-architecture.md) and [deployment policy](deployment-policy.md) own their narrower runtime/acceptance semantics.
 
-**Live capacity note (2026-10-30):** the linked Vercel team is currently Hobby. PR #967 previously received `Deployment rate limited — retry in 24 hours`, but a later shared final gate reached READY at 11:42 UTC; the old failure does not prove the quota remains exhausted. The shared gate is currently in use by PR #973, so wait for that owner before requesting another candidate. Ordinary branches are already excluded before deployment creation by `git.deploymentEnabled` in `vercel.json`.
-
-The optimization target is not "find the provider with the largest free quota." It is:
-
-> **minimum total cost and waiting time per trustworthy merged change, without weakening exact-head/current-base acceptance.**
+The older provider cost analysis and Vercel-required CI topology below are **historical**. Their old imperative sentences must not be used to request a required Vercel Preview, turn on automatic Git deployment, or label Cloudflare the new publishing default.
 
 ## Previous Vercel-first topology (historical until live cutover)
 

@@ -82,7 +82,7 @@ Production access                        -> Vercel Authentication; no unauthenti
 Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only
 ```
 
-Public GitHub-hosted Actions owns ordinary exact-head repository/browser acceptance, and Vercel owns exact-head provider build/deploy acceptance plus Production. CircleCI automatic PR/main workflows are disabled and only explicit API-triggered fallback is retained; the repository-scoped Mac/OrbStack workflow is `workflow_dispatch` recovery only. GitHub Pages is not part of the ordinary architecture. Cloudflare deployment/monitoring helpers are fallback/history surfaces only; private Production has no unauthenticated external monitor.
+Public GitHub-hosted Actions owns two required exact-head checks: repository/browser `public-ci-gate` and secret-free offline Worker `cloudflare-artifact-gate`. Vercel Authentication is the default manual Production release, while Cloudflare Access keeps a separately protected standby; `release-provider.yml` chooses either without changing PR gates. Neither ordinary PRs nor main merges automatically publish. CircleCI and Mac/OrbStack remain explicit manual CI recovery; no anonymous Production monitor is active.
 
 ## Change-to-check guidance
 

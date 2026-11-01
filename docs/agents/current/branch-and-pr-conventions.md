@@ -45,15 +45,14 @@ Do not create new branches such as `chatgpt/*`, `claude/*`, or `codex/*` merely 
 
 The prefix is not determined only by the file extension. A Markdown change can still be `research/*` if it is part of a research release that must receive an exact-head Preview.
 
-## BaseModel deployment exception: optional Vercel fallback refs
+## BaseModel deployment exception: explicit Vercel default and Cloudflare standby
 
 `vercel.json` disables automatic deployment for ordinary branches **and `main`**. Branch names still describe the subject of work, not the provider that must run. Every PR is instead required to pass exact-head `public-ci-gate` and `cloudflare-artifact-gate` on GitHub-hosted Actions. The current provider-control and manual release contract is in [the dual-provider SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md).
 
 1. **Ordinary working branch:** no Vercel deployment while iterating; both required GitHub checks run.
 2. **Accepted candidate:** merge only with the two required checks green on the same current SHA. Neither check deploys a website.
-3. **Cloudflare default release:** explicitly dispatch `cloudflare-standby.yml` from protected `main` only when the published SHA needs updating. Verify Access before/after and the logged-in site.
-   After the provider selector merges, `release-provider.yml` with `provider=cloudflare` routes to this same workflow; `operation=plan` remains the no-publish default.
-4. **Vercel fallback:** existing `ci/vercel-gate-final` and `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` remain an **optional** real Vercel provider-build route. The alias must already exist and move byte-for-byte to the accepted PR SHA; creating a fresh alias may not trigger a build. This is no longer ordinary merge authority.
+3. **Vercel default release:** manually dispatch `release-provider.yml` on `main` with `provider=vercel` (preselected) and `operation=plan` (preselected); choose `deploy` only for an intentional protected Production update. The staged release must pass exact SHA, Vercel Authentication and authorized route checks before/after promotion.
+4. **Cloudflare standby:** choose `provider=cloudflare` and `operation=plan|deploy` in that same selector; it delegates to the existing Access-protected `cloudflare-standby.yml`. The old `ci/vercel-gate-final` / `request-vercel-final-gate.mjs` remain optional Preview diagnostics and never become required merge authority.
    The provider selector's `provider=vercel` is a separate protected **Production** path after `vercel-protected` Environment setup and authenticated staged verification; it does not use or modify `ci/vercel-gate-final`.
 5. **`[vercel-preview]`:** historical/review marker only, not a deployment switch. Docs/governance-only changes should not publish a new site on either provider.
 6. If this document disagrees with `vercel.json`, workflows, live branch protection, or the provider state, executable/live truth wins and the documentation needs repair.

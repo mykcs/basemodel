@@ -160,15 +160,15 @@ Keep strict reproduction, method reproduction, modern rerun, diagnostic evidence
 Read:
 
 - [CI performance implementation and qualification](../dev/CI/README.md) — sealed-build reuse, risk/duration scheduling, measured costs and rollback; provider and merge authority remain in current hosting/release owners.
-- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — measured provider alternatives and historical rationale; current Cloudflare-first selection and safe switching live in [`../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md`](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md)
+- [`current/ci-provider-decision.md`](current/ci-provider-decision.md) — measured provider alternatives and historical rationale; current Vercel-default selection and safe switching live in [`../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md`](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md)
 - [`current/hosting-architecture.md`](current/hosting-architecture.md)
 - [`current/deployment-policy.md`](current/deployment-policy.md)
 - [`current/release-closeout-protocol.md`](current/release-closeout-protocol.md)
 - [`current/multi-pr-semantic-integration-playbook.md`](current/multi-pr-semantic-integration-playbook.md) when PRs overlap or ship together
 
-Current merge authority is two exact-head GitHub Actions checks: `public-ci-gate` and `cloudflare-artifact-gate`, with strict current-base protection. Default publication is a separate, protected Cloudflare `main` workflow; Vercel remains an authenticated, manually updated fallback. Repeated UI/copy/slide review may use a non-authoritative review Preview, but it never substitutes for merge or logged-in production acceptance. Historical Vercel pilot/adoption records are under `history/`; older Cloudflare Pages/shadow helpers are legacy, distinct from the active protected Worker.
+Current merge authority is two exact-head GitHub Actions checks: `public-ci-gate` and `cloudflare-artifact-gate`, with strict current-base protection. Default publication is a separate, protected Vercel `main` workflow dispatch; Cloudflare remains an Access-protected, manually updated fallback. Repeated UI/copy/slide review may use a non-authoritative review Preview, but it never substitutes for merge or logged-in production acceptance. Historical Vercel pilot/adoption records are under `history/`; older Cloudflare Pages/shadow helpers are legacy, distinct from the active protected Worker.
 
-For a red *selected provider* status (including optional Vercel fallback), first use [`current/provider-failure-attribution-runbook.md`](current/provider-failure-attribution-runbook.md) to bind the exact deployed SHA and first failing execution phase before assigning blame or changing architecture. Its dated incident evidence is [`history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md).
+For a red *selected provider* status (including the default Vercel release or Cloudflare standby), first use [`current/provider-failure-attribution-runbook.md`](current/provider-failure-attribution-runbook.md) to bind the exact deployed SHA and first failing execution phase before assigning blame or changing architecture. Its dated incident evidence is [`history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md`](history/2026-09-09-briefing-vercel-failure-attribution-retrospective.md).
 
 For provider/browser performance incidents, use the dated retrospective that matches the failure after reading the current policy. For Vercel billing, `Overdue`, unexplained Build CPU, or spend-reduction work, read [`history/2026-08-28-vercel-billing-and-cost-control-retrospective.md`](history/2026-08-28-vercel-billing-and-cost-control-retrospective.md). For internal `src/pages/_*` modules being mistaken for public routes, Preview `READY` with skipped browser gates, or a Production changed-route smoke failure caused by route derivation, read [`history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md`](history/2026-08-27-home-maintenance-shortcuts-release-retrospective.md).
 
@@ -240,8 +240,8 @@ If two current documents disagree, resolve against executable/live truth and upd
 ```text
 PR exact head -> public-ci-gate + cloudflare-artifact-gate (GitHub Actions; no provider publish)
 current-base + both checks green -> merge to main
-main -> protected Cloudflare Worker (explicit release, default)
-     -> authenticated Vercel fallback (explicit update only)
+main -> protected Vercel Production (explicit release, default)
+     -> authenticated Cloudflare Access Worker (explicit standby update only)
 ```
 
 The current release contract is [`../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md`](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) and `vercel.json` disables ordinary Git `main` deployment. Cloudflare Access and Vercel Authentication protect different URLs; a single-domain automatic switch has not been established. Offline checks cannot prove live Worker SHA, Access or authenticated browser behavior. Temporary share links must not be persisted in repository text or GitHub collaboration surfaces.

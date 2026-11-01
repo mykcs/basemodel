@@ -132,7 +132,7 @@ describe('Vercel production deployment architecture', () => {
     github?: { autoJobCancelation?: boolean };
   }>('../../vercel.json');
 
-  it('uses Vercel as primary CI while retaining CircleCI and Mac as manual fallbacks', () => {
+  it('uses GitHub-hosted CI while retaining CircleCI and Mac as manual fallbacks', () => {
     const workflowFiles = existsSync(workflowsDir) ? readdirSync(workflowsDir).filter((name) => /\.ya?ml$/i.test(name)) : [];
     assertWorkflowFiles(workflowFiles);
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
@@ -289,8 +289,8 @@ describe('Vercel production deployment architecture', () => {
     const inspect = (candidate: string) => {
       const workflow = parse(candidate);
       expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
-      expect(workflow.on.workflow_dispatch.inputs.provider.options).toEqual(['cloudflare', 'vercel']);
-      expect(workflow.on.workflow_dispatch.inputs.provider.default).toBe('cloudflare');
+      expect(workflow.on.workflow_dispatch.inputs.provider.options).toEqual(['vercel', 'cloudflare']);
+      expect(workflow.on.workflow_dispatch.inputs.provider.default).toBe('vercel');
       expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
       expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');
       expect(workflow.permissions).toEqual({ contents: 'read' });

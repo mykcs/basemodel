@@ -49,14 +49,14 @@ describe('UI visual acceptance gate contract', () => {
     expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
   });
 
-  it('keeps the optional Vercel fallback Chromium-only while GitHub CI owns current browser coverage', () => {
+  it('keeps the optional Vercel provider diagnostic Chromium-only while GitHub CI owns browser coverage', () => {
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain('fix\\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)');
     expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
     expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', '--only-shell', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');
-    expect(policy).toContain('**optional Vercel fallback** browser gate remains Chromium-only');
+    expect(policy).toContain('**optional Vercel provider-specific** browser gate remains Chromium-only');
     expect(policy).toContain('The default GitHub-hosted Public PR CI supplies the required Chromium/WebKit evidence');
     expect(policy).toContain('run from a Playwright-supported runner:');
     expect(policy).toContain('macOS, Ubuntu, or Debian');
