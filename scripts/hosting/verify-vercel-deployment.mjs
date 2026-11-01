@@ -22,12 +22,18 @@ export async function verifyVercelDeployment({
   });
   if (!response.ok) throw new Error(`Vercel deployment identity could not be read: HTTP ${response.status}`);
   const candidate = await response.json();
-  if (candidate.projectId !== projectId || candidate.readyState !== 'READY'
-    || candidate.target !== 'production'
-    || !/^dpl_[A-Za-z0-9]+$/.test(candidate.uid ?? '')) {
+  // Vercel's v13 response can use id/project.id; earlier owner responses used uid/projectId.
+  // When both shapes are present, require them to agree so neither field can mask a mismatch.
+  const projectIds = [candidate.projectId, candidate.project?.id].filter(Boolean);
+  const deploymentIds = [candidate.uid, candidate.id].filter(Boolean);
+  const deploymentId = deploymentIds[0];
+  if (projectIds.length === 0 || projectIds.some((id) => id !== projectId)
+    || deploymentIds.length === 0
+    || deploymentIds.some((id) => id !== deploymentId || !/^dpl_[A-Za-z0-9]+$/.test(id))
+    || candidate.readyState !== 'READY' || candidate.target !== 'production') {
     throw new Error('Vercel deployment does not belong to the configured READY Production project');
   }
-  if (expectedDeploymentId && candidate.uid !== expectedDeploymentId) {
+  if (expectedDeploymentId && deploymentId !== expectedDeploymentId) {
     throw new Error('Canonical alias does not resolve to the exact staged deployment');
   }
   const claimedShas = [
@@ -44,7 +50,7 @@ export async function verifyVercelDeployment({
   if (candidate.meta?.githubOrg && candidate.meta.githubOrg !== 'mykcs') {
     throw new Error('Vercel source owner mismatch');
   }
-  return { id: candidate.uid, sha };
+  return { id: deploymentId, sha };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

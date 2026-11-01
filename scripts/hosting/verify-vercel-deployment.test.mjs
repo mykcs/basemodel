@@ -32,3 +32,21 @@ test('requires exact Vercel project + READY production + source identity', async
   ]) await assert.rejects(() => verifyVercelDeployment({ ...config, fetchImpl: read({ ...deployment, ...bad }) }));
   await assert.rejects(() => verifyVercelDeployment({ ...config, expectedDeploymentId: 'dpl_other', fetchImpl: read() }), /alias/);
 });
+
+test('accepts Vercel v13 id/project.id while rejecting missing or conflicting identities', async () => {
+  const modern = {
+    id: 'dpl_modern', project: { id: config.projectId, name: 'basemodel-preview' },
+    target: 'production', readyState: 'READY', meta: deployment.meta,
+  };
+  assert.deepEqual(await verifyVercelDeployment({ ...config, fetchImpl: read(modern) }), { id: 'dpl_modern', sha });
+  assert.deepEqual(await verifyVercelDeployment({ ...config, expectedDeploymentId: 'dpl_modern',
+    fetchImpl: read({ ...modern, uid: 'dpl_modern', projectId: config.projectId }) }), { id: 'dpl_modern', sha });
+  for (const bad of [
+    { project: undefined }, { id: undefined }, { project: { id: 'prj_other' } },
+    { projectId: 'prj_other' }, { uid: 'dpl_conflict' }, { id: 'invalid-id' },
+    { readyState: 'ERROR' }, { target: 'preview' },
+    { meta: { ...modern.meta, githubCommitSha: 'b'.repeat(40) } },
+  ]) await assert.rejects(() => verifyVercelDeployment({ ...config, fetchImpl: read({ ...modern, ...bad }) }));
+  await assert.rejects(() => verifyVercelDeployment({ ...config, expectedDeploymentId: 'dpl_other',
+    fetchImpl: read(modern) }), /alias/);
+});
