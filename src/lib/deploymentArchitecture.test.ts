@@ -289,7 +289,7 @@ describe('Vercel production deployment architecture', () => {
     const inspect = (candidate: string) => {
       const workflow = parse(candidate);
       expect(Object.keys(workflow.on)).toEqual(['workflow_dispatch']);
-      expect(workflow.on.workflow_dispatch.inputs.provider.options).toEqual(['cloudflare', 'vercel']);
+      expect(workflow.on.workflow_dispatch.inputs.provider.options).toEqual(['vercel', 'cloudflare']);
       expect(workflow.on.workflow_dispatch.inputs.provider.default).toBe('vercel');
       expect(workflow.on.workflow_dispatch.inputs.operation.options).toEqual(['plan', 'deploy']);
       expect(workflow.on.workflow_dispatch.inputs.operation.default).toBe('plan');

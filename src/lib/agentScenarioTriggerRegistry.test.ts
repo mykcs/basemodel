@@ -342,7 +342,7 @@ describe('Agent scenario-trigger discovery', () => {
     expect(repositoryMap).toContain('CircleCI                                -> automatic PR/main disabled; explicit API fallback only');
     expect(repositoryMap).toContain('Production access                        -> Vercel Authentication; no unauthenticated external monitor');
     expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
-    expect(repositoryMap).toContain('Public GitHub-hosted Actions owns ordinary exact-head repository/browser acceptance');
+    expect(repositoryMap).toContain('Public GitHub-hosted Actions owns two required exact-head checks: repository/browser');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
   });
 
