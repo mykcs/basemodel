@@ -55,7 +55,7 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('Cloudflare-first with authenticated Vercel fallback');
+    expect(architecture).toContain('Vercel-default with protected Cloudflare fallback');
     expect(architecture).toContain('Public PR CI owns required **repository/browser acceptance**');
     expect(architecture).toContain('`cloudflare-artifact-gate`');
     expect(publicPrWorkflow).toContain('pull_request:');
@@ -80,9 +80,9 @@ describe('hosting architecture ownership', () => {
     expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps Cloudflare default with a protected Vercel standby and no anonymous monitor', () => {
-    expect(architecture).toContain('Cloudflare is the normal protected Production release surface');
-    expect(architecture).toContain('No anonymous Production monitor');
+  it('keeps Vercel the manual default with a protected Cloudflare standby and no anonymous monitor', () => {
+    expect(architecture).toContain('Vercel Authentication-protected `https://basemodel-preview.vercel.app/` is the normal reader-facing Production release destination');
+    expect(architecture).toContain('no anonymous Production monitor is active');
     expect(latest).not.toContain('production-smoke');
     expect(latest).toContain('Automatic PR evidence is **Public PR CI**');
     expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`');

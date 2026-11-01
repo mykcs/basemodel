@@ -110,17 +110,17 @@ describe('Vercel build-budget contract', () => {
     expect(vercelWorkflow).toContain('VERCEL_GIT_PREVIOUS_SHA');
   });
 
-  it('makes ordinary deployment reporting Cloudflare-first and Vercel an explicit fallback', () => {
-    expect(root).toContain('Cloudflare is the default release provider');
-    expect(root).toContain('ordinary completion reports are **Cloudflare-first**');
+  it('makes Vercel the default release with Cloudflare as a protected fallback while keeping CI independent', () => {
+    expect(root).toContain('Vercel is the default release provider');
+    expect(root).toContain('ordinary completion reports are **Vercel-default**');
     expect(latest).toContain('Automatic PR evidence is **Public PR CI**');
     expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`');
-    expect(deploymentPolicy).toContain('Cloudflare-first repository target');
-    expect(deploymentPolicy).toContain('not** on ordinary Cloudflare-only merges');
+    expect(deploymentPolicy).toContain('Vercel-default release selection');
+    expect(deploymentPolicy).toContain('never claim it mirrors Vercel by default');
     expect(vercelWorkflow).toContain('Historical providers are not ordinary report dimensions');
   });
 
-  it('keeps docs-only Production skipped while forcing final gate verification through Vercel', () => {
+  it('keeps docs-only Production skipped while retaining historical optional Vercel diagnostic evidence', () => {
     expect(shouldBuildForFiles(['README.md', 'docs/agents/current/example.md', 'AGENTS.md'])).toBe(false);
     expect(ignoreBuildScript).toContain('mustRunAcceptanceBuild');
     expect(ignoreBuildScript).not.toContain('VERCEL_GIT_PULL_REQUEST_ID');

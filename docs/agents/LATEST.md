@@ -1,6 +1,12 @@
 # Latest Agent handoff
 
-## 2026-10-31 Cloudflare-first merge and publication authority · #975 / #978 / #971
+## 2026-11-01 Vercel default / Cloudflare protected standby — current user decision
+
+**Release preference now: Vercel Authentication Production by default, Cloudflare Workers + Access as the protected standby.** The single main-only GitHub Actions selector in [PR #979](https://github.com/mykcs/basemodel/pull/979) preselects `provider=vercel`, with no-spend `operation=plan`; only explicit `deploy` publishes. [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed the Vercel API identity check, and [run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) successfully staged/promoted exact `main@7cf12902` under Vercel Authentication, with SHA/SSO/route checks. Cloudflare keeps its existing Access-protected last-good SHA and can be selected any time without editing CI. There is no shared domain or automatic traffic switching; authenticated desktop/mobile visual QA remains a separate release requirement.
+
+**Do not undo the quota-saving CI migration:** GitHub's required exact-head checks stay `public-ci-gate` and `cloudflare-artifact-gate`; `vercel.json` still prevents ordinary `main` Git deployments. The new default concerns which protected site is *manually released and linked*, not a compulsory Vercel PR check. Newer current source is [provider switch SOP](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md), [hosting architecture](current/hosting-architecture.md) and live platform state. All dated sections below record their time of writing, not a competing current provider preference.
+
+## 2026-10-31 Cloudflare merge-gate cutover (historical publishing preference) · #975 / #978 / #971
 
 [PR #975](https://github.com/mykcs/basemodel/pull/975) switched the live GitHub ruleset **and** legacy `main` protection to strict, exact-head `public-ci-gate` + `cloudflare-artifact-gate` (GitHub Actions App 15368); Vercel is **not** a mandatory PR check. [PR #978](https://github.com/mykcs/basemodel/pull/978) aligned the UI acceptance owner and tests. Cloudflare Workers + Access is the default protected, **manually dispatched** `main` release, with deployed source SHA, anonymous Access refusal and real logged-in desktop/mobile route verification after publication. Vercel Authentication/Production remains an optional, explicitly updated fallback. Neither an offline dry-run nor a green PR proves the live site has the latest `main`; the exact Worker SHA must be read back for each release. Without a verified owned domain, switching means choosing between two protected URLs, not seamless same-URL failover.
 
@@ -120,7 +126,7 @@ BaseModel PR #851 仍按 **① OpenEVO 方法 → ② L 学长十问 → ③ 我
 
 PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② L 学长十问（问题本身）→ ③ 我们的回应实验（Q01–Q10 的实验、结果及未知）**。Q10 是会后新增，不当作L 学长逐字提问。页面角色权威在 `docs/wish/DESIGN.md`；本地测试保护第二篇不混入成绩/图表、第三篇十项回应各有来源。三篇共享 `src/data/openEvoAdvisorTenQuestions.ts`；可用浏览器 QA 评价风格，但不得改写科研证据。
 
-未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head、两项独立 CI 检查、Cloudflare Worker 的实时部署 SHA 与 Access 登录态；若使用 Vercel 回退，再核对 Vercel 实际版本。
+未合并的 PR/Preview 不等于 Production。恢复或延续任务时先核对 PR exact head 与两项独立 CI 检查；默认读回 Vercel Production SHA、Authentication 与登录后页面，切到 Cloudflare 备用时还须读回 Worker SHA、Access 与页面。
 
 ## Current architecture
 
@@ -128,22 +134,22 @@ PR #851 保留三个独立路由，顺序 **① OpenEVO 方法详解 → ② L �
 GitHub `mykcs/basemodel`          = public website source of truth
 ordinary working PR/ref           -> public-ci-gate + cloudflare-artifact-gate; no provider deployment
 final current-base PR candidate   -> both exact-head GitHub checks + strict current-base
-main                              -> protected Cloudflare on-demand release (default)
-Cloudflare site                   -> https://basemodel-access-standby.gemini202405.workers.dev/
-Vercel fallback                   -> https://basemodel-preview.vercel.app (manual release, last known-good retained)
+main                              -> protected Vercel Production on-demand release (default)
+Vercel site                      -> https://basemodel-preview.vercel.app/ (manual release)
+Cloudflare standby               -> https://basemodel-access-standby.gemini202405.workers.dev/ (Access-protected)
 
 mykcs/openevo-experiment         = scientific experiment/result authority
 ```
 
-**Cloudflare-first control plane (cutover verified 2026-10-30):** PR #975 read back BOTH ruleset `22224550` and the legacy `main` branch protection after replacing the required Vercel check. Current acceptance requires **both** `public-ci-gate` and `cloudflare-artifact-gate` (GitHub Actions App 15368) with strict current-base semantics. CircleCI and Vercel have no ordinary merge authority. Always confirm live protection again before a high-impact merge; this document is a dated receipt, not a substitute for provider readback.
+**GitHub Cloudflare-artifact gate control plane (cutover verified 2026-10-30):** PR #975 read back BOTH ruleset `22224550` and the legacy `main` branch protection after replacing the required Vercel check. Current acceptance requires **both** `public-ci-gate` and `cloudflare-artifact-gate` (GitHub Actions App 15368) with strict current-base semantics. CircleCI and Vercel have no ordinary merge authority. Always confirm live protection again before a high-impact merge; this document is a dated receipt, not a substitute for provider readback.
 
-Ordinary working refs and ordinary `main` merges are not Vercel deployment-enabled. Automatic PR evidence is **Public PR CI** (read-only deterministic validation plus risk-based actual Chromium/WebKit coverage) alongside **Cloudflare artifact CI** (same-head Worker build/route/security/dry-run without deployment). The two required checks must succeed on the exact current head, with no skipped allocated browser work or mixed-attempt evidence. **Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`.** Then select the release provider explicitly: Cloudflare's protected main-only workflow by default, or authenticated manual Vercel publishing when Cloudflare quota/health requires fallback. The previous Vercel `ci/vercel-gate-final` alias is retained for optional diagnostics, not required per-PR spend. CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
+Ordinary working refs and ordinary `main` merges are not Vercel deployment-enabled. Automatic PR evidence is **Public PR CI** (read-only deterministic validation plus risk-based actual Chromium/WebKit coverage) alongside **Cloudflare artifact CI** (same-head Worker build/route/security/dry-run without deployment). The two required checks must succeed on the exact current head, with no skipped allocated browser work or mixed-attempt evidence. **Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`.** Then select the release provider explicitly: protected Vercel Production by default, or the Access-protected Cloudflare standby when Vercel quota/health requires fallback. The previous Vercel `ci/vercel-gate-final` alias is retained for optional diagnostics, not required per-PR spend. CircleCI automatic PR/main workflows remain disabled; the self-hosted GitHub Actions workflow remains manual recovery only.
 
 Provider-selection rationale is `current/ci-provider-decision.md`; current hosting authority is `current/hosting-architecture.md`; release/deployment authority is `current/deployment-policy.md`; [current provider switch operation](../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md). Both provider sites stay authentication-protected; there is no anonymous Production monitor.
 
 The 2026-09-21 de-duplication qualification measured the same provider phase before/after: exact-head Vercel BUILDING→READY fell from **507.7 s to 14.170 s** (97.209% reduction, 35.83× faster), and merged Production fell from **633.3 s to 16.608 s** (97.378% reduction, 38.13× faster). No test population, retries, assertion threshold, or build-machine tier changed.
 
-Browser-heavy acceptance now runs in required Public PR CI, while the separate required `cloudflare-artifact-gate` proves the exact-head Worker build/routes/security contract without publishing. Current full browser allocation includes Chromium and WebKit; actual completed runners and artifacts are required before claiming PASS. The older 2026-09-15 197-case Chromium and Vercel provider-only timing figures above are historical qualifications, not the current PR gate. After merge, default release evidence is exact-`main` Cloudflare Worker source identity, Access protection and authenticated page/interaction inspection; Vercel deployment identity and Authentication are checked separately only for an explicitly chosen fallback.
+Browser-heavy acceptance now runs in required Public PR CI, while the separate required `cloudflare-artifact-gate` proves the exact-head Worker build/routes/security contract without publishing. Current full browser allocation includes Chromium and WebKit; actual completed runners and artifacts are required before claiming PASS. The older 2026-09-15 197-case Chromium and Vercel provider-only timing figures above are historical qualifications, not the current PR gate. After merge, default release evidence is exact-`main` Vercel deployment identity, Authentication and logged-in page/interaction inspection; Cloudflare standby source identity, Access and authenticated pages are checked when that fallback is selected.
 
 ## Current research state
 

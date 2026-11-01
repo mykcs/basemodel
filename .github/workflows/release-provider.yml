@@ -1,4 +1,4 @@
-name: Protected Site - Choose Cloudflare or Vercel
+name: Protected Site - Choose Vercel or Cloudflare
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
       provider:
         description: 'Choose one protected release destination; neither changes the other'
         type: choice
-        options: [cloudflare, vercel]
-        default: cloudflare
+        options: [vercel, cloudflare]
+        default: vercel
         required: true
       operation:
         description: 'Plan uses GitHub only; deploy deliberately spends the selected provider quota'

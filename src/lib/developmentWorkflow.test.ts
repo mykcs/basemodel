@@ -27,8 +27,10 @@ describe('human-facing development workflow', () => {
     expect(page).toContain('ci/vercel-gate-final');
     expect(page).toContain('public-ci-gate');
     expect(page).toContain('cloudflare-artifact-gate');
-    expect(page).toContain('The normal release destination is the existing Cloudflare Access-protected Worker');
+    expect(page).toContain('The default manual release destination remains protected by Vercel Authentication');
     expect(page).toContain('Ordinary PRs and main merges do not auto-deploy to Vercel');
+    expect(page).toContain('Vercel Authentication (default)');
+    expect(page).toContain('Cloudflare Access (standby)');
     expect(page).toContain('basemodel-access-standby.gemini202405.workers.dev');
     expect(page).toContain('basemodel-preview.vercel.app');
     expect(page).toContain('Mac/OrbStack remains manual recovery only');
