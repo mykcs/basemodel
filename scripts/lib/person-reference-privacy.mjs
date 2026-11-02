@@ -81,10 +81,22 @@ export function scanPersonReferences(relativePath, content) {
 
   // Public observability links use the anonymous source index. Provider account
   // locators must not reappear in rendered source or downloadable evidence.
-  if (/^(?:src|public)\//.test(relativePath) && !/\.(?:test|spec)\.[cm]?[jt]sx?$/.test(relativePath)) {
+  if (/^(?:src|public|docs\/reports)\//.test(relativePath) && !/\.(?:test|spec)\.[cm]?[jt]sx?$/.test(relativePath)) {
     const privateTokenLength = 7;
     const privateTokenDigest = '29018d6564935fedf3713cc4f047b2da1a06586eee1b78b3fa3af29e2e4d255b';
     const views = identityViews(normalized);
+
+    // Original private conversations and application drafts have one protected
+    // private archive owner. Do not allow their locators or routes to return to
+    // a public page/source; scanning decoded views also rejects obfuscation.
+    const privateConversationLocator = /(?:docs\/evidence\/advisor\/liaochang\/|2026-09-22-meeting-transcript\.raw\.md|\bliaochang\b)/iu;
+    const personalPreparationRoute = /(?:w-advisor-call|wAdvisorCallPreparation)/iu;
+    if (views.some(view => privateConversationLocator.test(view))) {
+      findings.push({ path: relativePath, line: 1, kind: 'private-conversation-locator' });
+    }
+    if (views.some(view => personalPreparationRoute.test(view))) {
+      findings.push({ path: relativePath, line: 1, kind: 'personal-preparation-public-route' });
+    }
     if (views.some(view => hasAccountFingerprint(view, privateTokenLength, privateTokenDigest))) {
       findings.push({ path: relativePath, line: 1, kind: 'private-account-fingerprint' });
     }
