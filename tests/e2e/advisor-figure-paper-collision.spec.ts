@@ -209,19 +209,19 @@ for(const width of [390,1440] as const){
   });
 }
 
-test('phone reader gets a Q10 decision route and can still find the meeting RAW',async({page})=>{
+test('phone reader gets a Q10 decision route without publishing private meeting RAW',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto(route,{waitUntil:'domcontentloaded'});
   const finding=page.locator('[data-advisor-key-findings]');
   const q10=page.locator('[data-advisor-priorities] a[href="#response-q10"]');
-  const raw=page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]');
+  const provenance=page.locator('[data-meeting-provenance]');
   // Current main reader contract prioritizes scope-bounded Q04/Q07; Q05 remains in deeper results.
   await expect(finding).toContainText('Q04');
   await expect(finding).toContainText('Q07');
-  await expect(finding).toContainText('95%');
+  await expect(page.locator('[data-advisor-evidence-details]')).toContainText('95%');
   await expect(q10).toBeVisible();
-  await expect(raw).toHaveCount(1);
-  await expect(raw).toContainText('会议原始逐字记录');
+  await expect(provenance.locator('a[href*="2026-09-22-meeting-transcript.raw.md"]')).toHaveCount(0);
+  await expect(provenance).toContainText('原始讨论记录仅在私有档案保管');
   const placement=await page.evaluate(()=>{
     const first=document.querySelector('[data-advisor-key-findings]');
     const source=document.querySelector('[data-meeting-provenance]');

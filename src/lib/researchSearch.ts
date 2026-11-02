@@ -37,7 +37,6 @@ const titles: Record<string, string> = {
   'study-parameter-memory-results': '我们的回应实验',
   'study-briefing': '研究阶段汇报',
   'recent-challenges': '研究阶段复盘',
-  'w-advisor-call': 'W 老师科研沟通准备',
   'capability-home': 'OpenEVO 研究专题目录',
 };
 
