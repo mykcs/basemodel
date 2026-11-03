@@ -60,8 +60,8 @@ export const reviewedSourceContinuations = {
   },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
-    currentSourceSha256: '79ef134d15dc5366bc4599faf52cba9f6762841c09e9dd438e1084be0ed590a6',
-    reason: 'The method-comparison hub now adds one reusable four-step, bilingual learning path linking to the existing training-design, questions, site-map, and evidence section owners. Existing typography declarations and scientific copy are retained; prior approved source proof remains historical, and 440px/1440px exact-head bilingual, theme and keyboard browser acceptance is still pending.',
+    currentSourceSha256: '3faab90e1c550f227668cb458f1e5ed99d98166f77696d026d935f60f3a3e895',
+    reason: 'The method-comparison hub retains four bilingual anchors, but puts the optional chapter navigation behind one native details/summary control, instead of overloading the first viewport with four equal-weight actions. The original Reader Attention budget and scientific limitations remain unchanged; exact-head browser review on both themes, 390/440px, keyboard and no-JS is still required.',
   },
 };
 

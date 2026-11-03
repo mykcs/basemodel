@@ -56,7 +56,16 @@ for (const width of [390, 440, 768, 1280, 1440] as const) {
 test('Flow comparison hub has four real reading destinations without a competing rail', async ({ page }) => {
   await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/research/seed-openevo/flow/');
+  const disclosure = page.locator('.flow-learning-disclosure');
+  const summary = disclosure.locator('summary');
   const guide = page.getByRole('navigation', { name: '本页学习路线' });
+  await expect(summary).toBeVisible();
+  await expect(disclosure).not.toHaveAttribute('open', '');
+  await expect(guide).toBeHidden();
+  await summary.focus();
+  await expect(summary).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(disclosure).toHaveAttribute('open', '');
   await expect(guide).toBeVisible();
   const links = guide.locator('a[href^="#"]');
   await expect(links).toHaveCount(4);
@@ -112,4 +121,22 @@ test('keyboard user can follow the evidence path without a mouse', async ({ page
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#seed-responsibilities$/);
   await expect(page.locator('#seed-responsibilities')).toBeVisible();
+});
+
+test('Flow hub native chapter disclosure works without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 440, height: 956 } });
+  try {
+    const page = await context.newPage();
+    await page.goto('/research/seed-openevo/flow/');
+    const disclosure = page.locator('.flow-learning-disclosure');
+    const guide = page.getByRole('navigation', { name: '本页学习路线' });
+    await expect(guide).toBeHidden();
+    await disclosure.locator('summary').click();
+    await expect(guide).toBeVisible();
+    await expect(guide.getByRole('link')).toHaveCount(4);
+    await guide.getByRole('link').last().click();
+    await expect(page).toHaveURL(/#evidence$/);
+    await expect(page.locator('#evidence')).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+  } finally { await context.close(); }
 });

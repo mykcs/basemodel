@@ -36,12 +36,15 @@ const objectGroups = [
 ---
 <div class="mission-page plain-mission-hub evo-approved-reader evo-reading-overview">
   <SeedOpenEvoMissionHero locale={locale} compact />
-  <PageLearningPath locale={locale} items={[
+  <details class="flow-learning-disclosure">
+    <summary>{t('本页学习路线（4 节）', 'Reading path (4 sections)')}</summary>
+    <PageLearningPath locale={locale} items={[
     { href: '#training-design', zh: '两阶段学习的方法怎样对应', en: 'How the two-stage methods align' },
     { href: '#questions', zh: '哪些模型、任务和比较条件需要固定', en: 'Which models, tasks, and comparison conditions must stay fixed' },
     { href: '#site-map', zh: '怎样运行实验并比较结果', en: 'How experiments run and get compared' },
     { href: '#evidence', zh: '什么证据能让实验结论可信', en: 'What evidence makes a conclusion trustworthy' },
-  ]} />
+    ]} />
+  </details>
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><h2 id="training-design-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('SEED × OpenEVO 两阶段学习范式', 'SEED × OpenEVO two-stage learning paradigm')}</h2></div>
@@ -81,6 +84,13 @@ const objectGroups = [
 
 <style>
   .mission-page{}
+  /* Keep optional page navigation reachable without four competing first-screen
+     actions; native details works with keyboard and without client JavaScript. */
+  .flow-learning-disclosure { max-width: 52rem; margin: .6rem 0 0; }
+  .flow-learning-disclosure > summary { display: flex; align-items: center; width: fit-content; max-width: 100%; min-height: 44px; padding: .35rem 0; cursor: pointer; color: var(--accent-deep); font-size: var(--type-body-small); font-weight: var(--type-weight-label); }
+  .flow-learning-disclosure > summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  .flow-learning-disclosure[open] > summary { color: var(--ink); }
+  @media print { .flow-learning-disclosure { display: none; } }
   .mission-section{padding:clamp(1.8rem,4vw,3rem) 0;border-top:1px solid var(--line)}
   .plain-mission-hub>.mission-section:first-of-type{padding-top:1rem}
   .mission-section__heading{display:grid;grid-template-columns:minmax(0,1fr);gap:.65rem;margin-bottom:.55rem}
