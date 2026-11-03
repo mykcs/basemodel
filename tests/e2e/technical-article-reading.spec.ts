@@ -146,17 +146,44 @@ test('number gate rejects the old small digit above its heading',async({page})=>
   expect(await headingNumberErrors(page)).toEqual([]);
 });
 
-test('wide reading entries keep expanded contents in flow without covering the title',async({page})=>{
+test('wide reading entries keep one usable directory and never cover the title',async({page})=>{
   await page.setViewportSize({width:1440,height:1000});
   for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/','/research/seed-openevo/flow/','/research/seed-openevo/study/results/','/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/']){
     await page.goto(route);
-    const nav=page.locator('[data-article-outline]');
-    await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
-    await nav.locator('summary').click();
-    expect(await nav.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+    const outline=page.locator('[data-article-outline]');
+    // PR #841 intentionally avoids a second generated directory where a page
+    // already owns a labeled navigation path. A missing duplicate is not a
+    // missing reading path: require the surviving owner to be usable instead.
+    const owned=page.locator([
+      '#main-content [data-reader-guide]:visible',
+      '#main-content [data-webshop-story-nav]:visible',
+      '#main-content .page-contents:visible',
+      '#main-content .paper-nav:visible',
+      '#main-content .model-detail-nav:visible',
+      '#main-content .papers-reading-path:visible',
+      '#main-content .learning-track-nav:visible',
+      '#main-content .next-list:visible',
+      '#main-content .evo-article__toc:visible',
+    ].join(', ')).first();
+    let directory=outline;
+    if(await owned.count()){
+      await expect(outline).toBeHidden();
+      expect(await owned.locator('a[href]').count(),route).toBeGreaterThan(0);
+      directory=owned;
+    }else{
+      await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
+      await expect(outline).toBeVisible();
+      await outline.locator('summary').click();
+      expect(await outline.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+      expect(await outline.locator('a[href^="#"]').count(),route).toBeGreaterThan(0);
+    }
     const title=await page.locator('#main-content h1').boundingBox();
-    const box=await nav.boundingBox();
-    expect(box!.y).toBeGreaterThan(title!.y+title!.height);
+    const box=await directory.boundingBox();
+    expect(title,route).not.toBeNull();
+    expect(box,route).not.toBeNull();
+    // Owned directories may sit above or below a heading; neither may overlap it.
+    const overlap=Math.max(0,Math.min(box!.y+box!.height,title!.y+title!.height)-Math.max(box!.y,title!.y));
+    expect(overlap,route).toBe(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
   }
 });
