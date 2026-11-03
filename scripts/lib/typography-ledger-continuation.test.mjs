@@ -54,7 +54,7 @@ test('Flow native disclosure permits only two exact token-backed summary declara
   assert.equal(approved.length, 2);
   const source = readFileSync(new URL('../../src/components/research/SeedOpenEvoResearchHub.astro', import.meta.url), 'utf8');
   assert.match(source, /<details class="flow-learning-disclosure">/);
-  assert.match(source, /font-size:\\s*var\\(--type-body-small\\);\\s*font-weight:\\s*var\\(--type-weight-label\\)/);
+  assert.match(source, /font-size:\s*var\(--type-body-small\);\s*font-weight:\s*var\(--type-weight-label\)/);
   assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved], approved), {
     newTokenDeclarations: 2, newFiles: [reviewedFlowDisclosureTypography.file],
   });
