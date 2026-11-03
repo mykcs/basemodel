@@ -156,6 +156,7 @@ test('wide reading entries keep one usable directory and never cover the title',
     // missing reading path: require the surviving owner to be usable instead.
     const owned=page.locator([
       '#main-content [data-reader-guide]:visible',
+      '#main-content [data-topic-navigation]:visible',
       '#main-content [data-webshop-story-nav]:visible',
       '#main-content .page-contents:visible',
       '#main-content .paper-nav:visible',
@@ -169,6 +170,15 @@ test('wide reading entries keep one usable directory and never cover the title',
     if(await owned.count()){
       await expect(outline).toBeHidden();
       expect(await owned.locator('a[href]').count(),route).toBeGreaterThan(0);
+      // An existing topical directory must link to actual page sections, not
+      // just render labels. A merely present <nav> is not a usable substitute.
+      if (await owned.getAttribute('data-topic-navigation') !== null) {
+        for (const link of await owned.locator('a[href^="#"]').all()) {
+          const href = await link.getAttribute('href');
+          expect(href,route).toMatch(/^#.+/);
+          await expect(page.locator('[id=' + JSON.stringify(decodeURIComponent(href!.slice(1))) + ']')).toHaveCount(1);
+        }
+      }
       directory=owned;
     }else{
       await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
