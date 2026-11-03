@@ -58,6 +58,11 @@ export const reviewedSourceContinuations = {
     currentSourceSha256: '5c2f706a951fda4a7e0790e7542657b2c860b7e7aef855e9f43e29f3635bdc69',
     reason: 'The same home research question and two-choice budget remain, but first-fold vertical alignment and headline measure changed after the 2026-10-09 reading-path review. Historical screenshot geometry is no longer current; exact-head 440px/1440px browser acceptance is still required.',
   },
+  'src/components/research/SeedOpenEvoResearchHub.astro': {
+    priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
+    currentSourceSha256: '79ef134d15dc5366bc4599faf52cba9f6762841c09e9dd438e1084be0ed590a6',
+    reason: 'The method-comparison hub now adds one reusable four-step, bilingual learning path linking to the existing training-design, questions, site-map, and evidence section owners. Existing typography declarations and scientific copy are retained; prior approved source proof remains historical, and 440px/1440px exact-head bilingual, theme and keyboard browser acceptance is still pending.',
+  },
 };
 
 export function verifyReviewedSourceContinuation(file, bytes, priorReview, continuations = reviewedSourceContinuations) {
