@@ -166,8 +166,30 @@ test('wide reading entries keep one usable directory and never cover the title',
       '#main-content .next-list:visible',
       '#main-content .evo-article__toc:visible',
     ].join(', ')).first();
+    // A native closed <details> is a usable, keyboard-accessible directory:
+    // its nested nav must not be visible until the reader opens it. Recognize
+    // the semantic guide rather than requiring a competing generated outline.
+    const ownedDisclosure=page.locator('#main-content details:visible:has(nav[data-reader-guide])').first();
     let directory=outline;
-    if(await owned.count()){
+    if(await ownedDisclosure.count()){
+      await expect(outline).toBeHidden();
+      expect(await owned.count(),route).toBe(0);
+      const summary=ownedDisclosure.locator('summary');
+      await expect(summary).toBeVisible();
+      await summary.focus();
+      await summary.press('Enter');
+      await expect(ownedDisclosure).toHaveAttribute('open','');
+      const guide=ownedDisclosure.locator('nav[data-reader-guide]');
+      await expect(guide).toBeVisible();
+      const links=guide.locator('a[href^="#"]');
+      expect(await links.count(),route).toBeGreaterThan(1);
+      for(const link of await links.all()){
+        const href=await link.getAttribute('href');
+        expect(href,route).toMatch(/^#.+/);
+        await expect(page.locator('[id=' + JSON.stringify(decodeURIComponent(href!.slice(1))) + ']')).toHaveCount(1);
+      }
+      directory=ownedDisclosure;
+    }else if(await owned.count()){
       await expect(outline).toBeHidden();
       expect(await owned.locator('a[href]').count(),route).toBeGreaterThan(0);
       // An existing topical directory must link to actual page sections, not
