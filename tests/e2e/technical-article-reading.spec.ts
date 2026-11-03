@@ -181,7 +181,18 @@ test('wide reading entries keep one usable directory and never cover the title',
       }
       directory=owned;
     }else{
-      await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
+      // Bind an unexpected missing path to its actual route and rendered nav
+      // owners. A generic locator timeout hid the cause across three CI runs.
+      const navEvidence = await page.locator('#main-content nav:visible').evaluateAll(nodes =>
+        nodes.map(node => ({
+          label: node.getAttribute('aria-label'),
+          className: node.className,
+          anchors: node.querySelectorAll('a[href]').length,
+        })),
+      );
+      const attentionMode = await page.locator('body').getAttribute('data-reader-attention-mode');
+      const outlineCount = await page.locator('.evo-approved-reader [data-article-outline]').count();
+      expect(outlineCount, `${route}: no usable owned directory or generated outline; attentionMode=${attentionMode}; visibleNavs=${JSON.stringify(navEvidence)}`).toBe(1);
       await expect(outline).toBeVisible();
       await outline.locator('summary').click();
       expect(await outline.evaluate(el=>getComputedStyle(el).position)).toBe('static');

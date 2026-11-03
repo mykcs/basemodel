@@ -53,6 +53,27 @@ for (const width of [390, 440, 768, 1280, 1440] as const) {
   }
 }
 
+test('Flow comparison hub has four real reading destinations without a competing rail', async ({ page }) => {
+  await page.setViewportSize({ width: 440, height: 956 });
+  await page.goto('/research/seed-openevo/flow/');
+  const guide = page.getByRole('navigation', { name: '本页学习路线' });
+  await expect(guide).toBeVisible();
+  const links = guide.locator('a[href^="#"]');
+  await expect(links).toHaveCount(4);
+  for (const link of await links.all()) {
+    const href = await link.getAttribute('href');
+    expect(href).toMatch(/^#[\w-]+$/);
+    await expect(page.locator(href!)).toHaveCount(1);
+  }
+  await expect(page.locator('[data-page-outline].is-visible')).toHaveCount(0);
+  await links.nth(2).focus();
+  await expect(links.nth(2)).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/#site-map$/);
+  await expect(page.locator('#site-map')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+});
+
 test('distinct page roles do not accumulate redundant guides and anonymous rails', async ({ page }) => {
   for (const path of ['/', '/models/', '/papers/', '/research/seed-openevo/study/results/', '/models/kimi-k2-thinking/']) {
     await page.goto(path);

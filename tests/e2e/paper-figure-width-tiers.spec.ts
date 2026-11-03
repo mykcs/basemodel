@@ -134,11 +134,25 @@ for (const { label, route, root, scoreSelector, lossSelector } of [
           // Negative control: replay the old phone shrink after opening the
           // reader. The same physical-label-size contract must turn red.
           await figure.locator('.native-svg-reader__action').click();
-          await svg.evaluate(node => (node as SVGElement).style.minWidth = '0px');
+          // Setting min-width to zero alone does not reliably shrink an SVG
+          // across engines (WebKit may keep the intrinsic width). Simulate
+          // the actual former failure: a 240px physical canvas squeezing a
+          // wide viewBox, then prove the same physical-size gate rejects it.
+          await svg.evaluate(node => {
+            const viewport = node.closest('.native-svg-reader__viewport') as HTMLElement;
+            const chart = node as SVGElement;
+            chart.style.minWidth = '0px';
+            chart.style.width = `${Math.min(240, viewport.clientWidth)}px`;
+          });
           const old = await measure();
+          expect(old.width, 'negative control must really compress the SVG').toBeLessThanOrEqual(240);
           expect(old.renderedFontPx).toBeLessThan(10);
           expect(() => expect(old.renderedFontPx).toBeGreaterThanOrEqual(11.5)).toThrow();
-          await svg.evaluate(node => (node as SVGElement).style.removeProperty('min-width'));
+          await svg.evaluate(node => {
+            const chart = node as SVGElement;
+            chart.style.removeProperty('width');
+            chart.style.removeProperty('min-width');
+          });
           await figure.locator('.native-svg-reader__action').click();
           expect((await measure()).renderedFontPx).toBeGreaterThanOrEqual(11.5);
         }

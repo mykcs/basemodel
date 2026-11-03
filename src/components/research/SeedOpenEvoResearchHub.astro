@@ -2,6 +2,7 @@
 import "../../styles/research-article.css";
 import { localePath, type Locale } from '../../i18n';
 import SeedOpenEvoMissionHero from './SeedOpenEvoMissionHero.astro';
+import PageLearningPath from '../navigation/PageLearningPath.astro';
 import SeedOpenEvoTrainingDesignOverview from './SeedOpenEvoTrainingDesignOverview.astro';
 
 interface Props { locale: Locale }
@@ -35,6 +36,12 @@ const objectGroups = [
 ---
 <div class="mission-page plain-mission-hub evo-approved-reader evo-reading-overview">
   <SeedOpenEvoMissionHero locale={locale} compact />
+  <PageLearningPath locale={locale} items={[
+    { href: '#training-design', zh: '两阶段学习的方法怎样对应', en: 'How the two-stage methods align' },
+    { href: '#questions', zh: '哪些模型、任务和比较条件需要固定', en: 'Which models, tasks, and comparison conditions must stay fixed' },
+    { href: '#site-map', zh: '怎样运行实验并比较结果', en: 'How experiments run and get compared' },
+    { href: '#evidence', zh: '什么证据能让实验结论可信', en: 'What evidence makes a conclusion trustworthy' },
+  ]} />
 
   <section class="mission-section" id="training-design" aria-labelledby="training-design-title">
     <div class="mission-section__heading"><h2 id="training-design-title"><span class="evo-article__heading-number" aria-hidden="true">01</span> {t('SEED × OpenEVO 两阶段学习范式', 'SEED × OpenEVO two-stage learning paradigm')}</h2></div>
