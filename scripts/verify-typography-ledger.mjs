@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
 import { intelligenceTypographyDelta, contentReorganizationProofs } from './lib/typography-intelligence-ui-delta.mjs';
-import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -52,7 +52,7 @@ assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Review
 // Subsequent reviewed article pages and editorial anonymization legitimately
 // change it; verify the three #959 source owners by exact SHA instead and
 // reconcile every CSS declaration against both independently reviewed deltas.
-const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta, reviewedSharedTypographyRows(reviewedReaderGuideTypography));
+const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta, [...reviewedSharedTypographyRows(reviewedReaderGuideTypography), ...reviewedSharedTypographyRows(reviewedFlowDisclosureTypography)]);
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);

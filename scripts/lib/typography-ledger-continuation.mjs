@@ -39,6 +39,23 @@ export const reviewedReaderGuideTypography = {
   },
 };
 
+// The Flow study hub uses a single native disclosure as its first-screen
+// navigation entry. The existing type tokens remain authoritative; only the
+// named summary's two typography properties are reviewed here.
+export const reviewedFlowDisclosureTypography = {
+  file: 'src/components/research/SeedOpenEvoResearchHub.astro',
+  reason: 'The four real method-comparison anchors remain available through one keyboard- and no-JS-accessible native disclosure without four competing first-screen actions.',
+  selectors: {
+    '.flow-learning-disclosure > summary': {
+      role: 'Readable, secondary four-section navigation control',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'font-weight': 'var(--type-weight-label)',
+      },
+    },
+  },
+};
+
 export function reviewedSharedTypographyRows(review) {
   assert(review.file?.trim() && review.reason?.trim(), 'Shared typography needs an identified owner and reason');
   return Object.entries(review.selectors).flatMap(([selector, entry]) => {

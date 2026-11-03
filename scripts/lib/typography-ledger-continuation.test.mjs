@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -47,6 +47,20 @@ test('one reviewed reader guide adds only its exact semantic typography declarat
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed.slice(1)], reviewed), /missing from current source/);
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed, { ...reviewed[0], value: '12px' }], reviewed), /outside page-local Astro/);
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed, { ...reviewed[0], file: 'src/styles/app.css' }], reviewed), /outside page-local Astro/);
+});
+
+test('Flow native disclosure permits only two exact token-backed summary declarations', () => {
+  const approved = reviewedSharedTypographyRows(reviewedFlowDisclosureTypography);
+  assert.equal(approved.length, 2);
+  const source = readFileSync(new URL('../../src/components/research/SeedOpenEvoResearchHub.astro', import.meta.url), 'utf8');
+  assert.match(source, /<details class="flow-learning-disclosure">/);
+  assert.match(source, /font-size:\\s*var\\(--type-body-small\\);\\s*font-weight:\\s*var\\(--type-weight-label\\)/);
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved], approved), {
+    newTokenDeclarations: 2, newFiles: [reviewedFlowDisclosureTypography.file],
+  });
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, approved[0]], approved), /missing from current source/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], value: '11px' }], approved), /outside page-local Astro/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], selector: '.unrelated-summary' }], approved), /outside page-local Astro/);
 });
 
 test('later hero layout review keeps the original approved source SHA as evidence', () => {
