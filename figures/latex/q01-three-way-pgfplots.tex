@@ -1,0 +1,31 @@
+\documentclass[tikz,border=5pt]{standalone}
+\usepackage{fontspec}
+\setmainfont{Liberation Serif}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+ width=12.0cm,height=7.1cm,
+ xmin=0,xmax=165,ymin=0,ymax=100,
+ xtick={0,40,80,120,160},ytick={0,20,40,60,80,100},
+ xlabel={Measured checkpoint},ylabel={Task score (out of 100)},
+ axis x line*=bottom,axis y line*=left,
+ tick align=outside,tick style={line width=.35pt,color=black!70},
+ axis line style={line width=.6pt,color=black!90},
+ tick label style={font=\small,color=black!88},label style={font=\small,color=black!88},
+ grid=none,clip=true,legend pos=north west,
+ legend style={font=\scriptsize,draw=none,fill=none,cells={anchor=west},row sep=1.8pt}
+]
+\addplot+[no markers,line width=.70pt,black,solid] coordinates {(1,33.364865) (40,48.585013) (80,35.947364) (90,53.450831) (100,49.937630) (110,53.719195) (120,60.401927) (130,55.816536) (140,57.192601) (150,60.406211) (160,60.108761)};
+\addplot+[forget plot,only marks,black,solid,mark=square*,mark size=1.45pt,mark options={draw=black,fill=black}] coordinates {(1,33.364865) (40,48.585013) (80,35.947364) (90,53.450831) (100,49.937630) (110,53.719195) (120,60.401927) (130,55.816536) (140,57.192601) (150,60.406211) (160,60.108761)};
+\addlegendentry{Ordinary OpenEVO}
+\addplot+[no markers,line width=.70pt,black!68,densely dashed] coordinates {(1,30.205600) (40,27.159683) (80,27.511471) (90,54.177912) (100,50.735452) (110,52.362436) (120,58.723592) (130,55.737920) (140,63.100847) (150,67.246967) (160,68.052596)};
+\addplot+[forget plot,only marks,black!68,densely dashed,mark=o,mark size=1.65pt,mark options={draw=black!68,fill=white}] coordinates {(1,30.205600) (40,27.159683) (80,27.511471) (90,54.177912) (100,50.735452) (110,52.362436) (120,58.723592) (130,55.737920) (140,63.100847) (150,67.246967) (160,68.052596)};
+\addlegendentry{Bounded}
+\addplot+[no markers,line width=.70pt,black!48,densely dotted] coordinates {(1,36.080070) (40,42.104809) (80,48.849347) (90,48.320623) (100,41.444157) (110,51.669964) (120,49.632176) (130,58.163922) (140,53.670832) (150,47.296993) (160,45.236489)};
+\addplot+[forget plot,only marks,black!48,densely dotted,mark=triangle*,mark size=1.65pt,mark options={draw=black!48,fill=black!48}] coordinates {(1,36.080070) (40,42.104809) (80,48.849347) (90,48.320623) (100,41.444157) (110,51.669964) (120,49.632176) (130,58.163922) (140,53.670832) (150,47.296993) (160,45.236489)};
+\addlegendentry{Historical beta/GDR}
+\end{axis}
+\end{tikzpicture}
+\end{document}

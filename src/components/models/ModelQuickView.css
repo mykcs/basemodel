@@ -1,0 +1,57 @@
+/* The dialog's shared interior travels with its lazy component. Foundation
+ * owns the outer dialog primitive; Workspace owns only its mobile handoff. */
+.quick-view-dialog-inner {
+  padding: 20px;
+  font: var(--type-weight-normal) var(--type-body-small)/var(--type-leading-caption) var(--font-interface);
+}
+
+.quick-view-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+}
+
+.quick-view-header > div { min-width: 0; }
+.quick-view-header > button { flex: 0 0 auto; font: inherit; }
+.quick-view-header .section-kicker {
+  margin: 0 0 4px;
+  font: var(--type-weight-label) var(--type-meta)/var(--type-leading-caption) var(--font-interface);
+  letter-spacing: normal;
+}
+.quick-view-header h2 {
+  margin: 2px 0 4px;
+  font-family: var(--font-interface);
+  font-size: var(--type-subsection);
+  font-weight: var(--type-weight-heading);
+  line-height: var(--type-leading-heading);
+  overflow-wrap: anywhere;
+}
+.quick-view-header .muted { margin: 0; font-size: var(--type-meta); }
+
+.quick-view-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 8px 14px;
+  margin: 20px 0;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  font-size: var(--type-table);
+}
+.quick-view-facts dt { color: var(--muted); font-size: var(--type-meta); }
+.quick-view-facts dd {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-interface);
+  font-weight: var(--type-weight-normal);
+  font-style: normal;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.quick-view-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.quick-view-actions .button {
+  max-width: 100%;
+  font: var(--type-weight-label) var(--type-body-small)/var(--type-leading-heading) var(--font-interface);
+  white-space: normal;
+  text-align: center;
+}

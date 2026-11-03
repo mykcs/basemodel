@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "figureId": "q03-stage2-pgfplots",
+  "sourceData": "src/data/openEvoAdvisorTenQuestions.ts#ADVISOR_Q03_CUSTOM_PANEL",
+  "latexSource": "figures/latex/q03-stage2-pgfplots.tex",
+  "svgAsset": "public/research/seed-openevo/figures/q03-stage2-pgfplots.svg",
+  "latexSha256": "39ae8daf937715383d9522bfe432f6f5bfcae58571aa87d14f0bd8974d9cb16b",
+  "svgSha256": "52bfa97298842d1a13ba8987ee5636d439cdeb688f0eb088d3078ed6a876a447",
+  "protocol": "custom-q17-64",
+  "scoreFullScale": 100,
+  "plottedYAxis": [
+    0,
+    10
+  ],
+  "checkpoints": [
+    {
+      "label": "A0",
+      "score": "3.71",
+      "successes": 0,
+      "total": 64
+    },
+    {
+      "label": "A40",
+      "score": "6.43",
+      "successes": 0,
+      "total": 64
+    },
+    {
+      "label": "A80",
+      "score": "0.69",
+      "successes": 0,
+      "total": 64
+    },
+    {
+      "label": "A120",
+      "score": "6.62",
+      "successes": 0,
+      "total": 64
+    }
+  ],
+  "toolchain": "XeLaTeX + PGFPlots 1.18 + Inkscape PDF-to-SVG (text converted to paths); generated asset committed, no LaTeX runtime on Vercel",
+  "note": "Only four measured checkpoints. Dashed connectors are visual guides, not measured training rounds. Caption records scale and non-comparability to SEED 128-task panel."
+}

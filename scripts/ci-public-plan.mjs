@@ -23,6 +23,18 @@ export const resolveFullShardTotal = (env = process.env) => {
   return value;
 };
 
+// The ordinary automatic pipeline owns both engines once. Legacy manual
+// one-engine callers retain browserAllocationForMode above.
+export const unifiedBrowserAllocationForMode = (mode) => {
+  if (mode === 'skip') return { browserTotal: 0, shards: [], matrix: [] };
+  if (mode === 'focused') return { browserTotal: 1, shards: [1], matrix: [] };
+  if (mode !== 'full') throw new Error(`unsupported UI mode: ${mode}`);
+  const matrix = [['chromium', 4], ['webkit', 8]].flatMap(([browser, total]) =>
+    Array.from({ length: total }, (_, index) => ({ browser, shard: index + 1, total })),
+  );
+  return { browserTotal: matrix.length, shards: [], matrix };
+};
+
 export const planPublicBrowserAllocation = (env = process.env) => {
   const base = env.CI_BASE_SHA?.trim();
   const head = env.CI_HEAD_SHA?.trim() || 'HEAD';
@@ -57,7 +69,19 @@ export const planPublicBrowserAllocation = (env = process.env) => {
     throw new Error(`UI planner returned unsupported mode: ${String(plan.mode)}`);
   }
 
-  const allocation = browserAllocationForMode(plan.mode, resolveFullShardTotal(env));
+  if (env.CI_FORCE_FULL === '1') {
+    plan = { ...plan, mode: 'full', reason: 'Explicit manual full-population review' };
+  }
+  if (env.CI_UNIFIED_BROWSER === '1') {
+    const headRef = env.CI_HEAD_REF?.trim();
+    if (!headRef) throw new Error('CI_HEAD_REF is required for unified browser planning');
+    if (plan.mode !== 'skip' && headRef.includes('typography')) {
+      plan = { ...plan, mode: 'full', reason: 'Typography branches preserve full WebKit acceptance' };
+    }
+  }
+  const allocation = env.CI_UNIFIED_BROWSER === '1'
+    ? unifiedBrowserAllocationForMode(plan.mode)
+    : browserAllocationForMode(plan.mode, resolveFullShardTotal(env));
   return {
     mode: plan.mode,
     risk: plan.risk,
@@ -77,6 +101,7 @@ if (isMain) {
       risk: plan.risk,
       browser_total: plan.browserTotal,
       shards: plan.shards,
+      matrix: plan.matrix ?? [],
     };
     console.log(JSON.stringify(payload));
     if (process.argv.includes('--github-output')) {
@@ -85,6 +110,7 @@ if (isMain) {
       appendFileSync(output, `mode=${plan.mode}\n`);
       appendFileSync(output, `browser_total=${plan.browserTotal}\n`);
       appendFileSync(output, `shards_json=${JSON.stringify(plan.shards)}\n`);
+      appendFileSync(output, `matrix_json=${JSON.stringify(plan.matrix ?? [])}\n`);
     }
   } catch (error) {
     console.error('[ci-public-plan]', error instanceof Error ? error.message : error);

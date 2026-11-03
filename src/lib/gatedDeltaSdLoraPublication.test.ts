@@ -65,7 +65,7 @@ describe('Gated-Delta SD-LoRA publication split', () => {
   });
 
   it('keeps sibling entry copy and English labels aligned with the sealed qualification', () => {
-    expect(lobby).toContain('sealed four-round paired D1 qualification');
+    expect(lobby).toContain('CAPABILITY_TOPIC_GROUPS');
     expect(lobby).not.toContain('still-incomplete full paired D1');
     expect(current).toContain("'K / V · β · g · WebShop score / reward · fixed 16-task candidate check'");
     expect(history).toContain("t('SD-LoRA 候选更新', 'SD-LoRA candidate updates')");

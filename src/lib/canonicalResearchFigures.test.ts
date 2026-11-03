@@ -38,7 +38,7 @@ describe('canonical SEED / OpenEvo research figures', () => {
   });
 
   it('keeps product-to-goal generation and the 12,087-vs-6,910 boundary in one section', () => {
-    for (const term of ['1,000', '6,910', 'get_synthetic_goals(...)', 'itertools.product', '12,087', 'synthetic goals', 'UNIT BOUNDARY']) {
+    for (const term of ['1,000', '6,910', 'get_synthetic_goals(...)', 'itertools.product', '12,087', 'synthetic goals', '两组数字的统计对象不同']) {
       expect(goalGenerationFigure).toContain(term);
     }
     expect(goalGenerationFigure).toContain('不是 6,910 个 synthetic goals 的过滤来源');
@@ -87,9 +87,9 @@ describe('canonical SEED / OpenEvo research figures', () => {
     for (const term of ['MathFormula', '\\mathrm{task\\_score}\\in[0,1]', '\\mathrm{won}\\in', 'EXACT SUCCESS', 'get_reward(...)', 'Score 看完成程度', '不是某一次实验 run 的测量结果']) {
       expect(evaluationFigure).toContain(term);
     }
-    expect(evaluationFigure).toContain('INPUT · GOAL');
-    expect(evaluationFigure).toContain('TERMINAL STATE');
-    expect(evaluationFigure).toContain('EVALUATE');
+    expect(evaluationFigure).toContain('<small>购物目标</small>');
+    expect(evaluationFigure).toContain('<small>实际购买结果</small>');
+    expect(evaluationFigure).toContain('<small>评测 · <code>get_reward(...)</code></small>');
   });
 
   it('keeps the WebShop route as one first-reader sequence without legacy duplicate sections', () => {

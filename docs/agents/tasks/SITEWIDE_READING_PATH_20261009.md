@@ -48,6 +48,14 @@ Status: **Draft design candidate for owner review; not a global visual-template 
 - 已有所有权明确的目录不会同时出现另一套匿名浮动导航；
 - 首页仍满足两个第一屏主要选择，不通过增大预算伪造 PASS。
 
+### 2026-11-03 与现行排版账本对齐
+
+新共享导航的 8 条字体/行高声明已在 `scripts/lib/typography-ledger-continuation.mjs` 按组件、选择器、属性、确切 token 和语义角色单独登记，并添加缺失、非法字号及越权共享 CSS 的负例测试。历史排版账本不改写，其他共享组件仍不能未分类新增字号声明。手机版采用 44px 行高与共享 `--type-body-small` 正文字号；新增 440×956 / 1440×1000 和键盘锚点验收，保留原 390px 回归。
+
+首页 Hero 的旧版源码由排版证据单独锁定；本次垂直布局变动以 `reviewedSourceContinuations` 保存原审阅 SHA、新源码 SHA 与待验收界线，不覆盖旧证明，保持现有研究事实和两个主入口不变。浏览器几何与主观冷读仍须以新候选的真实画面判定。
+
+Research Detail 的更早历史源码也由同一账本封存；它的双语研究内容、原生学习锚点与新式论文页外壳合并，使用 `contentReorganizationProofs` 的旧 SHA、新 SHA 与语义理由登记，保留原账本和历史截图而不冒充最新版真实浏览器已确认。
+
 ## 验收记录和未完成边界
 
 代码提交、exact-head CI、人工设计预览与主干合并各自独立记账。应先得到真实 Chromium / WebKit 和 69 routes 的 Reader Contract 证据，再做成本较高的远端预览。最终视觉接受由读者（非单纯测试绿色）判断。

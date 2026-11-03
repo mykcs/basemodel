@@ -93,14 +93,14 @@
       "id": "src_2aa8d36eb900"
     },
     {
-      "url": "https://apisrouter.com/minimax-m2-7-release-date",
+      "url": "https://www.minimax.cn/news/minimax-m27-zh",
       "type": "official_announcement",
-      "checked_at": "2026-08-06",
-      "evidence_note": "Third-party announcement citing MiniMax release notes confirms M2.7 release date of March 18, 2026 and availability today.",
+      "checked_at": "2026-10-19",
+      "evidence_note": "MiniMax official 2026-03-18 announcement directly states the M2.7 launch date; replaces a dead third-party URL that had incorrectly been typed official_announcement. Verified direct publisher page (HTTP 200) 2026-10-19.",
       "supports": [
         "release_date"
       ],
-      "id": "src_0747e61495cb"
+      "id": "src_4cfccb07332a"
     },
     {
       "url": "https://huggingface.co/MiniMaxAI/MiniMax-M2.7/blob/main/LICENSE",

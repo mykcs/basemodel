@@ -34,10 +34,12 @@ for (const { path, first } of narrativePages) {
   });
 }
 
-for (const width of [390, 768, 1280, 1440] as const) {
+// 390/768/1280 remain explicit regressions for the original reader-path PR;
+// 440×956 and 1440×1000 are the current project's primary acceptance sizes.
+for (const width of [390, 440, 768, 1280, 1440] as const) {
   for (const theme of ['light', 'dark'] as const) {
     test('reading path is quiet and legible at ' + width + ' ' + theme, async ({ page }) => {
-      await page.setViewportSize({ width, height: width === 1280 ? 633 : 844 });
+      await page.setViewportSize({ width, height: width === 440 ? 956 : width === 1440 ? 1000 : width === 1280 ? 633 : 844 });
       await page.addInitScript((t: string) => localStorage.setItem('atlas-theme', t), theme);
       await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
       const guide = page.locator('[data-reader-guide]');
@@ -68,7 +70,7 @@ test('distinct page roles do not accumulate redundant guides and anonymous rails
 });
 
 test('learning path remains useful without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 440, height: 956 } });
   try {
     const page = await context.newPage();
     await page.goto('/methodology/');
@@ -78,4 +80,15 @@ test('learning path remains useful without JavaScript', async ({ browser }) => {
     await expect(page).toHaveURL(/#recommendation-boundary$/);
     await expect(page.locator('#recommendation-boundary')).toBeVisible();
   } finally { await context.close(); }
+});
+
+test('keyboard user can follow the evidence path without a mouse', async ({ page }) => {
+  await page.setViewportSize({ width: 440, height: 956 });
+  await page.goto('/research/seed-openevo/flow/seed/');
+  const first = page.getByRole('navigation', { name: '本页学习路线' }).getByRole('link').first();
+  await first.focus();
+  await expect(first).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/#seed-responsibilities$/);
+  await expect(page.locator('#seed-responsibilities')).toBeVisible();
 });

@@ -49,7 +49,7 @@ describe('SD-LoRA component-count scaling publication', () => {
     expect(enRoute).toContain('OpenEvoSdLoraScaling');
     expect(contracts).toContain("capability-sd-lora-scaling");
     expect(routes).toContain('sd-lora-scaling');
-    expect(lobby).toContain('SD-LoRA 计算诊断');
-    expect(lobby).toContain('查看 SD-LoRA 计算扩展性');
+    expect(lobby).toContain('CAPABILITY_READER_ROUTES');
+    expect(read('../data/capabilityReaderRoutes.ts')).toContain("'sd-lora-scaling'");
   });
 });

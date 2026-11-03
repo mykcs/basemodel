@@ -1,0 +1,1610 @@
+[
+  {
+    "route": "/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 0
+  },
+  {
+    "route": "/404.html",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/compare/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/data-status/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 6
+  },
+  {
+    "route": "/development/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/families/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/guide/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/guide/today/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/lab/",
+    "h1": 1,
+    "figures": 3,
+    "tables": 1
+  },
+  {
+    "route": "/landscape/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/methodology/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-2/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-3-5-sonnet/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-3-7-sonnet/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-3-opus/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-fable-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-haiku-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-mythos-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4-6/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4-7/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4-8/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-opus-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-sonnet-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-sonnet-4-6/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-sonnet-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/claude-sonnet-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-coder-v2-lite-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-r1-0528/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-r1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3-0324/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3-2-exp/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3-2-speciale/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3-2/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v4-flash-base/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v4-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v4-pro-base/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/deepseek-v4-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/devstral-medium/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/devstral-small/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-1-5-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-2-0-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-2-5-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-2-5-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-1-flash-lite/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-1-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-5-flash-lite/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-5-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-6-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemini-3-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-3-12b-it/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-3-27b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-3-4b-it/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-4-12b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-4-26b-a4b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-4-31b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-4-e2b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gemma-4-e4b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-4-5-air/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-4-6/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-4-7/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-4-9b-chat/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-5-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-5-2/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/glm-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-3-5-turbo/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-4-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-4-v/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-4o/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-2/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-3-codex/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-4-mini/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-4-nano/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-4-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-5-pro/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-6-luna/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-6-sol/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-6-terra/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-mini/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5-nano/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-oss-120b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/gpt-oss-20b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4-20-multi-agent/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4-20/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4-3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/grok-build-0-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-audio-7b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-dev-72b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-6/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-7-code/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-base/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-instruct-0905/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k2-thinking/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-k3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-linear-48b-a3b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/kimi-vl-a3b-thinking-2506/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-2-13b-chat/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-2-70b-chat/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-1-405b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-1-70b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-1-8b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-2-11b-vision-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-3-70b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-70b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-3-8b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-4-maverick-17b-128e/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/llama-4-scout-17b-16e/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/magistral-medium/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/magistral-small/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/minimax-m1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/minimax-m2-7/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/minimax-m2/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/minimax-m3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-7b-instruct-v0-3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-large-3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-medium-3-5/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-medium-3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-small-24b-instruct-2501/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/mistral-small-4/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/moonlight-16b-a3b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/muse-spark-1-1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/muse-spark/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/o1/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/o3/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/o4-mini/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen-7b-chat/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-0-5b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-0-5b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-1-5b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-1-5b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-14b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-14b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-32b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-32b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-3b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/models/qwen2-5-3b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-72b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-72b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-7b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-5-7b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen2-72b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-1-7b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-235b-a22b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-30b-a3b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-32b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-5-27b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-6-27b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-6-35b-a3b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-6-flash/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-6-max-preview/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-6-plus/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-7-max/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-7-plus/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-8b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-coder-480b-a35b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-max/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-next-80b-a3b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/qwen3-vl-235b-a22b-instruct/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/text-davinci-003/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/models/vicuna-13b/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/papers/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 2
+  },
+  {
+    "route": "/papers/adaplanner/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/agentbench/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/agentboard/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/agentverse/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/appworld/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/camel/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/chameleon/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/critic/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/dspy/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/expel/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/generative-agents/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/metagpt/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/openhands/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/osworld/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/reflexion/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/seed/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 3
+  },
+  {
+    "route": "/papers/self-refine/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/swe-agent/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/swe-bench/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/voyager/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/papers/webarena/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/alfworld/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/base-model/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/flow/benchmarks/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/loops/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/openevo/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/sd-lora/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/flow/seed/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/flow/server/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/flow/webshop/",
+    "h1": 1,
+    "figures": 8,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/advisor-questions/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/briefing/",
+    "h1": 1,
+    "figures": 8,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/briefing/technical-notes/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/archive/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/",
+    "h1": 1,
+    "figures": 10,
+    "tables": 21
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/first-run/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+    "h1": 1,
+    "figures": 2,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+    "h1": 1,
+    "figures": 2,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+    "h1": 1,
+    "figures": 2,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/",
+    "h1": 1,
+    "figures": 2,
+    "tables": 4
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+    "h1": 1,
+    "figures": 3,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage1-previous/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/text-memory/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 3
+  },
+  {
+    "route": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/design/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/minimax-teacher/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/openevo-methods/",
+    "h1": 1,
+    "figures": 2,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/parameter-memory-results/",
+    "h1": 1,
+    "figures": 16,
+    "tables": 20
+  },
+  {
+    "route": "/research/seed-openevo/study/results/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 7
+  },
+  {
+    "route": "/research/seed-openevo/study/results/3b-minimax-analysis/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/results/3b-self-analysis/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/results/7b-minimax-analysis/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/results/7b-self-analysis/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 2
+  },
+  {
+    "route": "/research/seed-openevo/study/results/benchmark-first/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/current-conclusion/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/first-positive-transfer/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/four-arm-analysis/",
+    "h1": 1,
+    "figures": 1,
+    "tables": 4
+  },
+  {
+    "route": "/research/seed-openevo/study/results/independent-replication/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/measurement-boundary/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/openevo-benchmark-design/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/results/openevo-training/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/second-generation/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/seed-faithful-benchmark/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 1
+  },
+  {
+    "route": "/research/seed-openevo/study/results/seed-training/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/webshop-training/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/results/why-it-kept-failing/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/research/seed-openevo/study/run/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  },
+  {
+    "route": "/workspace/",
+    "h1": 1,
+    "figures": 0,
+    "tables": 0
+  }
+]

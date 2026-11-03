@@ -1,0 +1,11 @@
+# WP-D3 — Shared ResearchDepth native disclosure typography
+
+Status: **IMPLEMENTED / awaiting exact-head hosted CI and screenshot review**, PR #898 (still Draft on #895).
+
+**Owner and real consumers:** `src/components/research/ResearchDepth.astro` renders `<details>` disclosure summaries and optional introduction at (1) `/research/seed-openevo/study/capability-exploration/` under `kind=method` and (2) `/research/seed-openevo/study/capability-exploration/first-run/` under `kind=history`. It is a separate shared owner from the completed WP-D2 lobby. The real first-run page imports `OpenEvoFirstRunMap.astro` with a history disclosure and explanatory introduction.
+
+**Exact source transformation:** original scientific-scope label `font:800 .875rem/1.2 var(--font-mono)` and tracked uppercase styling (~14px decorative mono) → normal interface family, `--type-body` (16px), `--type-weight-label` (600) and semantic leading; summary's highlighted subject gets interface body 16px / heading 650, and explanation gets body 16px with reading-measure and body leading. Original component CSS had **2 direct 1rem sizes + 1 14px font shorthand**; after has **3 tokenized direct sizes, 0 literal-size shorthand, 0 undecided sizes in this one component**. No custom token or `!important` production rules. Native keyboard, indicator glyph and desktop/mobile geometry untouched structurally.
+
+**Executable new gates:** `src/lib/researchDepthScopedTypography.test.ts` contains two source classification + negative-injection tests. Existing `tests/e2e/typography-method-role-witness.spec.ts` is Public PR CI-wired; appended real browser tests cover **2 real page roles** × **390/768/1440 × light/dark**, computed font family/size/weight/leading/clipping, native Enter open/close, indicator transition, source text, screenshot PNG and JSON, plus 9px/mono negative injection rejected by the SAME browser predicate. Both routes are Chinese-only; no phantom English route.
+
+**Research boundary:** route facts, prior snapshot, histories, evidence, scientific figures/tables and all links unchanged. No separate PR, main or Production edits. WebKit full matrix, all-site source audit, reader cold review and exact final Vercel Preview are still pending.

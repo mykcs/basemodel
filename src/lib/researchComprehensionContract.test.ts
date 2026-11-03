@@ -26,9 +26,12 @@ describe('research comprehension architecture', () => {
   });
 
   it('encodes sequential research as an ordered journey instead of flat sections', () => {
-    for (const name of ['lobby', 'firstRun', 'mechanism', 'exploration'] as const) {
+    for (const name of ['firstRun', 'mechanism', 'exploration'] as const) {
       expect(migrated[name], name).toContain('ResearchJourney');
     }
+    expect(migrated.lobby).toContain('data-topic-navigation');
+    expect(migrated.lobby).toContain('data-topic-group={group.id}');
+    expect(migrated.lobby).not.toContain('<ResearchJourney');
     expect(migrated.report).toContain('data-research-journey');
     expect(migrated.report).toContain('data-research-step');
   });

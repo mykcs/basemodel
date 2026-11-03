@@ -7,9 +7,10 @@ test('Study keeps the seven real experiments as the primary directory', async ({
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(study, { waitUntil: 'domcontentloaded' });
 
-  await expect(page.locator('h1')).toContainText('七次实验的研究演进');
+  await expect(page.locator('h1')).toContainText('实验目录');
   await expect(page.locator('[data-experiment-primary]')).toHaveCount(7);
   await expect(page.locator('[data-research-progression]')).toHaveCount(7);
+  await page.locator('[data-experiment-details] > summary').first().click();
   const firstProgression = page.locator('[data-research-progression]').first();
   await expect(firstProgression).toContainText('当时的问题');
   await expect(firstProgression).toContainText('结果边界');
@@ -78,14 +79,14 @@ for (const width of [390, 768, 1440]) {
       await page.goto(study, { waitUntil: 'domcontentloaded' });
       const meeting = page.locator('[data-advisor-meeting]');
       const stage1 = page.locator('[data-experiment-primary="stage1-learning-objectives"]');
-      await expect(meeting.locator('h2')).toHaveText('和学长开会');
+      await expect(meeting.locator('h2')).toHaveText('和L 学长开会');
       await expect(meeting.locator('time')).toHaveAttribute('datetime', '2026-09-22');
       await expect(meeting).toContainText('哪一种更适合训练 Stage2 的起始参数');
       await meeting.locator('summary').click();
       await expect(meeting.locator('details > ul > li')).toHaveCount(6);
       await expect(meeting).toContainText('检查 120 轮附近是否已经达到平台');
       await expect(meeting).toContainText('不能直接说明 rank8 就足够保留能力');
-      await expect(meeting.locator('.meeting-source a')).toHaveAttribute('href', /ADVISOR_RESEARCH_RECONCILIATION_2026-09-28/);
+      await expect(meeting.locator('.meeting-source a').last()).toHaveAttribute('href', /ADVISOR_RESEARCH_RECONCILIATION_2026-09-28/);
       const meetingBox = await meeting.boundingBox();
       const stage1Box = await stage1.boundingBox();
       expect(meetingBox).not.toBeNull();

@@ -338,14 +338,14 @@ test('W&B evidence is embedded beside the relevant metric instead of collected i
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   const analysis = page.locator('#analysis');
   await expect(page.locator('#wandb')).toHaveCount(0);
-  await expect(analysis.getByRole('link', { name: 'W&B Report（需要权限）', exact: true })).toHaveAttribute('href', /wandb\.ai/);
-  await expect(analysis.getByRole('link', { name: /完整 W&B Workspace/ })).toHaveAttribute('href', /wandb\.ai/);
+  await expect(analysis.getByRole('link', { name: 'W&B 来源索引（原件需权限）', exact: true })).toHaveAttribute('href', /source-index\.json/);
+  await expect(analysis.getByRole('link', { name: /W&B Workspace 来源索引/ })).toHaveAttribute('href', /source-index\.json/);
 
   const result = page.locator('#formal-result');
   const resultEvidence = result.locator('.metric-evidence');
   await expect(resultEvidence).toHaveCount(2);
   await expect(resultEvidence.nth(0).locator('img')).toHaveAttribute('src', /wandb-threeway\/task-score\.svg/);
-  await expect(resultEvidence.nth(0).getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
+  await expect(resultEvidence.nth(0).getByRole('link', { name: /查看 W&B 来源索引/ }).last()).toHaveAttribute('href', /source-index\.json#wb-002/);
   await expect(resultEvidence.nth(1).locator('img')).toHaveAttribute('src', /bounded-beta-r200-task-score-r96-r199\.svg/);
   await expect(resultEvidence.nth(1).getByRole('link', { name: /打开 104 轮逐轮 evidence/ }).last()).toHaveAttribute('href', /bounded-beta-r200-round-series-20261001\.json/);
   await expect(result.locator('.paper__derived-figure img')).toHaveAttribute('src', /wandb-threeway\/task-score-20-round-mean\.svg/);
@@ -353,13 +353,13 @@ test('W&B evidence is embedded beside the relevant metric instead of collected i
   const figures = analysis.locator('.metric-evidence');
   await expect(figures).toHaveCount(5);
   await expect(page.locator('#loss img')).toHaveAttribute('src', /wandb-threeway\/loss-vs-rollout\.svg/);
-  await expect(page.locator('#loss').getByRole('link', { name: /打开 W&B Report/ }).last()).toHaveAttribute('href', /wandb\.ai\/.*reports/);
+  await expect(page.locator('#loss').getByRole('link', { name: /查看 W&B 来源索引/ }).last()).toHaveAttribute('href', /source-index\.json#wb-002/);
   await expect(page.locator('#task-vector img')).toHaveAttribute('src', /wandb-threeway\/task-vector-frobenius\.svg/);
   await expect(page.locator('#length img').first()).toHaveAttribute('src', /wandb-threeway\/tokens-per-step\.svg/);
   await expect(page.locator('#length img').nth(1)).toHaveAttribute('src', /wandb-threeway\/steps-per-episode\.svg/);
   await expect(page.locator('#entropy img')).toHaveAttribute('src', /wandb-threeway\/action-family-entropy\.svg/);
   for (let index = 1; index < 5; index += 1) {
-    await expect(figures.nth(index).getByRole('link', { name: /打开 W&B 原生 panel/ }).last()).toHaveAttribute('href', /wandb\.ai/);
+    await expect(figures.nth(index).getByRole('link', { name: /查看 W&B 来源索引/ }).last()).toHaveAttribute('href', /source-index\.json/);
   }
 });
 

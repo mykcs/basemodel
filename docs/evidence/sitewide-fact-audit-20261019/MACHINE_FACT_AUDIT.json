@@ -1,0 +1,55 @@
+{
+  "schema": "basemodel.sitewide-factual-audit.v1",
+  "as_of": "2026-10-19",
+  "base_commit": "9c5eccf6aef4c74a787b4151602bab56edf82817",
+  "coverage": {
+    "built_routes": 268,
+    "machine_scanned_routes": 268,
+    "full_research_role_routes": 88,
+    "model_detail_routes": 168,
+    "paper_pages": 22,
+    "scientific_human_claims_individually_proven_by_automated_inventory": 0
+  },
+  "data": {
+    "model_records": 167,
+    "model_recent_under_30d": 0,
+    "model_stale_30d_plus": 137,
+    "model_verified_identity_metadata": 147,
+    "model_partial_or_unknown": 20,
+    "claim_field_rows": 3006,
+    "claim_source_linked": 1861,
+    "claim_unknown": 1145
+  },
+  "source_urls": {
+    "unique_checked": 265,
+    "http_non_success_or_unreachable": 3,
+    "http_429_rate_limited": 12,
+    "source_issues": [
+      {
+        "url": "https://help.openai.com/en/articles/9624314-model-release-notes",
+        "status": 403,
+        "method": "GET",
+        "error": null
+      },
+      {
+        "url": "https://openai.com/index/introducing-gpt-4-5/",
+        "status": 403,
+        "method": "GET",
+        "error": null
+      },
+      {
+        "url": "https://apisrouter.com/minimax-m2-7-release-date",
+        "status": 404,
+        "method": "GET",
+        "error": null
+      }
+    ]
+  },
+  "method_limits": [
+    "Automated source-supported means field has source metadata, not content-level independent confirmation",
+    "Stale is a freshness flag, not a demonstrated false model fact",
+    "Failed URL 403 is an automated request denial and cannot be treated as public page missing",
+    "Only one source link repaired with direct publisher evidence; remaining model records untouched",
+    "Auto flags in ROUTE_INVENTORY are candidates requiring route-specific human judgment"
+  ]
+}

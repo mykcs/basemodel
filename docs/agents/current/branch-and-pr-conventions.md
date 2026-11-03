@@ -45,21 +45,19 @@ Do not create new branches such as `chatgpt/*`, `claude/*`, or `codex/*` merely 
 
 The prefix is not determined only by the file extension. A Markdown change can still be `research/*` if it is part of a research release that must receive an exact-head Preview.
 
-## BaseModel deployment exception: final-gate refs have executable meaning
+## BaseModel deployment exception: explicit Vercel default and Cloudflare standby
 
-Current `vercel.json` deliberately keeps ordinary working branches out of Vercel. Branch prefixes such as `research/`, `fix/`, `docs/`, and `agent/` remain semantic/readability conventions; hosted acceptance is requested separately by moving the persistent `ci/vercel-gate-final` ref to the exact final PR head SHA.
+`vercel.json` disables automatic deployment for ordinary branches **and `main`**. Branch names still describe the subject of work, not the provider that must run. Every PR is instead required to pass exact-head `public-ci-gate` and `cloudflare-artifact-gate` on GitHub-hosted Actions. The current provider-control and manual release contract is in [the dual-provider SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md).
 
-The spend rule is now:
+1. **Ordinary working branch:** no Vercel deployment while iterating; both required GitHub checks run.
+2. **Accepted candidate:** merge only with the two required checks green on the same current SHA. Neither check deploys a website.
+3. **Vercel default release:** manually dispatch `release-provider.yml` on `main` with `provider=vercel` (preselected) and `operation=plan` (preselected); choose `deploy` only for an intentional protected Production update. The staged release must pass exact SHA, Vercel Authentication and authorized route checks before/after promotion.
+4. **Cloudflare standby:** choose `provider=cloudflare` and `operation=plan|deploy` in that same selector; it delegates to the existing Access-protected `cloudflare-standby.yml`. The old `ci/vercel-gate-final` / `request-vercel-final-gate.mjs` remain optional Preview diagnostics and never become required merge authority.
+   The provider selector's `provider=vercel` is a separate protected **Production** path after `vercel-protected` Environment setup and authenticated staged verification; it does not use or modify `ci/vercel-gate-final`.
+5. **`[vercel-preview]`:** historical/review marker only, not a deployment switch. Docs/governance-only changes should not publish a new site on either provider.
+6. If this document disagrees with `vercel.json`, workflows, live branch protection, or the provider state, executable/live truth wins and the documentation needs repair.
 
-1. **Ordinary working branch:** no Vercel deployment while iterating.
-2. **Final candidate:** run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>` so the non-deploy base ref is pinned first and the already-existing `ci/vercel-gate-final` ref moves to the exact same commit SHA; do not add a commit or rebuild the candidate on the gate ref. Creating a brand-new alias at an already-known SHA is not a valid trigger because the Git integration may emit no build event.
-3. **Any triggered gate Preview:** automatic real provider-build acceptance. The helper first requires exact-head `public-ci-gate=success`; the Ignored Build Step then fails open into the static Vercel build rather than rerunning repository/browser acceptance.
-4. **`[vercel-preview]`:** optional historical/review marker only; it does not control spend.
-5. **Docs/governance-only final candidate:** required Public PR CI still owns repository acceptance; the explicit Vercel gate runs the static provider build, while docs-only `main` remains non-deploy-relevant.
-6. **Docs/governance-only `main`:** remains non-deploy-relevant and must not replace the Production website.
-7. If this document disagrees with `vercel.json` / `scripts/vercel-ignore-build.mjs`, executable configuration wins and this document must be corrected.
-
-Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for semantic ownership, not Vercel eligibility. The separate gate ref is the execution control.
+Therefore choose `research/`, `fix/`, `docs/`, `ci/`, or `agent/` for semantic ownership, not for provider eligibility.
 
 ## PR titles
 

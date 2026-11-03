@@ -38,7 +38,7 @@ describe('site-wide reader attention contracts', () => {
 
   it('keeps the four redesign pilots as distinct reader modes with exact route owners', () => {
     const pilots = [
-      ['flow', '/research/seed-openevo/flow/', 'choice', '.mission-hero__lede'],
+      ['flow', '/research/seed-openevo/flow/', 'comparison', '.mission-hero__lede'],
       ['flow-sd-lora', '/research/seed-openevo/flow/sd-lora/', 'narrative', '.sdlora-intro__lede'],
       ['flow-server', '/research/seed-openevo/flow/server/', 'operational', '.server-hero__status'],
       ['capability-q17-frontier', '/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/', 'focus', '[data-q17-advisor-diagnostics] .lede'],
@@ -68,14 +68,14 @@ describe('site-wide reader attention contracts', () => {
     expect(compatibility?.firstViewportSelector).toBe('.sdlora-intro__lede');
   });
 
-  it('keeps the Study phone budget at seven experiment parents, the meeting disclosure, and the SD-LoRA branch links', () => {
+  it('keeps the Study budget bounded while all experiment and lineage detail remains recoverable', () => {
     const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'study');
     expect(row?.firstViewportBudget?.maxInteractive).toBe(11);
     expect(row?.firstViewportGoal).toContain('七次主要实验');
-    expect(row?.firstViewportGoal).toContain('和学长开会');
-    expect(row?.firstViewportGoal).toContain('两条路线说明');
-    expect(row?.firstViewportGoal).toContain('Stable Reduction');
-    expect(row?.firstViewportGoal).toContain('Bounded Online Recurrence');
+    expect(row?.firstViewportGoal).toContain('和L 学长开会');
+    expect(row?.mustStayVisible).toContain('两条路线说明');
+    expect(row?.mustStayVisible).toContain('Stable Reduction');
+    expect(row?.mustStayVisible).toContain('Bounded Online Recurrence');
     expect(row?.mustStayVisible).toContain('七个主实验父项');
     expect(row?.mustStayVisible).toContain('SD-LoRA 加速');
     expect(row?.mustStayVisible).toContain('解释入口而不是第三个 treatment');

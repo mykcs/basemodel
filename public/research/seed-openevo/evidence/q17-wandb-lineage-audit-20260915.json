@@ -10,7 +10,7 @@
     "formal_run_root_wandb_path_count": 0,
     "formal_run_root_wandb_text_match_count": 0,
     "formal_controller_wandb_text_match_count": 0,
-    "wandb_project": "zju-openevo-wangrui/zju-openevo-experiments"
+    "wandb_project": "WITHHELD_PROVIDER_LOCATOR"
   },
   "exact_lineage_wandb_runs": [
     {
@@ -32,13 +32,13 @@
       "created_at": "2026-09-11T19:01:20Z"
     }
   ],
-  "historical_stage2_wandb_run": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f",
+  "historical_stage2_wandb_run": "/research/seed-openevo/evidence/source-index.json#wb-004",
   "conclusion": "No original live W&B training run was found for the exact Q17 160-round DirectApply lineage. The sealed trajectory was backfilled as non-authoritative scalar history on 2026-09-15 and is now displayed through a saved native W&B Workspace with two LinePlot panels. Neither the mirror run nor the Workspace is scientific authority. The older 1.7B Stage2 W&B run remains historical observability for a different experiment.",
   "scientific_authority": false,
   "safety": "Formal experiment state, sealed evidence, D1 state, and the frozen Final were not mutated or rerun. The provider-only change is a saved W&B Workspace over the existing non-authoritative visualization mirror; no credentials are included.",
   "visualization_mirror": {
     "id": "q17directapplyviz159",
-    "url": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/runs/q17directapplyviz159",
+    "url": "/research/seed-openevo/evidence/source-index.json#wb-005",
     "created_at": "2026-09-15T05:00:33Z",
     "source_kind": "sealed_trajectory_visualization_backfill",
     "source_snapshot_sha256": "33285a71e4331f22592c47255b2688e9f172fd174c6b426a8f8e03a97b61889d",
@@ -54,7 +54,7 @@
     "loss_key": "train/sd_lora_loss"
   },
   "native_workspace": {
-    "url": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=jey7zo1544l",
+    "url": "/research/seed-openevo/evidence/source-index.json#wb-007",
     "name": "Q17 DirectApply - sealed trajectory observability",
     "observed_at": "2026-09-19",
     "section": "Post-hoc observability mirror - not scientific authority",
@@ -87,5 +87,18 @@
     "provider_readback": "PASS",
     "scientific_authority": false,
     "anonymous_http_status": 200
+  },
+  "privacy_presentation": {
+    "kind": "presentation_derivative",
+    "baseline_commit": "1ed126cbe2c799520fe365b98a105ef7aa79b7bd",
+    "original_sha256": "191af36002efdae6e536297627a5857df9ea11f3f22e97025e8ca8ee5dbcb835",
+    "locator_fields": [
+      "/read_only_observations/wandb_project",
+      "/historical_stage2_wandb_run",
+      "/visualization_mirror/url",
+      "/native_workspace/url"
+    ],
+    "source_index": "/research/seed-openevo/evidence/source-index.json",
+    "boundary": "Only provider account/access locators are withheld. Measurements, run IDs, source SHAs and scientific-authority flags are unchanged. The original is preserved separately; this derivative is not the original receipt."
   }
 }

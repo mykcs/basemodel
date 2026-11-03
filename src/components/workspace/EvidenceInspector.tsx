@@ -1,4 +1,5 @@
 import { useStore } from '@nanostores/react';
+import { humanDateText } from '../../lib/readableDate.js';
 import { quickViewId, closeQuickView } from '../../stores/ui';
 import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../lib/format';
 import type { AtlasModel } from '../../lib/schemas';
@@ -57,7 +58,7 @@ export function EvidenceInspector({ models, m, locale = 'zh' }: Props) {
       </div>
       <div className="inspector-section">
         <h3>{m.workspace.sources}</h3>
-        {model.sources.length === 0 ? <p>{m.workspace.noSource}</p> : <ul className="inspector-sources">{model.sources.map((source, index) => <li key={source.id ?? `${source.url}-${index}`}><a href={source.url} target="_blank" rel="noopener noreferrer" className="external-link"><ExternalBrandMark href={source.url} />{source.title ?? source.publisher ?? m.workspace.sources} ↗</a><span className="source-meta">{source.checked_at}</span></li>)}</ul>}
+        {model.sources.length === 0 ? <p>{m.workspace.noSource}</p> : <ul className="inspector-sources">{model.sources.map((source, index) => <li key={source.id ?? `${source.url}-${index}`}><a href={source.url} target="_blank" rel="noopener noreferrer" className="external-link"><ExternalBrandMark href={source.url} />{source.title ?? source.publisher ?? m.workspace.sources} ↗</a><span className="source-meta">{humanDateText(source.checked_at,locale)}</span></li>)}</ul>}
       </div>
     </aside>
   );

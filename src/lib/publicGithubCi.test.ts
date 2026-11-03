@@ -14,22 +14,26 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).not.toContain('pull_request_target');
     expect(workflow).toContain('contents: read');
     expect(workflow).toContain('persist-credentials: false');
-    expect(workflow).toContain('refs/pull/${{ github.event.pull_request.number }}/head');
+    expect(workflow).toContain('EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}');
+    expect(workflow).toContain('ref: ${{ needs.plan.outputs.sha }}');
     expect(workflow).toContain('git config --global --add safe.directory "$GITHUB_WORKSPACE"');
     expect(workflow).toContain('test "$(git rev-parse HEAD)" = "$CI_HEAD_SHA"');
     expect(workflow).not.toMatch(/\bsecrets\./);
   });
 
-  it('allocates zero, one, or N independent one-worker browser runners from the shared planner', () => {
+  it('routes skip, focused and one full two-engine population through the shared planner', () => {
     expect(workflow).toContain('name: public-plan');
-    expect(workflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
+    expect(workflow).toContain("CI_UNIFIED_BROWSER: '1'");
     expect(workflow).toContain('browser_total: ${{ steps.plan.outputs.browser_total }}');
-    expect(workflow).toContain('shards_json: ${{ steps.plan.outputs.shards_json }}');
-    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.plan.outputs.browser_total != '0'");
-    expect(workflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
-    expect(workflow).toContain('CI_EXPECTED_UI_MODE: ${{ needs.plan.outputs.mode }}');
+    expect(workflow).toContain('matrix_json: ${{ steps.plan.outputs.matrix_json }}');
+    expect(workflow).toContain("if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.mode == 'full'");
+    expect(workflow).toContain("needs.plan.outputs.mode == 'focused'");
+    expect(workflow).toContain('include: ${{ fromJSON(needs.plan.outputs.matrix_json) }}');
+    expect(workflow).toContain('CI_EXPECTED_UI_MODE: focused');
+    expect(workflow).toContain("CLOUD_FIGURE_AUDIT: '1'");
+    expect(workflow).toContain("FIGURE_REQUIRE_BASELINE: '1'");
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
-    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e');
+    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27');
     expect(workflow).toContain('PLAYWRIGHT_BROWSERS_PATH: /ms-playwright');
     expect(workflow).toContain('node scripts/ci-public-plan.mjs --github-output');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');

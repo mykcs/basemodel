@@ -1,7 +1,9 @@
 ---
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import ResearchRouteContext from './ResearchRouteContext.astro';
 import ExternalBrandMark from '../common/ExternalBrandMark';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -51,14 +53,13 @@ const nextArms = [
 <ResearchRouteContext locale={locale} route="stage1-learning-objectives" experimentId="stage1-learning-objectives" />
 
 <main
-  class="stage1-study"
+  class="stage1-study evo-approved-reader"
   data-copy-review
   data-reader-page="stage1-learning-objectives"
   data-ui-audit="contrast layout"
   data-testid="stage1-learning-objectives"
 >
-  <header class="hero" data-reader-context>
-    <p class="eyebrow">{t('实验 08 · Stage1 参数学习', 'Item 08 · Stage-1 parameter learning')}</p>
+  <header class="hero evo-article__header" data-reader-context>
     <p class="reader-task" data-reader-task>{t('任务：用固定的 WebShop Stage1 经验，训练出进入 Stage2 前的一套起始参数。', 'Task: use fixed WebShop Stage-1 experience to learn one parameter set before Stage 2 begins.')}</p>
     <p class="reader-purpose" data-reader-purpose>{t('目的：只比较 Stage1 的学习方式，不把 Stage2 的 SD-LoRA 持续参数演变混进来。', 'Purpose: compare Stage-1 learning rules without mixing in Stage-2 SD-LoRA continual parameter evolution.')}</p>
     <h1>{t('Stage1 到底该怎么学？', 'How should Stage 1 learn?')}</h1>
@@ -72,7 +73,7 @@ const nextArms = [
     )}</p>
   </header>
 
-  <section class="section" id="stage1-stage2" data-result-stage="setup">
+  <section class="section evo-article__section" id="stage1-stage2" data-result-stage="setup">
     <div class="section-heading">
       <span>01</span>
       <div>
@@ -97,7 +98,7 @@ const nextArms = [
     </div>
   </section>
 
-  <section class="section" id="result" data-result-stage="direct-result">
+  <section class="section evo-article__section" id="result" data-result-stage="direct-result">
     <div class="section-heading">
       <span>02</span>
       <div>
@@ -115,7 +116,8 @@ const nextArms = [
     </div>
 
     <div class="table-wrap">
-      <table>
+      <ResearchPaperTable narrowRecords="tablet">
+<Fragment slot="caption">{t('第一组问题：SFT 还是 OPSD？', 'First question: SFT or OPSD?')}</Fragment>
         <thead>
           <tr>
             <th>{t('Stage1 方法', 'Stage-1 method')}</th>
@@ -136,12 +138,12 @@ const nextArms = [
             </tr>
           ))}
         </tbody>
-      </table>
+      </ResearchPaperTable>
     </div>
     <p class="caption">{t('同一固定 32 题 development panel；final panel 未访问。SFT − OPSD 的平均分差为 −1.05 / 100，bootstrap 95% CI 为 [−16.64, +14.57] / 100。', 'Same fixed 32-task development panel; the final panel is untouched. Mean score difference SFT − OPSD is −1.05 / 100 with bootstrap 95% CI [−16.64, +14.57] / 100.')}</p>
   </section>
 
-  <section class="section" id="validation" data-result-stage="optimization">
+  <section class="section evo-article__section" id="validation" data-result-stage="optimization">
     <div class="section-heading">
       <span>03</span>
       <div>
@@ -165,7 +167,7 @@ const nextArms = [
     )}</p>
   </section>
 
-  <section class="section" id="next" data-result-stage="unsealed-arms">
+  <section class="section evo-article__section" id="next" data-result-stage="unsealed-arms">
     <div class="section-heading">
       <span>04</span>
       <div>
@@ -184,7 +186,7 @@ const nextArms = [
     </div>
   </section>
 
-  <section class="section" id="decision" data-result-stage="synthesis">
+  <section class="section evo-article__section" id="decision" data-result-stage="synthesis">
     <div class="section-heading">
       <span>05</span>
       <div>
@@ -198,7 +200,7 @@ const nextArms = [
     </div>
   </section>
 
-  <section class="section evidence" id="evidence" data-result-stage="evidence">
+  <section class="section evidence evo-article__section" id="evidence" data-result-stage="evidence">
     <div class="section-heading">
       <span>06</span>
       <div>
@@ -217,5 +219,5 @@ const nextArms = [
 </main>
 
 <style>
-.stage1-study{width:min(1040px,calc(100% - 2rem));margin:0 auto 5rem;color:var(--ink)}.hero{padding:3.1rem 0 2rem;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 .75rem;color:var(--accent-deep);font:800 1rem/1.25 var(--font-mono);letter-spacing:.06em}.hero h1{max-width:18ch;margin:0;font-size:clamp(2.5rem,6vw,4.8rem);line-height:.98;letter-spacing:-.055em}.lede{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.08rem,2vw,1.3rem);line-height:1.7}.boundary{max-width:50rem;margin:.9rem 0 0;color:var(--muted);line-height:1.65}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:1.55}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section{padding:2.5rem 0;border-bottom:1px solid var(--line)}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono)}.section-heading h2{margin:0;font-size:clamp(1.65rem,3.2vw,2.55rem);line-height:1.08;letter-spacing:-.035em}.section-heading p{max-width:54rem;margin:.65rem 0 0;color:var(--muted);line-height:1.65}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:800 1rem/1.3 var(--font-mono);letter-spacing:.04em}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:1.15rem;line-height:1.35}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted);line-height:1.62}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:1.18rem}.result-callout p{max-width:58rem;margin:.45rem 0 0;line-height:1.65}.table-wrap{margin-top:1.2rem;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:1rem}th,td{padding:.8rem .75rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}thead th{font-size:.78rem;color:var(--muted);white-space:nowrap}tbody th{min-width:13rem}tbody th,tbody td,tbody th strong{font-size:16px}tbody th small{display:block;margin-top:.25rem;color:var(--muted);font-size:1rem;font-weight:500;line-height:1.45}.caption{margin:.65rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:700 1rem/1.3 var(--font-mono)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:1.68}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line);line-height:1.65}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{max-width:58rem;color:var(--muted);line-height:1.65}@media(max-width:700px){.stage1-study{width:calc(100% - 1.2rem)}.hero{padding:1.8rem 0 1.3rem}.hero h1{font-size:2.45rem}.section{padding:1.8rem 0}.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem}}
+.lede{margin:1.25rem 0 0}.boundary{margin:.9rem 0 0;color:var(--muted)}.reader-task,.reader-purpose{max-width:50rem;margin:.45rem 0 0;color:var(--muted);line-height:var(--type-leading-body)}.reader-task{margin-top:1rem;color:var(--ink);font-weight:650}.section-heading{display:grid;grid-template-columns:3rem minmax(0,1fr);gap:1rem;margin-bottom:1.35rem}.section-heading>span{color:var(--accent-deep);font:var(--type-weight-heading) 1rem/1.3 var(--font-interface)}.section-heading p{margin:.65rem 0 0;color:var(--muted)}.stage-grid,.next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}.stage-grid article,.next-grid article{padding:1.25rem;background:var(--surface)}.stage-grid small,.next-grid small{display:block;color:var(--accent-deep);font:var(--type-weight-heading) 1rem/1.3 var(--font-interface);letter-spacing:normal}.stage-grid strong,.next-grid strong{display:block;margin:.35rem 0;font-size:var(--type-minor-heading);line-height:var(--type-leading-heading)}.stage-grid p,.next-grid p{margin:.45rem 0 0;color:var(--muted)}.stage-grid code{display:block;margin-top:.85rem;padding:.55rem .7rem;background:var(--surface-muted);border-left:2px solid var(--accent-deep);overflow-wrap:anywhere}.result-callout{padding:1.1rem 1.2rem;border-left:3px solid var(--accent-deep);background:var(--surface-muted)}.result-callout strong{font-size:var(--type-body)}.result-callout p{margin:.45rem 0 0}.table-wrap{margin-top:1.2rem;overflow-x:auto;min-width:0}thead th{white-space:nowrap}tbody th{min-width:13rem}tbody th small{margin-top:.25rem}.caption{margin:.65rem 0 0;color:var(--muted);font-size:var(--type-body);line-height:var(--type-leading-caption)}.curve-list{display:grid;border-top:1px solid var(--line)}.curve-list>div{display:grid;grid-template-columns:minmax(9rem,.7fr) minmax(8rem,.7fr) 1fr;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);align-items:baseline}.curve-list span{font:var(--type-weight-heading) 1rem/1.3 var(--font-interface)}.curve-list strong{font-size:1.2rem}.curve-list em{color:var(--muted);font-style:normal}.interpretation{max-width:58rem;margin:1rem 0 0;line-height:var(--type-leading-body)}.decision{display:grid;gap:.7rem;max-width:58rem}.decision p{margin:0;padding:.9rem 0;border-bottom:1px solid var(--line)}.evidence ul{display:grid;gap:.45rem;margin:0;padding-left:1.2rem}.evidence a{color:var(--accent-deep);text-underline-offset:.2em}.evidence>p{color:var(--muted)}@media(max-width:700px){.section-heading{grid-template-columns:2rem minmax(0,1fr);gap:.55rem}.stage-grid,.next-grid{grid-template-columns:1fr}.curve-list>div{grid-template-columns:1fr auto;gap:.2rem .8rem}.curve-list em{grid-column:1/-1}.table-wrap{margin-inline:-.1rem;min-width:0}}
 </style>

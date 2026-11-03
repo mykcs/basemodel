@@ -1,10 +1,11 @@
 ---
 import AppLayout from '../layouts/AppLayout.astro';
 import PageLearningPath from '../components/navigation/PageLearningPath.astro';
+import "../styles/research-article.css";
 ---
 <AppLayout title="数据来源与缺失信息" description="说明页面里的数字来自论文、官方目录、工程估算还是真机运行，以及没有来源时为什么保持未知。" locale="zh">
-  <div class="shell editorial-page methodology-page">
-    <header class="page-header">
+  <div class="editorial-page evo-approved-reader methodology-page">
+    <header class="evo-article__header">
       <span class="section-kicker">数据方法</span>
       <h1>数据来源与缺失信息</h1>
       <p class="lede">页面会把论文原文、官方目录、工程估算和真机结果分开标记。没有来源的字段保持未知，不会自动补成 0、false 或一个看起来合理的答案。</p>
@@ -23,7 +24,7 @@ import PageLearningPath from '../components/navigation/PageLearningPath.astro';
 </AppLayout>
 <style>
   .methodology-page { padding-top: clamp(1.2rem, 3vw, 2.25rem); }
-  .methodology-page > .page-header { padding-top: clamp(.8rem, 2vw, 1.5rem); }
+  .methodology-page > .evo-article__header { padding-top: clamp(.8rem, 2vw, 1.5rem); }
   .methodology-page #unknown-states,
   .methodology-page #evidence-sources,
   .methodology-page #recommendation-boundary { scroll-margin-top: calc(var(--site-header-height, 4rem) + 1.2rem); }

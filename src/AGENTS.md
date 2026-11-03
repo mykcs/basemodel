@@ -6,11 +6,14 @@ This directory owns production pages, UI, navigation, i18n, routes, and feature 
 
 Before changing user-facing source, read:
 
+- `../docs/agents/current/person-reference-privacy-standard.md` (all personal references and rendered copy)
+
 - `../docs/agents/current/human-thinking-web-expression-contract.md`
 - `../docs/agents/current/audience-centered-technical-copy.md`
 - `../docs/agents/current/scientific-state-provenance.md`
 - `../docs/agents/current/ui-design-principles.md`
 - `../docs/agents/current/ui-change-visual-acceptance-gate.md`
+- `../docs/agents/current/sitewide-typography-standard.md` (all visible copy, charts and tables)
 
 ## Non-negotiable heading rule
 

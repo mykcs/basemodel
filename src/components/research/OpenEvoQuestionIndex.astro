@@ -1,0 +1,86 @@
+---
+interface Question {
+  id: string;
+  title: string;
+  headingNumber?: string;
+}
+interface Props {
+  questions: ReadonlyArray<Question>;
+  ariaLabel?: string;
+  heading?: string;
+}
+const { questions, ariaLabel = '快速定位十个实验回应', heading = '按问题定位实验回应' } = Astro.props;
+---
+<nav class="advisor-question-index" id="response-index" aria-label={ariaLabel}>
+  <p class="advisor-question-index__heading">{heading}</p>
+  <ol>
+    {questions.map((question) => (
+      <li>
+        <a href={'#response-' + question.id}>
+          <span class="advisor-question-index__number">{question.headingNumber ?? question.id.toUpperCase()}</span>
+          <span class="advisor-question-index__question">{question.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .advisor-question-index {
+    max-width: 100%;
+    margin: 1.5rem 0 2.1rem;
+    padding: 1rem 0 .75rem;
+    border-block: 1px solid var(--paper-line);
+  }
+  .advisor-question-index__heading {
+    margin: 0 0 .65rem;
+    color: var(--paper-muted);
+    font-size: var(--type-meta);
+    font-weight: 650;
+  }
+  .advisor-question-index ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    columns: 2;
+    column-gap: 2.5rem;
+  }
+  .advisor-question-index li {
+    margin: 0;
+    break-inside: avoid;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .advisor-question-index a {
+    display: grid;
+    grid-template-columns: 3.1rem minmax(0, 1fr);
+    gap: .55rem;
+    align-items: baseline;
+    min-height: 2.75rem;
+    padding: .55rem .15rem;
+    text-decoration: none;
+    line-height: var(--type-leading-caption);
+  }
+  .advisor-question-index a:hover {
+    color: var(--paper-ink);
+    background: color-mix(in srgb, var(--paper-ink) 4%, transparent);
+  }
+  .advisor-question-index a:focus-visible {
+    outline: 2px solid var(--paper-ink);
+    outline-offset: -2px;
+  }
+  .advisor-question-index__number {
+    color: var(--paper-muted);
+    font-size: var(--type-meta);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .advisor-question-index__question {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: var(--type-body-small);
+  }
+  @media (max-width: 700px) {
+    .advisor-question-index ol { columns: 1; }
+    .advisor-question-index { margin-block: 1.25rem 1.65rem; }
+  }
+</style>

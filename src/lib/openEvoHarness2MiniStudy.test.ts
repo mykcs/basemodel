@@ -59,7 +59,8 @@ describe('OpenEVO Harness 2.0 mini study publication', () => {
   it('keeps the historical mini-study reachable without making its HOLD the current successor state', () => {
     expect(zhRoute).toContain('OpenEvoHarness2MiniStudy');
     expect(enRoute).toContain('OpenEvoHarness2MiniStudy');
-    expect(lobby).toContain('/openevo-2-0/harness-2-0/');
+    expect(lobby).toContain('CAPABILITY_READER_ROUTES');
+    expect(read('../data/capabilityReaderRoutes.ts')).toContain("'openevo-2-0/harness-2-0'");
     expect(gateway).toContain('OPEN_EVO_STAGE1_FREEZE.id');
     expect(narrative).toContain("id: '202609030400'");
     expect(gateway).toContain('设计与排查过程');

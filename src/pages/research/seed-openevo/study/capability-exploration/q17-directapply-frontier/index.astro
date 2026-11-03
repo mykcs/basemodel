@@ -1,4 +1,5 @@
 ---
+import "../../../../../../styles/research-article.css";
 import AppLayout from '../../../../../../layouts/AppLayout.astro';
 import OpenEvoQ17FrontierRoadmap from '../../../../../../components/research/OpenEvoQ17FrontierRoadmap.astro';
 import OpenEvoQ17AdvisorDiagnostics from '../../../../../../components/research/OpenEvoQ17AdvisorDiagnostics.astro';
@@ -10,6 +11,7 @@ const locale = 'zh' as const;
   description="2026-09-11 的局部诊断：把进入第 127 轮和第 128 轮的两个模型状态放到同一组 32 道 WebShop 题上重测；这不是最终测试，也不能外推整条训练轨迹。"
   locale={locale}
 >
+  <div class="evo-approved-reader evo-reading-overview">
   <OpenEvoQ17AdvisorDiagnostics locale={locale} />
   <ResearchRouteContext locale={locale} route="q17-directapply-frontier" compact />
   <section class="q17-roadmap-depth" data-copy-review aria-label="历史排查计划">
@@ -19,9 +21,10 @@ const locale = 'zh' as const;
       <OpenEvoQ17FrontierRoadmap locale={locale} />
     </details>
   </section>
+  </div>
   <style>
     .q17-roadmap-depth{width:min(1120px,calc(100% - 2rem));margin:1.6rem auto 4rem;padding:1rem 0;border-block:1px solid var(--line)}
-    .q17-roadmap-depth summary{cursor:pointer;color:var(--accent-deep);font-weight:760}
-    .q17-roadmap-depth__intro{max-width:72ch;margin:.9rem 0 0;color:var(--muted);line-height:1.72}
+    .q17-roadmap-depth summary{cursor:pointer;color:var(--accent-deep);font-weight:var(--type-weight-heading)}
+    .q17-roadmap-depth__intro{max-width:72ch;margin:.9rem 0 0;color:var(--muted);line-height:var(--type-leading-body)}
   </style>
 </AppLayout>

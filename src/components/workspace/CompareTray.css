@@ -1,3 +1,69 @@
-.compare-tray { position: fixed; right: 0; bottom: 0; left: 0; z-index: 30; border-top: 1px solid var(--line); background: var(--surface); box-shadow: 0 -8px 30px rgba(37, 47, 46, .07); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); }
-.tray-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }.tray-label { font-size: .85rem; font-weight: 650; }.tray-chips { display: flex; flex-wrap: wrap; gap: 6px; }.tray-chip { border: 1px solid var(--line); border-radius: 999px; background: var(--surface-muted); padding: 5px 10px; font-size: .75rem; }.tray-actions { display: flex; gap: 8px; margin-left: auto; }.tray-actions .button { padding: 8px 12px; font-size: .78rem; }
+.compare-tray { position: fixed; right: 0; bottom: 0; left: 0; z-index: 45; border-top: 1px solid var(--line); background: var(--surface); box-shadow: 0 -8px 30px rgba(37, 47, 46, .07); padding: 12px 0 calc(12px + env(safe-area-inset-bottom)); }
+.tray-inner { display: flex; min-width:0; flex-wrap: wrap; align-items: center; gap: 14px; }.tray-label { font-size: var(--type-body-small); font-weight: var(--type-weight-label); }.tray-chips { display: flex; min-width:0;max-width:min(54vw,680px); flex-wrap: wrap; gap: 6px; }.tray-chip { max-width:230px;overflow-wrap:anywhere;border: 1px solid var(--line); border-radius: 999px; background: var(--surface-muted); padding: 5px 10px; font-size: var(--type-meta); }.tray-actions { min-width:0;display: flex; gap: 8px; margin-left: auto; }.tray-actions .button { padding: 8px 12px; font-size: var(--type-meta); }
 @media (max-width: 560px) { .compare-tray { padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); }.tray-inner { align-items: flex-start; }.tray-actions { width: 100%; margin-left: 0; }.tray-actions .button { min-width: 0; flex: 1; } }
+
+/*
+ * Phone persistence budget: global header + one contextual layer.
+ * Compare remains a compact floating action; workspace navigation stays in the
+ * document flow so fields and actions never compete with two bottom bars.
+ */
+@media (max-width: 720px) {
+  body .compare-tray {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+    padding: 7px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-feature);
+  }
+
+  body .compare-tray .tray-inner {
+    width: 100%;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  body .compare-tray .tray-label {
+    flex: 0 0 auto;
+  }
+
+  body .compare-tray .tray-chips {
+    min-width: 0;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  body .compare-tray .tray-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  body .compare-tray .tray-chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  body .compare-tray .tray-actions {
+    flex: 0 0 auto;
+    width: auto;
+    margin-left: 0;
+  }
+
+}
+body:has([data-compare-tray]:not([hidden])){padding-bottom:calc(var(--compare-tray-height,0px) + 28px)}
+html:has([data-compare-tray]:not([hidden])){scroll-padding-bottom:calc(var(--compare-tray-height,0px) + 28px)}
+
+.tray-selection{display:contents}
+.tray-selection>summary{list-style:none;cursor:pointer}
+.tray-selection>summary::-webkit-details-marker{display:none}
+@media(max-width:720px){
+ body .compare-tray .tray-inner{display:flex;align-items:center;gap:8px}
+ body .compare-tray .tray-selection{display:block;min-width:0;flex:1}
+ body .compare-tray .tray-selection>summary{display:flex;align-items:center;min-height:44px;white-space:nowrap;padding-inline:10px}
+ body .compare-tray .tray-selection>summary::after{content:" ▴";margin-left:auto}
+ body .compare-tray .tray-selection[open]>summary::after{content:" ▾"}
+ body .compare-tray .tray-selection[open] .tray-chips{position:absolute;bottom:calc(100% + 8px);left:0;right:0;display:flex;flex-wrap:wrap;max-width:none;max-height:40dvh;overflow:auto;padding:12px;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);box-shadow:var(--shadow-floating)}
+ body .compare-tray .tray-chip{max-width:100%;white-space:normal}
+ body .compare-tray .tray-actions .button{flex:0 0 auto;min-height:44px;white-space:nowrap;padding-inline:10px}
+}

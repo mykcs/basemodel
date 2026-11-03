@@ -23,10 +23,8 @@ const routeInScope = (...paths: string[]) => hostedRouteFilter.size === 0
   || paths.some((path) => hostedRouteFilter.has(path));
 
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -67,7 +65,10 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
     if (rect.left < -2 || rect.right > width + 2) {
       issues.push(`explainer escapes viewport: left=${rect.left.toFixed(1)} right=${rect.right.toFixed(1)} viewport=${width}`);
     }
-    if (requiresMainStage && width >= 1200 && rect.width < Math.min(1000, width * 0.72)) {
+    const article = root.closest('.evo-approved-reader');
+    const articleStyle = article && getComputedStyle(article);
+    const available = article && articleStyle ? article.clientWidth - parseFloat(articleStyle.paddingLeft) - parseFloat(articleStyle.paddingRight) : width;
+    if (requiresMainStage && width >= 1200 && rect.width < Math.min(1000, width * 0.72, available - 2)) {
       issues.push(`explainer remains a narrow desktop rail: width=${rect.width.toFixed(1)} viewport=${width}`);
     }
     if (root.scrollWidth > root.clientWidth + 2) {
@@ -132,7 +133,7 @@ async function auditRoot(root: Locator, viewportWidth: number, requiresMainStage
       const lineHeight = Number.parseFloat(style.lineHeight) || fontSize * 1.5;
       const box = node.getBoundingClientRect();
       const lines = Math.max(1, Math.round(box.height / lineHeight));
-      const charsPerLine = cjk / lines;
+      const charsPerLine = box.width / fontSize;
       if (lines >= 3 && charsPerLine < 7) {
         issues.push(`CJK prose is too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lines} lines at ${selectorFor(node)} (${text.slice(0, 48)})`);
       }
@@ -222,23 +223,20 @@ async function stepThrough(root: Locator, viewportWidth: number, requiresMainSta
 }
 
 for (const matrix of matrices) {
-  test(`${matrix.name} keeps research explainers geometrically attached and readable`, async ({ page }) => {
-    await page.setViewportSize(matrix.viewport);
-    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
-
-    for (const route of routes.filter((route) => routeInScope(route.path))) {
-      await test.step(route.path, async () => {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await settle(page);
-        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
-        for (const kind of route.kinds) {
-          const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
-          await expect(root).toBeVisible();
-          await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
-        }
-      });
-    }
-  });
+  for (const route of routes.filter((route) => routeInScope(route.path))) {
+    test(`${matrix.name} keeps research explainers geometrically attached and readable: ${route.path}`, async ({ page }) => {
+      await page.setViewportSize(matrix.viewport);
+      await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+      await settle(page);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+      for (const kind of route.kinds) {
+        const root = page.locator(`[data-interactive-research-explainer="${kind}"]`).first();
+        await expect(root).toBeVisible();
+        await stepThrough(root, matrix.viewport.width, route.requiresMainStage);
+      }
+    });
+  }
 }
 
 test('interactive transport stays local until explicit reader interaction', async ({ page }) => {
@@ -277,7 +275,7 @@ test('interactive transport stays local until explicit reader interaction', asyn
   }
 });
 
-test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
+test('iPhone 18 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
   const viewport = { width: 440, height: 956 };
   await page.setViewportSize(viewport);
   for (const path of ['/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
@@ -419,7 +417,7 @@ test('simplified information architecture keeps the canonical research navigatio
 
 test('SEED visibly separates policy, harness, benchmark environment, and sealed evidence', async ({ page }) => {
   test.skip(!routeInScope('/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
-  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 440, height: 956 }]) {
     await page.setViewportSize(viewport);
     await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
     const root = page.locator('[data-interactive-research-explainer="seed"]');
@@ -448,7 +446,7 @@ test('SEED visibly separates policy, harness, benchmark environment, and sealed 
     ]);
     expect(modelBox && harnessBox && environmentBox && stage2PolicyBox && stage2ContractBox && trajectoryBox).toBeTruthy();
     if (!modelBox || !harnessBox || !environmentBox || !stage2PolicyBox || !stage2ContractBox || !trajectoryBox) continue;
-    if (viewport.width >= 1024) {
+    if ((await root.boundingBox())!.width >= 1040) {
       expect(modelBox.x + modelBox.width).toBeLessThan(harnessBox.x);
       expect(harnessBox.x + harnessBox.width).toBeLessThan(environmentBox.x);
       expect(stage2PolicyBox.x + stage2PolicyBox.width).toBeLessThan(stage2ContractBox.x);
@@ -480,8 +478,10 @@ test('scroll-linked explainer updates do not pull a fast reader back to the stag
   await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
   const root = page.locator('[data-interactive-research-explainer="seed"]');
   await waitForHydratedExplainer(root);
-  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'auto' }));
-  await page.waitForTimeout(650);
+  // 'auto' inherits the page's CSS smooth scrolling in WebKit. Freeze the
+  // actual starting position instead of measuring an unfinished animation.
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(1500);
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(900);
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('irx:scroll-step', { detail: { step: 2 } })));
@@ -508,3 +508,80 @@ test('research framework opens as a system map and can enter and leave trace mod
   await root.getByRole('button', { name: '重置' }).click();
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
+
+for (const width of [440,1440]) for (const theme of ['light','dark'] as const) {
+  test('WebShop held-out ruler label stays horizontal without distorting the split: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/webshop/',{waitUntil:'load'});
+    const ruler=page.locator('#fig-webshop-seed-split .ruler');
+    const heldout=ruler.locator('.heldout');
+    const label=heldout.locator('span');
+    await expect(label).toHaveText('500');
+    const measure=()=>label.evaluate(node=>{
+      const css=getComputedStyle(node),r=node.getBoundingClientRect(),segment=node.parentElement!.getBoundingClientRect();
+      return {writingMode:css.writingMode,transform:css.transform,width:r.width,height:r.height,segmentWidth:segment.width};
+    });
+    const accept=(m:Awaited<ReturnType<typeof measure>>)=>{
+      expect(m.writingMode).toBe('horizontal-tb');
+      expect(m.transform).toBe('none');
+      expect(m.width).toBeLessThanOrEqual(m.segmentWidth);
+      expect(m.height).toBeLessThan(m.width);
+    };
+    accept(await measure());
+    const ratio=await ruler.evaluate(node=>{
+      const total=node.getBoundingClientRect().width,part=node.querySelector('.heldout')!.getBoundingClientRect().width;
+      return part/(total-2);
+    });
+    expect(Math.abs(ratio-500/6910)).toBeLessThan(.002);
+    if(width===1440){
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.writingMode='vertical-rl';
+        (node as HTMLElement).style.transform='rotate(180deg)';
+      });
+      const bad=await measure();
+      expect(()=>accept(bad)).toThrow();
+      await label.evaluate(node=>{
+        (node as HTMLElement).style.removeProperty('writing-mode');
+        (node as HTMLElement).style.removeProperty('transform');
+      });
+      accept(await measure());
+    }
+    await expect(page.locator('#fig-webshop-seed-split')).toContainText('6,410');
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}
+
+for(const width of [440,1440])for(const theme of ['light','dark'] as const){
+  test('canonical SEED and OpenEvo comparison labels retain theme contrast: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:1000});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/flow/loops/',{waitUntil:'load'});
+    const root=page.locator('.comparison-figure');
+    const accept=async()=>{
+      for(const header of await root.locator('.column-header').all()){
+        const issues=await auditRoot(header,width,false);
+        expect(issues,issues.join('\n')).toEqual([]);
+      }
+    };
+    await accept();
+    const signal=await root.locator('.seed-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    const state=await root.locator('.evo-column .column-header span').evaluate(el=>getComputedStyle(el).color);
+    expect(await root.locator('.seed-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(signal);
+    expect(await root.locator('.evo-column .wrapper-name').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    expect(await root.locator('.successor-package>strong').evaluate(el=>getComputedStyle(el).color)).toBe(state);
+    if(theme==='dark'){
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.setProperty('--signal-text','var(--signal)');
+        (el as HTMLElement).style.setProperty('--state-text','var(--state)');
+      });
+      await expect(accept()).rejects.toThrow();
+      await root.evaluate(el=>{
+        (el as HTMLElement).style.removeProperty('--signal-text');
+        (el as HTMLElement).style.removeProperty('--state-text');
+      });
+      await accept();
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Check, CircleAlert, Copy } from 'lucide-react';
+import { animate } from 'motion/mini';
 import { copyTextToClipboard } from '../../lib/clipboard';
+import { Button } from '../ui/button';
 
 interface Props {
   value: string;
@@ -14,23 +17,37 @@ interface Props {
 
 export function CopyButton({ value, label, copiedLabel, failedLabel, className = '', compact = false, disabled = false, onCopied }: Props) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const feedback = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (state === 'idle') return;
+    const timeout = window.setTimeout(() => setState('idle'), 1600);
+    const animation = feedback.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ? animate(feedback.current, { transform: ['scale(.85)', 'scale(1)'] }, { duration: .16, ease: 'easeOut' })
+      : undefined;
+    return () => {
+      window.clearTimeout(timeout);
+      animation?.stop();
+    };
+  }, [state]);
   const copy = async () => {
     if (disabled) return;
     const ok = await copyTextToClipboard(value);
     setState(ok ? 'copied' : 'failed');
     if (ok) onCopied?.();
-    window.setTimeout(() => setState('idle'), 1600);
   };
   const text = state === 'copied' ? copiedLabel : state === 'failed' ? (failedLabel ?? label) : label;
-  return <button
+  const Icon = state === 'copied' ? Check : state === 'failed' ? CircleAlert : Copy;
+  return <Button
     type="button"
-    className={`button button-secondary actionable-result-copy ${compact ? 'is-compact' : ''} ${className}`.trim()}
+    variant="outline"
+    size={compact ? 'sm' : 'default'}
+    className={`actionable-result-copy ${className}`.trim()}
     onClick={copy}
     disabled={disabled}
     data-copy-state={state}
     aria-live="polite"
   >
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+    <span ref={feedback} className="tw:inline-flex" data-copy-feedback aria-hidden="true"><Icon size={14} strokeWidth={1.8} /></span>
     <span>{text}</span>
-  </button>;
+  </Button>;
 }

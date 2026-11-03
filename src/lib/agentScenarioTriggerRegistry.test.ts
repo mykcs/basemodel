@@ -279,6 +279,17 @@ describe('Agent scenario-trigger discovery', () => {
     expect(registry).toContain('`HTML` is an implementation medium, not a visual-style reset');
   });
 
+  it('requires falsification rather than a disclaimer after already-green reader feedback', () => {
+    expect(registry).toContain('Previously green, still confusing is a failed use-site outcome');
+    expect(registry).toContain('known-bad example that the new guard must reject');
+    expect(registry).toContain('a correct example, a legitimate boundary example and at least one sibling');
+    expect(registry).toContain('the final rendered route');
+    expect(registry).toContain('freeze a blind independent reader rubric');
+    expect(registry).toContain('asserting an untested cause does **not** close the failure');
+    expect(registry).toContain('RAW-20261017-954');
+    expect(registry).toContain('not all minor copy edits');
+  });
+
   it('turns owner copy feedback into central learning plus BaseModel sibling repair', () => {
     expect(registry).toContain('central learned evidence');
     expect(registry).toContain('high-confidence same-family');
@@ -331,7 +342,7 @@ describe('Agent scenario-trigger discovery', () => {
     expect(repositoryMap).toContain('CircleCI                                -> automatic PR/main disabled; explicit API fallback only');
     expect(repositoryMap).toContain('Production access                        -> Vercel Authentication; no unauthenticated external monitor');
     expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');
-    expect(repositoryMap).toContain('Public GitHub-hosted Actions owns ordinary exact-head repository/browser acceptance');
+    expect(repositoryMap).toContain('Public GitHub-hosted Actions owns two required exact-head checks: repository/browser');
     expect(repositoryMap).not.toContain('default to local build + Direct Upload public Preview');
   });
 

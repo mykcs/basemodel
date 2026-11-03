@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { SD_LORA_BOUNDED_RECURRENCE_SOURCE } from '../data/sdLoraVrLineages';
 
@@ -42,5 +43,42 @@ describe('SD-LoRA conversation publication', () => {
     expect(context).toContain('44 个 SD-LoRA 候选更新，其中只有 7 个真正成为后续模型状态的一部分');
     expect(context).toContain('四轮配对资格实验已经全部封存，每臂 512 次任务尝试');
     expect(context).toContain('173 / 512 对 248 / 512');
+  });
+});
+
+describe('sealed three-way publication plot reading styles',()=>{
+  const originals={
+  "task-score.svg": "cce099686fbd82fd824897623134a44742b7d92c531da65f3fa0b4752740872d",
+  "task-score-20-round-mean.svg": "5cdca33d952f40260c1a44dc3f556893e8783b99702768fbcb956bbe681c4ff3",
+  "loss-vs-rollout.svg": "4800681cc88d925f694549c1444cb46580655c16c1ce8a5df78355499f1cebba",
+  "task-vector-frobenius.svg": "6164fa34e237f09b835dab3a9c6aefe7bd662a23f25c6d444a1691e501d6e68d",
+  "tokens-per-step.svg": "6b60d9422914ff67d71c3451342f4dc8f7ac4d2df75b605766e09b48c5607532",
+  "steps-per-episode.svg": "b3efa6fa05aca98735ce040128eba89828697ba6b936d96ce1b8f4ab43ff95b4",
+  "action-family-entropy.svg": "7a3ab24aa17e937498ccc248f24cc201fa302d015a50ebc2a3bb363e26ff70cc"
+};
+  const undo=(source:string)=>source
+    .replaceAll('stroke="#2563EB" stroke-dasharray="12 6"','stroke="#60A5FA"')
+    .replaceAll('stroke="#B91C1C" stroke-dasharray="3 5"','stroke="#F87171"')
+    .replaceAll('fill="#2563EB"','fill="#60A5FA"')
+    .replaceAll('fill="#B91C1C"','fill="#F87171"');
+  const accept=(source:string)=>{
+    expect((source.match(/stroke="#2563EB" stroke-dasharray="12 6"/g)??[]).length).toBeGreaterThanOrEqual(2);
+    expect((source.match(/stroke="#B91C1C" stroke-dasharray="3 5"/g)??[]).length).toBeGreaterThanOrEqual(2);
+    expect(source).toContain('stroke="#6B7280"');
+  };
+  for(const [name,sha] of Object.entries(originals)){
+    it(name+' preserves every original geometry/data/font byte and differentiates curve plus legend without color',()=>{
+      const source=read('../../public/research/seed-openevo/evidence/wandb-threeway/'+name);
+      accept(source);
+      expect(createHash('sha256').update(undo(source)).digest('hex')).toBe(sha);
+      expect(()=>accept(undo(source))).toThrow();
+    });
+  }
+  it('keeps the publication receipt hashes bound to the styled reading assets',()=>{
+    const receipt=JSON.parse(read('../../public/research/seed-openevo/evidence/wandb-threeway/receipt.json'));
+    for(const key of ['task_score_160_round_preview','task_vector_frobenius_preview']){
+      const item=receipt.derived_artifacts[key];
+      expect(createHash('sha256').update(read('../../public'+item.path)).digest('hex')).toBe(item.sha256);
+    }
   });
 });

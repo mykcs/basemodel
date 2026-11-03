@@ -1,4 +1,6 @@
 ---
+import NativeSvgChartReader from './NativeSvgChartReader.astro';
+import ResearchPaperTable from './ResearchPaperTable.astro';
 import type { Locale } from '../../i18n';
 import { localePath } from '../../i18n';
 import ExternalBrandMark from '../common/ExternalBrandMark';
@@ -12,6 +14,7 @@ import {
   SD_LORA_SCALING_POINTS,
   SD_LORA_SCALING_SOURCE,
 } from '../../data/sdLoraScaling';
+import "../../styles/research-article.css";
 
 interface Props { locale: Locale; variant?: 'chart-first' | 'diagnosis-first' }
 const { locale, variant = 'chart-first' } = Astro.props;
@@ -51,14 +54,14 @@ const round2 = (value: number) => value.toFixed(2);
 const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
 ---
 <section
-  class="sd-scale"
+  class="sd-scale evo-approved-reader"
   data-copy-review
   data-sd-lora-scaling
   data-variant={variant}
   data-ui-audit="contrast layout evidence"
 >
-  <header class="scaling-hero">
-    <h1>{t('SD-LoRA 的历史 component 越多，下一次更新越慢', 'More SD-LoRA history makes the next update slower')}</h1>
+  <header class="scaling-hero evo-article__header">
+    <h1>{t('SD-LoRA 的历史参数组件越多，下一次更新越慢', 'More SD-LoRA history makes the next update slower')}</h1>
     <p class="scaling-hero__result">
       {t(
         '这里的 component 是 SD-LoRA 每轮保留下来的一份 rank-8 参数增量。训练数据和 94 个 optimizer steps 完全不变，只把历史 component 从 1 增加到 148：一次更新从 44.05 秒增到 969.17 秒。',
@@ -81,9 +84,8 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       <a href={vanillaSdLoraHref}>{t('先看：Vanilla SD-LoRA 一轮怎么工作', 'First: how one Vanilla SD-LoRA round works')}</a>
     </nav>
   </header>
-  <ResearchTaskContext locale={locale} />
   <p class="sd-scale__purpose" data-reader-purpose>{t('这项诊断只回答计算问题：训练工作量不变时，历史 SD-LoRA component 为什么会让下一次更新越来越慢。', 'This diagnostic asks one compute question: with training workload fixed, why do accumulated SD-LoRA components make the next update progressively slower?')}</p>
-  <section class="scaling-evidence" aria-labelledby="component-scaling-title">
+  <section class="scaling-evidence evo-article__section" aria-labelledby="component-scaling-title">
     <div class="section-heading">
       <h2 id="component-scaling-title">{t('只有历史 component 数量在变化', 'Only prior component count changes')}</h2>
       <p>{t(
@@ -91,9 +93,9 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
         `All five primary points fix ${SD_LORA_FIXED_WORKLOAD.model}, 47 current + 47 replay examples, 94 optimizer steps, BF16, rank 8/component, q/k/v/o targets, and gradient checkpointing.`,
       )}</p>
     </div>
-    <figure class="scaling-chart" aria-labelledby="component-scaling-caption">
-      <svg viewBox="0 0 760 350" role="img" aria-labelledby="component-scaling-chart-title component-scaling-chart-desc">
-        <title id="component-scaling-chart-title">{t('历史 component 数与单次更新时间', 'Prior component count versus update time')}</title>
+    <figure tabindex="0" class="scaling-chart" data-research-figure-size="wide" aria-labelledby="component-scaling-caption">
+      <NativeSvgChartReader id={`scaling-native-reader-${variant}`} label={t('历史 component 数与单次更新时间','Prior component count versus update time')} nativeWidth={912}>
+      <svg viewBox="0 0 760 350" role="img" aria-label={t('历史 component 数与单次更新时间', 'Prior component count versus update time')} aria-describedby="component-scaling-chart-desc">
         <desc id="component-scaling-chart-desc">{t('从 K=1 的 44.05 秒上升到 K=148 的 969.17 秒，五个点接近一条直线。', 'Five points rise from 44.05 seconds at K=1 to 969.17 seconds at K=148, closely following a straight line.')}</desc>
         {yTicks.map((tick) => <g class="gridline"><line x1={chartLeft} y1={yFor(tick)} x2={chartLeft + chartWidth} y2={yFor(tick)} /><text x={chartLeft - 12} y={yFor(tick) + 4}>{tick}</text></g>)}
         <line class="axis" x1={chartLeft} y1={chartTop} x2={chartLeft} y2={chartBottom} />
@@ -104,13 +106,15 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
         <text class="axis-label" x={chartLeft + chartWidth / 2} y="344" text-anchor="middle">{t('历史 component 数 K', 'Prior component count K')}</text>
         <text class="axis-label" transform="translate(18 172) rotate(-90)" text-anchor="middle">{t('单次 trainer 时间（秒）', 'Trainer time per update (s)')}</text>
       </svg>
+      </NativeSvgChartReader>
       <figcaption id="component-scaling-caption">{t(
         `上面的线性拟合概括了 K 与 trainer 时间的关系；K=128 又在另一张同型号 GPU 上独立复现，trainer 时间只相差 ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}%。`,
         `The fitted equation above summarizes the relation between K and trainer time. K=128 was independently repeated on another GPU of the same model, with only ${round2(SD_LORA_K128_REPLICATION.deltaPercent)}% trainer-time difference.`,
       )}</figcaption>
     </figure>
     <div class="scaling-table-wrap">
-      <table class="scaling-table">
+      <ResearchPaperTable class="scaling-table">
+<Fragment slot="caption">{t('只有历史 component 数量在变化', 'Only prior component count changes')}</Fragment>
         <thead><tr><th scope="col">K</th><th scope="col">{t('Trainer', 'Trainer')}</th><th scope="col">Forward</th><th scope="col">Backward</th></tr></thead>
         <tbody>
           {SD_LORA_SCALING_POINTS.map((point) => <tr>
@@ -120,15 +124,19 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
             <td>{round2(point.backward)} s</td>
           </tr>)}
         </tbody>
-      </table>
+      </ResearchPaperTable>
       <p>{t(
         '这些点使用人为只保留前 K 个历史 component 的诊断版本；它们只用于机制分析，不是历史 checkpoint，也不是新增的正式 Q17 treatment round。主曲线固定在同一张 GPU 上，K=128 又在另一张同型号 GPU 上独立复现。',
         'These points use diagnostic variants that retain only the first K prior components. They are mechanism probes, not historical checkpoints or additional formal Q17 treatment rounds. The primary curve stays on one GPU, and K=128 is independently repeated on another GPU of the same model.',
       )}</p>
     </div>
   </section>
+  <details class="scaling-task-context">
+    <summary>{t('补充背景：模型如何完成 WebShop 购物任务', 'Background: how the model completes a WebShop shopping task')}</summary>
+    <ResearchTaskContext locale={locale} />
+  </details>
 
-  <section class="profile-evidence" aria-labelledby="profile-title">
+  <section class="profile-evidence evo-article__section" aria-labelledby="profile-title">
     <div class="section-heading">
       <h2 id="profile-title">{t('R149：训练后期一次更新的时间主要花在 forward / backward', 'R149: a late-stage update spends most of its time in forward / backward')}</h2>
       <p>{t(
@@ -152,7 +160,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
     )}</p>
   </section>
 
-  <section class="diagnosis" aria-labelledby="diagnosis-title">
+  <section class="diagnosis evo-article__section" aria-labelledby="diagnosis-title">
     <div class="section-heading">
       <h2 id="diagnosis-title">{t('R149 更新耗时来源', 'Where R149 update time comes from')}</h2>
       <p>{t(
@@ -166,7 +174,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
       <li><strong>{t('只改变历史 component 数', 'Vary only prior component count')}</strong><p>{t('数据、94 steps、模型和训练设置全部锁住，只改变 K=1/32/64/128/148。更新时间随 K 近似线性增长。', 'Data, 94 steps, model, and training settings stay fixed while K changes across 1/32/64/128/148. Update time grows approximately linearly with K.')}</p><span>{t('把“越来越慢”定位到 component 累积', 'Links the slowdown to component accumulation')}</span></li>
     </ol>
   </section>
-  <section class="mechanism" aria-labelledby="mechanism-title">
+  <section class="mechanism evo-article__section" aria-labelledby="mechanism-title">
     <div class="section-heading">
       <h2 id="mechanism-title">{t('为什么 component 越多，forward / backward 越慢', 'Why more components slow forward / backward')}</h2>
       <p>{t(
@@ -189,7 +197,7 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
     </figure>
   </section>
 
-  <section class="conclusion" aria-labelledby="conclusion-title">
+  <section class="conclusion evo-article__section" aria-labelledby="conclusion-title">
     <div class="section-heading">
       <h2 id="conclusion-title">{t('当前证据支持什么', 'What the current evidence supports')}</h2>
     </div>
@@ -217,20 +225,18 @@ const sourceShort = SD_LORA_SCALING_SOURCE.commit.slice(0, 8);
 </section>
 
 <style>
-.sd-scale{width:min(1120px,calc(100% - 2rem));margin:0 auto 4rem;color:var(--ink)}.sd-scale__purpose{max-width:52rem;margin:1.25rem 0 0;padding-left:1rem;border-left:2px solid var(--accent-deep);font-size:1rem;line-height:1.65;color:var(--muted)}
-.scaling-hero{padding:clamp(2.4rem,7vw,5.8rem) 0 2.4rem;border-bottom:1px solid var(--line)}
-.scaling-hero h1{max-width:18ch;margin:0;font-family:var(--font-editorial);font-size:clamp(2.25rem,6vw,4.9rem);line-height:.98;letter-spacing:-.045em}
-.scaling-hero__result{max-width:50rem;margin:1.25rem 0 0;font-size:clamp(1.12rem,2vw,1.45rem);line-height:1.62}
+.sd-scale__purpose{max-width:52rem;margin:1.25rem 0 0;padding-left:1rem;border-left:2px solid var(--accent-deep);font-size:var(--type-body);line-height:var(--type-leading-body);color:var(--muted)}
+.scaling-hero__result{margin:1.25rem 0 0}
 .scaling-hero__equation{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem 1rem;margin:1.6rem 0 0;padding:1rem 0;border-block:1px solid var(--line)}
 .scaling-hero__equation strong{font-size:1rem}.scaling-hero__equation span{font:700 clamp(1.3rem,3vw,2rem)/1.2 var(--font-mono);color:var(--accent-deep)}.scaling-hero__equation small{color:var(--muted);font:700 1rem/1.25 var(--font-mono)}
-.scaling-hero__boundary{max-width:50rem;margin:1.05rem 0 0;color:var(--muted);line-height:1.6}.scaling-hero__links{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;margin-top:1rem}.scaling-hero__links a,.next-links a,.evidence-depth a{color:var(--accent-deep);font-weight:750;text-underline-offset:.22em}
-.scaling-evidence,.profile-evidence,.diagnosis,.mechanism,.conclusion{padding:2.8rem 0;border-bottom:1px solid var(--line)}.section-heading{max-width:50rem}.section-heading h2{margin:0;font-family:var(--font-editorial);font-size:clamp(1.65rem,3.3vw,2.55rem);line-height:1.08;letter-spacing:-.025em}.section-heading p{margin:.75rem 0 0;color:var(--muted);line-height:1.65}
-.scaling-chart{margin:1.5rem 0 0}.scaling-chart svg{display:block;width:100%;height:auto;overflow:visible}.gridline line{stroke:var(--line);stroke-width:1}.gridline text,.data-point text,.axis-label{fill:var(--muted);font:700 13px var(--font-mono)}.axis{stroke:var(--ink);stroke-width:1.4}.fit-line{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:7 7}.data-line{stroke:var(--accent-deep);stroke-width:3}.data-point circle{fill:var(--surface);stroke:var(--accent-deep);stroke-width:3}.data-point .value{fill:var(--ink);font-weight:800}.scaling-chart figcaption{max-width:52rem;margin:.75rem 0 0;color:var(--muted);font-size:1rem;line-height:1.55}
-.scaling-table-wrap{margin-top:1.35rem;overflow-x:auto}.scaling-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.scaling-table th,.scaling-table td{padding:.65rem .8rem;font-size:1rem;border-bottom:1px solid var(--line);text-align:right}.scaling-table th:first-child{text-align:left}.scaling-table thead th{font-size:1rem;color:var(--muted)}.scaling-table-wrap>p{margin:.7rem 0 0;color:var(--muted);font-size:1rem;line-height:1.5}
-.profile-bar{display:flex;min-height:4.5rem;margin:1.5rem 0 .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);overflow:hidden;background:var(--surface-muted)}.profile-bar span{display:block;min-width:0;flex:0 1 auto;border-right:1px solid var(--line)}.profile-bar span:last-child{border-right:0}.profile-bar__forward{background:color-mix(in srgb,var(--accent-fill) 13%,var(--surface))}.profile-bar__backward{background:color-mix(in srgb,var(--color-info) 12%,var(--surface))}.profile-bar__other{background:var(--surface-muted)}.profile-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:.8rem 0 0}.profile-legend>div{padding-top:.65rem;border-top:1px solid var(--line)}.profile-legend dt{color:var(--muted);font-size:1rem}.profile-legend dd{margin:.2rem 0 0;font:800 1.08rem/1.25 var(--font-mono)}.profile-note{max-width:54rem;margin:.8rem 0 0;line-height:1.65}
-.diagnosis-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.5rem 0 0;padding:0;list-style:none;border-block:1px solid var(--line)}.diagnosis-path li{padding:1.15rem 1.1rem;border-right:1px solid var(--line)}.diagnosis-path li:last-child{border-right:0}.diagnosis-path strong{font-size:1.02rem}.diagnosis-path p{margin:.45rem 0 0;color:var(--muted);line-height:1.55}.diagnosis-path span{display:block;margin-top:.8rem;color:var(--accent-deep);font-weight:800;font-size:1rem}
-.mechanism-figure{display:grid;grid-template-columns:max-content 2rem minmax(0,1fr);align-items:center;gap:.7rem 1rem;margin:1.5rem 0 0;padding:1.35rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-base{padding:.8rem 1rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font-weight:800}.mechanism-plus{font-size:1.35rem;text-align:center;color:var(--muted)}.mechanism-components{display:flex;flex-wrap:wrap;gap:.45rem}.mechanism-components span{padding:.55rem .7rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font:700 1rem/1.25 var(--font-mono)}.mechanism-arrow{grid-column:1/-1;text-align:center;color:var(--accent-deep);font-size:1.4rem}.mechanism-result{grid-column:1/-1;padding-top:.2rem;text-align:center}.mechanism-result strong{font-size:1.08rem}.mechanism-result p{max-width:46rem;margin:.35rem auto 0;color:var(--muted);line-height:1.55}.mechanism-figure figcaption{grid-column:1/-1;margin-top:.6rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:1rem;line-height:1.55}
-.claim-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.35rem}.claim-grid article{padding-top:.9rem;border-top:3px solid var(--line)}.claim-grid article:first-child{border-color:var(--color-positive)}.claim-grid article:last-child{border-color:var(--color-warning)}.claim-grid strong{font-size:1rem}.claim-grid p{margin:.45rem 0 0;line-height:1.62}.next-question{max-width:54rem;margin:1.6rem 0 0;font-size:1.08rem;line-height:1.65}.next-links{display:flex;flex-wrap:wrap;gap:.55rem 1.2rem;margin-top:1rem}
-.evidence-depth{margin:2rem 0;border-block:1px solid var(--line)}.evidence-depth>summary{padding:1rem 0;cursor:pointer;font-weight:800}.evidence-depth__grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-depth__grid>div{padding:.9rem 0;border-top:1px solid var(--line)}.evidence-depth__grid p{margin:.35rem 0 0;color:var(--muted);line-height:1.55}.evidence-depth__links{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:0 0 1.2rem}
-@media(max-width:760px){.sd-scale{width:min(100% - 1rem,1120px)}.scaling-hero{min-height:calc(100svh - 7rem);box-sizing:border-box;padding-top:2rem}.scaling-hero h1{font-size:clamp(2rem,11vw,3.25rem)}.scaling-hero__links,.next-links{display:grid}.scaling-chart{overflow-x:auto}.scaling-chart svg{min-width:680px}.profile-bar{display:flex;min-height:3.5rem}.profile-bar span{min-height:0;padding:0;border-bottom:0}.profile-legend{grid-template-columns:1fr}.diagnosis-path{grid-template-columns:1fr}.diagnosis-path li{border-right:0;border-bottom:1px solid var(--line)}.diagnosis-path li:last-child{border-bottom:0}.mechanism-figure{grid-template-columns:1fr}.mechanism-plus{transform:rotate(90deg)}.mechanism-components{justify-content:center}.claim-grid,.evidence-depth__grid{grid-template-columns:1fr}}
+.scaling-hero__boundary{margin:1.05rem 0 0;color:var(--muted)}.scaling-hero__links{display:flex;flex-wrap:wrap;gap:.45rem 1.1rem;margin-top:1rem}.scaling-hero__links a,.next-links a,.evidence-depth a{color:var(--accent-deep);font-weight:var(--type-weight-heading);text-underline-offset:.22em}.section-heading{max-width:50rem}.section-heading p{margin:.75rem 0 0;color:var(--muted)}
+.scaling-task-context{margin:1.5rem 0;padding:.6rem 0;border-block:1px solid var(--line)}.scaling-task-context>summary{color:var(--color-text);font-size:var(--type-body-small);font-weight:var(--type-weight-label);cursor:pointer}.scaling-task-context[open]>summary{margin-bottom:.75rem}
+.scaling-chart{margin:1.5rem 0 0;overflow-x:auto}.scaling-chart svg{display:block;width:100%;min-width:0;height:auto;overflow:visible}.gridline line{stroke:var(--line);stroke-width:1}.gridline text,.data-point text,.axis-label{fill:var(--muted);font:400 13px var(--font-interface)}.axis{stroke:var(--ink);stroke-width:1.4}.fit-line{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:7 7}.data-line{stroke:var(--accent-deep);stroke-width:3}.data-point circle{fill:var(--surface);stroke:var(--accent-deep);stroke-width:3}.data-point .value{fill:var(--ink);font-weight:var(--type-weight-heading)}.scaling-chart figcaption{max-width:52rem;margin:.75rem 0 0;color:var(--muted);font-size:var(--type-caption);line-height:var(--type-leading-caption)}
+.scaling-table-wrap{margin-top:1.35rem;overflow-x:auto;min-width:0}.scaling-table-wrap>p{margin:.7rem 0 0}
+.profile-bar{display:flex;min-height:4.5rem;margin:1.5rem 0 .8rem;border:1px solid var(--line);border-radius:var(--radius-panel);overflow:hidden;background:var(--surface-muted)}.profile-bar span{display:block;min-width:0;flex:0 1 auto;border-right:1px solid var(--line)}.profile-bar span:last-child{border-right:0}.profile-bar__forward{background:color-mix(in srgb,var(--accent-fill) 13%,var(--surface))}.profile-bar__backward{background:color-mix(in srgb,var(--color-info) 12%,var(--surface))}.profile-bar__other{background:var(--surface-muted)}.profile-legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin:.8rem 0 0}.profile-legend>div{padding-top:.65rem;border-top:1px solid var(--line)}.profile-legend dt{color:var(--muted);font-size:var(--type-body)}.profile-legend dd{margin:.2rem 0 0}.profile-note{max-width:54rem;margin:.8rem 0 0;line-height:var(--type-leading-body)}
+.diagnosis-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.5rem 0 0;padding:0;list-style:none;border-block:1px solid var(--line)}.diagnosis-path li{padding:1.15rem 1.1rem;border-right:1px solid var(--line)}.diagnosis-path li:last-child{border-right:0}.diagnosis-path strong{font-size:var(--type-minor-heading)}.diagnosis-path p{margin:.45rem 0 0;color:var(--muted)}.diagnosis-path span{display:block;margin-top:.8rem;color:var(--accent-deep);font-weight:var(--type-weight-heading);font-size:var(--type-body)}
+.mechanism-figure{display:grid;grid-template-columns:max-content 2rem minmax(0,1fr);align-items:center;gap:.7rem 1rem;margin:1.5rem 0 0;padding:1.35rem;border:1px solid var(--line);border-radius:var(--radius-panel);background:var(--surface-muted)}.mechanism-base{padding:.8rem 1rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font-weight:var(--type-weight-heading)}.mechanism-plus{font-size:1.35rem;text-align:center;color:var(--muted)}.mechanism-components{display:flex;flex-wrap:wrap;gap:.45rem}.mechanism-components span{padding:.55rem .7rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface);font:700 1rem/1.25 var(--font-mono)}.mechanism-arrow{grid-column:1/-1;text-align:center;color:var(--accent-deep);font-size:1.4rem}.mechanism-result{grid-column:1/-1;padding-top:.2rem;text-align:center}.mechanism-result strong{font-size:var(--type-minor-heading)}.mechanism-result p{margin:.35rem auto 0;color:var(--muted)}.mechanism-figure figcaption{grid-column:1/-1;margin-top:.6rem;padding-top:.8rem;border-top:1px solid var(--line);color:var(--muted);font-size:var(--type-caption);line-height:var(--type-leading-caption)}
+.claim-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.35rem}.claim-grid article{padding-top:.9rem;border-top:3px solid var(--line)}.claim-grid article:first-child{border-color:var(--color-positive)}.claim-grid article:last-child{border-color:var(--color-warning)}.claim-grid strong{font-size:var(--type-body)}.claim-grid p{margin:.45rem 0 0}.next-question{max-width:54rem;margin:1.6rem 0 0;font-size:var(--type-body);line-height:var(--type-leading-body)}.next-links{display:flex;flex-wrap:wrap;gap:.55rem 1.2rem;margin-top:1rem}
+.evidence-depth{margin:2rem 0;border-block:1px solid var(--line)}.evidence-depth>summary{padding:1rem 0;cursor:pointer;font-weight:var(--type-weight-heading)}.evidence-depth__grid{display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;padding-bottom:1rem}.evidence-depth__grid>div{padding:.9rem 0;border-top:1px solid var(--line)}.evidence-depth__grid p{margin:.35rem 0 0;color:var(--muted)}.evidence-depth__links{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin:0 0 1.2rem}
+@media(max-width:760px){.scaling-hero{min-height:calc(100svh - 7rem);box-sizing:border-box}.scaling-hero__links,.next-links{display:grid}.scaling-chart{overflow-x:auto}.scaling-chart svg{min-width:0}.profile-bar{display:flex;min-height:3.5rem}.profile-bar span{min-height:0;padding:0;border-bottom:0}.profile-legend{grid-template-columns:1fr}.diagnosis-path{grid-template-columns:1fr}.diagnosis-path li{border-right:0;border-bottom:1px solid var(--line)}.diagnosis-path li:last-child{border-bottom:0}.mechanism-figure{grid-template-columns:1fr}.mechanism-plus{transform:rotate(90deg)}.mechanism-components{justify-content:center}.claim-grid,.evidence-depth__grid{grid-template-columns:1fr}}
 </style>

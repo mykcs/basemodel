@@ -27,9 +27,9 @@ const latest = read('docs/agents/LATEST.md');
 const productionUrl = 'https://basemodel-preview.vercel.app';
 
 describe('hosting architecture ownership', () => {
-  it('makes Vercel the exact-head acceptance provider while keeping CircleCI manual-only', () => {
+  it('keeps Vercel manual-only on main while using Cloudflare exact-head acceptance and CircleCI manual-only', () => {
     expect(vercel.buildCommand).toBe('npm run build');
-    expect(vercel.git?.deploymentEnabled?.main).not.toBe(false);
+    expect(vercel.git?.deploymentEnabled?.main).toBe(false);
     expect(vercel.ignoreCommand).toBe('node scripts/vercel-ignore-build.mjs');
     expect(vercelIgnoreBuild).toContain("'wrangler.jsonc'");
     expect(circleCiConfig).not.toContain('pr_cloud_ci:');
@@ -46,7 +46,8 @@ describe('hosting architecture ownership', () => {
     expect(macFallbackWorkflow).toContain('persist-credentials: false');
     expect(ciUiGate).toContain("'scripts/vercel-ui-plan.ts'");
     expect(ciUiGate).toContain("'scripts/ci-ui-test-list.mjs'");
-    expect(ciUiGate).toContain('--test-list');
+    expect(ciUiGate).toContain("'timed', 'test:ui', 'chromium'");
+    expect(ciUiGate).not.toContain("'--test-list'");
     expect(ciUiGate).toContain("PLAYWRIGHT_REUSE_BUILD: '1'");
     expect(ciUiGate).toContain('PWTEST_CACHE_DIR: transformCacheDir');
     expect(ciUiGate).toContain('basemodel-playwright-transform-');
@@ -54,14 +55,14 @@ describe('hosting architecture ownership', () => {
     expect(ciUiGate).toContain('tests/e2e/lab-playwright.config.ts');
     expect(labPlaywrightConfig).toContain('process.env.PLAYWRIGHT_PORT ?? 4327');
     expect(labPlaywrightConfig).toContain('url: baseURL');
-    expect(architecture).toContain('required Public PR CI + Vercel provider gate + manual fallbacks');
+    expect(architecture).toContain('Vercel-default with protected Cloudflare fallback');
     expect(architecture).toContain('Public PR CI owns required **repository/browser acceptance**');
-    expect(architecture).toContain('Vercel owns required **provider build/deploy acceptance**');
+    expect(architecture).toContain('`cloudflare-artifact-gate`');
     expect(publicPrWorkflow).toContain('pull_request:');
     expect(publicPrWorkflow).toContain('name: public-plan');
-    expect(publicPrWorkflow).toMatch(/CI_FULL_BROWSER_SHARDS: '[1-8]'/);
-    expect(publicPrWorkflow).toContain('shard: ${{ fromJSON(needs.plan.outputs.shards_json) }}');
-    expect(publicPrWorkflow).toContain('CI_BROWSER_SHARD_TOTAL: ${{ needs.plan.outputs.browser_total }}');
+    expect(publicPrWorkflow).toContain("CI_UNIFIED_BROWSER: '1'");
+    expect(publicPrWorkflow).toContain('include: ${{ fromJSON(needs.plan.outputs.matrix_json) }}');
+    expect(publicPrWorkflow).toContain('FIGURE_SHARD_TOTAL: ${{ matrix.total }}');
     expect(publicPrWorkflow).toContain("PLAYWRIGHT_WORKERS: '1'");
     expect(reviewPreviewWorkflow).toContain('name: Fast Review Preview');
     expect(reviewPreviewWorkflow).toContain('name: review-preflight');
@@ -79,12 +80,12 @@ describe('hosting architecture ownership', () => {
     expect(latest).toContain('current/hosting-architecture.md');
   });
 
-  it('keeps Cloudflare fallback surfaces outside the ordinary release path', () => {
-    expect(architecture).toContain('Legacy hosting — not ordinary workflow');
-    expect(architecture).toContain('no anonymous external Production monitor');
+  it('keeps Vercel the manual default with a protected Cloudflare standby and no anonymous monitor', () => {
+    expect(architecture).toContain('Vercel Authentication-protected `https://basemodel-preview.vercel.app/` is the normal reader-facing Production release destination');
+    expect(architecture).toContain('no anonymous Production monitor is active');
     expect(latest).not.toContain('production-smoke');
-    expect(latest).toContain('`public-ci-gate` is required merge evidence');
-    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `Vercel`');
+    expect(latest).toContain('Automatic PR evidence is **Public PR CI**');
+    expect(latest).toContain('Merge readiness therefore requires both `public-ci-gate` and `cloudflare-artifact-gate`');
   });
 
   it('retains a static-only non-production Workers shadow option', () => {

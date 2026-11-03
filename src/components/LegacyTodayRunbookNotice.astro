@@ -28,7 +28,7 @@ const labHref = 'https://fuhuo-20260419.vercel.app/docs/machines';
     width: min(1120px, calc(100% - 32px));
     margin: 28px auto 0;
     display: grid;
-    grid-template-columns: 112px minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     gap: 22px;
     align-items: start;
     padding: 20px 22px;
@@ -40,35 +40,42 @@ const labHref = 'https://fuhuo-20260419.vercel.app/docs/machines';
   .legacy-runbook-marker {
     padding-top: 3px;
     color: var(--warning);
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: .78rem;
-    font-weight: 800;
-    letter-spacing: .03em;
+    font-family: var(--font-interface);
+    font-size: var(--type-meta);
+    font-weight: var(--type-weight-label);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--type-leading-caption);
+    white-space: nowrap;
   }
   .legacy-runbook-kicker {
     margin: 0 0 4px;
     color: var(--warning);
-    font-size: .72rem;
-    font-weight: 800;
-    letter-spacing: .08em;
+    font-size: var(--type-meta);
+    font-weight: var(--type-weight-label);
+    letter-spacing: normal;
     text-transform: uppercase;
   }
   .legacy-runbook-notice h2 {
     margin: 0 0 8px;
-    font-size: clamp(1rem, 2vw, 1.22rem);
-    letter-spacing: -.015em;
+    font-size: var(--type-article-subsection);
+    font-weight: var(--type-weight-heading);
+    line-height: var(--type-leading-heading);
+    letter-spacing: normal;
   }
   .legacy-runbook-notice p:not(.legacy-runbook-kicker) {
-    max-width: 88ch;
+    max-width: var(--type-reading-measure);
     margin: 0;
     color: var(--muted);
-    line-height: 1.65;
+    font-size: var(--type-body);
+    line-height: var(--type-leading-body);
   }
   .legacy-runbook-notice a {
     display: inline-flex;
     margin-top: 10px;
     color: var(--accent-deep);
-    font-weight: 750;
+    font-size: var(--type-body-small);
+    font-weight: var(--type-weight-label);
+    line-height: var(--type-leading-caption);
     text-decoration: none;
   }
   .legacy-runbook-notice a:hover,

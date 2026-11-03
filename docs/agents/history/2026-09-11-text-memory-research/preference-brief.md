@@ -55,7 +55,7 @@ Reader Contract: study-briefing
   owner: 目录后面加一页，放我们尝试了哪些科学语义改变的实验或方法；最后也加一页我们做了哪些技术工作。都用接近目录的数字序号、大粗字体和短语，保持简单。
   mechanism:
 - EVENT-20260909-7B-64-UPDATE-RESEARCH-PIVOT · promising · briefing-7b-curve-without-64-pivot
-  owner: “7B：训练过程明显学起来，但冻结终评仍是 49.33”这页要加上当时我们突破了 64 次的 SD-LoRA 更新，然后我们当时怎么思考的、学长是怎么说的。
+  owner: “7B：训练过程明显学起来，但冻结终评仍是 49.33”这页要加上当时我们突破了 64 次的 SD-LoRA 更新，然后我们当时怎么思考的、L 学长是怎么说的。
   mechanism: milestone-without-research-meaning
 - EVENT-20260909-BRIEFING-604-ACCEPTED · accepted · briefing-method-context-unified-charts-59f46044
   owner: 先合并进main里。

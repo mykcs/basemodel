@@ -23,7 +23,16 @@ export function sourceRoutePattern(file: string): string | null {
   return `/${rel}`.replaceAll('//', '/');
 }
 
-const sourceRoutes = [...new Set(walk(pagesRoot).map(sourceRoutePattern).filter((value): value is string => Boolean(value)))].sort();
+// Starlight content routes have the same reader-contract obligations as Astro pages.
+const handbookRoot = join(root, 'src/content/docs');
+const handbookRoutes = (dir: string): string[] => readdirSync(dir).flatMap((name) => {
+  const path = join(dir, name);
+  if (statSync(path).isDirectory()) return handbookRoutes(path);
+  if (!/\.mdx?$/.test(path)) return [];
+  const rel = relative(handbookRoot, path).replaceAll('\\', '/').replace(/\.mdx?$/, '').replace(/\/index$/, '');
+  return [`/${rel}/`];
+});
+const sourceRoutes = [...new Set([...walk(pagesRoot).map(sourceRoutePattern).filter((value): value is string => Boolean(value)), ...handbookRoutes(handbookRoot)])].sort();
 const contractRoutes = SITE_READER_CONTRACTS.map((row) => row.sourceRoute).sort();
 const failures: string[] = [];
 

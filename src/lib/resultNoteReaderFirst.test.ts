@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const note = read('src/components/research/OpenEvoWebShopResultNote.astro');
 const route = read('src/pages/research/seed-openevo/study/results/[note].astro');
+const metadata = read('src/data/openEvoWebShopNoteMetadata.ts');
 const appendix = read('src/components/research/OpenEvoWebShopResultsAppendix.astro');
 
 describe('result-note reader-first case-cluster follow-through', () => {
@@ -42,13 +43,14 @@ describe('result-note reader-first case-cluster follow-through', () => {
       "title: '第二代连续学习的结果边界'",
       "title: '机制比较的测量边界'",
       "title: 'OpenEVO WebShop 历史机制实验的结论与证据边界'",
-    ]) expect(route).toContain(title);
+    ]) expect(metadata).toContain(title);
     for (const rejected of [
       "title: 'H1.38B：第一次可靠的内部新任务迁移'",
       "title: 'H1.39：第一代内部迁移的独立复现'",
       "title: 'H1.40：第二代持续整合为什么没有通过门槛？'",
       "title: 'H1.41–H1.42：测量边界与不能下的结论'",
-    ]) expect(route).not.toContain(rejected);
+    ]) expect(metadata).not.toContain(rejected);
+    expect(route).toContain('const meta = OPEN_EVO_WEBSHOP_NOTE_META;');
   });
 
   it('names appendix findings before their historical experiment IDs', () => {

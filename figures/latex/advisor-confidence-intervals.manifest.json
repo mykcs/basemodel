@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "dataPath": "src/data/advisorConfidenceIntervals.json",
+  "dataSha256": "6e00cd11bac804ebc09b2cae4a6ffd8888e18655c3339b4b4b380b8b11ebe35d",
+  "generator": "scripts/rebuild-advisor-confidence-pgfplots.mjs",
+  "toolchain": "XeLaTeX + PGFPlots 1.18 + Poppler pdftocairo PDF-to-SVG (glyphs emitted as paths)",
+  "figures": [
+    {
+      "id": "rank32-paired",
+      "widthTier": "single",
+      "unit": "Task Score difference (points)",
+      "axis": {
+        "min": -5,
+        "max": 2,
+        "ticks": [
+          -4,
+          -2,
+          0,
+          2
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/openevo-experiment/blob/fd7ef9e8d377b731407f7b2c923ba2616719a71d/docs/evidence/post-advisor-ab-20260928/FINAL_SCIENTIFIC_SUMMARY.json",
+        "revision": "fd7ef9e8d377b731407f7b2c923ba2616719a71d",
+        "gitBlobSha": "a8eaf29750ac4b25c432deb618f17c8ad2a9267f",
+        "field": "B.rank32_minus_rank128.mean_task_score_bootstrap95"
+      },
+      "effects": [
+        {
+          "id": "rank32",
+          "plotLabel": "rank32 -- rank128",
+          "label": "rank32 − rank128",
+          "estimate": -1.790623872655121,
+          "low": -3.681200960497834,
+          "high": 0.11839869115259744
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/rank32-paired.tex",
+          "texSha256": "efdf50bf4ffb1c21647b42e900ea9c8c5f21d0922a44770324a7049b2419da5d",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/rank32-paired.svg",
+          "svgSha256": "42ac42e27fcaac6b012f54392f9855fdff8ac847f5cf40ae7292c29f060efe5e"
+        }
+      ]
+    },
+    {
+      "id": "q04-posthoc",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": {
+        "min": -6,
+        "max": 3,
+        "ticks": [
+          -6,
+          -3,
+          0,
+          3
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "rank.cohorts.primary.r159.rank_128.score"
+      },
+      "effects": [
+        {
+          "id": "first",
+          "plotLabel": "primary",
+          "label": "首次测试",
+          "estimate": -0.8680555555555554,
+          "low": -3.906249999999999,
+          "high": 1.6493055555555558
+        },
+        {
+          "id": "seed",
+          "plotLabel": "confirmation",
+          "label": "更换随机设置",
+          "estimate": -0.6076388888888892,
+          "low": -1.475694444444445,
+          "high": 0.05208333333333333
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/q04-posthoc.tex",
+          "texSha256": "cf87813a080a7d438d539ecbdde90d5c78c4be50fab41c4175db21624d230e17",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q04-posthoc.svg",
+          "svgSha256": "f56a78f944d6d02ce28eba418b0d80554efed1638c6778f19eb68527c0df8c91"
+        },
+        {
+          "kind": "mobile",
+          "texPath": "figures/latex/advisor-confidence-intervals/q04-posthoc-mobile.tex",
+          "texSha256": "462341bfa3947f0b77055d24269772b95b8826d50fa85dbf0d190798b61a9411",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q04-posthoc-mobile.svg",
+          "svgSha256": "88b5727788d3bffb04c2d536cd4948c52710076f1585e2306b6a2e449fd2ee83"
+        }
+      ]
+    },
+    {
+      "id": "q07-inversion",
+      "widthTier": "single",
+      "unit": "Task Score difference (points)",
+      "axis": {
+        "min": -20,
+        "max": 5,
+        "ticks": [
+          -20,
+          -10,
+          0,
+          5
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor-q07-task-vector-causal-20261001/Q07_CAUSAL_EFFECTS.csv",
+        "revision": "85ee773d04f9949db369c8dd928dbbae12c68c8d",
+        "gitBlobSha": "576819dec71c3a502920477356b3bdb3fc7c785b",
+        "field": "reverse,round_index=156,mean_task_score_delta/ci_low/ci_high"
+      },
+      "effects": [
+        {
+          "id": "inverse",
+          "plotLabel": "R156 reverse",
+          "label": "Bounded OFF · 方向反转",
+          "estimate": -10.063976821789321,
+          "low": -15.024818497474744,
+          "high": -5.603453621031745
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/q07-inversion.tex",
+          "texSha256": "971ea0a741ed79aaceceadc3ff0bea007c1fe72a32de2792111cac23ce3b8201",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q07-inversion.svg",
+          "svgSha256": "ec6073e6bdae42bb0718f9cdbdfe2ebfcc3767983961908c7ac1981bdc336b13"
+        }
+      ]
+    },
+    {
+      "id": "q07-zero-latest",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": {
+        "min": -8,
+        "max": 3,
+        "ticks": [
+          -8,
+          -4,
+          0,
+          3
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "direction.r129/r159.latest_component_loo"
+      },
+      "effects": [
+        {
+          "id": "r129",
+          "plotLabel": "R129",
+          "label": "DirectApply R129",
+          "estimate": -1.6353546626984128,
+          "low": -6.022135416666666,
+          "high": 1.9593253968253967
+        },
+        {
+          "id": "r159",
+          "plotLabel": "R159",
+          "label": "DirectApply R159",
+          "estimate": -0.8506944444444445,
+          "low": -2.1705729166666665,
+          "high": 0
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/q07-zero-latest.tex",
+          "texSha256": "b1685b26ddceefaa48dba016c469d78728b9d52c4ff1d65dfd588ae47be5d6ed",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q07-zero-latest.svg",
+          "svgSha256": "f45edaf3754ff12932dc5557427e16285f6c2690bd740ed499646aa098624eed"
+        },
+        {
+          "kind": "mobile",
+          "texPath": "figures/latex/advisor-confidence-intervals/q07-zero-latest-mobile.tex",
+          "texSha256": "cbc9df002a0c37d9d42f9d52449261348bc5d901f46215ceb0f28d717568e659",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q07-zero-latest-mobile.svg",
+          "svgSha256": "358d6e202a011f7de6aa602e83a4bc055d3e641f274780e374547bc16f0d6965"
+        }
+      ]
+    },
+    {
+      "id": "q08-old-queue",
+      "widthTier": "single",
+      "unit": "Exact success difference (percentage points)",
+      "axis": {
+        "min": -30,
+        "max": 10,
+        "ticks": [
+          -30,
+          -20,
+          -10,
+          0,
+          10
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "retention.BWT_old.ACC_exact_success.paired_task_mean_delta/paired_task_cluster_bootstrap95"
+      },
+      "effects": [
+        {
+          "id": "old",
+          "plotLabel": "R159 -- R129",
+          "label": "R159 − R129",
+          "estimate": -9.375,
+          "low": -23.958333333333336,
+          "high": 4.166666666666667
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/q08-old-queue.tex",
+          "texSha256": "dbe51fe0bcfab139d0e75e2caafb58c0d40bdec9e22f9ce2dc2c7857624e15b8",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q08-old-queue.svg",
+          "svgSha256": "af7111ba4ff2f9629f6a8c61af0d31f21eae9902b60cff650a18bfc061b9c3df"
+        }
+      ]
+    },
+    {
+      "id": "q09-context",
+      "widthTier": "double",
+      "unit": "Task Score difference (points)",
+      "axis": {
+        "min": -40,
+        "max": 15,
+        "ticks": [
+          -40,
+          -20,
+          0,
+          15
+        ]
+      },
+      "scaleFactor": 100,
+      "source": {
+        "url": "https://github.com/mykcs/basemodel/blob/5d6476175bf48182dad409b7387f4096a6aa2f04/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json",
+        "revision": "5d6476175bf48182dad409b7387f4096a6aa2f04",
+        "sha256": "6c497c3cea5c227fc1c4c2bc7d59b9bb00de671d85b625d04f913d864d952723",
+        "field": "context.r159"
+      },
+      "effects": [
+        {
+          "id": "memory",
+          "plotLabel": "memory",
+          "label": "Memory 指导文字中和",
+          "estimate": 2.2221659780216556,
+          "low": -3.990681085417647,
+          "high": 8.748146926857862
+        },
+        {
+          "id": "skill",
+          "plotLabel": "skill",
+          "label": "Skill 指导文字中和",
+          "estimate": -4.111426767676768,
+          "low": -9.608664772727273,
+          "high": 0.2604166666666664
+        },
+        {
+          "id": "agent",
+          "plotLabel": "agent",
+          "label": "Agent 指导文字中和",
+          "estimate": 1.6393849206349207,
+          "low": -1.4955357142857142,
+          "high": 5.746527777777778
+        },
+        {
+          "id": "order",
+          "plotLabel": "order",
+          "label": "结果页顺序反转",
+          "estimate": -26.598203051731613,
+          "low": -37.41421928093595,
+          "high": -15.637328643578275
+        }
+      ],
+      "variants": [
+        {
+          "kind": "desktop",
+          "texPath": "figures/latex/advisor-confidence-intervals/q09-context.tex",
+          "texSha256": "fce1c2fb9581780905c15a86d1a7b59adb1c9d6fcdfa14dc8750a54c80da4590",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q09-context.svg",
+          "svgSha256": "1f7471a4917f5a7874051a2d6bc820cf91d71edb017246302603fe1ed139d631"
+        },
+        {
+          "kind": "mobile",
+          "texPath": "figures/latex/advisor-confidence-intervals/q09-context-mobile.tex",
+          "texSha256": "43b0df74440fbbd0cdcec93e49ce682dfd8f3adf93dacd47df3b12941fbf9fe3",
+          "svgPath": "public/research/seed-openevo/figures/advisor-confidence-intervals/q09-context-mobile.svg",
+          "svgSha256": "cd48b62e39f106b72fa49c3abc031d5a1c8653172e20b5ded460b4e5a06808ee"
+        }
+      ]
+    }
+  ]
+}

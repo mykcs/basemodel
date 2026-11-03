@@ -151,3 +151,75 @@ test('print cleanup remains scoped away from the webshop explainer page', async 
   await page.emulateMedia({ media: 'print', colorScheme: 'light' });
   await expect(page.locator('.plain-detail__header')).toBeVisible();
 });
+
+
+for (const width of [390, 768, 1440]) {
+  for (const theme of ['light', 'dark']) {
+    test(`checkpoint curve separates panel headings from measured values: ${width} ${theme}`, async ({page},testInfo) => {
+      await page.setViewportSize({width,height:1000});
+      await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+      await page.goto('/research/seed-openevo/study/results/7b-self-analysis/');
+      const svg=page.getByTestId('checkpoint-loss-capability-chart').locator('svg');
+      await expect(svg).toHaveAttribute('aria-labelledby','checkpoint-chart-title checkpoint-chart-desc');
+      await expect(svg.locator('title')).toContainText('Loss 一直下降');
+      await expect(svg.locator('desc')).toContainText('training loss');
+      await expect(svg.locator('.checkpoint-viz__value--loss')).toHaveText(['0.479','0.301','0.196','0.179','0.129','0.070','0.066','0.055']);
+      await expect(svg.locator('.checkpoint-viz__value:not(.checkpoint-viz__value--loss)')).toHaveText(['13.33','17.13','18.41','13.67','17.63','16.51','22.01','20.72','25.66']);
+      const collisions=()=>svg.evaluate(el=>{
+        const titles=[...el.querySelectorAll<SVGGraphicsElement>('.checkpoint-viz__panel-title')];
+        return titles.flatMap((title,index)=>{
+          const a=title.getBBox();
+          const values=[...el.querySelectorAll<SVGGraphicsElement>(index===0?'.checkpoint-viz__value--loss':'.checkpoint-viz__value:not(.checkpoint-viz__value--loss)')];
+          return values.filter(value=>{
+            const b=value.getBBox();
+            return a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y;
+          }).map(value=>({panel:index,value:value.textContent}));
+        });
+      });
+      expect(await collisions()).toEqual([]);
+      await svg.locator('.checkpoint-viz__panel-title').first().evaluate(el=>el.setAttribute('y','56'));
+      const knownBad=await collisions();
+      expect(knownBad).toContainEqual({panel:0,value:'0.479'});
+      expect(()=>expect(knownBad).toEqual([])).toThrow();
+      await svg.locator('.checkpoint-viz__panel-title').first().evaluate(el=>el.setAttribute('y','22'));
+      expect(await collisions()).toEqual([]);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+      await testInfo.attach('checkpoint-geometry.json',{body:JSON.stringify({sha:process.env.FIGURE_SOURCE_SHA,browser:testInfo.project.name,route:'/research/seed-openevo/study/results/7b-self-analysis/',width,theme,knownBad,restoredCollisionCount:0}),contentType:'application/json'});
+    });
+  }
+}
+
+for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+  test('historical transfer confidence axis separates neighboring tick labels: '+width+' '+theme,async({page})=>{
+    await page.setViewportSize({width,height:900});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/results/',{waitUntil:'load'});
+    await page.locator('#evidence-q4>summary').click();
+    const figure=page.locator('.transfer-figure');
+    await expect(figure).toBeVisible();
+    const labels=()=>figure.locator('.scale-label').evaluateAll(nodes=>nodes.map(node=>{
+      const r=node.getBoundingClientRect();return {text:node.textContent,left:r.left,right:r.right,top:r.top,bottom:r.bottom};
+    }));
+    const accept=(items:Awaited<ReturnType<typeof labels>>)=>{
+      expect(items).toHaveLength(4);
+      for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){
+        const a=items[i]!,b=items[j]!;
+        const x=Math.min(a.right,b.right)-Math.max(a.left,b.left)+4;
+        const y=Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)+4;
+        expect(Math.min(x,y),a.text+' / '+b.text+' need 4px separation').toBeLessThanOrEqual(0);
+      }
+    };
+    accept(await labels());
+    await expect(figure).toContainText('−0.05');
+    await expect(figure).toContainText('+0.35');
+    if(width===390){
+      await figure.locator('.forest-scale').evaluate(el=>(el as HTMLElement).style.height='34px');
+      await figure.locator('.scale-zero').evaluate(el=>(el as HTMLElement).style.bottom='8px');
+      const old=await labels();expect(()=>accept(old)).toThrow();
+      await figure.locator('.forest-scale').evaluate(el=>(el as HTMLElement).style.removeProperty('height'));
+      await figure.locator('.scale-zero').evaluate(el=>(el as HTMLElement).style.removeProperty('bottom'));
+      accept(await labels());
+    }
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(2);
+  });
+}

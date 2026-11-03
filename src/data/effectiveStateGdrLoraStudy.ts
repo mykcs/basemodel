@@ -367,7 +367,7 @@ export const EFFECTIVE_STATE_GDR_LORA_STUDY = {
     scientificAuthority: false,
     gpuUsed: false,
     snapshot: '/research/seed-openevo/evidence/bounded-effective-state-advisor-analysis-20260919.json',
-    wandbWorkspace: 'https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=aq3kg4ro7rf',
+    wandbWorkspace: '/research/seed-openevo/evidence/source-index.json#wb-006',
     parameterScore: {
       stateFroSpearmanRaw: 0.7203187040892476,
       stateFroWithin20Pearson: -0.005192910826452355,

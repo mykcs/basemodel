@@ -61,7 +61,8 @@ async function auditLongLeafText(root: Locator, viewportWidth: number) {
       });
 
       if (cjk >= 12 && lineRects.length >= 3) {
-        const charsPerLine = cjk / lineRects.length;
+        // Mixed Latin/CJK prose occupies the same real column.
+        const charsPerLine = node.getBoundingClientRect().width / parseFloat(getComputedStyle(node).fontSize);
         if (charsPerLine < 7) {
           issues.push(`CJK leaf prose too narrow: ${charsPerLine.toFixed(1)} chars/line across ${lineRects.length} lines at ${describe(node)} (${text.slice(0, 56)})`);
         }

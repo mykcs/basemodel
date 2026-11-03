@@ -14,13 +14,11 @@ const zhIndex = read('../pages/research/seed-openevo/study/capability-exploratio
 const enIndex = read('../../docs/archive/site-en/src/pages/en/research/seed-openevo/study/capability-exploration/index.astro.archive');
 
 describe('OpenEvo experiment archive', () => {
-  it('keeps exactly three primary maps and demotes the archive from top-level route choice', () => {
-    const mapChoices = [...lobby.matchAll(/mapChoice: '(first-run|redesign|mechanism-1-0)'/g)].map((match) => match[1]);
-    expect(new Set(mapChoices)).toEqual(new Set(['first-run', 'redesign', 'mechanism-1-0']));
-    expect(lobby).not.toContain("mapChoice: 'archive'");
-    expect(lobby).toContain('ResearchDepth');
-    expect(lobby).toContain('/capability-exploration/archive/');
-    expect(lobby).toContain('打开完整实验档案');
+  it('gives the archive a historical topic while preserving its original scientific content', () => {
+    expect(lobby).toContain('CAPABILITY_TOPIC_GROUPS');
+    const directory = read('../data/capabilityReaderRoutes.ts');
+    expect(directory).toContain("id: 'history'");
+    expect(directory).toContain("'archive'");
     expect(archive).toContain('记录覆盖第一轮能力探索、新一轮学习设计及参数机制实验');
     expect(archive).toContain('Map one: first experiment');
     expect(archive).toContain('Map two: Redesigning OpenEvo');

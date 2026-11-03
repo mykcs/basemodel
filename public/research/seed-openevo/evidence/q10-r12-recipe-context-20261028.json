@@ -1,0 +1,29 @@
+{
+  "interpretation": "Only the persistent parameter representation differs. max_grad_norm is a shared training gradient clip, not an extra bound on the final model update. The 192 pilot episodes evaluate the three saved states, with no new training.",
+  "original_science_sha256": "d95a0c56a5f56293eb599ff0df42041d18a2dcf962fb38cdb79244a0fd709e6b",
+  "pilot_contract": {
+    "commit": "3e6a91bfb6f6e6f003da4bf167dec37cc2db2c8c",
+    "path": "configs/experiment/advisor-questions/q10-r12-pilot-202610270930/pilot-contract.json",
+    "sha256": "9d59371ff6859f59f7927d5db93eb7d647e089b3c64e3b36ca2c02686d4322b9"
+  },
+  "private_authority_git_head": "76396d87f5efb0db0b5a1696bac6ab94cafbec65",
+  "publication_kind": "Sanitized excerpt of directly verified frozen private source; not a byte-identical raw export or a claim that the original authority is published on GitHub.",
+  "recipe": {
+    "beta_policy": "none",
+    "persistent_state": "BOUNDED_OFF_RANK128"
+  },
+  "reference": {
+    "beta_policy": "none",
+    "persistent_state": "ORDINARY_DIRECTAPPLY"
+  },
+  "scientific_identity_raw_sha256": "8e6f6fd5f127850b025aefa27697cae3c4f87e654114f01b5b3c80cb73bc735f",
+  "shared": {
+    "carriers": "frozen",
+    "current_update_rank": 8,
+    "max_grad_norm": 1.0,
+    "start_schedule_seeds_objective_optimizer": "matched"
+  },
+  "title": "Q10第12轮开发对照的配方范围",
+  "trainer_last_modified_commit": "1788db746175979817263e56d56ef613b1bc108d",
+  "trainer_raw_sha256": "054c13d2dae67a5672cf994b20a267ec763ecc38e68fb2439c8947b391f85d78"
+}
