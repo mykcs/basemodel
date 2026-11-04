@@ -142,6 +142,35 @@ test('Flow hub native chapter disclosure works without JavaScript', async ({ bro
 });
 
 
+// The 62svh homepage now reveals its current answer in the first screen.
+// Keep the attention budget fixed: the evidence CTA is primary; an optional
+// provenance disclosure is the second interactive target. Flow is still
+// discoverable below the findings in the existing task-navigation owner.
+test('home first screen has one evidence CTA plus accessible provenance, with Flow preserved below', async ({ page }) => {
+  for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+    await page.setViewportSize({ width, height });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const actions = page.locator('.mission-hero__actions > a');
+    await expect(actions).toHaveCount(1);
+    await expect(actions.first()).toHaveAttribute('href', '/research/seed-openevo/study/results/');
+    const details = page.locator('.mission-hero__secondary');
+    const summary = details.locator('summary');
+    await expect(summary).toBeVisible();
+    await expect(details).not.toHaveAttribute('open', '');
+    const heading = await page.locator('#answer-title').boundingBox();
+    expect(heading?.y).toBeLessThan(height);
+    expect(heading!.y + heading!.height).toBeLessThan(height);
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect(details).toHaveAttribute('open', '');
+    await expect(details.locator('.mission-status')).toBeVisible();
+    const flow = page.locator('.home-next .next-list a[href="/research/seed-openevo/flow/"]');
+    await expect(flow).toHaveCount(1);
+    await expect(flow).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+  }
+});
+
 // Exact-head candidate visual receipts for human cold-read review.
 // These are evidence captures, not an automated claim that the design reads well.
 // GitHub-hosted Chromium/WebKit upload test-results/** so the source SHA,

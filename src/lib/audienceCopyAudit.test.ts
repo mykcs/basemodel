@@ -74,7 +74,9 @@ describe('audience copy audit', () => {
 
     expect(hero).toContain("t('SEED 与 OpenEVO 的两阶段学习范式', 'The two-stage learning paradigm of SEED and OpenEVO')");
     expect(hero).toContain("t('看目前发现 →','See current findings →')");
-    expect(hero).toContain("t('先理解这项研究','Understand the study first')");
+    expect(hero).not.toContain("t('先理解这项研究','Understand the study first')");
+    const home = fs.readFileSync(path.join(root, 'src/pages/_bodies/home-v2.astro'), 'utf8');
+    expect(home).toContain("title: t('理解研究', 'Understand the study')");
     expect(hero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(hero).not.toContain('把“曾经成功”“当前准备好”“现在测得结果”分开');
     expect(standard).toContain('Headings name the subject');

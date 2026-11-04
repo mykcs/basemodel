@@ -72,8 +72,8 @@ export function reviewedSharedTypographyRows(review) {
 export const reviewedSourceContinuations = {
   'src/components/research/SeedOpenEvoMissionHero.astro': {
     priorReviewedSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
-    currentSourceSha256: '8a68656cb1976f0143bcdb4773c7a2db7bf4a9af3885a0f57c5c889e8ce126a3',
-    reason: 'The home question, bounded science lede, and two primary choices are unchanged. Exact-head 2f6e916 screenshots and 440x956 / 1440x1000 geometry showed the home-answer section starting at y=1049 / 1121, beyond both folds, with a large empty hero below the actions. The same existing hero owner now uses a content-respecting 62svh minimum without a second mobile fullscreen override; this changes no scientific copy or compact Flow header. New candidate requires exact-head browser budget, both themes, visual and typography review.',
+    currentSourceSha256: '9e073580d8fdf6751d9495d3aab10c0303b64fe454b88c1e4be2d84ae1221476',
+    reason: 'Exact-head 3ad8713 Chromium/WebKit browser logs verified that the shorter 62svh hero brought Current answer into 440x956 viewport (heading y818-848), but the formerly below-fold provenance summary became a third competing control alongside two CTAs at 390x844 and 1280x633, exceeding the existing two-target Reader Attention budget. The home hero now keeps one primary results link and its keyboard-native scientific provenance disclosure; the existing home Next section still contains the Flow learning route. No science text, compact Flow variant, global CSS token, attention budget or existing provenance is removed. Re-run exact-head full browsers and visually review both themes before merging.',
   },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
