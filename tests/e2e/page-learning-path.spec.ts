@@ -171,6 +171,39 @@ test('home first screen has one evidence CTA plus accessible provenance, with Fl
   }
 });
 
+// Results must bring the next scientific reading control into the first viewport.
+// A nearly-full-viewport min-height left an empty region after the measured
+// finding while pushing the expandable experiment progress below the fold.
+// The statistical uncertainty and execution boundary remain in the primary finding.
+for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`Results exposes the bounded finding and next reading step at ${width} ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const finding = page.locator('.results-primary');
+      await expect(finding).toBeVisible();
+      await expect(finding).toContainText('两边各完成 128 个任务');
+      await expect(finding).toContainText('还不能写成');
+      await expect(finding.locator('a[href="#evidence-q7"]')).toBeVisible();
+      const details = page.locator('.progress-detail');
+      const summary = details.locator('summary');
+      await expect(summary).toBeVisible();
+      const box = await summary.boundingBox();
+      expect(box, 'Results progress summary should be laid out').not.toBeNull();
+      expect(box!.y + box!.height, 'Results progress is hidden behind empty viewport space').toBeLessThan(height);
+      await expect(details).not.toHaveAttribute('open', '');
+      await summary.focus();
+      await expect(summary).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(details).toHaveAttribute('open', '');
+      await expect(details.locator('.abstract-row')).toHaveCount(3);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+    });
+  }
+}
+
 // Exact-head candidate visual receipts for human cold-read review.
 // These are evidence captures, not an automated claim that the design reads well.
 // GitHub-hosted Chromium/WebKit upload test-results/** so the source SHA,
