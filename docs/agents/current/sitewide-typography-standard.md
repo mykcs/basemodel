@@ -44,7 +44,7 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 - 样板：`src/pages/research/seed-openevo/study/parameter-memory-results/index.astro`，复用 `.evo-blog.evo-article.evo-approved-reader`；
 - 纸张宽度、左右留白、正文、H1/H2/H3、明暗主题：`src/styles/research-article.css`；
 - 问题索引、问题编号、折叠目录和科研回应细节：`src/styles/advisor-ten-approved-reader.css` 与 `src/components/research/OpenEvoQuestionIndex.astro`；
-- 编号问题标题有一项实际样板例外：`openevo-research-blogs.css` 为十问页面设定 `1.28rem`，W 沟通准备页用局部 `--type-reference-question` 原样对齐该字号；普通导语 H3 仍由共享层级决定。全站 token 文件被历史排版证据按 SHA 封存，未获得重新分类前不修改其值或添加伪全站变量。
+- 编号问题标题有一项实际样板例外：`openevo-research-blogs.css` 为十问页面设定 `1.28rem`，已迁入私人档案的旧 W 沟通准备页不再作为公开阅读样板；普通导语 H3 仍由共享层级决定。全站 token 文件被历史排版证据按 SHA 封存，未获得重新分类前不修改其值或添加伪全站变量。
 - 必须在 440×956 手机及 1440×1000 桌面上检查：纸张边界、中文长句换行、折叠回答、首屏可读性、明暗两套文本对比。见 `ui-change-visual-acceptance-gate.md`。
 
 此处只是引用已有代码作为样板，**不创建另一份字号或间距数值副本**。样板只适用于明确选用这一阅读模式的长文，不能把它全站强制套用到科研工作台、图表或其他页面。

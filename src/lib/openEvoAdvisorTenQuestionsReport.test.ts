@@ -23,7 +23,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('preserves original meeting and all ten research questions without rewriting raw evidence',()=>{
     expect(OPEN_EVO_ADVISOR_MEETING.points).toHaveLength(6);
     expect(OPEN_EVO_ADVISOR_MEETING.date).toBe('2026-09-22');
-    expect(OPEN_EVO_ADVISOR_MEETING.rawHref).toBe('https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md');
+    expect(OPEN_EVO_ADVISOR_MEETING.rawDisclosure).toContain('仅在私有档案');
     expect(OPEN_EVO_ADVISOR_MEETING.reconciliationHref).toContain('ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md');
     expect(ADVISOR_QUESTIONS).toHaveLength(10);
     expect(ADVISOR_QUESTIONS.map(q=>q.id)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
@@ -47,20 +47,20 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const provenance = responses.match(/<p class="evo-article__note" data-meeting-provenance>([\s\S]*?)<\/p>/)?.[1] ?? '';
     expect(intro).toContain('这里先告诉你：十个研究问题已经测到什么');
     expect(provenance).toContain('2026 年 9 月 22 日，我们和L 学长开了一次 OpenEVO 研究讨论会');
-    expect(provenance).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
-    expect(provenance).toContain('会议原始逐字记录（RAW）');
+    expect(provenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
+    expect(provenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(responses).not.toContain('9 月 22 日会议的逐字记录见本文开头。');
-    expect(provenance.indexOf('会议原始逐字记录')).toBeLessThan(provenance.indexOf('Q01–Q09'));
+    expect(provenance.indexOf('OPEN_EVO_ADVISOR_MEETING.rawDisclosure')).toBeLessThan(provenance.indexOf('Q01–Q09'));
     expect(provenance).toContain('Q10');
     expect(provenance).toContain('不是L 学长当时逐字提出的十句话');
-    expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
+    expect(questions).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
     expect(questions).toContain('后续分析（非 RAW）');
     expect(questions).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
     const index=read('src/components/research/OpenEvoExperimentIndex.astro');
-    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.rawHref');
+    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.reconciliationHref');
-    expect(index).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
+    expect(index).not.toContain('OPEN_EVO_ADVISOR_MEETING.rawHref');
   });
   it('uses the exact owner-requested reading order: methods, questions, our responses',()=>{
     const paths=['openevo-methods/','advisor-questions/','parameter-memory-results/'];
@@ -290,7 +290,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('第二篇的 {q.id.toUpperCase()} 问题正文与背景');
     expect(responses).toContain('data-question-origin-link={q.id}');
     expect(responses).toContain('Q10');
-    expect(responses).toContain('原始逐字');
+    expect(responses).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
   });
   it('keeps each advisor heading within the scientific question actually tested',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
@@ -376,7 +376,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(questions).not.toContain('themes[q.family]');
     expect(questions).toContain('会后新增的独立复现问题');
     expect(questions).toContain('OPEN_EVO_ADVISOR_MEETING.points.map');
-    expect(responses).toContain('会议原始逐字记录（RAW）');
+    expect(responses).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
   });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-q17-ledger-appendix');

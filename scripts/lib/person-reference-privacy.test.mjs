@@ -46,3 +46,16 @@ test('account fingerprints cover JSON, HTML and percent-encoded presentation', (
   }
   assert(!identityViews('safe role').some(view => hasAccountFingerprint(view, sample.length, digest)));
 });
+
+test('rejects current-tree private meeting RAW locators and public personal-preparation routes', () => {
+  const meeting = ['docs', 'evidence', 'advisor', 'liaochang', '2026-09-22-meeting-transcript.raw.md'].join('/');
+  for (const path of ['src/data/meeting.ts', 'public/research/receipt.json', 'docs/reports/old-article.md']) {
+    assert.deepEqual(scanPersonReferences(path, meeting).map(x => x.kind), ['private-conversation-locator']);
+    assert.deepEqual(scanPersonReferences(path, encodeURIComponent(meeting)).map(x => x.kind), ['private-conversation-locator']);
+    assert.deepEqual(scanPersonReferences(path, '/research/seed-openevo/study/w-advisor-call/').map(x => x.kind), ['personal-preparation-public-route']);
+  }
+  assert.deepEqual(scanPersonReferences('src/data/meeting.ts', '2026-09-22 research discussion; Q07 Task Vector score'), []);
+  assert.deepEqual(scanPersonReferences('src/data/meeting.ts', 'W 老师和 L 学长提出的研究问题'), []);
+  assert.deepEqual(scanPersonReferences('docs/learning/raw/archival-note.md', meeting), []);
+  assert.deepEqual(scanPersonReferences('src/data/source.test.ts', meeting), []);
+});
