@@ -81,7 +81,7 @@ test('Results first-screen height review preserves historical proof and rejects 
   const currentSha = createHash('sha256').update(bytes).digest('hex');
   assert.equal(currentSha, '575bb73ca0fcee7bc035c0ca7e66f4dd310f66c3a485d0761f61a18d4ddc263f');
   const source = bytes.toString('utf8');
-  assert.match(source, /\\.results-first-screen\\s*\\{\\s*min-height:\\s*60svh\\s*\\}/);
+  assert.match(source, /\.results-first-screen\s*\{\s*min-height:\s*60svh\s*\}/);
   assert.match(source, /统计范围也仍然包含“没有差异”/);
   assert.match(source, /class="progress-detail"/);
   assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
