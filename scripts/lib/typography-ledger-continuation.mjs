@@ -72,8 +72,8 @@ export function reviewedSharedTypographyRows(review) {
 export const reviewedSourceContinuations = {
   'src/components/research/SeedOpenEvoMissionHero.astro': {
     priorReviewedSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
-    currentSourceSha256: '5c2f706a951fda4a7e0790e7542657b2c860b7e7aef855e9f43e29f3635bdc69',
-    reason: 'The same home research question and two-choice budget remain, but first-fold vertical alignment and headline measure changed after the 2026-10-09 reading-path review. Historical screenshot geometry is no longer current; exact-head 440px/1440px browser acceptance is still required.',
+    currentSourceSha256: '8a68656cb1976f0143bcdb4773c7a2db7bf4a9af3885a0f57c5c889e8ce126a3',
+    reason: 'The home question, bounded science lede, and two primary choices are unchanged. Exact-head 2f6e916 screenshots and 440x956 / 1440x1000 geometry showed the home-answer section starting at y=1049 / 1121, beyond both folds, with a large empty hero below the actions. The same existing hero owner now uses a content-respecting 62svh minimum without a second mobile fullscreen override; this changes no scientific copy or compact Flow header. New candidate requires exact-head browser budget, both themes, visual and typography review.',
   },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',

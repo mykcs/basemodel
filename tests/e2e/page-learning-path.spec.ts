@@ -177,6 +177,7 @@ for (const { path, id } of [
             missionHero: rectOf('.mission-hero__copy'),
             missionActions: rectOf('.mission-hero__actions'),
             firstMissionSection: rectOf('.home-answer'),
+            firstAnswerHeading: rectOf('#answer-title'),
           };
         });
         // Keep geometry in the Actions log too: reviewers can audit the first-answer
@@ -185,6 +186,9 @@ for (const { path, id } of [
         if (id === 'home') {
           expect(geometry.firstMissionSection, 'homepage current-answer section must have a real geometry owner').not.toBeNull();
           expect(geometry.missionActions, 'homepage primary links must have a real geometry owner').not.toBeNull();
+          expect(geometry.firstAnswerHeading, 'homepage current-answer heading must have a real geometry owner').not.toBeNull();
+          expect(geometry.firstAnswerHeading!.bottom, 'homepage current answer heading should enter the first screen without scrolling').toBeLessThan(geometry.viewport.height);
+          expect(geometry.firstMissionSection!.top, 'the next section should follow the primary actions with real breathing room').toBeGreaterThan(geometry.missionActions!.bottom + 24);
         }
         await testInfo.attach(`reader-${id}-${width}-${theme}`, { path: screenshotPath, contentType: 'image/png' });
         await testInfo.attach(`reader-${id}-${width}-${theme}-geometry`, {
