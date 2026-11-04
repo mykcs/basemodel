@@ -140,9 +140,9 @@ export const contentReorganizationProofs = {
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },
   "src/components/research/OpenEvoExperimentIndex.astro": {
-    "currentSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
-    "priorSourceSha256": "455b90e842f5e920d52fb4ce012699243a83f3943e04a81130acf8fdcdb80e21",
-    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+    "currentSourceSha256": "691b2de22b0b452b0ee85bcd263aad8e0e331e06216ccf9d04f1fa5f2cb46d17",
+    "priorSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
+    "reason": "2026-11-02 owner privacy correction: remove the public URL to a private meeting RAW and replace it with a non-link disclosure. One markup line only; no CSS/typography declaration changed. Earlier observations remain historical; exact-head browser checks must verify the new rendered scientific source section."
   },
   "src/components/research/SeedOpenEvoResearchNav.astro": {
     "currentSourceSha256": "20083c9a182beaa07fc8cab0391e030a40ee6f82ef9a9578cccf72592e0f3c21",

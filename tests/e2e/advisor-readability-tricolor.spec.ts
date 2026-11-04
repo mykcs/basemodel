@@ -47,14 +47,14 @@ for(const {width,theme} of [
     }
     expect(palette.size).toBe(3);
     await expect(page.locator('[data-advisor-overview]')).toContainText('并非整项研究全部结束');
-    await expect(page.locator('[data-advisor-key-findings]')).toContainText('平均成绩下降约 10 分');
-    await expect(page.locator('[data-advisor-key-findings]')).toContainText('31.09 小时');
-    await expect(page.locator('[data-advisor-key-findings]')).toContainText('2.02 小时');
-    await expect(page.locator('[data-advisor-overview]')).toContainText('训练轮数和参数更新方向');
-    await expect(page.locator('[data-advisor-priorities]')).toContainText('18 个评测位置尚缺 3 个');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('均分下降 10.06 分');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('rank128 文件 205.6 MB');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('rank32 为 51.4 MB');
+    await expect(page.locator('[data-advisor-overview]')).toContainText('长期学习能否保留做题能力');
+    await expect(page.locator('[data-advisor-priorities]')).toContainText('Q10开发负结果');
     await expect(page.locator('[data-advisor-priorities] a[href="#response-q10"]')).toBeVisible();
     await expect(page.locator('[data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
-    await expect(page.locator('[data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
+    await expect(page.locator('[data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','partial');
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(2);
   });
@@ -81,19 +81,19 @@ test('previous all-grey status override is rejected while ordinary grey body met
 test('advisor ELI5 keeps experiment identity, human-sized numbers and distinct unknowns',async({page})=>{
   await page.goto('/research/seed-openevo/study/parameter-memory-results/',{waitUntil:'domcontentloaded'});
   const brief=page.locator('#experiment');
-  await expect(brief.locator('[data-brief-answer="q01"]')).toContainText('普通 OpenEVO');
-  await expect(brief.locator('[data-brief-done="q01"]')).toContainText('64 道购物题');
+  await expect(brief.locator('[data-brief-answer="q01"]')).toContainText('开发题上三种方法');
+  await expect(brief.locator('[data-brief-done="q01"]')).toContainText('64道新题');
   await expect(brief.locator('[data-brief-answer="q03"]')).toContainText('工程检查和开发题测试');
   await expect(brief.locator('[data-brief-answer="q04"]')).toContainText('205.6 MB');
   await expect(brief.locator('[data-brief-answer="q04"]')).toContainText('51.4 MB');
   await expect(brief.locator('[data-brief-answer="q08"]')).toContainText('当初确实做对的记录');
-  await expect(brief.locator('[data-brief-missing="q09"]')).toContainText('分别关闭三种文字指导来源');
+  await expect(brief.locator('[data-brief-missing="q09"]')).toContainText('文字候选修复无效');
   await expect(brief.locator('[data-brief-done="q10"]')).toContainText('128 道');
-  await expect(page.locator('[data-advisor-priorities]')).toContainText('新 128 道确认题已冻结');
+  await expect(page.locator('[data-advisor-priorities]')).toContainText('Q10开发负结果');
   await expect(page.locator('#response-q10')).toContainText('H1.38B');
   await expect(page.locator('#response-q10')).toContainText('H1.39');
   await expect(page.locator('#response-q03 [data-evidence-readiness="q03"]')).toHaveAttribute('data-evidence-state','partial');
-  await expect(page.locator('#response-q10 [data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','unrun');
+  await expect(page.locator('#response-q10 [data-evidence-readiness="q10"]')).toHaveAttribute('data-evidence-state','partial');
   const oldBad='Task Score 分别为 60.72、45.98、20.77/100，完整成功分别为 50、32、10 题';
   const actual=await page.locator('.evo-article__abstract p').first().innerText();
   expect(oldBad).toContain('60.72、45.98、20.77/100');
@@ -127,7 +127,8 @@ for (const {width,height} of [{width:320,height:700},{width:390,height:844}] as 
     expect(result.priority).toBeLessThan(result.counts);
     expect(result.counts).toBeLessThan(result.provenance);
     expect(result.overflow).toBeLessThanOrEqual(2);
-    await expect(page.locator('[data-meeting-provenance]')).toContainText('会议原始逐字记录（RAW）');
-    await expect(page.locator('[data-advisor-key-findings]')).toContainText('反向实验也只测过一个模型状态');
+    await expect(page.locator('[data-meeting-provenance]')).toContainText('原始讨论记录仅在私有档案保管');
+    await expect(page.locator('[data-advisor-key-findings]')).toContainText('方向反转后均分下降 10.06 分');
+    await expect(page.locator('[data-advisor-evidence-details]')).toContainText('联合八项校正区间');
   });
 }

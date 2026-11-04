@@ -20,8 +20,8 @@ describe('advisor-facing ten-question first viewport', () => {
   });
 
   it('preserves accurate provenance and separates the later Q10', () => {
-    expect(meetingProvenance).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
-    expect(meetingProvenance).toContain('会议原始逐字记录（RAW）');
+    expect(meetingProvenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
+    expect(meetingProvenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(meetingProvenance).toContain('Q01–Q09');
     expect(meetingProvenance).toContain('独立复现问题 Q10 为会后新增');
     expect(meetingProvenance).toContain('不是L 学长当时逐字提出的十句话');

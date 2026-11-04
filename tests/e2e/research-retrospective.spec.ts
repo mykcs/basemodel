@@ -18,7 +18,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       // as the full table grammar audit, even after an editorial table is added.
       await expect(report.locator('table')).toHaveCount(7);
       await expect(report.locator('#advisor table')).toHaveCount(1);
-      await expect(report.locator('#advisor tbody tr')).toHaveCount(4);
+      await expect(report.locator('#advisor tbody tr')).toHaveCount(3);
       await expect(report.locator('#history table')).toHaveCount(1);
       await expect(report.locator('#questions table')).toHaveCount(1);
       const numericTables = report.locator('#findings table, #history table');
@@ -43,9 +43,9 @@ for (const colorScheme of ['light', 'dark'] as const) {
       // These boundaries prevent counting attempts as tasks, or a valid pilot as long-term confirmation.
       await expect(report.locator('#findings')).toContainText('192次尝试并非192道不同题');
       await expect(report.locator('#history')).toContainText('冻结的 128 题终评没有运行');
-      await expect(report.locator('#ability')).toContainText(/导师接收意愿与招生指标分别通过何种正式程序/);
-      await expect(report.locator('#ability')).toContainText('科研检验与招生决定不能相互替代');
-      await expect(report.locator('#ability')).toContainText('不能据此宣称方法已成功或博士资格已经获得认可');
+      await expect(report.locator('#ability')).toContainText('固定容量在同等预算下能否保持或提升新题能力');
+      await expect(report.locator('#ability')).toContainText('没有这些证据时只报告观察');
+      await expect(report.locator('#ability')).toContainText('不能据此宣称方法已成功或独立复现已经完成');
       await expect(report.locator('#spoken')).toBeVisible();
       await context.close();
     });
