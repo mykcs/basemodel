@@ -74,6 +74,21 @@ test('later hero layout review keeps the original approved source SHA as evidenc
   assert.throws(() => verifyReviewedSourceContinuation(file, bytes, prior, { [file]: { ...review[file], priorReviewedSourceSha256: '0'.repeat(64) } }), /preserve the original approved SHA/);
 });
 
+test('Results first-screen height review preserves historical proof and rejects unreviewed changes', () => {
+  const file = 'src/components/research/OpenEvoWebShopResultsHero.astro';
+  const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
+  const prior = { currentSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b' };
+  const currentSha = createHash('sha256').update(bytes).digest('hex');
+  assert.equal(currentSha, '575bb73ca0fcee7bc035c0ca7e66f4dd310f66c3a485d0761f61a18d4ddc263f');
+  const source = bytes.toString('utf8');
+  assert.match(source, /\\.results-first-screen\\s*\\{\\s*min-height:\\s*60svh\\s*\\}/);
+  assert.match(source, /统计范围也仍然包含“没有差异”/);
+  assert.match(source, /class="progress-detail"/);
+  assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
+  assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);
+  assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
+});
+
 test('reviewed UI replacement and later page-local semantic tokens reconcile against one sealed ledger', () => {
   const old = { file: 'src/components/research/Example.astro', selector: '.old', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
   const replacement = { ...old, selector: '.new', value: 'var(--type-body-small)' };

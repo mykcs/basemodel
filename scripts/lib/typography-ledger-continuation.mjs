@@ -75,6 +75,11 @@ export const reviewedSourceContinuations = {
     currentSourceSha256: '9e073580d8fdf6751d9495d3aab10c0303b64fe454b88c1e4be2d84ae1221476',
     reason: 'Exact-head 3ad8713 Chromium/WebKit browser logs verified that the shorter 62svh hero brought Current answer into 440x956 viewport (heading y818-848), but the formerly below-fold provenance summary became a third competing control alongside two CTAs at 390x844 and 1280x633, exceeding the existing two-target Reader Attention budget. The home hero now keeps one primary results link and its keyboard-native scientific provenance disclosure; the existing home Next section still contains the Flow learning route. No science text, compact Flow variant, global CSS token, attention budget or existing provenance is removed. Re-run exact-head full browsers and visually review both themes before merging.',
   },
+  'src/components/research/OpenEvoWebShopResultsHero.astro': {
+    priorReviewedSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b',
+    currentSourceSha256: '575bb73ca0fcee7bc035c0ca7e66f4dd310f66c3a485d0761f61a18d4ddc263f',
+    reason: 'The Results hero previously imposed calc(100svh - 7rem) minimum height and left an empty visual gap after the matched 128+128 episode result and its explicit uncertainty boundary. The exact-head 61fa528 mobile/desktop light/dark screenshots showed that gap delaying the native full-progress disclosure. The page-local minimum was reduced to 60svh without changing type declarations, metrics, SEED comparability, conclusions, the disclosure content, or global tokens. Historical rendered observations are invalidated; exact-head Chromium/WebKit and renewed 440x956 and 1440x1000 visual checks are still required.',
+  },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
     currentSourceSha256: '3faab90e1c550f227668cb458f1e5ed99d98166f77696d026d935f60f3a3e895',

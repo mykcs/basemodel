@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
 import { intelligenceTypographyDelta, contentReorganizationProofs } from './lib/typography-intelligence-ui-delta.mjs';
-import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedSourceContinuations, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -102,6 +102,19 @@ for (const [transitionId, transition] of Object.entries(ledger.baselineReconcili
       assert(review.reason?.trim() && review.transitions.includes(transitionId), 'Unreviewed old transition proof invalidation');
       verifyReviewedSourceContinuation(proof.file, fs.readFileSync(path.join(root, proof.file)), review);
       changedProducerTransitionIds.add(transitionId);
+      continue;
+    }
+    // A single Results hero viewport-layout change is reviewed by exact source
+    // pair, not by weakening the sealed typography ledger or claiming that
+    // historical screenshots still describe the candidate rendering.
+    if (proof.file === 'src/components/research/OpenEvoWebShopResultsHero.astro') {
+      assert(reviewedSourceContinuations[proof.file], 'Results hero requires explicit source continuation');
+      const reviewed = verifyReviewedSourceContinuation(
+        proof.file,
+        fs.readFileSync(path.join(root, proof.file)),
+        { currentSourceSha256: proof.sha256 },
+      );
+      if (reviewed.subsequentReview) contentReorganizationInvalidatedProofs.add(proof.file);
       continue;
     }
     const verified = verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)), contentReorganizationProofs[proof.file]);
