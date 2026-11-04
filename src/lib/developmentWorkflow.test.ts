@@ -55,6 +55,18 @@ describe('human-facing development workflow', () => {
     expect(page).toContain('Cloudflare Access (standby)');
   });
 
+  it('keeps the standards acceptance index on current dual gates and manual protected release', () => {
+    const row = read('docs/standards/ACCEPTANCE_MAP.md')
+      .split('\n')
+      .find((line) => line.startsWith('| Is a PR merge-safe,'));
+    expect(row).toBeDefined();
+    for (const term of ['public-ci-gate', 'cloudflare-artifact-gate', 'exact PR head', 'fresh current base', 'Vercel Authentication (default)', 'Cloudflare Access (standby)', 'authenticated desktop/mobile']) {
+      expect(row).toContain(term);
+    }
+    expect(row).not.toContain('request-vercel-final-gate.mjs');
+    expect(row).not.toContain('Same-SHA Vercel status');
+  });
+
   it('is discoverable through navigation, sitemap, locale switch, and reader contract', () => {
     expect(header).toContain("path: '/development/'");
     expect(sitemap).toContain("'/development/'");
