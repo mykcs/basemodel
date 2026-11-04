@@ -22,7 +22,7 @@ const chain = [
       ? t('两套方法都先借助外部高能力教师从任务轨迹中形成学习起点，再用新任务的内部反馈持续改进；Stage 1 和 Stage 2 都涉及参数学习。这里用 WebShop（网页购物任务）和相同的比较维度拆解机制，以 Qwen2.5-3B-Instruct（约 30 亿参数的指令模型）作为当前对照对象。ALFWorld 是另一种文本具身任务，两种环境分别计分。', 'Both methods first use an external high-capability teacher to establish a learning starting point from task traces, then improve using internal feedback from new tasks; both Stage 1 and Stage 2 involve parameter learning. The WebShop method comparison uses identical axes, with Qwen2.5-3B-Instruct (a roughly 3B-parameter instruction model) as the current comparison model. ALFWorld is a separate text-based embodied benchmark, scored separately.')
       : t('SEED 和 OpenEvo 都想让 Agent 从做题经验里变强，但它们把经验写回系统的方式不同。我们固定 Qwen2.5-3B-Instruct、任务环境和评估规则，再看差异到底来自哪里。WebShop 是网页购物任务，ALFWorld 是文本具身任务；两种环境分别计分。', 'SEED and OpenEvo both try to make an agent improve from task experience, but they write that experience back into the system differently. We hold Qwen2.5-3B-Instruct, the task environment, and evaluation rules fixed, then ask where the differences actually come from. WebShop is a web-shopping environment and ALFWorld is a text-based embodied environment; their scores stay separate.')}</p>
     {compact && <p class="mission-hero__boundary">{t('只比较完整系统时，允许两边沿用各自的 Stage 1 初始化方法；但若要把成绩差异单独归因到 Stage 2 学习器，必须共享 Stage 1 的轨迹、事后分析、训练配方与同一个起点参数。未对齐时不能宣称某种 Stage 2 学习机制更好。这里的例子不自动代表所有模型或任务。', 'A full-system comparison may retain each method’s own Stage-1 initialization. Attributing a score difference specifically to the Stage-2 learner instead requires shared Stage-1 trajectories, post-task analysis, training recipe, and starting parameters. Without that alignment, Stage-2 superiority cannot be claimed. This example does not generalize automatically to every model or task.')}</p>}
-    {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/results/')}>{t('看目前发现 →','See current findings →')}</a><a class="button button-secondary" href={p('/research/seed-openevo/flow/')}>{t('先理解这项研究','Understand the study first')}</a></div>}
+    {!compact && <div class="mission-hero__actions"><a class="button button-primary mission-hero__briefing-cta" href={p('/research/seed-openevo/study/results/')}>{t('看目前发现 →','See current findings →')}</a></div>}
   </div>
 
 
@@ -71,5 +71,18 @@ const chain = [
     .mission-chain li strong{line-height:var(--type-leading-heading);letter-spacing:normal}
     .mission-chain ol{grid-auto-columns:minmax(218px,82vw)}
     .mission-chain figcaption .mission-chain__swipe-hint{margin-bottom:0;line-height:var(--type-leading-caption);letter-spacing:normal}
+  }
+  /* Fresh 18e76f12 Chromium 440px/1440px light/dark screenshots still
+     show 206-233px of empty hero after the single primary CTA, even though
+     Current answer enters the fold. Size the home hero to actual content:
+     question, bounded lede and one CTA remain the sole first-step owner.
+     The compact comparison variant and scientific provenance are unchanged. */
+  .mission-hero:not(.mission-hero--compact) .mission-hero__copy {
+    min-height: 0;
+    justify-content: flex-start;
+    padding-top: clamp(2rem, 5vw, 3.7rem);
+  }
+  .mission-hero:not(.mission-hero--compact) h1 {
+    max-width: 19ch;
   }
 </style>

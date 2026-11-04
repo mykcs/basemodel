@@ -56,7 +56,8 @@ assert(
   'HARDEN-HOME-005',
   missionHero.includes('同一个 Base Model，换一种自我改进方法，真的会学得更好吗？')
     && missionHero.includes("t('看目前发现 →','See current findings →')")
-    && missionHero.includes("t('先理解这项研究','Understand the study first')")
+    && !missionHero.includes("t('先理解这项研究','Understand the study first')")
+    && home.includes("title: t('理解研究', 'Understand the study')")
     && missionHero.includes('Qwen2.5-3B-Instruct')
     && missionHero.includes("title:'SEED / OpenEvo'")
     && missionHero.includes("title:'ALFWorld / WebShop'")

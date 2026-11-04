@@ -124,6 +124,11 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/SeedOpenEvoResearchDetail.astro": {
+    "currentSourceSha256": "c70c5287fda5be80b4e5ffd8e431721691e6f730a3021751e5e65d863cbf820e",
+    "priorSourceSha256": "4229fbbf7a71bf9c8a603afea471628b8ca02bfb2bd57e2deb734bdbb7e9a67c",
+    "reason": "The earlier sealed typography owner predates the 2026-10-09 reader-path and subsequent editorial-article integration. The new version preserves factual copy and all inherited font declarations while adding native learning anchors and preserving the newer WebShop breadcrumb/reading owner. Prior rendered observations remain historical; exact-head browser evidence is pending."
+  },
   "src/components/DevelopmentWorkflowPage.astro": {
     "currentSourceSha256": "415e4a9b8817c4e0611fe916f5e488bba922a0615e9661f8af687d1b7aabf3ff",
     "priorSourceSha256": "63ded467e6c88a0b08479b47c55c6c6c681579e1e657d6442b76bb2610229b10",

@@ -9,10 +9,12 @@ describe('BaseModel wish-aligned homepage research journey', () => {
   const header = read('src/components/Header.astro');
   const contracts = read('src/data/siteReaderContracts.ts');
 
-  it('opens with one concrete research question and two reader actions', () => {
+  it('opens with one research question and a single primary CTA; Flow remains a later task destination', () => {
     expect(hero).toContain('同一个 Base Model，换一种自我改进方法，真的会学得更好吗？');
     expect(hero).toContain('看目前发现');
-    expect(hero).toContain('先理解这项研究');
+    expect(hero).not.toContain("t('先理解这项研究','Understand the study first')");
+    expect(home).toContain("title: t('理解研究', 'Understand the study')");
+    expect(home).toContain("href: p('/research/seed-openevo/flow/')");
   });
 
   it('keeps the full chronology in Study and the home focused on answers and next actions', () => {
