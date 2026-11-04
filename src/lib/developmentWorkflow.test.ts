@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { SITE_READER_CONTRACTS } from '../data/siteReaderContracts';
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), 'utf8');
 const page = read('src/components/DevelopmentWorkflowPage.astro');
@@ -37,6 +38,21 @@ describe('human-facing development workflow', () => {
     expect(page).not.toContain('Cloudflare is not part of ordinary BaseModel deployment');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');
     expect(page).not.toContain('final-candidate CI + Preview');
+  });
+
+
+  it('keeps the Development reader orientation aligned with current dual gates and protected manual release', () => {
+    const row = SITE_READER_CONTRACTS.find((contract) => contract.id === 'development');
+    expect(row?.firstViewportGoal).toContain('GitHub Actions 双门禁');
+    expect(row?.firstViewportGoal).toContain('默认手动发布');
+    expect(row?.firstViewportGoal).toContain('Cloudflare Access 是备用站');
+    expect(row?.firstViewportGoal).not.toContain('Vercel Preview → Production');
+    expect(row?.mustStayVisible).toContain('public-ci-gate');
+    expect(row?.mustStayVisible).toContain('cloudflare-artifact-gate');
+    expect(row?.mustStayVisible).toContain('无部署构建检查');
+    expect(row?.mustStayVisible).toContain('普通 PR / main 不自动发布');
+    expect(page).toContain('Vercel Authentication (default)');
+    expect(page).toContain('Cloudflare Access (standby)');
   });
 
   it('is discoverable through navigation, sitemap, locale switch, and reader contract', () => {
