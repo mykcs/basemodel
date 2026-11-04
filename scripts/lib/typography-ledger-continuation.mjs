@@ -77,8 +77,8 @@ export const reviewedSourceContinuations = {
   },
   'src/components/research/OpenEvoWebShopResultsHero.astro': {
     priorReviewedSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b',
-    currentSourceSha256: '575bb73ca0fcee7bc035c0ca7e66f4dd310f66c3a485d0761f61a18d4ddc263f',
-    reason: 'The Results hero previously imposed calc(100svh - 7rem) minimum height and left an empty visual gap after the matched 128+128 episode result and its explicit uncertainty boundary. The exact-head 61fa528 mobile/desktop light/dark screenshots showed that gap delaying the native full-progress disclosure. The page-local minimum was reduced to 60svh without changing type declarations, metrics, SEED comparability, conclusions, the disclosure content, or global tokens. Historical rendered observations are invalidated; exact-head Chromium/WebKit and renewed 440x956 and 1440x1000 visual checks are still required.',
+    currentSourceSha256: '1edf01e67c127800f555751cddb6ac8808f910902dd2b81afd7a8f9349806877',
+    reason: 'The Results hero previously imposed calc(100svh - 7rem) minimum height and left an empty visual gap after the matched 128+128 episode result and its explicit uncertainty boundary. The exact-head 61fa528 mobile/desktop light/dark screenshots showed that gap delaying the native full-progress disclosure. The earlier reduction to 60svh brought the native progress control into the viewport, but exact-head b5b2351 1440x1000 dark Chromium screenshot still showed roughly 250px of empty space between the bounded result and the progress disclosure. The page-local minimum is now 0: the section sizes naturally to its content, preserving the current conclusion, uncertainty, 128+128 denominators, disclosure, typography tokens, scientific comparability, and privacy boundary. A browser geometry regression now rejects an artificial gap; exact-head Chromium/WebKit plus 440x956 and 1440x1000 light/dark visual checks are still required.',
   },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',

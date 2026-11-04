@@ -193,6 +193,11 @@ for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, hei
       const box = await summary.boundingBox();
       expect(box, 'Results progress summary should be laid out').not.toBeNull();
       expect(box!.y + box!.height, 'Results progress is hidden behind empty viewport space').toBeLessThan(height);
+      const findingBox = await finding.boundingBox();
+      expect(findingBox, 'Results primary conclusion must have a measurable position').not.toBeNull();
+      const deadSpace = box!.y - (findingBox!.y + findingBox!.height);
+      expect(deadSpace, 'Results must not add a blank slide between its finding and the next step').toBeGreaterThanOrEqual(0);
+      expect(deadSpace, 'Results native progress should follow its conclusion without a viewport-sized spacer').toBeLessThan(112);
       await expect(details).not.toHaveAttribute('open', '');
       await summary.focus();
       await expect(summary).toBeFocused();
