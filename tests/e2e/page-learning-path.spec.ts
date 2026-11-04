@@ -142,7 +142,7 @@ test('Flow hub native chapter disclosure works without JavaScript', async ({ bro
 });
 
 
-// The 62svh homepage now reveals its current answer in the first screen.
+// The homepage naturally sizes its hero so the Current answer enters the first screen without a blank slide.
 // Keep the attention budget fixed: the evidence CTA is primary; an optional
 // provenance disclosure is the second interactive target. Flow is still
 // discoverable below the findings in the existing task-navigation owner.
@@ -256,6 +256,8 @@ for (const { path, id } of [
           expect(geometry.firstAnswerHeading, 'homepage current-answer heading must have a real geometry owner').not.toBeNull();
           expect(geometry.firstAnswerHeading!.bottom, 'homepage current answer heading should enter the first screen without scrolling').toBeLessThan(geometry.viewport.height);
           expect(geometry.firstMissionSection!.top, 'the next section should follow the primary actions with real breathing room').toBeGreaterThan(geometry.missionActions!.bottom + 24);
+          expect(geometry.missionHero!.bottom - geometry.missionActions!.bottom,
+            'homepage must not reserve a blank viewport below its only primary CTA').toBeLessThan(96);
         }
         await testInfo.attach(`reader-${id}-${width}-${theme}`, { path: screenshotPath, contentType: 'image/png' });
         await testInfo.attach(`reader-${id}-${width}-${theme}-geometry`, {

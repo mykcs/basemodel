@@ -72,12 +72,13 @@ const chain = [
     .mission-chain ol{grid-auto-columns:minmax(218px,82vw)}
     .mission-chain figcaption .mission-chain__swipe-hint{margin-bottom:0;line-height:var(--type-leading-caption);letter-spacing:normal}
   }
-  /* Cold-read screenshots of the 440px/1440px homepage showed a full-screen
-     empty lower panel, keeping Current answer below the fold. Retain one
-     primary research question, but let the evidence section naturally peek
-     into view. The compact method-comparison version is unaffected. */
+  /* Fresh 18e76f12 Chromium 440px/1440px light/dark screenshots still
+     show 206-233px of empty hero after the single primary CTA, even though
+     Current answer enters the fold. Size the home hero to actual content:
+     question, bounded lede and one CTA remain the sole first-step owner.
+     The compact comparison variant and scientific provenance are unchanged. */
   .mission-hero:not(.mission-hero--compact) .mission-hero__copy {
-    min-height: 62svh;
+    min-height: 0;
     justify-content: flex-start;
     padding-top: clamp(2rem, 5vw, 3.7rem);
   }
