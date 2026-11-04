@@ -39,7 +39,7 @@ const retrospectiveNumericCaptions = [
   '独立新题对照：同一批64题，两个保存的固定容量状态；128次评测',
   '末期压缩后的新题 Task Score 差：满分100分；按冻结的八项比较校正区间',
 ] as const;
-const retrospectiveOverviewCaption = '把沟通中关心的议题，接到可复核的研究行动；表述为议题归纳而非原话';
+const retrospectiveOverviewCaption = '研究问题、现有证据与必要的后续验证';
 const retrospectiveQuestionsCaption = '后续问题：已得到的答案，与仍然缺少的证据';
 const retrospectiveCaptions = [...retrospectiveNumericCaptions, retrospectiveOverviewCaption, retrospectiveQuestionsCaption];
 
@@ -63,7 +63,7 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     const identity = await target.evaluate(el => {
       const root = el.closest('[data-research-retrospective]')!;
       const header = [...el.querySelectorAll('thead th')].map(cell => cell.textContent?.trim());
-      const advisorSummaryHeader = ['需要回答的议题', '已经可检查的事实', '仍未过关的地方'];
+      const advisorSummaryHeader = ['科研问题', '已得到的证据', '仍需回答'];
       const numericTables = [...root.querySelectorAll('#findings table, #history table')]
         .filter(table => JSON.stringify([...table.querySelectorAll('thead th')].map(cell => cell.textContent?.trim())) !== JSON.stringify(advisorSummaryHeader));
       const numericCount = numericTables.length;
@@ -93,11 +93,11 @@ async function expectPaperGrammar(target: Locator, route: string, index: number)
     } else {
       expect(caption, 'only the declared retrospective overview table is accepted').toBe(retrospectiveOverviewCaption);
       expect(await target.evaluate(el=>Boolean(el.closest('#advisor')))).toBe(true);
-      await expect(target.locator('thead th')).toHaveText(['需要回答的议题', '已经可检查的事实', '仍未过关的地方']);
-      await expect(target.locator('tbody th')).toHaveText(['科研能力和推进速度', '怎样利用 AI 做科研', '方向是否值得继续', '继续讨论的机会与名额']);
-      await expect(target.locator('tbody tr')).toHaveCount(4);
-      await expect(target).toContainText('必须分开正式确认');
-      await expect(target).toContainText('现有转写不构成录取承诺');
+      await expect(target.locator('thead th')).toHaveText(['科研问题', '已得到的证据', '仍需回答']);
+      await expect(target.locator('tbody th')).toHaveText(['模型是否继续学会新题', '如何识别失败', '怎样判断方法价值']);
+      await expect(target.locator('tbody tr')).toHaveCount(3);
+      await expect(target).toContainText('还需相同预算的方法对照与独立训练重复');
+      await expect(target).toContainText('SEED 公平基线与新任务一般化仍未成立');
       for (const row of await target.locator('tbody tr').all()) {
         await expect(row.locator('td')).toHaveCount(2);
         for (const cell of await row.locator('td').all()) await expect(cell).not.toHaveText('');
