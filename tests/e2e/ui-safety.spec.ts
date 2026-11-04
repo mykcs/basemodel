@@ -340,3 +340,73 @@ test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({
   await page.goto('/research/seed-openevo/flow/base-model/', { waitUntil: 'domcontentloaded' });
   await page.waitForURL('**/models/qwen2-5-3b-instruct/#experiment-setup');
 });
+
+
+// This is a *rendered keyboard* regression for the #985 contrast fix.
+// Token/unit contrast alone cannot prove the focus ring survives the real
+// browser cascade. These are candidate-build tests, not logged-in Production QA.
+const focusRoutes = [
+  { label: 'home', path: '/' },
+  { label: 'flow', path: '/research/seed-openevo/flow/' },
+  { label: 'results', path: '/research/seed-openevo/study/results/' },
+] as const;
+
+for (const matrix of matrices) {
+  test(`${matrix.name} shows actual keyboard Tab focus on Home, Flow and Results`, async ({ page }, info) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+
+    // At 440px the desktop theme button is hidden; test the exposed menu
+    // button instead. Neither route may require opening a menu to find focus.
+    const target = matrix.viewport.width === 440 ? '[data-menu-toggle]' : '[data-theme-toggle]';
+    for (const route of focusRoutes) {
+      await test.step(route.label, async () => {
+        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+        await settle(page);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
+        await expect(page.locator(target)).toBeVisible();
+
+        // Reach the control through *real Tab events*; .focus() would not
+        // prove keyboard reachability or the :focus-visible modality.
+        let reached = false;
+        for (let index = 0; index < 30; index += 1) {
+          await page.keyboard.press('Tab');
+          reached = await page.locator(target).evaluate(el => document.activeElement === el);
+          if (reached) break;
+        }
+        expect(reached, `${route.label} ${matrix.name}: header control must be Tab-reachable`).toBe(true);
+
+        const evidence = await page.locator(target).evaluate((el) => {
+          const style = getComputedStyle(el);
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--accent-deep)';
+          document.body.append(probe);
+          const expectedColor = getComputedStyle(probe).color;
+          probe.remove();
+          const box = el.getBoundingClientRect();
+          return {
+            focusVisible: el.matches(':focus-visible'),
+            outlineStyle: style.outlineStyle,
+            outlineWidth: Number.parseFloat(style.outlineWidth),
+            outlineColor: style.outlineColor,
+            expectedColor,
+            rect: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
+            scrollWidth: document.documentElement.scrollWidth,
+            viewportWidth: document.documentElement.clientWidth,
+          };
+        });
+        expect(evidence.focusVisible).toBe(true);
+        expect(evidence.outlineStyle).toBe('solid');
+        expect(evidence.outlineWidth).toBeGreaterThanOrEqual(3);
+        expect(evidence.outlineColor, 'resolved focus color must match opaque semantic accent').toBe(evidence.expectedColor);
+        expect(evidence.rect.left).toBeGreaterThanOrEqual(0);
+        expect(evidence.rect.right).toBeLessThanOrEqual(matrix.viewport.width + 1);
+        expect(evidence.rect.top).toBeGreaterThanOrEqual(0);
+        expect(evidence.rect.bottom).toBeLessThanOrEqual(matrix.viewport.height + 1);
+        expect(evidence.scrollWidth).toBeLessThanOrEqual(evidence.viewportWidth + 2);
+        await page.screenshot({ path: info.outputPath(`keyboard-focus-${matrix.name}-${route.label}.png`), animations: 'disabled' });
+      });
+    }
+  });
+}
