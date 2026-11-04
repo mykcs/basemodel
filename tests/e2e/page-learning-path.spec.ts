@@ -140,3 +140,52 @@ test('Flow hub native chapter disclosure works without JavaScript', async ({ bro
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
   } finally { await context.close(); }
 });
+
+
+// Exact-head candidate visual receipts for human cold-read review.
+// These are evidence captures, not an automated claim that the design reads well.
+// GitHub-hosted Chromium/WebKit upload test-results/** so the source SHA,
+// viewport and theme can be inspected without spending a provider deploy.
+for (const { path, id } of [
+  { path: '/', id: 'home' },
+  { path: '/research/seed-openevo/flow/', id: 'flow' },
+  { path: '/research/seed-openevo/study/results/', id: 'results' },
+] as const) {
+  for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+    for (const theme of ['light', 'dark'] as const) {
+      test(`candidate first-screen visual receipt: ${id} ${width} ${theme}`, async ({ page }, testInfo) => {
+        await page.setViewportSize({ width, height });
+        await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+        const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+        await expect(page.locator('#main-content h1')).toBeVisible();
+        await page.evaluate(() => document.fonts.ready.then(() => undefined));
+        const screenshotPath = testInfo.outputPath(`reader-${id}-${width}-${theme}.png`);
+        await page.screenshot({ path: screenshotPath, animations: 'disabled', fullPage: false });
+        const geometry = await page.evaluate(() => {
+          const rectOf = (selector: string) => {
+            const el = document.querySelector(selector);
+            if (!el) return null;
+            const rect = el.getBoundingClientRect();
+            return { top: Math.round(rect.top), bottom: Math.round(rect.bottom), height: Math.round(rect.height) };
+          };
+          return {
+            viewport: { width: innerWidth, height: innerHeight },
+            documentWidth: document.documentElement.scrollWidth,
+            h1: rectOf('#main-content h1'),
+            missionHero: rectOf('.mission-hero__copy'),
+            missionActions: rectOf('.mission-hero__actions'),
+            firstMissionSection: rectOf('.mission-section'),
+          };
+        });
+        await testInfo.attach(`reader-${id}-${width}-${theme}`, { path: screenshotPath, contentType: 'image/png' });
+        await testInfo.attach(`reader-${id}-${width}-${theme}-geometry`, {
+          body: JSON.stringify({ path, theme, ...geometry }, null, 2),
+          contentType: 'application/json',
+        });
+        expect(geometry.documentWidth - geometry.viewport.width, 'no root horizontal clipping').toBeLessThanOrEqual(2);
+      });
+    }
+  }
+}
