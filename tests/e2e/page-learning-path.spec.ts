@@ -142,6 +142,65 @@ test('Flow hub native chapter disclosure works without JavaScript', async ({ bro
 });
 
 
+// A second heading is allowed on the Home *only* when it is the naturally
+// reached Current answer chapter, unmistakably smaller than the question H1.
+// The older one-heading proxy failed on a good, directly inspected screenshot.
+// Keep a source-bound visual hierarchy witness, not a generalized budget raise
+// or a full-screen spacer to move the next section out of view.
+test('Home has one primary question and a subordinate evidence heading, not competing hero titles', async ({ page }) => {
+  for (const { width, height } of [
+    { width: 390, height: 844 }, // exact Reader Contract phone viewport
+    { width: 440, height: 956 },
+    { width: 1440, height: 1000 },
+  ] as const) {
+    for (const theme of ['light', 'dark'] as const) {
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('#main-content h1')).toHaveCount(1);
+      await expect(page.locator('#mission-title')).toBeVisible();
+      await expect(page.locator('#answer-title')).toBeVisible();
+      const measured = await page.evaluate(() => {
+        const primary = document.querySelector<HTMLElement>('#mission-title')!;
+        const answer = document.querySelector<HTMLElement>('#answer-title')!;
+        const cta = document.querySelector<HTMLElement>('.mission-hero__actions > a')!;
+        const hero = document.querySelector<HTMLElement>('.mission-hero__copy')!;
+        const h1Size = parseFloat(getComputedStyle(primary).fontSize);
+        const h2Size = parseFloat(getComputedStyle(answer).fontSize);
+        const answerBox = answer.getBoundingClientRect();
+        const ctaBox = cta.getBoundingClientRect();
+        const heroBox = hero.getBoundingClientRect();
+        return {
+          h1Size, h2Size,
+          h1Weight: getComputedStyle(primary).fontWeight,
+          answerTop: answerBox.top,
+          ctaBottom: ctaBox.bottom,
+          heroBottom: heroBox.bottom,
+          documentWidth: document.documentElement.scrollWidth,
+          viewportWidth: innerWidth,
+          viewportHeight: innerHeight,
+          nextSectionTitles: [...document.querySelectorAll('#main-content h2')]
+            .filter(el => {
+              const box = el.getBoundingClientRect();
+              return box.top >= 0 && box.top < innerHeight;
+            }).map(el => el.id),
+        };
+      });
+      // A new hero-size H2 would be a real competing visual title.
+      expect(measured.h2Size / measured.h1Size, 'the Current answer must remain visually subordinate').toBeLessThan(0.86);
+      expect(measured.answerTop - measured.ctaBottom, 'the evidence chapter must follow the primary CTA').toBeGreaterThan(72);
+      expect(measured.heroBottom - measured.ctaBottom, 'do not hide a third competing owner with blank hero space').toBeLessThan(96);
+      expect(measured.nextSectionTitles, 'only the Current answer H2 may reach the first viewport').toEqual(
+        measured.answerTop < height ? ['answer-title'] : [],
+      );
+      if (width !== 390) {
+        expect(measured.answerTop, 'Current answer should be discoverable without scrolling').toBeLessThan(height);
+      }
+      expect(measured.documentWidth - measured.viewportWidth, 'no root horizontal overflow').toBeLessThanOrEqual(2);
+    }
+  }
+});
+
 // The homepage naturally sizes its hero so the Current answer enters the first screen without a blank slide.
 // Keep the attention budget fixed: the evidence CTA is primary; an optional
 // provenance disclosure is the second interactive target. Flow is still
