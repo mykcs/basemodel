@@ -176,9 +176,16 @@ for (const { path, id } of [
             h1: rectOf('#main-content h1'),
             missionHero: rectOf('.mission-hero__copy'),
             missionActions: rectOf('.mission-hero__actions'),
-            firstMissionSection: rectOf('.mission-section'),
+            firstMissionSection: rectOf('.home-answer'),
           };
         });
+        // Keep geometry in the Actions log too: reviewers can audit the first-answer
+        // position without relying on access to a large artifact ZIP.
+        console.log('[reader-first-screen-geometry] ' + JSON.stringify({ path, id, theme, ...geometry }));
+        if (id === 'home') {
+          expect(geometry.firstMissionSection, 'homepage current-answer section must have a real geometry owner').not.toBeNull();
+          expect(geometry.missionActions, 'homepage primary links must have a real geometry owner').not.toBeNull();
+        }
         await testInfo.attach(`reader-${id}-${width}-${theme}`, { path: screenshotPath, contentType: 'image/png' });
         await testInfo.attach(`reader-${id}-${width}-${theme}-geometry`, {
           body: JSON.stringify({ path, theme, ...geometry }, null, 2),
