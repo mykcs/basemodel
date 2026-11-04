@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const tokensCss = readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8');
 const appCss = readFileSync(new URL('../styles/app.css', import.meta.url), 'utf8');
+const focusCss = readFileSync(new URL('../styles/final-hardening.css', import.meta.url), 'utf8');
 const webShopTrainingNoteCss = readFileSync(new URL('../styles/components/webshop-training-note.css', import.meta.url), 'utf8');
 const webShopTrainingNoteComponent = readFileSync(new URL('../components/research/WebShopTrainingNote.astro', import.meta.url), 'utf8');
 const webShopTrainingGuide = readFileSync(new URL('../components/research/WebShopTrainingGuide.astro', import.meta.url), 'utf8');
@@ -86,6 +87,17 @@ describe('theme contrast contract', () => {
       expect(contrast(text, mix(accent, background, 0.05))).toBeGreaterThanOrEqual(4.5);
     });
   }
+
+  it('keeps the keyboard focus ring opaque instead of blending into either theme', () => {
+    // WCAG non-text contrast: visible focus indication should stand out by >= 3:1.
+    expect(focusCss).toMatch(/a:focus-visible,[\s\S]*?summary:focus-visible\s*\{\s*(?:\/\*[\s\S]*?\*\/\s*)?outline:\s*3px solid var\(--accent-deep\);/);
+    for (const theme of themes) {
+      const focus = hexToken(theme.block, '--color-accent');
+      for (const surface of ['--color-bg', '--color-surface', '--color-surface-muted']) {
+        expect(contrast(focus, hexToken(theme.block, surface))).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
 
   it('defines the legacy visual surface alias instead of falling back to white', () => {
     expect(tokensCss).toContain('--background: var(--color-surface);');
