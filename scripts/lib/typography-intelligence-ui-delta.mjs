@@ -135,9 +135,9 @@ export const contentReorganizationProofs = {
     "reason": "Owner selected Vercel as the default manual release destination with Cloudflare Access protected as standby. Bilingual reader copy was updated without changing typography CSS declarations; previous /development/ screenshots are not current visual evidence. Exact-head browser and authenticated Production inspection are required."
   },
   "src/pages/_bodies/home-v2.astro": {
-    "currentSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
+    "currentSourceSha256": "587c61e741507ff21e87836b0183b4585ca8c6eb8b8353d40389fa0042c946a1",
     "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",
-    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. The previously reviewed current source SHA was 41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554. 2026-11-06: three existing Home evidence links now include their existing finding titles in bilingual accessible names, preserving visible copy, targets, scientific claims, all CSS/typography declarations, and existing route ownership. The exact new source identity is reviewed here after Cloudflare's first CI run correctly rejected the stale hash. Historical rendered text/geometry remains invalidated; fresh exact-head Chromium/WebKit and authenticated Production review are separate and still required."
   },
   "src/components/research/OpenEvoCapabilityMapLobby.astro": {
     "currentSourceSha256": "21584e442fe25685e6da1469de6cbb0154fbee488dc85b73162e52b25e7e4e40",

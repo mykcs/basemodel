@@ -82,7 +82,7 @@ const nextActions = [
           <div>
             <h3>{item.title}</h3>
             <p>{item.body}</p>
-            <a href={item.href}>{t('查看证据', 'Open evidence')} <span aria-hidden="true">→</span></a>
+            <a href={item.href} aria-label={`${t('查看证据：', 'Open evidence: ')}${item.title}`}>{t('查看证据', 'Open evidence')} <span aria-hidden="true">→</span></a>
           </div>
         </article>
       ))}
