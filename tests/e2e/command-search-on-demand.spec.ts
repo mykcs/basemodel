@@ -47,3 +47,61 @@ test('research search reaches canonical questions, mechanisms and results', asyn
   expect(new Set(paths).size).toBe(paths.length);
   expect(paths).not.toContain('/research/seed-openevo/study/capability-exploration/stage1-evolution/');
 });
+
+
+for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`clearing search cannot activate an old result at ${viewport.width} ${theme}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/');
+      await page.getByRole('button', { name: '搜索' }).click();
+      const input = page.locator('[data-command-input]');
+      const options = page.locator('.command-results a');
+      await input.fill('qwen3-8b');
+      await expect(options.first()).toHaveAttribute('href', /models\\/qwen3-8b/);
+
+      await input.fill('');
+      await expect(options).toHaveCount(0);
+      await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
+      await input.press('Enter');
+      await expect(page).toHaveURL(/\\/$/);
+      await expect(page.locator('dialog[open]')).toHaveCount(1);
+
+      await page.keyboard.press('Escape');
+      await page.getByRole('button', { name: '搜索' }).click();
+      await expect(input).toHaveValue('');
+      await expect(options).toHaveCount(0);
+      await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
+    });
+  }
+}
+
+test('an index response arriving after search is cleared cannot resurrect results', async ({ page }) => {
+  let releaseResponse!: () => void;
+  const responseGate = new Promise<void>((resolve) => { releaseResponse = resolve; });
+  await page.route('**/search-index.json', async (route) => {
+    await responseGate;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([{ type: 'model', id: 'qwen3-8b', title: 'Qwen3-8B' }]),
+    });
+  });
+  await page.goto('/');
+  const indexRequest = page.waitForRequest('**/search-index.json');
+  await page.getByRole('button', { name: '搜索' }).click();
+  await indexRequest;
+  const input = page.locator('[data-command-input]');
+  await input.fill('qwen3');
+  await input.fill('');
+  const response = page.waitForResponse('**/search-index.json');
+  releaseResponse();
+  await response;
+  await page.waitForTimeout(80);
+  await expect(page.locator('.command-results a')).toHaveCount(0);
+  await expect(page.locator('[data-command-results]')).toBeHidden();
+  await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
+  await input.press('Enter');
+  await expect(page).toHaveURL(/\\/$/);
+});
