@@ -230,6 +230,36 @@ test('home first screen has one evidence CTA plus accessible provenance, with Fl
   }
 });
 
+// The three Current answer links share short visible copy but point to
+// different research evidence. Distinct accessible names let a screen-reader
+// link list identify each destination without changing the visual hierarchy.
+for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`Home evidence links name their findings at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+      const rows = page.locator('.home-answer .answer-row');
+      await expect(rows).toHaveCount(3);
+      const names: string[] = [];
+      for (const row of await rows.all()) {
+        const title = (await row.locator('h3').innerText()).trim();
+        const link = row.getByRole('link', { name: `查看证据：${title}`, exact: true });
+        await expect(link).toHaveCount(1);
+        await expect(link).toContainText('查看证据');
+        expect(await link.getAttribute('href')).toMatch(/^\/research\/seed-openevo\//);
+        names.push((await link.getAttribute('aria-label'))!);
+        await link.focus();
+        await expect(link).toBeFocused();
+      }
+      expect(new Set(names).size).toBe(3);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+    });
+  }
+}
+
 // Results must bring the next scientific reading control into the first viewport.
 // A nearly-full-viewport min-height left an empty region after the measured
 // finding while pushing the expandable experiment progress below the fold.
