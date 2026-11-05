@@ -12,7 +12,7 @@ const { locale, labels } = Astro.props;
 <button type="button" class="command-search-trigger" aria-label={labels.search} data-command-trigger>{labels.search}<kbd>⌘ K</kbd></button>
 <dialog class="command-menu" aria-labelledby="command-menu-title" data-command-dialog data-locale={locale} data-index={`${baseUrl()}search-index.json`}>
   <div class="command-menu-inner"><div class="command-menu-heading"><h2 id="command-menu-title">{labels.searchTitle}</h2><button type="button" class="icon-button" aria-label={labels.closeSearch} data-command-close>×</button></div>
-  <input type="search" placeholder={labels.searchPlaceholder} aria-label={labels.searchPlaceholder} aria-controls="command-results" data-command-input />
+  <input type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" placeholder={labels.searchPlaceholder} aria-label={labels.searchPlaceholder} aria-controls="command-results" data-command-input />
   <div id="command-results" class="command-results" role="listbox" aria-label={labels.searchTitle} data-command-results hidden></div>
   <p class="command-hint muted">{labels.commandHint}</p></div>
 </dialog>
@@ -44,8 +44,9 @@ const { locale, labels } = Astro.props;
     const active = options[activeIndex];
     if (active) input.setAttribute('aria-activedescendant', active.id); else input.removeAttribute('aria-activedescendant');
   };
-  const open = () => { queryRevision += 1; if (!dialog.open) dialog.showModal(); input.value = ''; results.replaceChildren(); results.hidden = true; rendered = []; setActive(0); load(); setTimeout(() => input.focus()); };
-  dialog?.addEventListener('close', () => { queryRevision += 1; });
+  const syncExpanded = () => input.setAttribute('aria-expanded', String(dialog.open && !results.hidden));
+  const open = () => { queryRevision += 1; if (!dialog.open) dialog.showModal(); input.value = ''; results.replaceChildren(); results.hidden = true; rendered = []; setActive(0); syncExpanded(); load(); setTimeout(() => input.focus()); };
+  dialog?.addEventListener('close', () => { queryRevision += 1; syncExpanded(); });
   trigger?.addEventListener('click', open);
   dialog?.querySelector('[data-command-close]')?.addEventListener('click', () => dialog.close());
   document.addEventListener('keydown', (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); open(); } });
@@ -58,7 +59,7 @@ const { locale, labels } = Astro.props;
   input?.addEventListener('input', async () => {
     const revision = ++queryRevision;
     const needle = input.value.trim().toLowerCase();
-    results.replaceChildren(); results.hidden = !needle; rendered = []; setActive(0);
+    results.replaceChildren(); results.hidden = !needle; rendered = []; setActive(0); syncExpanded();
     if (!needle) return;
     const matches = (await load()).filter((item) => [item.title,item.subtitle,...(item.aliases||[]),...(item.category||[])].some((v) => v?.toLowerCase().includes(needle))).slice(0,12);
     if (revision !== queryRevision || !dialog.open) return;
