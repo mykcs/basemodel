@@ -1,8 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readdirSync } from 'node:fs';
 import { TECHNICAL_ARTICLE_ROUTES, READING_OVERVIEW_ROUTES } from '../../src/data/technicalArticleRoutes';
-// Local W-only article inherits this canonical long-form reading test bundle.
-import './w-advisor-call-brief.spec';
 
 const paperRoutes = readdirSync('src/content/papers').filter(file => file.endsWith('.json')).map(file => '/papers/' + file.slice(0,-5) + '/');
 const readingRoutes = [...TECHNICAL_ARTICLE_ROUTES, ...READING_OVERVIEW_ROUTES, ...paperRoutes];
@@ -146,17 +144,87 @@ test('number gate rejects the old small digit above its heading',async({page})=>
   expect(await headingNumberErrors(page)).toEqual([]);
 });
 
-test('wide reading entries keep expanded contents in flow without covering the title',async({page})=>{
+test('wide reading entries keep one usable directory and never cover the title',async({page})=>{
   await page.setViewportSize({width:1440,height:1000});
   for(const route of ['/papers/seed/','/research/seed-openevo/study/capability-exploration/','/research/seed-openevo/flow/','/research/seed-openevo/study/results/','/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/']){
     await page.goto(route);
-    const nav=page.locator('[data-article-outline]');
-    await expect(page.locator('.evo-approved-reader [data-article-outline]')).toHaveCount(1);
-    await nav.locator('summary').click();
-    expect(await nav.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+    const outline=page.locator('[data-article-outline]');
+    // PR #841 intentionally avoids a second generated directory where a page
+    // already owns a labeled navigation path. A missing duplicate is not a
+    // missing reading path: require the surviving owner to be usable instead.
+    const owned=page.locator([
+      '#main-content [data-reader-guide]:visible',
+      '#main-content [data-topic-navigation]:visible',
+      '#main-content [data-webshop-story-nav]:visible',
+      '#main-content .page-contents:visible',
+      '#main-content .paper-nav:visible',
+      '#main-content .model-detail-nav:visible',
+      '#main-content .papers-reading-path:visible',
+      '#main-content .learning-track-nav:visible',
+      '#main-content .next-list:visible',
+      '#main-content .evo-article__toc:visible',
+    ].join(', ')).first();
+    // A native closed <details> is a usable, keyboard-accessible directory:
+    // its nested nav must not be visible until the reader opens it. Recognize
+    // the semantic guide rather than requiring a competing generated outline.
+    const ownedDisclosure=page.locator('#main-content details:visible:has(nav[data-reader-guide])').first();
+    let directory=outline;
+    if(await ownedDisclosure.count()){
+      await expect(outline).toBeHidden();
+      expect(await owned.count(),route).toBe(0);
+      const summary=ownedDisclosure.locator('summary');
+      await expect(summary).toBeVisible();
+      await summary.focus();
+      await summary.press('Enter');
+      await expect(ownedDisclosure).toHaveAttribute('open','');
+      const guide=ownedDisclosure.locator('nav[data-reader-guide]');
+      await expect(guide).toBeVisible();
+      const links=guide.locator('a[href^="#"]');
+      expect(await links.count(),route).toBeGreaterThan(1);
+      for(const link of await links.all()){
+        const href=await link.getAttribute('href');
+        expect(href,route).toMatch(/^#.+/);
+        await expect(page.locator('[id=' + JSON.stringify(decodeURIComponent(href!.slice(1))) + ']')).toHaveCount(1);
+      }
+      directory=ownedDisclosure;
+    }else if(await owned.count()){
+      await expect(outline).toBeHidden();
+      expect(await owned.locator('a[href]').count(),route).toBeGreaterThan(0);
+      // An existing topical directory must link to actual page sections, not
+      // just render labels. A merely present <nav> is not a usable substitute.
+      if (await owned.getAttribute('data-topic-navigation') !== null) {
+        for (const link of await owned.locator('a[href^="#"]').all()) {
+          const href = await link.getAttribute('href');
+          expect(href,route).toMatch(/^#.+/);
+          await expect(page.locator('[id=' + JSON.stringify(decodeURIComponent(href!.slice(1))) + ']')).toHaveCount(1);
+        }
+      }
+      directory=owned;
+    }else{
+      // Bind an unexpected missing path to its actual route and rendered nav
+      // owners. A generic locator timeout hid the cause across three CI runs.
+      const navEvidence = await page.locator('#main-content nav:visible').evaluateAll(nodes =>
+        nodes.map(node => ({
+          label: node.getAttribute('aria-label'),
+          className: node.className,
+          anchors: node.querySelectorAll('a[href]').length,
+        })),
+      );
+      const attentionMode = await page.locator('body').getAttribute('data-reader-attention-mode');
+      const outlineCount = await page.locator('.evo-approved-reader [data-article-outline]').count();
+      expect(outlineCount, `${route}: no usable owned directory or generated outline; attentionMode=${attentionMode}; visibleNavs=${JSON.stringify(navEvidence)}`).toBe(1);
+      await expect(outline).toBeVisible();
+      await outline.locator('summary').click();
+      expect(await outline.evaluate(el=>getComputedStyle(el).position)).toBe('static');
+      expect(await outline.locator('a[href^="#"]').count(),route).toBeGreaterThan(0);
+    }
     const title=await page.locator('#main-content h1').boundingBox();
-    const box=await nav.boundingBox();
-    expect(box!.y).toBeGreaterThan(title!.y+title!.height);
+    const box=await directory.boundingBox();
+    expect(title,route).not.toBeNull();
+    expect(box,route).not.toBeNull();
+    // Owned directories may sit above or below a heading; neither may overlap it.
+    const overlap=Math.max(0,Math.min(box!.y+box!.height,title!.y+title!.height)-Math.max(box!.y,title!.y));
+    expect(overlap,route).toBe(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
   }
 });

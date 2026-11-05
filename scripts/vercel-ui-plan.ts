@@ -33,6 +33,7 @@ const HOSTED_GATE_OWNERS = new Set([
   'scripts/wait-for-cloud-figure-artifact.test.mjs',
   '.github/workflows/cloud-figure-visual-review.yml',
   '.github/workflows/cloudflare-standby.yml',
+  '.github/workflows/release-provider.yml',
   'wrangler.standby.jsonc',
   'scripts/ci-ui-test-timings-202609061200.json',
   'scripts/ci-ui-test-timings-202609152256.json',

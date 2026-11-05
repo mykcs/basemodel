@@ -1,8 +1,8 @@
 // Historical questions from the 2026-09-22 meeting, not later experiment results.
 export const OPEN_EVO_ADVISOR_MEETING = {
   date: '2026-09-22',
-  // Original verbatim transcript from the meeting, anchored to a checked historical commit.
-  rawHref: 'https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md',
+  // RAW is private; public research evidence must not expose private conversation locators.
+  rawDisclosure: '原始讨论记录仅在私有档案保管，不在公开页面提供；这里是研究问题概括，并非逐字引述。',
   // Post-meeting interpretation is a secondary source and must not be labeled RAW.
   reconciliationHref: 'https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md',
   points: [

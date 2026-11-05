@@ -124,6 +124,16 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/SeedOpenEvoResearchDetail.astro": {
+    "currentSourceSha256": "c70c5287fda5be80b4e5ffd8e431721691e6f730a3021751e5e65d863cbf820e",
+    "priorSourceSha256": "4229fbbf7a71bf9c8a603afea471628b8ca02bfb2bd57e2deb734bdbb7e9a67c",
+    "reason": "The earlier sealed typography owner predates the 2026-10-09 reader-path and subsequent editorial-article integration. The new version preserves factual copy and all inherited font declarations while adding native learning anchors and preserving the newer WebShop breadcrumb/reading owner. Prior rendered observations remain historical; exact-head browser evidence is pending."
+  },
+  "src/components/DevelopmentWorkflowPage.astro": {
+    "currentSourceSha256": "415e4a9b8817c4e0611fe916f5e488bba922a0615e9661f8af687d1b7aabf3ff",
+    "priorSourceSha256": "63ded467e6c88a0b08479b47c55c6c6c681579e1e657d6442b76bb2610229b10",
+    "reason": "Owner selected Vercel as the default manual release destination with Cloudflare Access protected as standby. Bilingual reader copy was updated without changing typography CSS declarations; previous /development/ screenshots are not current visual evidence. Exact-head browser and authenticated Production inspection are required."
+  },
   "src/pages/_bodies/home-v2.astro": {
     "currentSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
     "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",
@@ -135,9 +145,9 @@ export const contentReorganizationProofs = {
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },
   "src/components/research/OpenEvoExperimentIndex.astro": {
-    "currentSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
-    "priorSourceSha256": "455b90e842f5e920d52fb4ce012699243a83f3943e04a81130acf8fdcdb80e21",
-    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+    "currentSourceSha256": "691b2de22b0b452b0ee85bcd263aad8e0e331e06216ccf9d04f1fa5f2cb46d17",
+    "priorSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
+    "reason": "2026-11-02 owner privacy correction: remove the public URL to a private meeting RAW and replace it with a non-link disclosure. One markup line only; no CSS/typography declaration changed. Earlier observations remain historical; exact-head browser checks must verify the new rendered scientific source section."
   },
   "src/components/research/SeedOpenEvoResearchNav.astro": {
     "currentSourceSha256": "20083c9a182beaa07fc8cab0391e030a40ee6f82ef9a9578cccf72592e0f3c21",

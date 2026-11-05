@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
 import { intelligenceTypographyDelta, contentReorganizationProofs } from './lib/typography-intelligence-ui-delta.mjs';
-import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './lib/typography-ledger-continuation.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedSourceContinuations, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -52,7 +52,7 @@ assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Review
 // Subsequent reviewed article pages and editorial anonymization legitimately
 // change it; verify the three #959 source owners by exact SHA instead and
 // reconcile every CSS declaration against both independently reviewed deltas.
-const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta);
+const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta, [...reviewedSharedTypographyRows(reviewedReaderGuideTypography), ...reviewedSharedTypographyRows(reviewedFlowDisclosureTypography)]);
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);
@@ -100,9 +100,21 @@ for (const [transitionId, transition] of Object.entries(ledger.baselineReconcili
     if (ownerDelta.changedOwnerProofs[proof.file]) {
       const review = ownerDelta.changedOwnerProofs[proof.file];
       assert(review.reason?.trim() && review.transitions.includes(transitionId), 'Unreviewed old transition proof invalidation');
-      assert.equal(createHash('sha256').update(fs.readFileSync(path.join(root, proof.file))).digest('hex'), review.currentSourceSha256,
-        `Reviewed Intelligence UI source owner changed beyond the approved candidate: ${proof.file}`);
+      verifyReviewedSourceContinuation(proof.file, fs.readFileSync(path.join(root, proof.file)), review);
       changedProducerTransitionIds.add(transitionId);
+      continue;
+    }
+    // A single Results hero viewport-layout change is reviewed by exact source
+    // pair, not by weakening the sealed typography ledger or claiming that
+    // historical screenshots still describe the candidate rendering.
+    if (proof.file === 'src/components/research/OpenEvoWebShopResultsHero.astro') {
+      assert(reviewedSourceContinuations[proof.file], 'Results hero requires explicit source continuation');
+      const reviewed = verifyReviewedSourceContinuation(
+        proof.file,
+        fs.readFileSync(path.join(root, proof.file)),
+        { currentSourceSha256: proof.sha256 },
+      );
+      if (reviewed.subsequentReview) contentReorganizationInvalidatedProofs.add(proof.file);
       continue;
     }
     const verified = verifySealedProofWithEditorialAnonymization(proof, fs.readFileSync(path.join(root, proof.file)), contentReorganizationProofs[proof.file]);

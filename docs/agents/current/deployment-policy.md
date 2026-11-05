@@ -1,8 +1,16 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-10-30**
+Last reviewed: **2026-11-01**
 
-## Authority
+**Vercel-default release selection (current):** Publish accepted `main` explicitly to the existing Vercel Authentication-protected Production when a release is necessary; Cloudflare Workers + Access remains the protected standby. The one `release-provider.yml` selector defaults to `vercel + plan` (no provider deployment). Choose `deploy` explicitly only after confirming the selected provider's current quota and target source SHA. Vercel's staged Production release verifies project identity, exact SHA, anonymous SSO, authorized routes, alias identity and post-promotion SSO; Cloudflare uses its existing Access pre/post-gated exact-main workflow. Protect both independent hostnames; no DNS, billing, Access or Authentication change is authorized by switching the default.
+
+**Required CI remains unchanged:** `public-ci-gate` and `cloudflare-artifact-gate` must both succeed on the exact fresh PR head from GitHub Actions App 15368 under current-base strict ruleset and branch protection. Neither deploys or uses provider secrets. Do **not** reinstate a mandatory Vercel Preview or automatic Git `main` deploy; `vercel.json` `git.deploymentEnabled.main=false` still saves Vercel Hobby quota. `ci/vercel-gate-final` is optional historical/provider diagnostics. CircleCI/Mac remain explicit manual CI recovery.
+
+**Evidence boundary:** The successful protected Vercel [run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) proved staged/promoted Vercel identity, login wall and authorized route checks for `main@7cf12902`, after [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed the v13 API shape. A green run does not itself prove logged-in desktop/mobile visual quality. The protected Cloudflare Worker retains its own deployed SHA and Access; never claim it mirrors Vercel by default. The current release switch [SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) owns step-by-step execution; [hosting architecture](hosting-architecture.md) owns provider roles.
+
+**Historical compatibility boundary:** Everything below is retained to explain the retired Vercel-*required* PR gate and preserve existing test/incident evidence. Where it describes Vercel as a compulsory exact-head merge check, Cloudflare as legacy-only, or one old gate ref as the normal path, that instruction is superseded by the current two GitHub checks and manual Vercel-default selector. No test asserting an old token makes that old operating instruction live.
+
+## Previous Vercel-first authority (historical/fallback; no longer required by current GitHub protection)
 
 Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns the executable release/validation policy; the rationale file explains why the provider topology was chosen and when to reconsider it.
 

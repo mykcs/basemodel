@@ -3,14 +3,112 @@ import { createHash } from 'node:crypto';
 
 const identity = row => JSON.stringify([row.file, row.selector, row.contexts, row.property, row.value]);
 
+// New shared typography needs a reviewed, exact-selector continuation.
+// This is deliberately narrower than the page-local token-only allowance:
+// the reader guide is the single reusable owner of these eight declarations.
+export const reviewedReaderGuideTypography = {
+  file: 'src/components/navigation/PageLearningPath.astro',
+  reason: 'Short, bilingual, keyboard-accessible research reading paths need readable token-owned labels and anchors; no new global typography tokens or CSS owner.',
+  selectors: {
+    '.page-learning-path__heading': {
+      role: 'Secondary learning-path label',
+      properties: {
+        'font-size': 'var(--type-meta)',
+        'line-height': 'var(--type-leading-caption)',
+        'font-weight': 'var(--type-weight-label)',
+      },
+    },
+    '.page-learning-path a': {
+      role: 'Readable primary anchor text with a 44px minimum touch row',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'line-height': 'var(--type-leading-body)',
+        'font-weight': 'var(--type-weight-label)',
+      },
+    },
+    '.page-learning-path__index': {
+      role: 'Small monospaced section number',
+      properties: {
+        font: 'var(--type-weight-label) var(--type-meta)/var(--type-leading-caption) var(--font-mono)',
+      },
+    },
+    '.page-learning-path__go': {
+      role: 'Secondary directional glyph',
+      properties: { 'font-size': 'var(--type-meta)' },
+    },
+  },
+};
+
+// The Flow study hub uses a single native disclosure as its first-screen
+// navigation entry. The existing type tokens remain authoritative; only the
+// named summary's two typography properties are reviewed here.
+export const reviewedFlowDisclosureTypography = {
+  file: 'src/components/research/SeedOpenEvoResearchHub.astro',
+  reason: 'The four real method-comparison anchors remain available through one keyboard- and no-JS-accessible native disclosure without four competing first-screen actions.',
+  selectors: {
+    '.flow-learning-disclosure > summary': {
+      role: 'Readable, secondary four-section navigation control',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'font-weight': 'var(--type-weight-label)',
+      },
+    },
+  },
+};
+
+export function reviewedSharedTypographyRows(review) {
+  assert(review.file?.trim() && review.reason?.trim(), 'Shared typography needs an identified owner and reason');
+  return Object.entries(review.selectors).flatMap(([selector, entry]) => {
+    assert(entry.role?.trim(), `Shared typography selector needs a semantic role: ${selector}`);
+    return Object.entries(entry.properties).map(([property, value]) => ({
+      file: review.file, selector, contexts: [], property, value,
+    }));
+  });
+}
+
+// A historical Intelligence UI owner was already source-pinned by a prior
+// review. Keep that earlier exact SHA intact; a subsequent content/layout
+// edit has its own source identity and browser-acceptance boundary.
+export const reviewedSourceContinuations = {
+  'src/components/research/SeedOpenEvoMissionHero.astro': {
+    priorReviewedSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
+    currentSourceSha256: '6d540a4f2370e8dd1ead284cc9727bcf79d6ae9c3b490019b315da1d924a0ad4',
+    reason: 'Exact-head 3ad8713 Chromium/WebKit browser logs verified that the shorter 62svh hero brought Current answer into 440x956 viewport (heading y818-848), but the formerly below-fold provenance summary became a third competing control alongside two CTAs at 390x844 and 1280x633, exceeding the existing two-target Reader Attention budget. The home hero now keeps one primary results link and its keyboard-native scientific provenance disclosure; the existing home Next section still contains the Flow learning route. No science text, compact Flow variant, global CSS token, attention budget or existing provenance is removed. The subsequent exact-head 18e76f12 Chromium screenshots at 440x956 / 1440x1000, both themes, proved the 62svh panel still left 233px/206px blank below the only CTA. Previous source SHA256 9e073580d8fdf6751d9495d3aab10c0303b64fe454b88c1e4be2d84ae1221476 is preserved here as the reviewed predecessor; the component now has natural min-height 0 and a browser guard against a new blank slide. The unchanged compact variant, scientific copy, evidence links, typography owner and privacy-safe main require fresh exact-head browser acceptance before merge.',
+  },
+  'src/components/research/OpenEvoWebShopResultsHero.astro': {
+    priorReviewedSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b',
+    currentSourceSha256: '1edf01e67c127800f555751cddb6ac8808f910902dd2b81afd7a8f9349806877',
+    reason: 'The Results hero previously imposed calc(100svh - 7rem) minimum height and left an empty visual gap after the matched 128+128 episode result and its explicit uncertainty boundary. The exact-head 61fa528 mobile/desktop light/dark screenshots showed that gap delaying the native full-progress disclosure. The earlier reduction to 60svh brought the native progress control into the viewport, but exact-head b5b2351 1440x1000 dark Chromium screenshot still showed roughly 250px of empty space between the bounded result and the progress disclosure. The page-local minimum is now 0: the section sizes naturally to its content, preserving the current conclusion, uncertainty, 128+128 denominators, disclosure, typography tokens, scientific comparability, and privacy boundary. A browser geometry regression now rejects an artificial gap; exact-head Chromium/WebKit plus 440x956 and 1440x1000 light/dark visual checks are still required.',
+  },
+  'src/components/research/SeedOpenEvoResearchHub.astro': {
+    priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
+    currentSourceSha256: '3faab90e1c550f227668cb458f1e5ed99d98166f77696d026d935f60f3a3e895',
+    reason: 'The method-comparison hub retains four bilingual anchors, but puts the optional chapter navigation behind one native details/summary control, instead of overloading the first viewport with four equal-weight actions. The original Reader Attention budget and scientific limitations remain unchanged; exact-head browser review on both themes, 390/440px, keyboard and no-JS is still required.',
+  },
+};
+
+export function verifyReviewedSourceContinuation(file, bytes, priorReview, continuations = reviewedSourceContinuations) {
+  const actual = digest(bytes);
+  if (actual === priorReview.currentSourceSha256) return { subsequentReview: false };
+  const review = continuations[file];
+  assert(review?.reason?.trim(), `Changed historical owner needs a separate review: ${file}`);
+  assert.equal(review.priorReviewedSourceSha256, priorReview.currentSourceSha256,
+    `Subsequent review must preserve the original approved SHA: ${file}`);
+  assert.equal(actual, review.currentSourceSha256,
+    `Changed historical owner differs from its exact subsequent review: ${file}`);
+  return { subsequentReview: true };
+}
+
 /**
  * The 2026-10-22 ledger is a historical, completely classified snapshot.
  * Its existing declarations must remain accounted for; future article pages may
- * add ONLY semantic-token declarations in page-local Astro styles. Any removal,
- * global CSS change, or literal type size still requires an explicit new ledger.
+ * add ONLY semantic-token declarations in page-local Astro styles. New shared
+ * components require an explicit exact-selector review (never a blanket path
+ * exception). Any removal, global CSS change, or literal type size still
+ * requires an explicit new ledger.
  * This continuation does not claim the new route was historically observed.
  */
-export function verifyAppendOnlyArticleTypography(baselineRows, currentRows) {
+export function verifyAppendOnlyArticleTypography(baselineRows, currentRows, approvedSharedRows = []) {
   const remaining = new Map();
   for (const row of baselineRows) {
     const key = identity(row);
@@ -28,10 +126,19 @@ export function verifyAppendOnlyArticleTypography(baselineRows, currentRows) {
   const missing = [...remaining].filter(([, count]) => count > 0);
   assert.equal(missing.length, 0, `Previously classified typography declarations disappeared or changed: ${missing.slice(0, 5).map(([key]) => key).join('; ')}`);
 
+  const approved = new Map(approvedSharedRows.map(row => [identity(row), row]));
+  assert.equal(approved.size, approvedSharedRows.length, 'Shared typography review contains duplicate declarations');
+  const used = new Set();
   for (const row of added) {
-    assert.match(row.file, /^src\/pages\/.*\.astro$/, `New typography declaration requires a new classification outside page-local Astro: ${row.file}`);
-    assert.match(row.value, /^var\(--type-[\w-]+\)$/, `New typography declaration must use a semantic type token: ${row.file} ${row.selector} ${row.property}: ${row.value}`);
+    if (/^src\/pages\/.*\.astro$/.test(row.file)) {
+      assert.match(row.value, /^var\(--type-[\w-]+\)$/, `New typography declaration must use a semantic type token: ${row.file} ${row.selector} ${row.property}: ${row.value}`);
+      continue;
+    }
+    const key = identity(row);
+    assert(approved.has(key), `New typography declaration requires a new classification outside page-local Astro: ${row.file} ${row.selector} ${row.property}`);
+    used.add(key);
   }
+  assert.equal(used.size, approved.size, 'Reviewed shared typography declaration missing from current source');
   return { newTokenDeclarations: added.length, newFiles: [...new Set(added.map(row => row.file))] };
 }
 
@@ -41,7 +148,7 @@ export function verifyAppendOnlyArticleTypography(baselineRows, currentRows) {
  * only the specifically enumerated UI removals/replacements may differ, and
  * all other new typography must satisfy the additive article-token rule.
  */
-export function verifyReviewedUiAndArticleTypography(historicalRows, currentRows, review) {
+export function verifyReviewedUiAndArticleTypography(historicalRows, currentRows, review, approvedSharedRows = []) {
   assert(review.removedReason?.trim(), 'Reviewed typography removals need a reason');
   const toRows = (groups, requireRoles) => Object.entries(groups).flatMap(([selector, entry]) => {
     if (requireRoles) assert(entry.role?.trim(), `New selector needs an explicit semantic role: ${selector}`);
@@ -66,7 +173,7 @@ export function verifyReviewedUiAndArticleTypography(historicalRows, currentRows
     return false;
   });
   assert.deepEqual([...toRemove].filter(([, count]) => count !== 0), [], 'Reviewed UI removal is absent from the sealed historical ledger');
-  const appendOnly = verifyAppendOnlyArticleTypography([...retained, ...added], currentRows);
+  const appendOnly = verifyAppendOnlyArticleTypography([...retained, ...added], currentRows, approvedSharedRows);
   assert.equal(currentRows.length, historicalRows.length - removed.length + added.length + appendOnly.newTokenDeclarations,
     'Every current declaration must be accounted for by the two reviewed changes');
   return { reviewedRemoved: removed.length, reviewedAdded: added.length, appendOnly };

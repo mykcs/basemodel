@@ -89,7 +89,7 @@ BaseModel 的核心不是“收集更多模型字段”，也不是“把实验�
 
 角色：让没有上下文的人建立 Base Model、SEED、OpenEVO、benchmark、更新对象和实验循环之间的关系。
 
-方法和机制对照使用 [Intelligence UI 内容与严格对照标准](../agents/current/intelligence-ui-design-standard.md)：共同字段同名、禁止互文、呈现可证伪的底层假设；具体实施和验收由该标准负责，本设计文件只保留读者目标。
+方法／机制对照的 [Intelligence UI 内容标准](../agents/current/intelligence-ui-design-standard.md) 负责同名字段、独立可读的并列说明、证据与假设；本文件仍只拥有读者目标。
 
 ### Study / Results 页面
 

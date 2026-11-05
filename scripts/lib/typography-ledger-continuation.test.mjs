@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -36,6 +36,57 @@ test('a new hardcoded type size is rejected', () => {
 });
 test('new global or shared typography requires explicit classification', () => {
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, { ...newArticle, file: 'src/styles/app.css' }]), /outside page-local Astro/);
+});
+
+test('one reviewed reader guide adds only its exact semantic typography declarations', () => {
+  const reviewed = reviewedSharedTypographyRows(reviewedReaderGuideTypography);
+  assert.equal(reviewed.length, 8);
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed], reviewed), {
+    newTokenDeclarations: 8, newFiles: [reviewedReaderGuideTypography.file],
+  });
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed.slice(1)], reviewed), /missing from current source/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed, { ...reviewed[0], value: '12px' }], reviewed), /outside page-local Astro/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed, { ...reviewed[0], file: 'src/styles/app.css' }], reviewed), /outside page-local Astro/);
+});
+
+test('Flow native disclosure permits only two exact token-backed summary declarations', () => {
+  const approved = reviewedSharedTypographyRows(reviewedFlowDisclosureTypography);
+  assert.equal(approved.length, 2);
+  const source = readFileSync(new URL('../../src/components/research/SeedOpenEvoResearchHub.astro', import.meta.url), 'utf8');
+  assert.match(source, /<details class="flow-learning-disclosure">/);
+  assert.match(source, /font-size:\s*var\(--type-body-small\);\s*font-weight:\s*var\(--type-weight-label\)/);
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved], approved), {
+    newTokenDeclarations: 2, newFiles: [reviewedFlowDisclosureTypography.file],
+  });
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, approved[0]], approved), /missing from current source/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], value: '11px' }], approved), /outside page-local Astro/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], selector: '.unrelated-summary' }], approved), /outside page-local Astro/);
+});
+
+test('later hero layout review keeps the original approved source SHA as evidence', () => {
+  const file = 'src/components/research/SeedOpenEvoMissionHero.astro';
+  const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
+  const currentSha = createHash('sha256').update(bytes).digest('hex');
+  const prior = { currentSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6' };
+  const review = { [file]: { priorReviewedSourceSha256: prior.currentSourceSha256, currentSourceSha256: currentSha, reason: 'Exact later reader-path layout review' } };
+  assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior, review), { subsequentReview: true });
+  assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior, review), /differs from its exact subsequent review/);
+  assert.throws(() => verifyReviewedSourceContinuation(file, bytes, prior, { [file]: { ...review[file], priorReviewedSourceSha256: '0'.repeat(64) } }), /preserve the original approved SHA/);
+});
+
+test('Results first-screen height review preserves historical proof and rejects unreviewed changes', () => {
+  const file = 'src/components/research/OpenEvoWebShopResultsHero.astro';
+  const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
+  const prior = { currentSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b' };
+  const currentSha = createHash('sha256').update(bytes).digest('hex');
+  assert.equal(currentSha, '1edf01e67c127800f555751cddb6ac8808f910902dd2b81afd7a8f9349806877');
+  const source = bytes.toString('utf8');
+  assert.match(source, /\.results-first-screen\s*\{\s*min-height:\s*0\s*\}/);
+  assert.match(source, /统计范围也仍然包含“没有差异”/);
+  assert.match(source, /class="progress-detail"/);
+  assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
+  assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);
+  assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
 });
 
 test('reviewed UI replacement and later page-local semantic tokens reconcile against one sealed ledger', () => {

@@ -10,6 +10,7 @@ const claudeAdapter = read('src/CLAUDE.md');
 const standard = read('docs/agents/current/audience-centered-technical-copy.md');
 const operatingPrinciples = read('docs/agents/current/project-agent-operating-principles.md');
 const missionHero = read('src/components/research/SeedOpenEvoMissionHero.astro');
+const homeResearch = read('src/pages/_bodies/home-v2.astro');
 const header = read('src/components/Header.astro');
 const methodology = read('src/pages/methodology.astro');
 const paperDetail = read('src/pages/_bodies/paper-detail.astro');
@@ -46,7 +47,8 @@ describe('human-readable product language contract', () => {
     expect(missionHero).not.toContain('mission-hero__frame research-fact-band');
     expect(missionHero).toContain("t('看目前发现 →','See current findings →')");
     expect(missionHero).toContain("href={p('/research/seed-openevo/study/results/')}");
-    expect(missionHero).toContain("t('先理解这项研究','Understand the study first')");
+    expect(missionHero).not.toContain("t('先理解这项研究','Understand the study first')");
+    expect(homeResearch).toContain("title: t('理解研究', 'Understand the study')");
     expect(missionHero).toContain("同一个 Base Model，换一种自我改进方法，真的会学得更好吗？");
     expect(missionHero).toContain("href:p('/research/seed-openevo/study/results/')");
     expect(missionHero).not.toContain("t('研究结果','Research findings')");

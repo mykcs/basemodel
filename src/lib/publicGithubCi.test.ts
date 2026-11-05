@@ -33,7 +33,7 @@ describe('public GitHub Actions PR preflight', () => {
     expect(workflow).toContain("CLOUD_FIGURE_AUDIT: '1'");
     expect(workflow).toContain("FIGURE_REQUIRE_BASELINE: '1'");
     expect(workflow).toContain("PLAYWRIGHT_WORKERS: '1'");
-    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27');
+    expect(workflow).toContain('image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f');
     expect(workflow).toContain('PLAYWRIGHT_BROWSERS_PATH: /ms-playwright');
     expect(workflow).toContain('node scripts/ci-public-plan.mjs --github-output');
     expect(workflow).toContain('node scripts/ci-ui-gate.mjs');

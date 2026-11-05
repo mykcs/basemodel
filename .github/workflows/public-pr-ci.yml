@@ -77,7 +77,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
 
       - name: Bind exact candidate identity
         env:
@@ -110,7 +110,7 @@ jobs:
       PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
     timeout-minutes: 15
     steps:
       - name: Checkout frozen candidate
@@ -123,7 +123,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -176,7 +176,7 @@ jobs:
     if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.mode == 'focused'
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
     timeout-minutes: 15
     env:
       CI_BASE_SHA: ${{ needs.plan.outputs.base }}
@@ -201,7 +201,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -231,7 +231,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-focused
+          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-focused-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ci-browser-inventory/*.json
             test-results/**
@@ -244,7 +244,7 @@ jobs:
     if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.mode == 'full'
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
     timeout-minutes: 65
     strategy:
       fail-fast: false
@@ -274,7 +274,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -288,6 +288,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Pace shared-artifact downloads across complete browser shards
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$FIGURE_BROWSER" in
+            chromium) offset=0 ;;
+            webkit) offset=4 ;;
+            *) echo 'Unsupported browser shard' >&2; exit 1 ;;
+          esac
+          test "$FIGURE_SHARD" -ge 1
+          test "$FIGURE_SHARD" -le "$FIGURE_SHARD_TOTAL"
+          sleep "$((3 * (offset + FIGURE_SHARD)))"
 
       - name: Download this run's exact-head static artifact
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
@@ -318,7 +331,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}
+          name: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ matrix.shard }}-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             figure-inventory/*.json
             test-results/**/*.png
@@ -335,7 +348,7 @@ jobs:
     if: needs.plan.result == 'success' && needs.deterministic.result == 'success' && needs.plan.outputs.mode == 'full'
     runs-on: ubuntu-24.04
     container:
-      image: mcr.microsoft.com/playwright:v1.63.0-noble@sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
     timeout-minutes: 15
     env:
       CI_BASE_SHA: ${{ needs.plan.outputs.base }}
@@ -358,7 +371,7 @@ jobs:
       - name: Setup Node 24
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           cache: npm
 
       - name: Bind exact candidate identity
@@ -388,7 +401,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-extras
+          name: basemodel-ui-pr-${{ needs.plan.outputs.pr_number }}-extras-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ci-browser-extras/*.json
             dist/__qa__/core-research-visual-signatures.json
@@ -437,14 +450,14 @@ jobs:
         if: needs.plan.outputs.mode == 'full'
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: '24'
+          node-version: '24.22.1'
           package-manager-cache: false
 
       - name: Download every allocated timed shard
         if: needs.plan.outputs.mode == 'full'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
-          pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}
+          pattern: figure-raw-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-*-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: raw-shards
           merge-multiple: false
 
@@ -462,7 +475,7 @@ jobs:
         id: evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: basemodel-figure-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ needs.plan.outputs.sha }}
+          name: basemodel-figure-${{ needs.plan.outputs.pr_number }}-${{ matrix.browser }}-${{ needs.plan.outputs.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: accepted-evidence/
           if-no-files-found: error
           retention-days: ${{ contains(needs.plan.outputs.head_ref, 'typography') && 7 || 3 }}
