@@ -154,7 +154,17 @@ for (const { label, route, root, scoreSelector, lossSelector } of [
             chart.style.removeProperty('min-width');
           });
           await figure.locator('.native-svg-reader__action').click();
-          expect((await measure()).renderedFontPx).toBeGreaterThanOrEqual(11.5);
+          // The negative control injects inline SVG widths. After removing them,
+          // WebKit can report a pre-reflow screen CTM immediately after the
+          // checkbox changes. Confirm the *real* reader reopened, then require
+          // the restored axis size to settle without relaxing the 11.5px gate.
+          await expect(figure.locator('.native-svg-reader__toggle')).toBeChecked();
+          await expect.poll(async () => (await measure()).renderedFontPx, {
+            message: 'Q17 original-size reader must restore readable physical SVG labels',
+            timeout: 3000,
+          }).toBeGreaterThanOrEqual(11.5);
+          const restored = await measure();
+          expect(restored.width).toBeGreaterThanOrEqual(normal.width - 2);
         }
       }
       const overflow = await page.evaluate(() =>
