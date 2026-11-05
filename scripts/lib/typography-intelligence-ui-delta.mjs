@@ -135,9 +135,10 @@ export const contentReorganizationProofs = {
     "reason": "Owner selected Vercel as the default manual release destination with Cloudflare Access protected as standby. Bilingual reader copy was updated without changing typography CSS declarations; previous /development/ screenshots are not current visual evidence. Exact-head browser and authenticated Production inspection are required."
   },
   "src/pages/_bodies/home-v2.astro": {
-    "currentSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
+    "currentSourceSha256": "39596f5868f4efad4ba82c071fa15e4dd23844ac3e3a649dc97a0aa00e5ad9a5",
+    "priorReviewedSourceSha256": "41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554",
     "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",
-    "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
+    "reason": "Content directories were previously reorganized and duplicate summaries removed; the reviewed 41561fc6 source is retained as the exact predecessor. In #991 a single existing prefers-reduced-motion rule adds .challenges-entry to the zero-transition selector list. This is an accessibility behavior change, not a content rewrite or a typography token/declaration migration; the older a0bf9e23 provenance and classified typography ledger remain sealed. Earlier rendered observations cannot establish this behavior. Require new exact-head Chromium/WebKit reduced-motion acceptance and separate protected Production QA."
   },
   "src/components/research/OpenEvoCapabilityMapLobby.astro": {
     "currentSourceSha256": "21584e442fe25685e6da1469de6cbb0154fbee488dc85b73162e52b25e7e4e40",
