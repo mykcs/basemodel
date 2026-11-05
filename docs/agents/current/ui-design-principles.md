@@ -318,6 +318,7 @@ The stopping condition is not “this page looks fixed.” It is: **the observed
 This file owns the **visual identity and non-drift rules**.
 
 - `human-thinking-web-expression-contract.md` owns how thought structures become web structures.
+- `intelligence-ui-design-standard.md` owns research-comparison content semantics (paired labels and cells, assumptions, evidence, falsifiability); it does not own visual tokens.
 - `research-site-presentation-contract.md` owns research-publication purpose, reader-facing depth, and the code/operations disclosure boundary.
 - `sitewide-visual-knowledge-architecture.md` owns the whole-site knowledge journey and reusable information grammar.
 - `ui-change-visual-acceptance-gate.md` owns browser-level acceptance.
