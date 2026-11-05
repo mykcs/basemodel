@@ -27,7 +27,16 @@ const { locale, labels } = Astro.props;
   // An earlier search response must never repopulate a cleared or closed dialog.
   let queryRevision = 0;
   const href = (item) => item.path ? `${localePathBase}${item.path}` : `${localePathBase}/${item.type === 'paper' ? 'papers' : item.type === 'model' ? 'models' : 'families'}/${item.id ? `${item.id}/` : ''}`;
-  const load = () => items ??= fetch(dialog.dataset.index).then((r) => r.ok ? r.json() : []).catch(() => []);
+  // Only cache a successfully validated index. A transient HTTP/network/JSON
+  // failure must not leave search permanently empty until the next page reload.
+  const load = () => items ??= fetch(dialog.dataset.index)
+    .then(async (response) => {
+      if (!response.ok) throw new Error('Search index temporarily unavailable');
+      const data = await response.json();
+      if (!Array.isArray(data)) throw new Error('Search index is not an array');
+      return data;
+    })
+    .catch(() => { items = undefined; return []; });
   const setActive = (next) => {
     const options = [...results.querySelectorAll('[role="option"]')];
     activeIndex = options.length ? (next + options.length) % options.length : 0;
