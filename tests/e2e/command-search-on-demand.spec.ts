@@ -58,17 +58,26 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
       await page.getByRole('button', { name: '搜索' }).click();
       const input = page.locator('[data-command-input]');
       const options = page.locator('.command-results a');
+      await expect(input).toHaveAttribute('type', 'search');
+      await expect(input).toHaveAttribute('aria-autocomplete', 'list');
+      await expect(input).toHaveAttribute('aria-controls', 'command-results');
+      await expect(input).toHaveAttribute('aria-expanded', 'false');
       await input.fill('qwen3-8b');
+      await expect(input).toHaveAttribute('aria-expanded', 'true');
       await expect(options.first()).toHaveAttribute('href', /models\/qwen3-8b/);
+      await expect(input).toHaveAttribute('aria-activedescendant', /search-result-/);
 
       await input.fill('');
       await expect(options).toHaveCount(0);
+      await expect(input).toHaveAttribute('aria-expanded', 'false');
       await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
       await input.press('Enter');
       await expect(page).toHaveURL(/\/$/);
       await expect(page.locator('dialog[open]')).toHaveCount(1);
 
       await page.keyboard.press('Escape');
+      await expect(input).toHaveAttribute('aria-expanded', 'false');
+      await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
       await page.getByRole('button', { name: '搜索' }).click();
       await expect(input).toHaveValue('');
       await expect(options).toHaveCount(0);
