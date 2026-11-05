@@ -410,3 +410,33 @@ for (const matrix of matrices) {
     }
   });
 }
+
+for (const matrix of matrices) {
+  test(`${matrix.name} keeps the home challenge link usable with reduced motion`, async ({ page }) => {
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const challenge = page.locator('.challenges-entry');
+    await expect(challenge).toBeVisible();
+
+    const transitionDurationMs = () => challenge.evaluate((element) => {
+      const durations = getComputedStyle(element).transitionDuration.split(',').map((token) => {
+        const value = token.trim();
+        if (value.endsWith('ms')) return Number(value.slice(0, -2));
+        if (value.endsWith('s')) return Number(value.slice(0, -1)) * 1000;
+        return Number.NaN;
+      });
+      return Math.max(...durations);
+    });
+    // Positive control: the ordinary 140ms border feedback still exists.
+    expect(await transitionDurationMs()).toBeGreaterThanOrEqual(100);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
+    // The established site.css guard caps transitions at 0.01ms !important.
+    // Chromium reports this as 1e-05s, WebKit as 0.00001s, not the string 0s.
+    await expect.poll(transitionDurationMs).toBeLessThanOrEqual(1);
+    await expect(challenge).toHaveAttribute('href', '/research/seed-openevo/recent-challenges/');
+  });
+}
