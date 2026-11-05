@@ -186,7 +186,7 @@ test('global command search finds models and papers', async ({ page }) => {
   await page.goto('models/');
 
   await page.getByRole('button', { name: '搜索' }).click();
-  const search = page.getByRole('combobox', { name: /搜索研究专题|搜索模型/ });
+  const search = page.getByRole('searchbox', { name: '搜索模型、alias、厂商、家族或论文…' });
   await search.fill('qwen3-8b');
   await expect(page.locator('.command-results a').first()).toHaveAttribute('href', /models\/qwen3-8b/);
   await page.keyboard.press('Escape');
