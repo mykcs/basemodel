@@ -410,3 +410,17 @@ for (const matrix of matrices) {
     }
   });
 }
+
+for (const matrix of matrices) {
+  test(`${matrix.name} removes the home challenge hover animation when reduced motion is requested`, async ({ page }) => {
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const challenge = page.locator('.challenges-entry');
+    await expect(challenge).toBeVisible();
+    await expect(challenge).toHaveCSS('transition-duration', '0s');
+    // The link remains usable: motion preference must not remove navigation.
+    await expect(challenge).toHaveAttribute('href', '/research/seed-openevo/recent-challenges/');
+  });
+}
