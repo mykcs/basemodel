@@ -77,6 +77,7 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
 
       await page.keyboard.press('Escape');
       await expect(input).toHaveAttribute('aria-expanded', 'false');
+      await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
       await page.getByRole('button', { name: '搜索' }).click();
       await expect(input).toHaveValue('');
       await expect(options).toHaveCount(0);
