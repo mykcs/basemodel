@@ -59,13 +59,13 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
       const input = page.locator('[data-command-input]');
       const options = page.locator('.command-results a');
       await input.fill('qwen3-8b');
-      await expect(options.first()).toHaveAttribute('href', /models\\/qwen3-8b/);
+      await expect(options.first()).toHaveAttribute('href', /models\/qwen3-8b/);
 
       await input.fill('');
       await expect(options).toHaveCount(0);
       await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
       await input.press('Enter');
-      await expect(page).toHaveURL(/\\/$/);
+      await expect(page).toHaveURL(/\/$/);
       await expect(page.locator('dialog[open]')).toHaveCount(1);
 
       await page.keyboard.press('Escape');
@@ -103,5 +103,5 @@ test('an index response arriving after search is cleared cannot resurrect result
   await expect(page.locator('[data-command-results]')).toBeHidden();
   await expect(input).not.toHaveAttribute('aria-activedescendant', /search-result-/);
   await input.press('Enter');
-  await expect(page).toHaveURL(/\\/$/);
+  await expect(page).toHaveURL(/\/$/);
 });
