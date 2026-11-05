@@ -12,7 +12,7 @@ test('English command search uses the shared deployment search index', async ({ 
   expect(response.url()).not.toContain('/en/search-index.json');
 
   await page.getByRole('button', { name: 'Search' }).click();
-  const search = page.getByRole('combobox', { name: /Search models/i });
+  const search = page.getByRole('searchbox', { name: /Search models/i });
   await search.fill('qwen3-8b');
 
   const result = page.locator('.command-results a').first();
