@@ -105,3 +105,40 @@ test('an index response arriving after search is cleared cannot resurrect result
   await input.press('Enter');
   await expect(page).toHaveURL(/\/$/);
 });
+
+test('failed search-index request is retried when search is opened again', async ({ page }) => {
+  let attempts = 0;
+  await page.route('**/search-index.json', async (route) => {
+    attempts += 1;
+    if (attempts === 1) {
+      await route.fulfill({ status: 503, contentType: 'text/plain', body: 'temporary failure' });
+    } else {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([{ type: 'model', id: 'qwen3-8b', title: 'Qwen3-8B' }]),
+      });
+    }
+  });
+  await page.goto('/');
+
+  const firstFailure = page.waitForResponse((response) =>
+    response.url().includes('/search-index.json') && response.status() === 503);
+  await page.getByRole('button', { name: '搜索' }).click();
+  await firstFailure;
+
+  // Opening the dialog itself starts the lazy index request. Don't type before
+  // closing: typing is also a legitimate retry path after a failed response.
+  // This test isolates the promised close/reopen recovery path.
+  const input = page.locator('[data-command-input]');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+
+  const recovery = page.waitForResponse((response) =>
+    response.url().includes('/search-index.json') && response.status() === 200);
+  await page.getByRole('button', { name: '搜索' }).click();
+  await recovery;
+  await input.fill('qwen3-8b');
+  await expect(page.locator('.command-results a').first()).toHaveAttribute('href', /models\/qwen3-8b/);
+  expect(attempts).toBe(2);
+});
