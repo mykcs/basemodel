@@ -18,7 +18,7 @@ test('command search loads its index only after the user opens it', async ({ pag
   expect(searchIndexRequests).toEqual([]);
 
   await page.getByRole('button', { name: '搜索' }).click();
-  const search = page.getByRole('combobox', { name: '搜索研究专题、实验、模型或论文…' });
+  const search = page.getByRole('searchbox', { name: '搜索研究专题、实验、模型或论文…' });
   await search.fill('qwen3-8b');
   await expect(page.locator('.command-results a').first()).toHaveAttribute('href', /models\/qwen3-8b/);
   await expect.poll(() => searchIndexRequests.length).toBe(1);
@@ -58,7 +58,7 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
       await page.getByRole('button', { name: '搜索' }).click();
       const input = page.locator('[data-command-input]');
       const options = page.locator('.command-results a');
-      await expect(input).toHaveAttribute('role', 'combobox');
+      await expect(input).toHaveAttribute('type', 'search');
       await expect(input).toHaveAttribute('aria-autocomplete', 'list');
       await expect(input).toHaveAttribute('aria-controls', 'command-results');
       await expect(input).toHaveAttribute('aria-expanded', 'false');
