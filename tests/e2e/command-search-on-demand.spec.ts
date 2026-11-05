@@ -127,9 +127,10 @@ test('failed search-index request is retried when search is opened again', async
   await page.getByRole('button', { name: '搜索' }).click();
   await firstFailure;
 
+  // Opening the dialog itself starts the lazy index request. Don't type before
+  // closing: typing is also a legitimate retry path after a failed response.
+  // This test isolates the promised close/reopen recovery path.
   const input = page.locator('[data-command-input]');
-  await input.fill('qwen3-8b');
-  await expect(page.locator('.command-results a')).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(page.locator('dialog[open]')).toHaveCount(0);
 
