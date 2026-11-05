@@ -67,6 +67,25 @@ describe('human-facing development workflow', () => {
     expect(row).not.toContain('Same-SHA Vercel status');
   });
 
+  it('keeps the current website-engineering overlay aligned with exact-head GitHub gates and manual protected release', () => {
+    const overlay = read('docs/agents/current/website-engineering-standard.md');
+    const activeTopology = overlay.split('## 2. BaseModel release topology')[1]?.split('## 3. Exact local browser evidence')[0];
+    const activeSpend = overlay.split('## 6. Public PR CI and Vercel spend boundary')[1]?.split('## 7. Temporary exemptions')[0];
+    const done = overlay.split('## 8. BaseModel definition of done')[1]?.split('## 9. Ownership map')[0];
+
+    expect(activeTopology).toContain('public-ci-gate');
+    expect(activeTopology).toContain('cloudflare-artifact-gate');
+    expect(activeTopology).toContain('release-provider.yml');
+    expect(activeTopology).toContain('Vercel default + plan first');
+    expect(activeTopology).toContain('Cloudflare Workers + Access');
+    expect(activeTopology).toContain('logged-in desktop/mobile');
+    expect(activeTopology).not.toContain('→ required Vercel provider acceptance');
+    expect(activeSpend).toContain('Neither spends provider deployment quota');
+    expect(activeSpend).not.toContain('persistent final-gate ref triggers');
+    expect(done).toContain('cloudflare-artifact-gate');
+    expect(done).not.toContain('exact-current-base Vercel final-gate');
+  });
+
   it('is discoverable through navigation, sitemap, locale switch, and reader contract', () => {
     expect(header).toContain("path: '/development/'");
     expect(sitemap).toContain("'/development/'");
