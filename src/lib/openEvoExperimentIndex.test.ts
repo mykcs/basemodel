@@ -181,7 +181,9 @@ describe('experiment-first Study index', () => {
     expect(allChildren.every((child) => child.role !== undefined)).toBe(true);
     expect(OPEN_EVO_EXPERIMENTS.find((item) => item.id === 'gdr-v1-1p7b')?.lineageNote?.zh)
       .toContain('同时属于上一项 3B + 1.7B 后继实验');
-    expect(OPEN_EVO_SECONDARY_ROUTES).toHaveLength(3);
+    expect(OPEN_EVO_SECONDARY_ROUTES).toHaveLength(4);
+    expect(OPEN_EVO_SECONDARY_ROUTES.find((item) => item.id === 'muon-study')?.href)
+      .toBe('/research/seed-openevo/study/muon-update/');
   });
 
   it('makes the research progression explicit in the canonical experiment owner', () => {

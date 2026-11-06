@@ -75,6 +75,7 @@ export const zhOnlyStaticPaths = [
   '/research/seed-openevo/study/results/seed-faithful-benchmark/',
   '/research/seed-openevo/study/results/openevo-benchmark-design/',
   '/research/seed-openevo/study/minimax-teacher/',
+  '/research/seed-openevo/study/muon-update/',
 ] as const;
 
 export function toEnglishPath(path: string): string {

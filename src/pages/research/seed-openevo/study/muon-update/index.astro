@@ -1,0 +1,253 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import '../../../../../styles/openevo-research-blogs.css';
+import '../../../../../styles/research-booktabs.css';
+import MathFormula from '../../../../../components/common/MathFormula.astro';
+import ExternalBrandMark from '../../../../../components/common/ExternalBrandMark';
+
+const report = '/research/seed-openevo/study/parameter-memory-results/';
+const q07 = report + '#direction';
+const q17 = report + '#checkpoint-evidence';
+const muonHistorical = 'https://github.com/mykcs/openevo-experiment/blob/4ba4ce7432689ef5eead7f54a7cc9af320dd9444/docs/evidence/ba-pre-b2-muon-ns-202609161000/README.md';
+const notion = 'https://app.notion.com/p/3fbfedee6267811c9d79c1fd0b82fb5c';
+---
+<AppLayout
+  title="Muon 思路与 OpenEVO 的参数更新方向｜独立研究篇章"
+  description="借鉴 Muon 的矩阵更新几何，研究 OpenEVO 的长期参数更新方向。区分已有 Q07/Q17 实验、历史 Newton–Schulz 工程反例与尚未执行的正式对照。"
+  locale="zh"
+>
+  <main class="evo-blog evo-article muon-article" data-evo-blog="muon" data-muon-study data-reader-page="research-blog" data-copy-review>
+    <header class="muon-hero">
+      <h1>Muon 思路与 OpenEVO 的参数更新方向</h1>
+      <p class="evo-article__lede" data-reader-purpose>此前的 WebShop 实验已经观察到：改变一轮参数更新的方向，可能直接损害 Agent 的购物成绩。Muon 给出了一种处理矩阵更新方向的办法。我们正在研究它能否用于 OpenEVO 的长期低秩参数状态；<strong>目前还没有完成 Muon-inspired OpenEVO 的正式任务能力对照。</strong></p>
+      <div class="muon-status" aria-label="研究状态与边界">
+        <span><strong>已有证据</strong> Q07、Q17 的真实干预测量</span>
+        <span><strong>工程反例</strong> Newton–Schulz 不等于 top-r SVD</span>
+        <span><strong>新机制</strong> 假设与评测方案，尚未正式运行</span>
+      </div>
+      <details class="muon-related-disclosure"><summary>关联研究与来源</summary>
+      <nav class="muon-related" aria-label="关联研究">
+        <a href="/research/seed-openevo/study/advisor-questions/#q07">L 学长十问中的研究问题 <span aria-hidden="true">↗</span></a>
+        <a href={q17}>已完成的回应实验 <span aria-hidden="true">↗</span></a>
+        <a href={notion} target="_blank" rel="noopener noreferrer">Notion 研究记录 <span aria-hidden="true">↗</span></a>
+      </nav>
+      </details>
+    </header>
+
+    <details class="muon-toc-disclosure"><summary>本篇目录</summary>
+    <nav class="evo-article__toc" aria-label="Muon 研究篇章目录">
+      <h2>目录</h2>
+      <ol>
+        <li><a href="#evidence">1 已观察到的更新方向效应</a></li>
+        <li><a href="#difference">2 Muon 与 Bounded 的机制区别</a></li>
+        <li><a href="#proposal">3 候选机制与数据流</a></li>
+        <li><a href="#protocol">4 正式对照实验设计</a></li>
+        <li><a href="#pending">5 结果占位与科学判据</a></li>
+        <li><a href="#references">来源与后续研究</a></li>
+      </ol>
+    </nav>
+    </details>
+
+    <p class="muon-reader-bridge">先分清三层证据：Q07 与 Q17 是真实的历史参数干预；Newton–Schulz 与 top-r SVD 的差异是工程反例；Muon-inspired 的 WebShop 训练与公平能力评估仍是 <strong>NOT RUN</strong>。前两类都不是新方法的成绩。下文先核对实测，再讨论低秩几何和可证伪的后续对照。</p>
+
+    <section class="evo-article__section" id="evidence">
+      <h2>1 已观察到的更新方向效应</h2>
+      <p>OpenEVO 在完成 WebShop 任务后，从经验中训练 SD-LoRA 参数更新。模型能不能完成购物任务，最终仍要看同题 Task Score 和完整成功。更新的大小、谱形状和方向可以帮助解释能力变化，但单靠这些几何数值，还不能代替行为评测。</p>
+      <div class="evo-article__tablewrap muon-tablescroll" tabindex="0" aria-label="历史参数方向证据与研究边界">
+        <table class="muon-booktabs">
+          <caption>表 1｜已有的真实实验；不同模型、保存点与干预不可混成一次对照</caption>
+          <thead><tr><th scope="col">证据</th><th scope="col">实际改变了什么</th><th scope="col">开发题观察</th><th scope="col">解释边界</th></tr></thead>
+          <tbody>
+            <tr>
+              <th scope="row">Q07 · Bounded OFF · 第156轮</th>
+              <td>反向施加那一轮的 Task Vector</td>
+              <td class="muon-tabular">Task Score −10.06 /100</td>
+              <td>八个测试轮次中通过多重比较校正的一次；局部因果证据</td>
+            </tr>
+            <tr>
+              <th scope="row">Q17 · DirectApply · R159</th>
+              <td>最新拟合组件系数置零</td>
+              <td class="muon-tabular">−0.85 /100；95% 区间 [−2.17, 0.00]</td>
+              <td>31.25% 的题动作轨迹变化；尚不能确定平均净收益</td>
+            </tr>
+            <tr>
+              <th scope="row">Q17 · DirectApply · R159</th>
+              <td>移除参数状态的最大八个奇异方向</td>
+              <td class="muon-tabular">−41.37 /100（首次种子）</td>
+              <td>支持这八个方向影响所测行为；不是 Muon 的优化结果</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>第156轮的干预属于历史 <strong>Bounded OFF</strong>，R159 则属于 <strong>DirectApply</strong>；两者的权重身份不同。R159 的压缩实验还涉及 BF16 重构影响，不能把每一分变化都归因于某个几何操作。完整统计和收据见<a href={q07}>原 Q07 回应</a>与<a href={q17}>10 月 15 日新增测量</a>。</p>
+    </section>
+
+    <section class="evo-article__section" id="difference">
+      <h2>2 Muon 与 Bounded 的机制区别</h2>
+      <p>Muon 通常把动量更新看成矩阵，并用 Newton–Schulz 迭代近似其正交化方向。原始算法主要面向适合的二维参数矩阵；它不是把任意 LoRA 因子、标量或词嵌入都做相同处理。我们的 SD-LoRA 则需要把新增低秩更新并入已有长期参数历史，在固定的容量上界内尽量保留重要的方向及其强度。</p>
+      <div class="muon-mechanism" aria-label="两种矩阵处理语义的比较">
+        <article>
+          <h3>Muon 的矩阵方向</h3>
+          <p><strong>对象：</strong>适用层的矩阵梯度与动量。</p>
+          <p><strong>处理：</strong>Newton–Schulz 近似改变奇异值分布，得到不同的更新几何。</p>
+          <p><strong>目的：</strong>探索更合适的优化更新；不是历史记忆的容量截断。</p>
+        </article>
+        <article>
+          <h3>现有 Bounded 的历史压缩</h3>
+          <p><strong>对象：</strong>已有 rank128 状态与新 rank8 更新形成的参数历史。</p>
+          <p><strong>处理：</strong>对 136×136 谱核做 SVD，保留前 128 个奇异方向和对应强度。</p>
+          <p><strong>目的：</strong>约束长期状态容量，并尽可能保留原方法的截断语义。</p>
+        </article>
+      </div>
+      <p>2026 年 9 月 16 日已有一次<strong>无需 GPU 的确定性反例</strong>：在 136×136 矩阵上，截断 SVD 的结果秩为 128，而 Muon 式 Newton–Schulz 运行 5 步或 12 步后仍是 136。额外迭代也没有把它变成 top-128 截断。因此，不能把 Muon 当作当前 Bounded SVD 的无损加速替代。<a href={muonHistorical} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={muonHistorical} />查看封存的工程测试 ↗</a></p>
+      <div class="muon-formula">
+        <p>在标准 LoRA 表示中，有效参数更新可以写为：</p>
+        <MathFormula latex={'\\Delta W=BA,\\qquad \\mathrm{rank}(\\Delta W)\\le r'} label="LoRA 有效更新与秩约束" />
+        <p>只对因子 A、B 分别做正交化，并不能自动得到有效更新 ΔW 的 Muon 几何。若要求矩阵的全部方向正交，可能与低秩预算冲突。下一步必须明确研究对象究竟是动量、有效更新，还是一个可控的低秩近似。</p>
+      </div>
+    </section>
+
+    <section class="evo-article__section" id="proposal">
+      <h2>3 候选机制与数据流</h2>
+      <p>为了能归因，我们先保留 OpenEVO 已有的任务、经验来源、参数历史写入和 Bounded 压缩边界，只在<strong>生成候选参数更新的阶段</strong>放入一个待验证的几何处理分支。这个图表示拟议接口，第三个节点尚未实现为正式训练机制。</p>
+      <figure class="evo-article__figure muon-flow-figure">
+        <div class="muon-pipeline" role="group" aria-label="任务经验进入 SD-LoRA，候选几何处理后再写回固定容量状态">
+          <div class="muon-node muon-node--world">
+            <small>输入 / 已有</small>
+            <strong>WebShop 任务与轨迹</strong>
+            <p>相同任务身份、动作规则与经验数据</p>
+          </div>
+          <svg class="muon-arrow" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 16 H28 M20 9 L28 16 L20 23"/></svg>
+          <div class="muon-node muon-node--signal">
+            <small>训练 / 已有</small>
+            <strong>SD-LoRA 候选更新</strong>
+            <p>先保留原优化目标与可追溯的更新</p>
+          </div>
+          <svg class="muon-arrow" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 16 H28 M20 9 L28 16 L20 23"/></svg>
+          <div class="muon-node muon-node--model">
+            <small>几何处理 / 待验证</small>
+            <strong>Muon-inspired 方向</strong>
+            <p>可行 rank 内的方向和尺度控制</p>
+          </div>
+          <svg class="muon-arrow" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 16 H28 M20 9 L28 16 L20 23"/></svg>
+          <div class="muon-node muon-node--memory">
+            <small>写入 / 现有边界</small>
+            <strong>Bounded 状态</strong>
+            <p>原 top-r 规则、下轮模型与行为验证</p>
+          </div>
+        </div>
+        <figcaption>图 1｜拟议的插入位置。蓝色表示任务环境，红色表示优化信号，紫色表示模型更新，绿色表示跨轮持续状态。箭头表示拟议的数据处理顺序，不构成已完成运行的证明。</figcaption>
+      </figure>
+      <p>真实实验前还要做一次有效更新与因子表示的数值检查：检查秩是否越界、奇异值尺度是否意外丢失、同一输入输出是否可重复、恢复训练时动量/优化器状态是否连续。任何一项改动若改变原 Bounded 的算法语义，就必须独立命名，不借用旧方法的封存分数。</p>
+    </section>
+
+    <section class="evo-article__section" id="protocol">
+      <h2>4 正式对照实验设计</h2>
+      <p>实验设计的关键是把“改了方向”和“只是把更新步长或动量改了”分开。下面各臂仍处于计划阶段，不能当作已训练四组模型。</p>
+      <div class="evo-article__tablewrap muon-tablescroll" tabindex="0" aria-label="Muon 方向研究的待运行对照臂">
+        <table class="muon-booktabs">
+          <caption>表 2｜候选对照臂与可归因的改动，待预注册与运行</caption>
+          <thead><tr><th scope="col">对照臂</th><th scope="col">唯一关注的变量</th><th scope="col">状态</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">A · Bounded + 原优化器</th><td>既有低秩历史写入的对照起点</td><td>历史路线已封存；新配对未运行</td></tr>
+            <tr><th scope="row">B · Muon-inspired + Bounded</th><td>保留 A 的 rank、写入规则、预算，仅研究候选方向</td><td>NOT RUN</td></tr>
+            <tr><th scope="row">C · 范数匹配控制</th><td>匹配 B 的更新幅度，但不旋转方向</td><td>NOT RUN</td></tr>
+            <tr><th scope="row">D · 动量与谱变换消融</th><td>拆分动量、几何变换和尺度因子的独立作用</td><td>NOT RUN</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="muon-evaluation">
+        <article>
+          <h3>数值资格</h3>
+          <p>先在 CPU 上检查有效秩、正交误差、方向余弦、奇异值与复现性，并保留输入矩阵与程序身份。旧 Newton–Schulz 反例作为必须通过的语义回归测试。</p>
+        </article>
+        <article>
+          <h3>开发集对照</h3>
+          <p>只有在当前科研与 GPU 权限有效时，才冻结共同起点、任务、seed、prompt、训练预算、rank 和采样协议，比较逐题 Task Score /100、完整成功、耗时与状态体积。</p>
+        </article>
+        <article>
+          <h3>独立确认</h3>
+          <p>在预先锁定的新任务与随机种子上重复，区分优化器额外开销和任务收益；final 面板须遵守既定访问预算，不能为选方法反复使用。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="evo-article__section" id="pending">
+      <h2>5 结果占位与科学判据</h2>
+      <p>当前尚未获得 Muon-inspired OpenEVO 的正式 WebShop 曲线、同题终评、可归因的能力提升或工程加速。以下保留后续实验要补齐的结果位置；“待测”代表没有数据，不能画成零分。</p>
+      <div class="evo-article__tablewrap muon-tablescroll" tabindex="0" aria-label="尚未运行的正式实验结果占位">
+        <table class="muon-booktabs">
+          <caption>表 3｜同任务、同起点、同预算的主结果（待运行）</caption>
+          <thead><tr><th scope="col">方法</th><th scope="col">Task Score /100</th><th scope="col">完整成功 / n</th><th scope="col">累计训练成本</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">新配对 Bounded</th><td>NOT RUN</td><td>NOT RUN</td><td>NOT RUN</td></tr>
+            <tr><th scope="row">Muon-inspired + Bounded</th><td>NOT RUN</td><td>NOT RUN</td><td>NOT RUN</td></tr>
+            <tr><th scope="row">范数匹配控制</th><td>NOT RUN</td><td>NOT RUN</td><td>NOT RUN</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>如果新方法在相同任务上掉分、相对范数匹配控制没有稳定收益、压缩破坏有效 rank 或额外计算抵消 Bounded 的速度优势，都应及时否定或收窄该假设。只有合法、实际封存且可追溯的实验才能填进上表。</p>
+    </section>
+
+    <section class="evo-article__section evo-article__sources" id="references">
+      <h2>来源与后续研究</h2>
+      <p>此研究独立于现有三篇 OpenEVO 文章及另一条 OSA 记忆探索线。原论文和开源代码提供方法背景；网站上可追溯的 Q07/Q17 提供我们自己的观察。两类证据不会相互替代。</p>
+      <ol>
+        <li><a href="https://kellerjordan.github.io/posts/muon/" target="_blank" rel="noopener noreferrer">Keller Jordan：Muon 原始方法说明 ↗</a>及<a href="https://github.com/KellerJordan/Muon" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/KellerJordan/Muon" />参考实现 ↗</a>。</li>
+        <li><a href="https://arxiv.org/abs/2502.16982" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2502.16982" />Muon is Scalable for LLM Training ↗</a>：其预训练效率结果不可直接当作我们的 WebShop 效率。</li>
+        <li><a href="https://arxiv.org/abs/2608.14492" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://arxiv.org/abs/2608.14492" />Approximate Muon with Low-Rank Adapters ↗</a>：相关的低秩几何研究，需要单独核查比较协议。</li>
+        <li><a href={muonHistorical} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={muonHistorical} />OpenEVO｜2026-09-16 Newton–Schulz 与 rank128 截断的工程反例 ↗</a>（私有仓库，需授权）。</li>
+        <li><a href={q07}>L 学长十问 Q07 的真实参数方向干预</a>与<a href={q17}>Q17 10 月 15 日新测量</a>。</li>
+        <li><a href={notion} target="_blank" rel="noopener noreferrer">Notion｜Muon × OpenEVO 独立研究记录 ↗</a>。</li>
+      </ol>
+    </section>
+  </main>
+</AppLayout>
+
+<style>
+.muon-article{max-width:1090px}
+.muon-hero h1{max-width:24ch}
+.muon-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:1.3rem 0 1rem;border-top:1px solid var(--paper-line);border-bottom:1px solid var(--paper-line)}
+.muon-status span{display:block;min-width:0;padding:.72rem .75rem;font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-muted)}
+.muon-status span:first-child{padding-left:0}
+.muon-status span+span{border-left:1px solid var(--paper-line)}
+.muon-status strong{display:block;font-size:var(--type-meta);font-weight:var(--type-weight-strong);color:var(--paper-ink);margin-bottom:.18rem}
+.muon-related{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.5rem;margin:1rem 0 0;font-size:var(--type-body-small)}
+.muon-related a{display:inline-block;text-decoration:none;border-bottom:1px solid var(--paper-line);padding:.25rem 0}
+.muon-related a:hover{text-decoration:underline}
+.muon-article .muon-related-disclosure,.muon-article .muon-toc-disclosure{margin:.8rem 0 0}
+.muon-article .muon-related-disclosure>summary,.muon-article .muon-toc-disclosure>summary{cursor:pointer;font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-ink);text-decoration:underline;text-underline-offset:.2em}
+.muon-reader-bridge{margin:1.1rem 0 1.7rem;padding:.85rem 1rem;border-left:3px solid var(--paper-line);background:var(--paper);font-size:var(--type-body-small);line-height:var(--type-leading-body);color:var(--paper-muted)}
+.muon-article .muon-booktabs{width:100%;min-width:700px}
+.muon-booktabs th:first-child{width:26%}
+.muon-booktabs td{line-height:var(--type-leading-caption)}
+.muon-tabular{font-variant-numeric:tabular-nums}
+.muon-mechanism{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin:1.5rem 0}
+.muon-mechanism article{min-width:0;border:1px solid var(--paper-line);border-top:3px solid #736c8b;padding:1rem;background:var(--paper)}
+.muon-mechanism article:nth-child(2){border-top-color:#537f68}
+.muon-mechanism h3{margin:.1rem 0 .6rem;font-size:var(--type-article-subsection)}
+.muon-mechanism p{margin:.5rem 0;font-size:var(--type-body-small);line-height:var(--type-leading-body)}
+.muon-formula{margin:1.2rem 0;padding:1rem 1.25rem;border-left:3px solid var(--paper-line);background:color-mix(in srgb,var(--paper) 93%,#7f9a8a)}
+.muon-formula>p{margin:.5rem 0;font-size:var(--type-body-small)}
+.muon-flow-figure{padding:1.1rem 0 0}
+.muon-pipeline{display:grid;grid-template-columns:minmax(0,1fr) 1.5rem minmax(0,1fr) 1.5rem minmax(0,1fr) 1.5rem minmax(0,1fr);gap:.3rem;align-items:stretch;margin:0 0 .8rem}
+.muon-node{min-width:0;min-height:12rem;border:1px solid var(--paper-line);border-top:3px solid var(--muon-accent);background:var(--paper);padding:1.05rem .78rem;display:flex;flex-direction:column;gap:.3rem}
+.muon-node--world{--muon-accent:#4e769c}
+.muon-node--signal{--muon-accent:#aa685e}
+.muon-node--model{--muon-accent:#8b6a9d}
+.muon-node--memory{--muon-accent:#58836a}
+.muon-node small{display:block;font-size:var(--type-meta);line-height:var(--type-leading-caption);color:var(--paper-muted);font-weight:var(--type-weight-label)}
+.muon-node strong{display:block;font-size:var(--type-body-small);line-height:var(--type-leading-heading);color:var(--paper-ink)}
+.muon-node p{font-size:var(--type-body-small);line-height:var(--type-leading-caption);margin:.2rem 0 0;color:var(--paper-muted)}
+.muon-arrow{align-self:center;justify-self:center;width:100%;height:2rem;overflow:visible;stroke:var(--paper-muted);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.muon-article .muon-flow-figure figcaption{font-size:var(--type-caption)}
+.muon-evaluation{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin:1.4rem 0}
+.muon-evaluation article{min-width:0;border-top:2px solid var(--paper-line);padding:.7rem 0 0}
+.muon-evaluation h3{font-size:var(--type-article-subsection);line-height:var(--type-leading-heading);margin:0 0 .4rem}
+.muon-evaluation p{font-size:var(--type-body-small);line-height:var(--type-leading-body);margin:0;color:var(--paper-muted)}
+.muon-article .evo-article__tablewrap{max-width:100%;width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.muon-article .evo-article__sources li{overflow-wrap:anywhere}
+.muon-article a:focus-visible{outline:2px solid var(--paper-ink);outline-offset:3px}
+@media(max-width:860px){.muon-pipeline{grid-template-columns:minmax(0,1fr);gap:.25rem}.muon-node{min-height:0;padding:.8rem .85rem}.muon-arrow{width:2rem;height:1.65rem;transform:rotate(90deg)}.muon-node p{font-size:var(--type-body-small)}}
+@media(max-width:720px){.muon-status{grid-template-columns:1fr}.muon-status span{padding:.48rem 0}.muon-status span+span{border-left:0;border-top:1px solid var(--paper-line)}.muon-status strong{display:inline;margin-right:.6rem}.muon-mechanism,.muon-evaluation{grid-template-columns:1fr}.muon-evaluation{gap:.8rem}.muon-related{display:grid;gap:.2rem}.muon-booktabs{font-size:var(--type-table)}}
+</style>
