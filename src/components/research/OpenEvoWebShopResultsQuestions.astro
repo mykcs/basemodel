@@ -240,18 +240,18 @@ const transferRows = [
       <p>{t('这一段时间主要拆开了两个会把结论带偏的问题：评测程序有没有正确读懂模型动作，以及实际使用的 128 个任务是否真的与 SEED 公开代码生成的任务一致。', 'Most of this time went into separating two issues that could otherwise be mistaken for method differences: whether the evaluator correctly understood the model action, and whether the 128 tasks actually matched what the released SEED code generates.')}</p>
     </div>
     <div class="audit-time__grid">
-      <article><strong>{t('① 动作读取', '① Action reading')}</strong><p>{t('SEED 规定动作要放在 <action>...</action> 里面，我们给基础模型的提示也要求这个格式；但模型的原始输出有时会写成 [action]...。第一次正式评测前，我们没有拿真实模型输出检查“评测程序能不能正确读懂”，所以必须先修测量，再讨论模型能力。', 'SEED requires actions inside <action>...</action>, and the prompt sent to the base model asks for the same format; yet raw model output can sometimes use [action].... Before the first formal evaluation, we did not test real model outputs to confirm that the evaluator could read them correctly, so the measurement had to be repaired before interpreting model ability.')}</p></article>
-      <article><strong>{t('② 128 个任务的身份', '② Identity of the 128 tasks')}</strong><p>{t('SEED 的公开代码可以重建一批具体的 128 个验证任务，我们已经把这批任务固定成可复查的清单。但论文没有公开 89.7 / 78.1% 当时具体使用的是哪一次验证任务、哪一个模型保存点，因此仍不能把这批题冒充成论文最终 128 题。', 'The released SEED code can rebuild one concrete set of 128 validation tasks, and we have frozen that set into a reviewable list. The paper does not publish which validation run or model checkpoint produced 89.7 / 78.1%, so this panel still cannot be relabelled as the paper-final 128 tasks.')}</p></article>
+      <article aria-labelledby="results-audit-action-title"><strong id="results-audit-action-title">{t('① 动作读取', '① Action reading')}</strong><p>{t('SEED 规定动作要放在 <action>...</action> 里面，我们给基础模型的提示也要求这个格式；但模型的原始输出有时会写成 [action]...。第一次正式评测前，我们没有拿真实模型输出检查“评测程序能不能正确读懂”，所以必须先修测量，再讨论模型能力。', 'SEED requires actions inside <action>...</action>, and the prompt sent to the base model asks for the same format; yet raw model output can sometimes use [action].... Before the first formal evaluation, we did not test real model outputs to confirm that the evaluator could read them correctly, so the measurement had to be repaired before interpreting model ability.')}</p></article>
+      <article aria-labelledby="results-audit-identity-title"><strong id="results-audit-identity-title">{t('② 128 个任务的身份', '② Identity of the 128 tasks')}</strong><p>{t('SEED 的公开代码可以重建一批具体的 128 个验证任务，我们已经把这批任务固定成可复查的清单。但论文没有公开 89.7 / 78.1% 当时具体使用的是哪一次验证任务、哪一个模型保存点，因此仍不能把这批题冒充成论文最终 128 题。', 'The released SEED code can rebuild one concrete set of 128 validation tasks, and we have frozen that set into a reviewable list. The paper does not publish which validation run or model checkpoint produced 89.7 / 78.1%, so this panel still cannot be relabelled as the paper-final 128 tasks.')}</p></article>
     </div>
   </aside>
 
   <div class="question-list">
     {questions.map((item) => (
-      <article class:list={['question-card', `tone-${item.tone}`]} id={item.id}>
+      <article class:list={['question-card', `tone-${item.tone}`]} id={item.id} aria-labelledby={`results-question-title-${item.id}`}>
         <div class="question-number">{item.index}</div>
         <div class="question-copy">
           <div class="question-meta"><span class="status-badge"><i aria-hidden="true"></i>{item.status}</span></div>
-          <h3>{item.question}</h3>
+          <h3 id={`results-question-title-${item.id}`}>{item.question}</h3>
           <p class="conclusion">{item.conclusion}</p>
           <p class="supporting-context">{item.boundary}</p>
 

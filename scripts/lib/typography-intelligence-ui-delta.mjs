@@ -154,6 +154,11 @@ export const contentReorganizationProofs = {
     "priorSourceSha256": "3de89eb8b19d7194438899e0e6020ddc888b1fd088868a6aea8e7168f0049aac",
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },
+  "src/components/research/OpenEvoWebShopResultsQuestions.astro": {
+    "currentSourceSha256": "1cffafb2a4e02ede1461b3ea88056215e8de6e04e767a7a90c9dd6766993879a",
+    "priorSourceSha256": "b0788bddb616822e5e40e9dc8667b31ef51d8191bc5a668f64c27a7af1bc851e",
+    "reason": "2026-11-07 exact-source accessibility-only continuation from the current main Results component. The two existing measurement-audit articles are named by their visible strong labels and the six Q1-Q6 question articles by their unchanged visible H3 headings using unique IDs and aria-labelledby. Q7 stays a separate named section. No rendered research copy, experiment data, links, typography declarations, design tokens, or component structure changed. Historical visual observations are not adopted for this candidate; current exact-head Chromium and WebKit 440x956/1440x1000 both-theme keyboard and no-overflow checks plus independent screenshot review remain required before merge, and authenticated Production review is separate."
+  },
   "src/pages/research/seed-openevo/study/results/[note].astro": {
     "currentSourceSha256": "d6633cdd26a1a81d3b97acd328e50ae76996332ff1f6ab9e2ec7a473f6ba302d",
     "priorSourceSha256": "dbbffb949d767a511308e5e89e997f6a7b334406e9cd94703c4491afc0dc9a06",

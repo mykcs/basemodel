@@ -47,6 +47,15 @@ test('invalid canonical list fails closed', () => {
 });
 
 
+test('Results question-landmark E2E cannot silently disappear from the browser gates', () => {
+  const scripts = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).scripts;
+  const required = 'tests/e2e/results-question-landmarks.spec.ts';
+  for (const script of ['test:ui', 'test:ui:all']) {
+    const registered = scripts[script].split(/\s+/).filter(arg => arg === required);
+    assert.equal(registered.length, 1, `${script} must run the Results landmark regression exactly once`);
+  }
+});
+
 test('native CI shards discover all canonical and imported tests exactly once', () => {
   const canonical = listCanonicalTests();
   const actual = [];
