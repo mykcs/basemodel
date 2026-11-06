@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const narrativePages = [
   { path: '/research/seed-openevo/flow/seed/', first: '一次任务的轨迹与反馈怎样产生' },
@@ -395,16 +396,19 @@ const flowLandmarks = [
   { id: 'evidence', zh: '每轮都要留下可重建的证据', en: 'Every run must leave reconstructable evidence' },
 ] as const;
 
-for (const locale of ['zh', 'en'] as const) for (const viewport of [
+// Astro currently builds only the zh locale: astro.config.mjs has locales: ['zh'].
+// Keep rendered landmark checks on a real published route, not a fabricated /en/
+// path (which correctly returns HTTP 404). English labels remain a source-level
+// translation contract until an English route is explicitly restored.
+for (const viewport of [
   { width: 440, height: 956 },
   { width: 1440, height: 1000 },
 ]) for (const theme of ['light', 'dark'] as const) {
-  test(`Flow's four reading sections expose named regions: ${locale} ${viewport.width}px ${theme}`, async ({ page }, testInfo) => {
+  test(`Flow's four reading sections expose named regions: zh ${viewport.width}px ${theme}`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
-    const path = locale === 'zh' ? '/research/seed-openevo/flow/' : '/en/research/seed-openevo/flow/';
-    const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
+    const response = await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBe(200);
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
@@ -415,7 +419,7 @@ for (const locale of ['zh', 'en'] as const) for (const viewport of [
     await expect(disclosure).toHaveAttribute('open', '');
 
     for (const landmark of flowLandmarks) {
-      const name = landmark[locale];
+      const name = landmark.zh;
       const section = page.getByRole('region', { name, exact: true });
       await expect(section, `${landmark.id} should be a uniquely named section landmark`).toHaveCount(1);
       await expect(section).toHaveAttribute('id', landmark.id);
@@ -426,3 +430,13 @@ for (const locale of ['zh', 'en'] as const) for (const viewport of [
     await testInfo.attach('flow-landmarks-viewport', { body: await page.screenshot(), contentType: 'image/png' });
   });
 }
+
+test('Flow archived English section translations retain the same four heading labels', () => {
+  // No live English route exists; this asserts source integrity, not English
+  // browser accessibility or a published locale.
+  const source = readFileSync(new URL('../../src/components/research/SeedOpenEvoResearchHub.astro', import.meta.url), 'utf8');
+  for (const landmark of flowLandmarks) {
+    expect(source).toContain(landmark.en);
+    expect(source).toContain(landmark.zh);
+  }
+});
