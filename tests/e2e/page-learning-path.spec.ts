@@ -256,6 +256,13 @@ for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, hei
       }
       expect(new Set(names).size).toBe(3);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+      // Every homepage evidence CTA must lead to a real in-page target, not a stale hash.
+      // The third finding is about the next fair method comparison on Results.
+      const methodComparison = rows.nth(2).getByRole('link');
+      await expect(methodComparison).toHaveAttribute('href', '/research/seed-openevo/study/results/#next-steps');
+      await methodComparison.click();
+      await expect(page).toHaveURL(/\/research\/seed-openevo\/study\/results\/#next-steps$/);
+      await expect(page.locator('#next-steps')).toHaveCount(1);
     });
   }
 }
