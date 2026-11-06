@@ -1,0 +1,815 @@
+{
+  "kind": "source_inventory_not_rendered_route_acceptance",
+  "baseline": "360eabb92e5feb9ccef6ae7785332f73f7620ee0",
+  "source_files": 84,
+  "entries": [
+    {
+      "path": "src/pages/404.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/compare.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/data-status.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/families-index.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/home-v2.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/landscape.astro",
+      "candidate_owners": [
+        "A02",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/model-detail.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/models-index.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/not-found.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/paper-detail.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/_bodies/papers-index.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/compare.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/data-status.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/development.astro",
+      "candidate_owners": [
+        "A01",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/families/index.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/guide.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/guide/today.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/index.astro",
+      "candidate_owners": [
+        "B01",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/lab.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/landscape/index.astro",
+      "candidate_owners": [
+        "A02",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/landscape/models.json.ts",
+      "candidate_owners": [
+        "A02",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/methodology.astro",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/model-data/[id].json.ts",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/model-data/catalog.json.ts",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/models/[id].astro",
+      "candidate_owners": [
+        "X783",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/models/index.astro",
+      "candidate_owners": [
+        "X783",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/papers/[id].astro",
+      "candidate_owners": [
+        "X783",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/papers/index.astro",
+      "candidate_owners": [
+        "X783",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/alfworld.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/base-model/index.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/benchmarks.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/index.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/loops.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/openevo.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/sd-lora/index.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/seed.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/server.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/flow/webshop.astro",
+      "candidate_owners": [
+        "C03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/briefing/index.astro",
+      "candidate_owners": [
+        "B01",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/briefing/technical-notes/index.astro",
+      "candidate_owners": [
+        "B01",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/archive/index.astro",
+      "candidate_owners": [
+        "B03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/first-run/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/gdr-directapply/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/mechanism-1-0/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/openevo-2-0/report/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-history/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-present-function/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/sd-lora-scaling/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage1-evolution/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage1-previous/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage2-256-window/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/stage2-ceiling/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/text-memory/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/design/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/index.astro",
+      "candidate_owners": [
+        "B01",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/minimax-teacher/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/3b-minimax-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/3b-self-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/7b-minimax-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/7b-self-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/[note].astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/results/four-arm-analysis/index.astro",
+      "candidate_owners": [
+        "B02",
+        "X805",
+        "X812",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/research/seed-openevo/study/run.astro",
+      "candidate_owners": [
+        "B03",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/robots.txt.ts",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/search-index.json.ts",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/sitemap.xml.ts",
+      "candidate_owners": [
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    },
+    {
+      "path": "src/pages/workspace/index.astro",
+      "candidate_owners": [
+        "X783",
+        "X806"
+      ],
+      "classification_status": "candidate_verify_route_imports_and_redirects",
+      "acceptance": "not_run"
+    }
+  ]
+}
