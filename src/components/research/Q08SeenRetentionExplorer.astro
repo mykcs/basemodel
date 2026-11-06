@@ -1,0 +1,231 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import {
+  Q08_SEEN_SOURCES,
+  Q08_SEEN_TASKS,
+  type Q08SeenTask,
+} from '../../data/research-evidence/advisor-q08-seen-retention-20261003';
+
+const example = Q08_SEEN_TASKS.find(task => task.taskId.startsWith('seen:6120:'));
+if (!example || Q08_SEEN_TASKS.length !== 96) throw new Error('Q08 seen-task projection missing its fixed example or cohort');
+const numericId = (item: Q08SeenTask) => item.taskId.split(':')[1];
+const score = (n: number) => String(Number((n * 100).toFixed(2)));
+const delta = (item: Q08SeenTask) => item.score160 - item.score80;
+const movement = (item: Q08SeenTask) => Math.abs(delta(item)) < 1e-10 ? 'flat' : delta(item) > 0 ? 'up' : 'down';
+const deltaText = (item: Q08SeenTask) => {
+  const points = Number((delta(item) * 100).toFixed(2));
+  return `${points > 0 ? '+' : points < 0 ? '−' : ''}${Math.abs(points)} 评分点`;
+};
+const statusText = (item: Q08SeenTask) => ({
+  NO_EFFECTIVE_EXPOSURE: '没有该题参与有效参数更新的证据',
+  PARTIAL_MISSING_FIRST_POST_CHECKPOINT: '缺少第一次计划的训练后测评',
+  RETENTION_MEASURED_ACQUISITION_UNVERIFIED: '可作后期局部比较，但缺少学前基线',
+})[item.status];
+const cohortLabel = (item: Q08SeenTask) => ({EARLY_SEEN:'早期', MID_SEEN:'中期', LATE_SEEN:'后期'})[item.cohort];
+const explanation = (item: Q08SeenTask) => item.status === 'NO_EFFECTIVE_EXPOSURE'
+  ? '现有记录没有证明这道题进入被采纳的参数更新，不能说这轮训练教会了它。'
+  : item.status === 'PARTIAL_MISSING_FIRST_POST_CHECKPOINT'
+    ? `第 ${item.firstEffectiveUpdate} 轮确有该题的有效参数更新，但原计划的 R${item.cohort === 'EARLY_SEEN' ? 40 : 120} 学后测评缺失。`
+    : '这道题可比较 R80 与 R160 的后期成绩，但没有训练前的可比成绩，无法证明它是通过本次训练学会的。';
+const groups = [
+  {id:'EARLY_SEEN',name:'早期',range:'训练前段遇到的 32 道题'},
+  {id:'MID_SEEN',name:'中期',range:'训练中段遇到的 32 道题'},
+  {id:'LATE_SEEN',name:'后期',range:'训练后段遇到的 32 道题'},
+].map(group => ({...group,items:Q08_SEEN_TASKS.map((task,index)=>({...task,index})).filter(task=>task.cohort===group.id)}));
+const counts = {
+  up:Q08_SEEN_TASKS.filter(t=>movement(t)==='up').length,
+  flat:Q08_SEEN_TASKS.filter(t=>movement(t)==='flat').length,
+  down:Q08_SEEN_TASKS.filter(t=>movement(t)==='down').length,
+  none:Q08_SEEN_TASKS.filter(t=>t.status==='NO_EFFECTIVE_EXPOSURE').length,
+  first:Q08_SEEN_TASKS.filter(t=>t.status==='PARTIAL_MISSING_FIRST_POST_CHECKPOINT').length,
+  partial:Q08_SEEN_TASKS.filter(t=>t.status==='RETENTION_MEASURED_ACQUISITION_UNVERIFIED').length,
+};
+const falling = Q08_SEEN_TASKS.filter(t=>movement(t)==='down');
+const fallingGaps = {
+  none:falling.filter(t=>t.status==='NO_EFFECTIVE_EXPOSURE').length,
+  first:falling.filter(t=>t.status==='PARTIAL_MISSING_FIRST_POST_CHECKPOINT').length,
+  partial:falling.filter(t=>t.status==='RETENTION_MEASURED_ACQUISITION_UNVERIFIED').length,
+};
+if (counts.up !== 42 || counts.flat !== 36 || counts.down !== 18 || counts.none !== 49 || counts.first !== 31 || counts.partial !== 16 || groups.some(g=>g.items.length!==32)) {
+  throw new Error('Q08 public projection no longer matches the sealed 96-task evidence');
+}
+if (fallingGaps.none!==9 || fallingGaps.first!==7 || fallingGaps.partial!==2) throw new Error('Q08 falling-task evidence categories changed');
+---
+
+<section class="q08-retention" data-q08-retention data-view="both" aria-labelledby="q08-retention-title">
+  <div class="q08-retention__hero">
+    <h4 id="q08-retention-title">Agent 学过的购物题，后来会忘吗？</h4>
+    <p class="q08-retention__answer">目前还不能判断。<span>旧实验缺少关键的学前和学后记录；虽然测到部分旧题后来得分下降，却不能证明它们“先学会、再忘记”。</span></p>
+    <p class="q08-retention__hero-note">已测成绩是真实的；这里欠缺的是证明学习与遗忘发生顺序的关键证据。</p>
+  </div>
+
+  <section class="q08-retention__story" aria-labelledby="q08-story-title">
+    <h5 id="q08-story-title">为什么掉分，还不能算遗忘？</h5>
+    <p>把 Agent 想成练习购物题的学生。要证明它学会后又忘了，最好知道<strong>学前、刚学后、过一段时间</strong>三个时刻的表现。</p>
+    <ol class="q08-retention__exams" aria-label="仅用于解释的三次假设考试">
+      <li><span>训练前</span><strong>?</strong><small>原本会吗？</small></li>
+      <li><span>刚训练后</span><strong>100</strong><small>评分点</small></li>
+      <li><span>过一段时间</span><strong>0</strong><small>评分点</small></li>
+    </ol>
+    <p class="q08-retention__caption">这里的 100 → 0 只是教学假设，不是新增实验数据。如果不知道学前成绩，就不能证明这次训练使它学会。</p>
+
+    <div class="q08-retention__lenses">
+      <div>
+        <h6>成绩怎么变了？</h6>
+        <p>固定同一道题，比较模型 R80 和 R160 的得分。</p>
+        <ul class="q08-retention__legend"><li><i class="q08-retention__swatch q08-retention__swatch--up"></i>蓝色 · 得分上升</li><li><i class="q08-retention__swatch q08-retention__swatch--flat"></i>灰色 · 得分不变</li><li><i class="q08-retention__swatch q08-retention__swatch--down"></i>橙色 · 得分下降</li></ul>
+      </div>
+      <div>
+        <h6>能证明遗忘吗？</h6>
+        <p>检查这道题有没有留下证明“学会后又忘”的必要记录。</p>
+        <ul class="q08-retention__legend"><li><i class="q08-retention__swatch q08-retention__swatch--none"></i>灰色 · 缺有效更新证据</li><li><i class="q08-retention__swatch q08-retention__swatch--first"></i>黄色 · 缺首次学后测评</li><li><i class="q08-retention__swatch q08-retention__swatch--partial"></i>蓝灰色 · 只能局部比较</li></ul>
+      </div>
+    </div>
+
+    <div class="q08-retention__example" data-q08-real-example>
+      <div><span class="q08-retention__eyebrow">真实例子 · {cohortLabel(example)}任务</span><h6>购物题 #{numericId(example)}</h6><p>这道题在训练第 <strong>{example.firstEffectiveUpdate}</strong> 轮参与被采纳的参数更新，但原计划的第 40 轮学后测评没有保存。</p></div>
+      <dl><div><dt>能证明遗忘吗？</dt><dd>缺首次学后测评</dd></div><div><dt>R80 → R160 得分</dt><dd><strong>{deltaText(example)}</strong><span>{score(example.score80)} → {score(example.score160)} 分</span></dd></div></dl>
+    </div>
+    <p>我们知道 #{numericId(example)} 后来得分下降了；由于缺少刚学完时的测评，不能完成原计划的遗忘判断。</p>
+
+    <div class="q08-retention__totals" aria-label="96 道旧题的第 80 至 160 轮描述性得分变化">
+      <div><strong>{counts.up}</strong><span>道得分上升</span></div><div><strong>{counts.flat}</strong><span>道得分不变</span></div><div><strong>{counts.down}</strong><span>道得分下降</span></div>
+    </div>
+    <p class="q08-retention__bottom-line"><strong>18 道题掉分，并不等于证明 18 道题发生了遗忘。</strong>这 18 道题中，{fallingGaps.none} 道缺有效更新证据、{fallingGaps.first} 道缺第一次学后测评、{fallingGaps.partial} 道只能做局部比较。下方地图另显示全部 96 道题的证据状态。</p>
+  </section>
+
+  <section class="q08-retention__explorer" aria-labelledby="q08-map-title">
+    <div class="q08-retention__map-head"><div><h5 id="q08-map-title">同一批题，两种不同的问题</h5><p>普通 OpenEVO 的已有训练记录 · 96 道固定购物题。上下两层中，每个方块永远对应同一道题。</p></div>
+      <div class="q08-retention__switch" role="group" aria-label="选择购物题地图的显示图层"><button type="button" data-q08-view="evidence" aria-pressed="false">能证明遗忘吗？</button><button type="button" data-q08-view="score" aria-pressed="false">得分变化</button><button type="button" data-q08-view="both" aria-pressed="true">两层对照</button></div>
+    </div>
+    <div class="q08-retention__groups">
+      {groups.map(group => <div class="q08-retention__group"><h6>{group.name} · 32 道题</h6><p>{group.range}</p>
+        <div class="q08-retention__layer q08-retention__layer--evidence"><span>上层 · 证据状态</span><div class="q08-retention__cells" role="group" aria-label={`${group.name} 32 道题的遗忘证据状态`}>
+          {group.items.map((task) => <button type="button" class:list={['q08-retention__cell','q08-retention__cell--'+(task.status==='NO_EFFECTIVE_EXPOSURE'?'none':task.status==='PARTIAL_MISSING_FIRST_POST_CHECKPOINT'?'first':'partial')]} data-q08-cell data-q08-kind="evidence" data-q08-index={task.index} aria-pressed={task.taskId===example.taskId?'true':'false'} aria-label={`${group.name}第${task.index%32+1}题，购物题${numericId(task)}，${statusText(task)}`} title={`购物题 #${numericId(task)} · ${statusText(task)}`} />)}
+        </div></div>
+        <div class="q08-retention__layer q08-retention__layer--score"><span>下层 · 得分变化</span><div class="q08-retention__cells" role="group" aria-label={`${group.name} 32 道题的 R80 到 R160 得分变化`}>
+          {group.items.map((task) => <button type="button" class:list={['q08-retention__cell','q08-retention__cell--'+movement(task)]} data-q08-cell data-q08-kind="score" data-q08-index={task.index} aria-pressed={task.taskId===example.taskId?'true':'false'} aria-label={`${group.name}第${task.index%32+1}题，购物题${numericId(task)}，${score(task.score80)}到${score(task.score160)}分，${deltaText(task)}`} title={`购物题 #${numericId(task)} · ${deltaText(task)}`} />)}
+        </div></div>
+      </div>)}
+    </div>
+    <div class="q08-retention__map-key"><p><strong>证据：</strong><span class="q08-retention__key-item"><i class="q08-retention__swatch--none"></i>{counts.none} 无有效更新</span><span class="q08-retention__key-item"><i class="q08-retention__swatch--first"></i>{counts.first} 缺首次测评</span><span class="q08-retention__key-item"><i class="q08-retention__swatch--partial"></i>{counts.partial} 只能局部比较</span></p><p><strong>得分：</strong><span class="q08-retention__key-item"><i class="q08-retention__swatch--up"></i>{counts.up} 上升</span><span class="q08-retention__key-item"><i class="q08-retention__swatch--flat"></i>{counts.flat} 不变</span><span class="q08-retention__key-item"><i class="q08-retention__swatch--down"></i>{counts.down} 下降</span></p></div>
+
+    <div class="q08-retention__picked" aria-live="polite" aria-atomic="true"><div><span class="q08-retention__eyebrow">选中同一道题 · <span data-q08-picked-cohort>{cohortLabel(example)}</span></span><h6>购物题 #<span data-q08-picked-id>{numericId(example)}</span></h6><p data-q08-picked-description>{explanation(example)}</p></div><dl><div><dt>能证明遗忘吗？</dt><dd data-q08-picked-status>{statusText(example)}</dd></div><div><dt>R80 → R160 得分</dt><dd><strong data-q08-picked-delta>{deltaText(example)}</strong><span><span data-q08-picked-score80>{score(example.score80)}</span> → <span data-q08-picked-score160>{score(example.score160)}</span> 评分点</span></dd></div></dl></div>
+    <p class="q08-retention__boundary">这里 R80／R160 是两个固定模型保存点；对晚期题，R80 甚至可能早于该题的有效训练。96 道题的蓝／灰／橙仅表示<strong>描述性得分变化</strong>，不是统一的遗忘检验；正式 R80→R160 后期保持诊断只有中期组中的 16 道题，且缺少证明最初学会的学前基线。</p>
+    <p class="q08-retention__source">数据截至 <time datetime={Q08_SEEN_SOURCES.asOf}>{Q08_SEEN_SOURCES.asOf}</time> · <a href={Q08_SEEN_SOURCES.reportUrl} target="_blank" rel="noopener noreferrer"><ExternalBrandMark href={Q08_SEEN_SOURCES.reportUrl} />Q08 原始实验报告与逐题 CSV</a> · 题号是原始任务来源编号；分数为单题 0–100 归一化 Task Score，并非正确题数。</p>
+  </section>
+</section>
+
+<script>
+  import {Q08_SEEN_TASKS} from '../../data/research-evidence/advisor-q08-seen-retention-20261003';
+  function enhanceQ08Retention() {
+    document.querySelectorAll<HTMLElement>('[data-q08-retention]').forEach(root => {
+      if (root.dataset.enhanced) return;
+      root.dataset.enhanced = 'true';
+      const cells = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-q08-cell]'));
+      const views = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-q08-view]'));
+      const format = (v:number) => String(Number((v*100).toFixed(2)));
+      const setText = (name:string,text:string) => { const el=root.querySelector<HTMLElement>(`[data-q08-picked-${name}]`); if (el) el.textContent=text; };
+      cells.forEach(button=>button.addEventListener('click',()=>{
+        const index=Number(button.dataset.q08Index);
+        const task=Q08_SEEN_TASKS[index];
+        if (!task || !Number.isInteger(index)) return;
+        cells.forEach(other=>other.setAttribute('aria-pressed',String(Number(other.dataset.q08Index)===index)));
+        const cohort={EARLY_SEEN:'早期',MID_SEEN:'中期',LATE_SEEN:'后期'}[task.cohort];
+        const id=task.taskId.split(':')[1]??'?';
+        const change=Number(((task.score160-task.score80)*100).toFixed(2));
+        setText('cohort',cohort);setText('id',id);setText('score80',format(task.score80));setText('score160',format(task.score160));
+        setText('delta',`${change>0?'+':change<0?'−':''}${Math.abs(change)} 评分点`);
+        const status={NO_EFFECTIVE_EXPOSURE:'没有该题参与有效参数更新的证据',PARTIAL_MISSING_FIRST_POST_CHECKPOINT:'缺少第一次计划的训练后测评',RETENTION_MEASURED_ACQUISITION_UNVERIFIED:'可作后期局部比较，但缺少学前基线'}[task.status];
+        setText('status',status);
+        setText('description',task.status==='NO_EFFECTIVE_EXPOSURE'?'现有记录没有证明这道题进入被采纳的参数更新，不能说这轮训练教会了它。':task.status==='PARTIAL_MISSING_FIRST_POST_CHECKPOINT'?`第 ${task.firstEffectiveUpdate} 轮确有该题的有效参数更新，但原计划的 R${task.cohort==='EARLY_SEEN'?40:120} 学后测评缺失。`:'这道题可比较 R80 与 R160 的后期成绩，但没有训练前的可比成绩，无法证明它是通过本次训练学会的。');
+      }));
+      views.forEach(button=>button.addEventListener('click',()=>{
+        const view=button.dataset.q08View;
+        if (view!=='evidence'&&view!=='score'&&view!=='both') return;
+        root.dataset.view=view;
+        views.forEach(other=>other.setAttribute('aria-pressed',String(other.dataset.q08View===view)));
+      }));
+    });
+  }
+  enhanceQ08Retention();
+  document.addEventListener('astro:page-load',enhanceQ08Retention);
+</script>
+
+<style>
+  .q08-retention{--q08-ink:var(--paper-ink);--q08-muted:var(--paper-muted);--q08-line:var(--paper-line);--q08-paper:var(--paper);--q08-none:#969da8;--q08-first:#e1b653;--q08-partial:#7695ad;--q08-up:#408fc1;--q08-flat:#a7aeb4;--q08-down:#d87d4a;color:var(--q08-ink);font-family:system-ui,-apple-system,"PingFang SC",sans-serif;min-width:0;margin:1.5rem 0 2rem}
+  .q08-retention :is(h4,h5,h6){font-family:inherit;line-height:1.32;color:var(--q08-ink)}
+  .q08-retention :is(p,li){line-height:1.68}
+  .q08-retention__hero{padding:1.2rem clamp(1rem,3vw,1.55rem);background:color-mix(in srgb,#78ad83 8%,var(--q08-paper));border-left:3px solid #579467;border-radius:0 var(--radius-panel) var(--radius-panel) 0}
+  .q08-retention .q08-retention__hero h4{margin:0 0 .7rem;font-size:clamp(1.12rem,2.7vw,1.45rem)}
+  .q08-retention .q08-retention__answer{font-size:clamp(1.1rem,2.8vw,1.45rem);font-weight:760;line-height:1.5;margin:0}
+  .q08-retention__answer span{font-size:clamp(.94rem,1.9vw,1.05rem);font-weight:530}
+  .q08-retention .q08-retention__hero-note{margin:.75rem 0 0;font-size:.83rem;color:var(--q08-muted)}
+  .q08-retention__story{padding:1.1rem 0 1.4rem}
+  .q08-retention .q08-retention__story h5,.q08-retention .q08-retention__explorer h5{font-size:clamp(1.08rem,2.4vw,1.3rem);margin:.35rem 0 .65rem}
+  .q08-retention .q08-retention__story>p{margin:.6rem 0;font-size:.89rem}
+  .q08-retention__exams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.32rem,2vw,.8rem);padding:0;margin:1rem 0 .35rem;list-style:none}
+  .q08-retention__exams li{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0;min-height:125px;border:1px solid var(--q08-line);border-radius:var(--radius-panel);background:color-mix(in srgb,var(--q08-ink) 2%,var(--q08-paper));text-align:center;padding:.7rem .25rem;position:relative}
+  .q08-retention__exams li+li::before{content:'→';position:absolute;left:calc(-.5rem - .4vw);font-size:.96rem;color:var(--q08-muted)}
+  .q08-retention__exams span{font-size:.8rem;font-weight:690}
+  .q08-retention__exams strong{display:block;font-size:clamp(1.8rem,5vw,2.65rem);font-variant-numeric:tabular-nums;line-height:1.35;letter-spacing:-.04em}
+  .q08-retention__exams small{font-size:.73rem;color:var(--q08-muted)}
+  .q08-retention .q08-retention__caption{font-size:.76rem;color:var(--q08-muted);margin:0 0 1.1rem}
+  .q08-retention__lenses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(.7rem,2vw,1.3rem);margin:1.2rem 0}
+  .q08-retention__lenses>div{border-top:2px solid var(--q08-line);padding:.75rem .15rem}
+  .q08-retention .q08-retention__lenses h6{font-size:.94rem;margin:0 0 .2rem}
+  .q08-retention .q08-retention__lenses p{font-size:.82rem;color:var(--q08-muted);margin:.2rem 0 .6rem}
+  .q08-retention__legend{display:flex;flex-wrap:wrap;gap:.3rem .7rem;padding:0;margin:0;list-style:none}
+  .q08-retention__legend li{display:flex;align-items:center;gap:.32rem;font-size:.73rem;line-height:1.45}
+  .q08-retention__swatch,.q08-retention__key-item i{display:inline-block;width:.68rem;height:.68rem;flex:none;border-radius:0;background:var(--q08-flat)}
+  .q08-retention__swatch--up,.q08-retention__cell--up{background:var(--q08-up)}.q08-retention__swatch--flat,.q08-retention__cell--flat{background:var(--q08-flat)}.q08-retention__swatch--down,.q08-retention__cell--down{background:var(--q08-down)}
+  .q08-retention__swatch--none,.q08-retention__cell--none{background:var(--q08-none)}.q08-retention__swatch--first,.q08-retention__cell--first{background:var(--q08-first)}.q08-retention__swatch--partial,.q08-retention__cell--partial{background:var(--q08-partial)}
+  .q08-retention__example{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:.8rem;background:color-mix(in srgb,var(--q08-ink) 3%,var(--q08-paper));padding:1rem;border-radius:var(--radius-panel);margin:1.1rem 0 .35rem}
+  .q08-retention__eyebrow{color:var(--q08-muted);font-size:.71rem;font-weight:700;letter-spacing:.02em}
+  .q08-retention .q08-retention__example h6,.q08-retention .q08-retention__picked h6{font-size:1.14rem;margin:.1rem 0 .35rem}
+  .q08-retention .q08-retention__example p{font-size:.8rem;margin:0}
+  .q08-retention__example dl,.q08-retention__picked dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin:0}
+  .q08-retention__example dl>div,.q08-retention__picked dl>div{padding:.6rem;border-left:1px solid var(--q08-line)}
+  .q08-retention__example dt,.q08-retention__picked dt{font-size:.72rem;color:var(--q08-muted)}
+  .q08-retention__example dd,.q08-retention__picked dd{margin:.3rem 0 0;font-size:.81rem;font-weight:680;line-height:1.5}
+  .q08-retention__example dd strong,.q08-retention__picked dd strong{display:block;font-size:1.12rem;font-variant-numeric:tabular-nums}
+  .q08-retention__example dd > span,.q08-retention__picked dd > span{display:block;font-size:.73rem;color:var(--q08-muted);font-weight:500}
+  .q08-retention__totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--q08-line);margin:1.05rem 0 .65rem}
+  .q08-retention__totals>div{padding:.75rem .35rem;text-align:center}
+  .q08-retention__totals>div+div{border-left:1px solid var(--q08-line)}
+  .q08-retention__totals strong{display:block;font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.045em;line-height:1.3;font-variant-numeric:tabular-nums}
+  .q08-retention__totals span{font-size:.76rem;color:var(--q08-muted)}
+  .q08-retention .q08-retention__bottom-line{font-size:.85rem;padding:.7rem 0;margin:0}
+  .q08-retention__explorer{border:1px solid var(--q08-line);border-radius:var(--radius-feature);padding:clamp(.75rem,2vw,1.3rem);background:color-mix(in srgb,var(--q08-paper) 96%,#deedf1)}
+  .q08-retention__map-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:.65rem}
+  .q08-retention .q08-retention__map-head h5{margin:0 0 .2rem}
+  .q08-retention .q08-retention__map-head p{margin:0;color:var(--q08-muted);font-size:.76rem}
+  .q08-retention__switch{display:flex;flex-wrap:wrap;gap:.2rem;padding:.2rem;border:1px solid var(--q08-line);border-radius:var(--radius-control);background:color-mix(in srgb,var(--q08-ink) 4%,var(--q08-paper))}
+  .q08-retention:not([data-enhanced]) .q08-retention__switch{display:none}
+  .q08-retention__switch button{font-family:inherit;background:transparent;border:0;border-radius:var(--radius-control);font-size:.72rem;color:var(--q08-muted);padding:.42rem .48rem;cursor:pointer}
+  .q08-retention__switch button[aria-pressed="true"]{background:var(--q08-paper);color:var(--q08-ink);font-weight:740;box-shadow:0 1px 4px rgb(0 0 0 / 12%)}
+  .q08-retention__switch button:focus-visible,.q08-retention__cell:focus-visible{outline:2px solid var(--q08-ink);outline-offset:3px}
+  .q08-retention__groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.55rem,1.5vw,1rem);margin:1.05rem 0}
+  .q08-retention__group{min-width:0}
+  .q08-retention .q08-retention__group h6{font-size:.9rem;margin:0}
+  .q08-retention .q08-retention__group>p{font-size:.7rem;color:var(--q08-muted);margin:.05rem 0 .35rem}
+  .q08-retention__layer{margin:.5rem 0 .75rem}
+  .q08-retention__layer>span{display:block;font-size:.71rem;color:var(--q08-muted);margin:0 0 .35rem}
+  .q08-retention__cells{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:clamp(2px,.35vw,5px)}
+  .q08-retention__cell{width:100%;min-width:0;aspect-ratio:1;appearance:none;display:block;border:0;border-radius:0;padding:0;cursor:pointer;transition:transform .12s ease,outline-color .12s ease}
+  .q08-retention__cell[aria-pressed="true"]{outline:2px solid var(--q08-ink);outline-offset:2px;transform:scale(1.08);position:relative;z-index:1}
+  .q08-retention[data-view="evidence"] .q08-retention__layer--score,.q08-retention[data-view="score"] .q08-retention__layer--evidence{display:none}
+  .q08-retention__map-key{border-top:1px solid var(--q08-line);padding:.55rem 0}
+  .q08-retention .q08-retention__map-key p{display:flex;flex-wrap:wrap;gap:.25rem .65rem;font-size:.72rem;margin:.25rem 0}
+  .q08-retention__key-item{display:inline-flex;align-items:center;gap:.25rem;color:var(--q08-muted)}
+  .q08-retention__picked{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:.7rem;border-block:1px solid var(--q08-line);padding:.85rem 0}
+  .q08-retention .q08-retention__picked p{font-size:.78rem;line-height:1.6;margin:0}
+  .q08-retention .q08-retention__boundary{font-size:.8rem;line-height:1.7;margin:.75rem 0}
+  .q08-retention .q08-retention__source{font-size:.72rem;color:var(--q08-muted);margin:.8rem 0 0}
+  .q08-retention a{color:var(--color-accent,var(--accent-deep));text-underline-offset:3px}
+  @media(max-width:760px){.q08-retention__groups{grid-template-columns:1fr;gap:.65rem}.q08-retention__group{border-bottom:1px solid var(--q08-line);padding-bottom:.45rem}.q08-retention__cells{max-width:400px;gap:5px}.q08-retention__group .q08-retention__layer{margin:.45rem 0}.q08-retention__example,.q08-retention__picked{grid-template-columns:1fr}}
+  @media(max-width:460px){.q08-retention__lenses{grid-template-columns:1fr;gap:.25rem}.q08-retention__exams li{min-height:105px}.q08-retention__exams li+li::before{left:-.48rem}.q08-retention__switch{width:100%}.q08-retention__switch button{flex:1;padding:.45rem .15rem;font-size:.69rem}.q08-retention__example dl,.q08-retention__picked dl{grid-template-columns:repeat(2,minmax(0,1fr))}.q08-retention__example dl>div:first-child,.q08-retention__picked dl>div:first-child{padding-left:0;border:0}.q08-retention__totals span{font-size:.7rem}}
+  @media(prefers-reduced-motion:reduce){.q08-retention__cell{transition:none}}
+  @media(forced-colors:active){.q08-retention__cell{border:1px solid ButtonText}.q08-retention__cell[aria-pressed="true"]{outline:3px solid Highlight}}
+  @media print{.q08-retention__switch{display:none}.q08-retention__groups{break-inside:avoid}.q08-retention__cell{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style>

@@ -49,15 +49,17 @@ describe('UI visual acceptance gate contract', () => {
     expect(packageJson.scripts?.['test:ui:all']).not.toContain('--project=chromium');
   });
 
-  it('keeps the Vercel hosted browser gate Chromium-only and covers ordinary, semantic-release, and UI fix branch families', () => {
+  it('keeps the optional Vercel provider diagnostic Chromium-only while GitHub CI owns browser coverage', () => {
     expect(vercelUiGate).toContain('agent\\/semantic-release-(?:visual-closeout|css|ui|layout|theme|responsive|nav|navigation)-');
     expect(vercelUiGate).toContain('fix\\/.*(?:visual|css|ui|layout|theme|responsive|nav|navigation)');
     expect(vercelUiGate).toContain("process.env.PLAYWRIGHT_BROWSERS_PATH = '0'");
     expect(vercelUiGate).toContain("run('npx', ['playwright', 'install', '--only-shell', 'chromium'])");
     expect(vercelUiGate).not.toContain("['playwright', 'install', 'webkit']");
     expect(vercelUiGate).not.toContain('--project=webkit');
-    expect(policy).toContain('repository-owned Vercel browser gate is **Chromium-only**');
-    expect(policy).toContain('Playwright-supported macOS, Ubuntu, or Debian runner');
+    expect(policy).toContain('**optional Vercel provider-specific** browser gate remains Chromium-only');
+    expect(policy).toContain('The default GitHub-hosted Public PR CI supplies the required Chromium/WebKit evidence');
+    expect(policy).toContain('run from a Playwright-supported runner:');
+    expect(policy).toContain('macOS, Ubuntu, or Debian');
     expect(policy).toContain('cascade-preserving CSS composition refactor');
   });
 
@@ -77,8 +79,7 @@ describe('UI visual acceptance gate contract', () => {
     for (const term of [
       "theme: 'light'",
       "theme: 'dark'",
-      'width: 390',
-      'width: 768',
+      'width: 440',
       'width: 1440',
       'document horizontal overflow',
       'clipped horizontally',
@@ -114,8 +115,7 @@ describe('UI visual acceptance gate contract', () => {
       '#main-content.site-main',
       "theme: 'light'",
       "theme: 'dark'",
-      'width: 390',
-      'width: 768',
+      'width: 440',
       'width: 1440',
       '.desktop-nav',
       '[data-menu-toggle]',
@@ -180,7 +180,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('locks research connector geometry to live DOM anchors across the visual matrix', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift']) {
+    for (const term of ['width: 440', 'width: 1440', "theme: 'light'", "theme: 'dark'", 'connector start drift', 'connector end drift']) {
       expect(researchGeometryGate).toContain(term);
     }
     expect(geometryPolicy).toContain('connector endpoint error must be <= 5px');
@@ -188,7 +188,7 @@ describe('UI visual acceptance gate contract', () => {
   });
 
   it('makes readable research prose and intent-bound control ownership hard release conditions', () => {
-    for (const term of ['width: 390', 'width: 768', 'width: 1024', 'width: 1440', 'prose font too small', 'CJK prose is too narrow']) {
+    for (const term of ['width: 440', 'width: 1440', 'prose font too small', 'mixed-script prose is too narrow']) {
       expect(canonicalFigureGate).toContain(term);
     }
     for (const term of ['prose font too small', 'CJK prose is too narrow', 'interactive transport stays local until explicit reader interaction', 'data-transport-docked']) {
@@ -204,7 +204,8 @@ describe('UI visual acceptance gate contract', () => {
       'SEED transport remains attached before interaction',
     ]) expect(floatingTransportGate).toContain(term);
     expect(researchReadabilityStyles).toContain('.canonical-figure');
-    expect(researchReadabilityStyles).toContain('font-size: max(.74rem, 11.8px) !important');
+    // The shared research caption floor now follows #895's semantic metadata role.
+    expect(researchReadabilityStyles).toContain('font-size: var(--type-body-small) !important');
     expect(interactiveResearchStyles).not.toContain('>.irx-controls>.irx-transport{position:fixed');
     expect(geometryPolicy).toContain('at least **7 CJK characters per rendered line**');
     expect(geometryPolicy).toContain('becomes a bottom `position: fixed` dock');
@@ -219,10 +220,10 @@ describe('UI visual acceptance gate contract', () => {
     }
   });
 
-  it('rejects protected Preview authentication interstitials as product visual evidence', () => {
+  it('rejects protected Cloudflare Access/SSO interstitials as product visual evidence', () => {
     expect(policy).toContain('route-specific sentinel');
-    expect(policy).toContain('Vercel login/SSO/access interstitial');
-    expect(policy).toContain('does **not** count as route visual evidence');
+    expect(policy).toContain('if the browser shows an Access/SSO interstitial');
+    expect(policy).toContain('the login screen is not route visual evidence');
   });
 
   it('records the owner-first-discovery anti-pattern and exact commands', () => {
@@ -230,6 +231,6 @@ describe('UI visual acceptance gate contract', () => {
     expect(policy).toContain('npm run test:ui');
     expect(policy).toContain('npm run test:ui:all');
     expect(policy).toContain('light → dark → light');
-    expect(policy).toContain('390 × 844');
+    expect(policy).toContain('440 × 956');
   });
 });

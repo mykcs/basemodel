@@ -37,28 +37,28 @@
 <circle cx="840.00" cy="210.77" r="4.2" fill="#6B7280"/>
 <circle cx="990.00" cy="207.73" r="4.2" fill="#6B7280"/>
 <circle cx="1140.00" cy="170.01" r="4.2" fill="#6B7280"/>
-<polyline fill="none" stroke="#60A5FA" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="90.00,314.33 240.00,405.86 390.00,378.32 540.00,307.04 690.00,277.31 840.00,224.59 990.00,225.14 1140.00,186.94"/>
-<circle cx="90.00" cy="314.33" r="4.2" fill="#60A5FA"/>
-<circle cx="240.00" cy="405.86" r="4.2" fill="#60A5FA"/>
-<circle cx="390.00" cy="378.32" r="4.2" fill="#60A5FA"/>
-<circle cx="540.00" cy="307.04" r="4.2" fill="#60A5FA"/>
-<circle cx="690.00" cy="277.31" r="4.2" fill="#60A5FA"/>
-<circle cx="840.00" cy="224.59" r="4.2" fill="#60A5FA"/>
-<circle cx="990.00" cy="225.14" r="4.2" fill="#60A5FA"/>
-<circle cx="1140.00" cy="186.94" r="4.2" fill="#60A5FA"/>
-<polyline fill="none" stroke="#F87171" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="90.00,335.98 240.00,348.25 390.00,319.56 540.00,298.50 690.00,228.21 840.00,212.94 990.00,203.97 1140.00,249.12"/>
-<circle cx="90.00" cy="335.98" r="4.2" fill="#F87171"/>
-<circle cx="240.00" cy="348.25" r="4.2" fill="#F87171"/>
-<circle cx="390.00" cy="319.56" r="4.2" fill="#F87171"/>
-<circle cx="540.00" cy="298.50" r="4.2" fill="#F87171"/>
-<circle cx="690.00" cy="228.21" r="4.2" fill="#F87171"/>
-<circle cx="840.00" cy="212.94" r="4.2" fill="#F87171"/>
-<circle cx="990.00" cy="203.97" r="4.2" fill="#F87171"/>
-<circle cx="1140.00" cy="249.12" r="4.2" fill="#F87171"/>
+<polyline fill="none" stroke="#2563EB" stroke-dasharray="12 6" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="90.00,314.33 240.00,405.86 390.00,378.32 540.00,307.04 690.00,277.31 840.00,224.59 990.00,225.14 1140.00,186.94"/>
+<circle cx="90.00" cy="314.33" r="4.2" fill="#2563EB"/>
+<circle cx="240.00" cy="405.86" r="4.2" fill="#2563EB"/>
+<circle cx="390.00" cy="378.32" r="4.2" fill="#2563EB"/>
+<circle cx="540.00" cy="307.04" r="4.2" fill="#2563EB"/>
+<circle cx="690.00" cy="277.31" r="4.2" fill="#2563EB"/>
+<circle cx="840.00" cy="224.59" r="4.2" fill="#2563EB"/>
+<circle cx="990.00" cy="225.14" r="4.2" fill="#2563EB"/>
+<circle cx="1140.00" cy="186.94" r="4.2" fill="#2563EB"/>
+<polyline fill="none" stroke="#B91C1C" stroke-dasharray="3 5" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="90.00,335.98 240.00,348.25 390.00,319.56 540.00,298.50 690.00,228.21 840.00,212.94 990.00,203.97 1140.00,249.12"/>
+<circle cx="90.00" cy="335.98" r="4.2" fill="#B91C1C"/>
+<circle cx="240.00" cy="348.25" r="4.2" fill="#B91C1C"/>
+<circle cx="390.00" cy="319.56" r="4.2" fill="#B91C1C"/>
+<circle cx="540.00" cy="298.50" r="4.2" fill="#B91C1C"/>
+<circle cx="690.00" cy="228.21" r="4.2" fill="#B91C1C"/>
+<circle cx="840.00" cy="212.94" r="4.2" fill="#B91C1C"/>
+<circle cx="990.00" cy="203.97" r="4.2" fill="#B91C1C"/>
+<circle cx="1140.00" cy="249.12" r="4.2" fill="#B91C1C"/>
 <line x1="90" y1="640" x2="118" y2="640" stroke="#6B7280" stroke-width="4" stroke-linecap="round"/>
 <text x="128" y="645" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#374151">普通 OpenEVO</text>
-<line x1="350" y1="640" x2="378" y2="640" stroke="#60A5FA" stroke-width="4" stroke-linecap="round"/>
+<line x1="350" y1="640" x2="378" y2="640" stroke="#2563EB" stroke-dasharray="12 6" stroke-width="4" stroke-linecap="round"/>
 <text x="388" y="645" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#374151">Bounded Online Recurrence</text>
-<line x1="700" y1="640" x2="728" y2="640" stroke="#F87171" stroke-width="4" stroke-linecap="round"/>
+<line x1="700" y1="640" x2="728" y2="640" stroke="#B91C1C" stroke-dasharray="3 5" stroke-width="4" stroke-linecap="round"/>
 <text x="738" y="645" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="14" fill="#374151">Bounded + β-gating (α fixed at 1)</text>
 </svg>

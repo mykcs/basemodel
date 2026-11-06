@@ -1,0 +1,165 @@
+---
+import ExternalBrandMark from '../common/ExternalBrandMark';
+import {ADVISOR_Q09_UPDATES} from '../../data/openEvoAdvisorTenQuestions';
+import {Q09_CONTEXT_SOURCE,Q09_TEXT_COMPARISONS} from '../../data/research-evidence/advisor-q09-text-guidance-20261015';
+const original = ADVISOR_Q09_UPDATES[0];
+if (!original || original.parametric!==159 || original.textMemory!==2 || original.skill!==1 || original.agent!==3) {
+  throw new Error('Q09 recorded update counts have changed; refresh the display and citation');
+}
+const updates=[
+  {name:'参数更新',count:original.parametric,unit:'次参数更新',kind:'parameters'},
+  {name:'文字记忆',count:original.textMemory,unit:'次文字记忆改写',kind:'memory'},
+  {name:'技能指导',count:original.skill,unit:'次技能指导改写',kind:'skill'},
+  {name:'系统指导',count:original.agent,unit:'次系统指导改写',kind:'system'},
+];
+const checkpoints=[
+  {id:'r129',label:'R129 · 较早保存点'},
+  {id:'r159',label:'R159 · 较晚保存点'},
+] as const;
+const percentage=(n:number)=>Number((n*100).toFixed(2));
+const changed=(n:number)=>Math.round(n*Q09_CONTEXT_SOURCE.tasksPerComparison);
+const signed=(n:number)=>{const v=Number((n*100).toFixed(2));return `${v>0?'+':v<0?'−':''}${Math.abs(v)}`;};
+const ci=(range:[number,number])=>`${signed(range[0])} 至 ${signed(range[1])}`;
+const hero=Q09_TEXT_COMPARISONS.find(row=>row.checkpoint==='r159'&&row.kind==='skill_guidance_removed');
+if (!hero || changed(hero.firstActionChanged)!==33) throw new Error('Q09 33/64 first-action result changed');
+---
+
+<section class="q09-text" data-q09-text-guidance data-checkpoint="r159" aria-labelledby="q09-text-title">
+  <header class="q09-text__hero">
+    <div class="q09-text__hero-number"><strong>52<span>%</span></strong><small>33 ÷ 64 道购物题</small></div>
+    <div>
+      <h4 id="q09-text-title">换掉技能指导后，超过一半的购物题，Agent 的第一步操作变了。</h4>
+      <p>模型外部的文字指导，确实能够影响 Agent 怎样做题。</p>
+      <p class="q09-text__qualification">但是，<strong>还没有证据确认它能稳定提高做题成绩。</strong></p>
+    </div>
+  </header>
+  <p class="q09-text__hero-source">这里的 52% 是 R159 保存点上将 Skill 指导文字替换成无具体指导的文字之后，64 道题中有 33 道第一步操作改变（原始比例 51.56%）；<strong>不是成绩提高了 52%</strong>，也不是完全关闭 Skill。</p>
+
+  <div class="q09-text__updates" aria-labelledby="q09-updates-title">
+    <h5 id="q09-updates-title">160 轮训练里，模型和文字分别更新了多少次？</h5>
+    <p>已有的普通 OpenEVO 160 轮训练记录。每条进度条都用同样的 160 轮作长度基准。</p>
+    <div class="q09-text__update-grid">
+      {updates.map(item=><div class="q09-text__update" data-q09-update={item.kind}>
+        <span class="q09-text__update-label">{item.name}</span>
+        <strong aria-label={`${item.count} ${item.unit}`}><span>{item.count}</span> <output class="q09-text__unit-full">{item.unit}</output><output class="q09-text__unit-short" aria-hidden="true">次</output></strong>
+        <div class="q09-text__progress" role="progressbar" aria-label={`${item.name}：160 轮训练记录中的 ${item.count} ${item.unit}`} aria-valuemin="0" aria-valuemax="160" aria-valuenow={item.count}><span style={`width:${item.count/160*100}%`}></span></div>
+        <small>{item.count} / 160 轮</small>
+      </div>)}
+    </div>
+    <p class="q09-text__context-note">这些数字统计的是<strong>状态被改写的次数</strong>。文字只改写一次，仍可能被后续多道题反复读取；160 轮也不代表每轮必有一次符合条件的文字改写机会。此统计与下面 R129/R159 的文字替换评测是不同的实验记录。</p>
+  </div>
+
+  <div class="q09-text__comparison" aria-labelledby="q09-comparison-title">
+    <div class="q09-text__comparison-heading">
+      <div><h5 id="q09-comparison-title">换掉三种文字指导，行为和成绩怎样变化？</h5><p>同一个保存模型、相同的 64 道购物题。只替换一种指导文字，保留原本的文字载体读取权限。</p></div>
+      <div class="q09-text__checkpoint-switch" role="group" aria-label="选择用于比较的训练检查点">
+        <button type="button" data-q09-select="r129" aria-pressed="false">R129</button>
+        <button type="button" data-q09-select="r159" aria-pressed="true">R159</button>
+      </div>
+    </div>
+    <div class="q09-text__column-head"><span>文字来源</span><span>第一步操作改变的题目</span><span>平均得分变化</span></div>
+    {checkpoints.map(checkpoint=><div class="q09-text__panel" data-q09-panel={checkpoint.id} hidden={checkpoint.id!=='r159'} aria-label={`${checkpoint.label}，64 道固定题的替换文字比较`}>
+      {Q09_TEXT_COMPARISONS.filter(row=>row.checkpoint===checkpoint.id).map(row=><div class:list={['q09-text__row',{'q09-text__row--emphasis':row.kind==='skill_guidance_removed'}]} data-q09-kind={row.kind}>
+        <div class="q09-text__row-name"><strong>{row.label}</strong><small>换成无具体指导文字</small></div>
+        <div class="q09-text__behavior"><div class="q09-text__bar" role="img" aria-label={`${changed(row.firstActionChanged)} 道题中的第一步操作发生改变，共 64 道题，比例 ${percentage(row.firstActionChanged)}%`}><span style={`width:${percentage(row.firstActionChanged)}%`}></span></div><span><strong>{percentage(row.firstActionChanged)}%</strong> <small>{changed(row.firstActionChanged)}/64</small></span></div>
+        <div class="q09-text__score"><strong>{signed(row.meanScoreDelta)} <small>分</small></strong><span>95% 区间：{ci(row.ci95)}</span></div>
+      </div>)}
+    </div>)}
+    <p class="q09-text__reading"><strong>蓝色进度条代表 Agent 的第一步选择是否变化，不能当成得分提升。</strong>右侧是“替换指导后 − 原始指导”的 Task Score 平均分差，满分 100 分；R129、R159 的六组文字替换比较，其 95% 置信区间全部包含零。</p>
+  </div>
+
+  <div class="q09-text__final">
+    <strong>目前可以确定文字会影响部分操作，尚不能确定能提高多少得分。</strong>
+    <p>仍缺一个关键对照：真正禁止 Agent 读取文字记忆、技能指导和系统指导，再比较相同任务的成绩。没有完成的实验不画成已有结果。</p>
+  </div>
+  <details class="q09-text__details"><summary>52%、检查点和分差究竟怎样计算？</summary><div>
+    <p>52% 来自较晚的 <strong>R159</strong> 模型：64 道任务中有 33 道在 Skill 文字中和后改变第一步动作，33 ÷ 64 = 51.5625%，标题四舍五入成 52%。R129 和 R159 是训练保存点编号（从 R0 开始），分别对应第 130 轮和第 160 轮的训练阶段，<strong>不表示实际做了 130 次或 160 次参数更新</strong>，也不是 rollout 数、题目数或同一任务重复次数。</p>
+    <p>分差以相同任务逐题配对，使用 0–100 的 Task Score 标度；例如 R159 中和 Skill 的均值差约 −4.11 分，95% 区间约 −9.61 至 +0.26 分。区间跨零，既不能证明存在稳定收益，也不能宣称 Skill 没用。这里没有独立的新任务复现。</p>
+    <p>三类文字的内容改写总计 6 次，但这是另一条较早普通 OpenEVO 长跑的统计，不能推出这 64 道评测中有多少次实际读取。</p>
+  </div></details>
+  <p class="q09-text__sources">来源：<a href={Q09_CONTEXT_SOURCE.publicJson}>2026-10-15 公开诊断汇总（JSON）</a> · <a href="https://github.com/mykcs/openevo-experiment/pull/636" target="_blank" rel="noopener noreferrer"><ExternalBrandMark href="https://github.com/mykcs/openevo-experiment/pull/636" />Q09 实验工作与后续关闭对照</a>。网页只展示可公开的聚合结果，未发布私有任务轨迹。</p>
+</section>
+
+<script>
+  function enhanceQ09TextGuidance(){
+    document.querySelectorAll<HTMLElement>('[data-q09-text-guidance]').forEach(root=>{
+      if(root.dataset.enhanced)return;
+      root.dataset.enhanced='true';
+      const buttons=Array.from(root.querySelectorAll<HTMLButtonElement>('[data-q09-select]'));
+      const panels=Array.from(root.querySelectorAll<HTMLElement>('[data-q09-panel]'));
+      buttons.forEach(button=>button.addEventListener('click',()=>{
+        const next=button.dataset.q09Select;
+        if(next!=='r129'&&next!=='r159')return;
+        root.dataset.checkpoint=next;
+        buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.q09Select===next)));
+        panels.forEach(panel=>{panel.hidden=panel.dataset.q09Panel!==next;});
+      }));
+    });
+  }
+  enhanceQ09TextGuidance();
+  document.addEventListener('astro:page-load',enhanceQ09TextGuidance);
+</script>
+
+<style>
+  .q09-text{--q09-paper:var(--paper);--q09-ink:var(--paper-ink);--q09-muted:var(--paper-muted);--q09-line:var(--paper-line);--q09-blue:#3e87b9;color:var(--q09-ink);font-family:var(--font-interface);min-width:0;margin:1.3rem 0 2rem}
+  .q09-text :is(h4,h5){font-family:inherit;color:var(--q09-ink);line-height:1.33}
+  .q09-text :is(p,li){line-height:1.65}
+  .q09-text__hero{display:grid;grid-template-columns:minmax(0,.45fr) minmax(0,1fr);gap:clamp(.75rem,2vw,1.5rem);align-items:center;border-block:1px solid var(--q09-line);padding:1rem 0}
+  .q09-text__hero-number{text-align:center;border-right:1px solid var(--q09-line);padding-right:.7rem}
+  .q09-text__hero-number strong{display:block;font-size:clamp(3.15rem,9vw,5.4rem);font-weight:780;letter-spacing:-.075em;line-height:1;font-variant-numeric:tabular-nums;color:var(--color-accent,var(--accent-deep))}
+  .q09-text__hero-number strong span{font-size:.52em;letter-spacing:-.025em}
+  .q09-text__hero-number small{display:block;color:var(--q09-muted);font-size:var(--type-caption);margin-top:.35rem}
+  .q09-text .q09-text__hero h4{font-size:clamp(1.05rem,2.6vw,1.47rem);font-weight:740;margin:0 0 .6rem}
+  .q09-text__hero p{font-size:var(--type-body-small);margin:.18rem 0}
+  .q09-text .q09-text__qualification{color:var(--q09-muted);font-size:var(--type-body-small)}
+  .q09-text .q09-text__hero-source{font-size:var(--type-caption);color:var(--q09-muted);margin:.48rem 0 1.4rem}
+  .q09-text__updates{border:1px solid var(--q09-line);border-radius:var(--radius-feature);padding:clamp(.7rem,2vw,1.15rem);background:color-mix(in srgb,var(--q09-paper) 96%,#dceadf)}
+  .q09-text .q09-text__updates h5,.q09-text .q09-text__comparison h5{font-size:1.08rem;margin:0 0 .35rem}
+  .q09-text .q09-text__updates>p,.q09-text .q09-text__comparison-heading p{margin:0;color:var(--q09-muted);font-size:var(--type-body-small)}
+  .q09-text__update-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.25rem,1vw,.8rem);margin:1rem 0}
+  .q09-text__update{min-width:0;display:flex;flex-direction:column;gap:.27rem;padding:0 clamp(.08rem,.5vw,.5rem)}
+  .q09-text__update+.q09-text__update{border-left:1px solid var(--q09-line)}
+  .q09-text__update-label{font-size:var(--type-caption);font-weight:650;white-space:normal;overflow-wrap:anywhere}
+  .q09-text__update strong{font-size:var(--type-caption);font-weight:550;white-space:normal;overflow-wrap:break-word;min-height:2.85rem;line-height:1.35}
+  .q09-text__update strong span{font-size:clamp(1.22rem,3vw,1.75rem);font-weight:760;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .q09-text__unit-short{display:none}
+  .q09-text__progress{height:.48rem;border-radius:999px;background:color-mix(in srgb,var(--q09-ink) 10%,var(--q09-paper));overflow:hidden}
+  .q09-text__progress>span{display:block;height:100%;min-width:3px;background:#458abb;border-radius:999px}
+  .q09-text__update:not(:first-child) .q09-text__progress>span{background:#b8a66a}
+  .q09-text__update small{font-size:var(--type-caption);color:var(--q09-muted)}
+  .q09-text .q09-text__context-note{font-size:var(--type-caption);margin:.6rem 0 0;line-height:1.65;color:var(--q09-muted)}
+  .q09-text__comparison{padding:1.6rem 0 .75rem}
+  .q09-text__comparison-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem}
+  .q09-text__checkpoint-switch{display:flex;gap:.2rem;border:1px solid var(--q09-line);border-radius:var(--radius-control);background:color-mix(in srgb,var(--q09-ink) 4%,var(--q09-paper));padding:.2rem;flex:none}
+  .q09-text:not([data-enhanced]) .q09-text__checkpoint-switch{display:none}
+  .q09-text__checkpoint-switch button{appearance:none;border:0;border-radius:var(--radius-control);background:transparent;font-family:inherit;font-weight:620;color:var(--q09-muted);font-size:var(--type-caption);min-height:34px;padding:.35rem .65rem;cursor:pointer}
+  .q09-text__checkpoint-switch button[aria-pressed="true"]{background:var(--q09-paper);color:var(--q09-ink);box-shadow:0 1px 5px rgb(0 0 0 / 12%)}
+  .q09-text__checkpoint-switch button:focus-visible{outline:2px solid var(--q09-ink);outline-offset:2px}
+  .q09-text__column-head,.q09-text__row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.25fr) minmax(0,1fr);gap:clamp(.35rem,1.3vw,1rem)}
+  .q09-text__column-head{color:var(--q09-muted);font-size:var(--type-caption);font-weight:680;padding:.85rem .25rem .32rem;border-bottom:1px solid var(--q09-line)}
+  .q09-text__row{align-items:center;padding:.8rem .25rem;border-bottom:1px solid var(--q09-line)}
+  .q09-text__row--emphasis{background:color-mix(in srgb,var(--q09-blue) 5%,transparent)}
+  .q09-text__row-name strong{display:block;font-size:var(--type-body-small)}
+  .q09-text__row-name small{display:block;font-size:var(--type-caption);line-height:1.4;color:var(--q09-muted)}
+  .q09-text__bar{height:.62rem;background:color-mix(in srgb,var(--q09-ink) 9%,var(--q09-paper));border-radius:999px;overflow:hidden}
+  .q09-text__bar>span{height:100%;display:block;background:var(--q09-blue);border-radius:999px}
+  .q09-text__behavior>span{display:block;margin-top:.2rem;font-variant-numeric:tabular-nums;font-size:var(--type-body-small)}
+  .q09-text__behavior small{color:var(--q09-muted);font-size:var(--type-caption)}
+  .q09-text__score{font-variant-numeric:tabular-nums;text-align:right}
+  .q09-text__score strong{display:block;font-size:clamp(1rem,2vw,1.23rem);white-space:nowrap}
+  .q09-text__score strong small{font-size:var(--type-caption);font-weight:530}
+  .q09-text__score>span{display:block;color:var(--q09-muted);font-size:var(--type-caption);line-height:1.45}
+  .q09-text__panel[hidden]{display:none}
+  .q09-text .q09-text__reading{font-size:var(--type-body-small);color:var(--q09-muted);margin:.8rem 0 0}
+  .q09-text__final{padding:.8rem 1rem;background:color-mix(in srgb,#e8bc64 10%,var(--q09-paper));border-left:3px solid #c5a451;margin:.8rem 0 1rem}
+  .q09-text__final>strong{font-size:.96rem;line-height:1.5}
+  .q09-text .q09-text__final p{font-size:var(--type-body-small);margin:.3rem 0 0}
+  .q09-text__details{border-top:1px solid var(--q09-line);padding-top:.5rem}
+  .q09-text__details summary{font-size:var(--type-body-small);font-weight:630;cursor:pointer}
+  .q09-text__details p{font-size:var(--type-body-small);line-height:1.7}
+  .q09-text .q09-text__sources{font-size:var(--type-caption);color:var(--q09-muted);margin:.8rem 0 0}
+  .q09-text a{color:var(--color-accent,var(--accent-deep));text-underline-offset:3px}
+  @media(max-width:580px){.q09-text__hero{grid-template-columns:minmax(0,.37fr) minmax(0,1fr);gap:.65rem}.q09-text__hero-number strong{font-size:clamp(2.6rem,13vw,4rem)}.q09-text__hero-number small{font-size:var(--type-caption)}.q09-text .q09-text__hero h4{font-size:1.03rem}.q09-text__update-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.13rem}.q09-text__update{padding:0 .1rem}.q09-text__update-label{font-size:var(--type-caption)}.q09-text__update strong{font-size:var(--type-caption)}.q09-text__update strong span{font-size:1.22rem}.q09-text__unit-full{display:none}.q09-text__unit-short{display:inline}.q09-text__update small{font-size:var(--type-caption)}.q09-text__comparison-heading{align-items:start;flex-wrap:wrap}.q09-text__column-head,.q09-text__row{grid-template-columns:minmax(0,.8fr) minmax(0,1.05fr) minmax(0,.9fr);gap:.3rem}.q09-text__row-name strong{font-size:var(--type-body-small)}.q09-text__row-name small{font-size:var(--type-caption)}.q09-text__score>span{font-size:var(--type-caption)}.q09-text__column-head{font-size:var(--type-caption)}.q09-text__row{padding:.72rem .1rem}.q09-text__bar{height:.52rem}}
+  @media(forced-colors:active){.q09-text__progress,.q09-text__bar{border:1px solid ButtonText}.q09-text__progress>span,.q09-text__bar>span{background:Highlight}}
+  @media print{.q09-text__checkpoint-switch{display:none}.q09-text__panel[hidden]{display:block;opacity:.6}.q09-text__progress>span,.q09-text__bar>span{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+</style>

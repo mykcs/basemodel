@@ -32,6 +32,18 @@ const RISK_ORDER: UiRisk[] = ['none', 'content', 'local', 'shared', 'global'];
 
 export const ESCAPED_UI_REGRESSIONS: EscapedUiRegression[] = [
   {
+    id: 'q17-mobile-comparison-cell-collision',
+    failureClass: 'R127/R128 percentages exceed the equal-width phone cells despite no page overflow',
+    stage: 'browser',
+    gate: 'tests/e2e/q17-frontier-content-first.spec.ts',
+  },
+  {
+    id: 'q03-rendered-label-axis-collision',
+    failureClass: 'Q03 A0 label collides with the axis after SVG scaling or native tooltip obscures evidence',
+    stage: 'browser',
+    gate: 'tests/e2e/advisor-figure-paper-collision.spec.ts',
+  },
+  {
     id: 'reader-journey-default-visible',
     failureClass: 'experiment task, start, stop or dependency exists only as jargon or hidden source text',
     stage: 'browser',

@@ -1,4 +1,5 @@
 ---
+import "../../styles/research-article.css";
 import EvidenceList from '../../components/EvidenceList.astro';
 import { PaperRoleDiagram } from '../../components/papers/PaperRoleDiagram';
 import ReproductionSummary from '../../components/papers/ReproductionSummary.astro';
@@ -9,6 +10,7 @@ import type { AtlasModel, AtlasPaper } from '../../lib/types';
 import PaperSelectionRationale from '../../components/papers/PaperSelectionRationale.astro';
 import PaperLearningGuide from '../../components/papers/PaperLearningGuide.astro';
 import ExternalBrandMark from '../../components/common/ExternalBrandMark';
+import PageLearningPath from '../../components/navigation/PageLearningPath.astro';
 
 interface Props { paper: AtlasPaper; models: AtlasModel[]; locale?: Locale }
 const { paper, models } = Astro.props;
@@ -27,11 +29,13 @@ const hasPaperLink = typeof paper.paper_url === 'string' && paper.paper_url.star
 const hasCodeLink = typeof paper.code_url === 'string' && paper.code_url.startsWith('http');
 const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.checkpoint_url.startsWith('http');
 ---
-<div class="shell detail-layout">
+<div class="shell detail-layout evo-approved-reader evo-reading-overview evo-paper-record">
   <article>
+    <header class="evo-article__header">
     <h1 class="detail-title">{paper.title}</h1>
     <p class="detail-subtitle">{paper.published_at} · <StatusBadge status={paper.data_status} locale={locale} /></p>
 
+    </header>
     <section class="detail-section paper-method-summary" aria-labelledby="paper-method-summary-title">
       <h2 id="paper-method-summary-title">{locale === 'zh' ? '方法摘要' : 'Method summary'}</h2>
       {methodSummary
@@ -39,6 +43,11 @@ const hasCheckpointLink = typeof paper.checkpoint_url === 'string' && paper.chec
         : <p class="muted">{locale === 'zh' ? '这条记录还没有经过来源核对的方法摘要。下面只展示已经记录的论文类别、模型、训练更新对象和复现材料，不用其他字段猜测方法。' : 'This record does not yet contain a source-checked method summary. The page therefore shows only recorded categories, models, update targets, and reproduction material instead of guessing the method from other fields.'}</p>}
     </section>
 
+    {!paper.learning_guide && <PageLearningPath locale={locale} items={[
+      { href: '#paper-overview', zh: '论文的方法与研究范围是什么', en: 'The method and scope of the paper' },
+      { href: '#paper-reproduce', zh: '有哪些合理的复现方式', en: 'What can be reproduced' },
+      { href: '#paper-models', zh: '论文里的模型分别承担什么角色', en: 'Which roles the paper models play' },
+    ]} />}
     <PaperLearningGuide paper={paper} locale={locale} />
 
     <section class="detail-section" id="paper-overview">

@@ -134,10 +134,10 @@ describe('experiment context hierarchy', () => {
     const lobby = read('../components/research/OpenEvoCapabilityMapLobby.astro');
     expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS.archive).toBeUndefined();
     expect(OPEN_EVO_CANONICAL_ROUTE_OWNERS['stage1-previous']).toBeUndefined();
-    expect(lobby).toContain('data-archive-tier="history-evidence"');
-    expect(lobby).toContain("{ href: stage1EvolutionHref, label: t('兼容旧书签：初始经验设计过程'");
-    expect(lobby).not.toContain('data-deep-dive="stage1-evolution"');
-    expect(lobby).toContain('它们用于追溯证据，不是新的主要实验入口');
+    expect(lobby).toContain('CAPABILITY_TOPIC_GROUPS');
+    const directory = read('../data/capabilityReaderRoutes.ts');
+    expect(directory).toContain("'stage1-previous'");
+    expect(directory).toContain("'stage1-evolution': 'openevo-2-0/exploration'");
   });
 
   it('binds the five retained bilingual experiment snapshots to their canonical parents', () => {

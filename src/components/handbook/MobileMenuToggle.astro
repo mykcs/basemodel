@@ -1,0 +1,9 @@
+{/* Native popover keeps Starlight's directory/focus enhancement, with a visible
+    local name instead of a second indistinguishable global hamburger. */}
+<button popovertarget="starlight__sidebar" class="sl-menu-button md:sl-hidden print:hidden" aria-label="手册目录">
+  <span class="open-menu">手册目录</span><span class="close-menu">关闭目录</span>
+</button>
+<style>
+  .sl-menu-button:has(~ :popover-open) .open-menu,
+  .sl-menu-button:not(:has(~ :popover-open)) .close-menu { display: none; }
+</style>

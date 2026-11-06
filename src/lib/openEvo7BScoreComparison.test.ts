@@ -49,13 +49,14 @@ describe('7B WebShop score comparison', () => {
   });
 
   it('shares the research table contract without inventing a page-local font system', () => {
-    expect(resultsScaffold).toContain('border-top:1.5px solid var(--color-text)');
-    expect(resultsScaffold).toContain('font-variant-numeric:tabular-nums lining-nums');
-    expect(resultsScaffold).toContain('font-family:var(--font-interface)');
-    expect(resultsScaffold).not.toContain('Times New Roman');
-    expect(analysisPlan).toContain('.matrix-wrap,.plan-table-wrap');
-    expect(analysisPlan).toContain('font-family:var(--font-interface)');
-    expect(analysisPlan).not.toContain('Times New Roman');
+    const booktabs = readFileSync(new URL('../styles/research-booktabs.css', import.meta.url), 'utf8');
+    for (const source of [analysisPlan, resultsScaffold]) {
+      expect(source).toContain("import ResearchPaperTable from './ResearchPaperTable.astro'");
+      expect(source).not.toContain('Times New Roman');
+    }
+    expect(booktabs).toContain('border-top:1.5px solid var(--color-text)');
+    expect(booktabs).toContain('font-variant-numeric:tabular-nums lining-nums');
+    expect(booktabs).toContain('"Times New Roman",Times');
     for (const page of capabilityReportPages) {
       expect(page).toContain('OpenEvoExperimentResultsScaffold');
     }

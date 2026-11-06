@@ -8,6 +8,7 @@ import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../l
 import { baseUrl, localePath, type Locale } from '../../i18n';
 import type { AtlasModel } from '../../lib/schemas';
 import { useHydrated } from '../../lib/useHydrated';
+import './ModelQuickView.css';
 
 export interface GlobalModelQuickViewLabels {
   closeQuickView: string;

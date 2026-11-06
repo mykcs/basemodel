@@ -1,0 +1,10 @@
+---
+import Header from '../Header.astro';
+import Search from '@astrojs/starlight/components/Search.astro';
+---
+{/* Starlight PageFrame already owns the banner landmark. */}
+<Header locale="zh" as="div"><Search slot="search" /></Header>
+<div class="handbook-context shell">
+  <a href="/development/">开发</a><span aria-hidden="true"> / </span><a href="/handbook/" aria-current={Astro.url.pathname === '/handbook/' ? 'page' : undefined}>技术手册</a>
+</div>
+<noscript><nav class="shell handbook-static-nav" aria-label="网站与手册入口"><a href="/">BaseModel 首页</a> · <a href="/research/seed-openevo/flow/">理解研究</a> · <a href="/papers/">论文</a> · <a href="/handbook/agent-harness/">Agent Harness</a> · <a href="/handbook/openevo-gpu/">GPU 调度</a></nav></noscript>

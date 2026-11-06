@@ -20,15 +20,15 @@
 
 .research-fact-band dt {
   color: var(--muted);
-  font-size: .72rem;
-  font-weight: 760;
+  font-size: var(--type-meta);
+  font-weight: var(--type-weight-label);
   line-height: 1.35;
 }
 .research-fact-band dd {
   margin: .2rem 0 0;
   color: var(--ink);
-  font-size: .88rem;
-  font-weight: 720;
+  font-size: var(--type-body-small);
+  font-weight: var(--type-weight-heading);
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -54,6 +54,6 @@
   }
   .research-fact-band dd {
     margin: 0;
-    font-size: .82rem;
+    font-size: var(--type-meta);
   }
 }

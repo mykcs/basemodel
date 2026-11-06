@@ -32,3 +32,7 @@ const levelLabel = (level: EvidenceLevel) => m.evidence[`level${level.charAt(0).
   </div> : <p class="muted claim-empty">{m.evidence.noClaimLinks}</p>}
   <div class="evidence-footer"><span>{m.evidence.dataStatus}</span><StatusBadge status={item.data_status} locale={locale} /></div>
 </section>
+
+<style>
+  .claim-source small{font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+</style>

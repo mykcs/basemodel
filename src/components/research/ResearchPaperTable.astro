@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import '../../styles/research-booktabs.css';
+import { preparePaperTable, paperTableText } from '../../lib/researchPaperTable';
+
+interface Props extends HTMLAttributes<'table'> { presentation?: boolean; narrowRecords?: boolean | 'tablet' }
+const { class: tableClass, presentation = false, narrowRecords = false, ...attributes } = Astro.props;
+let contents = await Astro.slots.render('default');
+const captionSlot = await Astro.slots.render('caption') ?? '';
+contents = preparePaperTable(contents, Boolean(narrowRecords));
+const hasCaption = /<caption\b/.test(contents);
+const label = paperTableText(hasCaption ? contents.match(/<caption\b[^>]*>([\s\S]*?)<\/caption>/)?.[1] ?? '' : captionSlot);
+---
+<div class:list={['research-booktabs-wrap', presentation && 'research-booktabs-wrap--presentation', narrowRecords && 'research-booktabs-wrap--records', narrowRecords === 'tablet' && 'research-booktabs-wrap--tablet-records']} role="region" tabindex="0" aria-label={label || undefined} data-paper-table-scroll>
+  <table {...attributes} class:list={['research-booktabs', tableClass]} role={narrowRecords ? 'table' : undefined} data-research-paper-table>
+    {!hasCaption && captionSlot && <caption><Fragment set:html={captionSlot} /></caption>}
+    <Fragment set:html={contents} />
+  </table>
+</div>

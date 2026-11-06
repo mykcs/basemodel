@@ -18,24 +18,34 @@ https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-engine
 
 BaseModel remains an Astro + React + TypeScript static-first site with Vitest/Playwright verification.
 
+The owner-authorized 2026-10-29 frontend-tool adoption retains that rendering model. Tailwind/daisyUI/shadcn style ownership and migration boundaries belong to [`css-architecture.md`](css-architecture.md); MDX continues through Starlight, and Lucide/Alpine/Motion must serve real existing interface behavior.
+
 Prefer static/server-rendered HTML and CSS for research content. Hydrate only interactions that need client state. Do not rewrite the application stack merely because CI/deployment ownership changes.
 
 Shared component/data owners outrank page-local overrides. BaseModel-specific CSS, theme, hydration, navigation and route ownership remain with their existing current contracts/tests.
 
+### 1.1 全站可读日期的统一显示
+
+中文网页中的可见日期统一为 **`10 月 14 日`**；需要年份时统一为 **`2026 年 10 月 14 日`**。英文内容显示英文日期，例如 `Oct 14, 2026`。具体时间保留 24 小时制及有实际含义的时区说明，不猜测时区，也不补造年月日。
+
+原始研究收据、JSON/ISO 日期字段、`<time datetime>`、URL、文件名、代码、引用身份和可复制的机器命令保持不变。显示层采用 [同一个纯格式化函数](../../../src/lib/readableDate.js)：静态 HTML 由 `scripts/normalize-readable-dates.mjs` 在构建后统一可见文字，React 交互区复用该函数；`npm run audit:date-format` 负责拒绝重新出现的不一致。不得把格式化后的中文日期写回科研原始数据。
+
 ## 2. BaseModel release topology
 
-Current ordinary release path:
+Current ordinary PR acceptance and explicit release path:
 
 ~~~text
 working PR
-→ Public PR CI (exact-head deterministic/browser acceptance)
-→ exact current-base candidate
-→ scripts/request-vercel-final-gate.mjs <PR>
-→ persistent ci/vercel-gate-final at exact PR head
-→ required Vercel provider acceptance
-→ merge
-→ Vercel Production from main
+→ GitHub-hosted public-ci-gate (exact-head deterministic / risk-selected browser checks)
+→ GitHub-hosted cloudflare-artifact-gate (same head; no deployment)
+→ non-draft, fresh current-base candidate with both checks green
+→ protected merge to main
+→ if deploy-relevant: release-provider.yml on main, Vercel default + plan first
+→ explicit deploy stages Production; verify source SHA, project identity, SSO and authorized routes
+→ promote protected Vercel alias; recheck deployed SHA, Authentication and real pages
 ~~~
+
+Cloudflare Workers + Access is the separately protected standby via the same manual selector, not a compulsory PR provider release. Passing CI, merging a PR, and deploying Production are three separate milestones; logged-in desktop/mobile visual acceptance remains distinct from provider READY. The old `ci/vercel-gate-final` and `request-vercel-final-gate.mjs` are optional historical Preview diagnostics, **not required merge checks**.
 
 CircleCI and the Mac/OrbStack runner are manual recovery/fallback surfaces, not ordinary merge authority. Concrete provider/check names and branch rules remain in `ci-provider-decision.md`, `hosting-architecture.md`, `deployment-policy.md`, workflow files and `vercel.json`.
 
@@ -76,11 +86,11 @@ A green qualification proves correctness; it does not prove a speedup or authori
 
 ## 6. Public PR CI and Vercel spend boundary
 
-Ordinary working pushes stay outside Vercel acceptance. Public PR CI owns repository/browser preflight; the persistent final-gate ref triggers exact-head provider acceptance only when the candidate is ready.
+Ordinary PR pushes run the two required GitHub-hosted checks: `public-ci-gate` owns source/deterministic and allocated browser preflight; `cloudflare-artifact-gate` packages and checks the Worker artifact without deploying it. Both must succeed on the same current PR head and fresh base. Neither spends provider deployment quota.
 
-Do not use a fresh alias ref, commit-message marker, or historical READY deployment as current merge evidence.
+The historical persistent `ci/vercel-gate-final` ref is not an ordinary gate. Do not use a fresh alias ref, commit-message marker, or historical READY deployment as current merge or release evidence.
 
-Docs/Agent-governance-only `main` changes should remain non-deploy-relevant under the project ignored-build policy; a CANCELED/IGNORED Vercel Git event is not a Production publication.
+Only a deliberate protected `main` release via `release-provider.yml` spends provider deployment quota after `plan` and explicit `deploy`. Docs/Agent-governance-only changes ordinarily need no deployment; a CANCELED/IGNORED Vercel Git event is not a Production publication.
 
 ## 7. Temporary exemptions and site-wide promises
 
@@ -100,7 +110,7 @@ For a deployable change, completion normally requires:
 - declared deterministic/project tests passed;
 - required rendered/browser acceptance for the changed risk class;
 - exact-head Public PR CI success;
-- exact-current-base Vercel final-gate success;
+- exact-current-base `public-ci-gate` and `cloudflare-artifact-gate` success on the same head;
 - expected-head merge;
 - Production verification when the merge changes deploy-relevant inputs.
 

@@ -1,7 +1,10 @@
 // Historical questions from the 2026-09-22 meeting, not later experiment results.
 export const OPEN_EVO_ADVISOR_MEETING = {
   date: '2026-09-22',
-  sourceHref: 'https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md',
+  // RAW is private; public research evidence must not expose private conversation locators.
+  rawDisclosure: '原始讨论记录仅在私有档案保管，不在公开页面提供；这里是研究问题概括，并非逐字引述。',
+  // Post-meeting interpretation is a secondary source and must not be labeled RAW.
+  reconciliationHref: 'https://github.com/mykcs/openevo-experiment/blob/main/docs/science/webshop/reports/ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md',
   points: [
     { title: '先把学习方式拆开', text: '分清普通 SFT、普通 OPSD 与 SD-LoRA 持续更新。先在同一批经验上比较如何学出一套参数，再看长期演化。' },
     { title: '用验证能力判断训练轮数', text: 'training loss 继续下降，不代表 WebShop 能力继续提高。检查 120 轮附近是否已经达到平台，而不是默认需要 160 轮或更久。' },

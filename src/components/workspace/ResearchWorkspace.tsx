@@ -38,6 +38,15 @@ export function ResearchWorkspace({ locale = 'zh' }: Props) {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    if (!hydrated || !catalog || window.location.hash !== '#workspace-editor') return;
+    // The native anchor can arrive before the catalog replaces the loading fallback.
+    // Honor that explicit entry again when the actual task form is mounted.
+    mobileWorkspacePane.set('task');
+    document.querySelector<HTMLElement>('.workspace-pane-task h2')?.focus({ preventScroll: true });
+    document.getElementById('workspace-editor')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }, [hydrated, catalog]);
+
   const setPane = (pane: MobileWorkspacePane) => mobileWorkspacePane.set(pane);
 
   if (!hydrated || !catalog) return <p className="muted" role="status">{locale === 'zh' ? '正在加载交互式工作台…' : 'Loading interactive workspace…'}</p>;
@@ -46,6 +55,7 @@ export function ResearchWorkspace({ locale = 'zh' }: Props) {
   return (
     <div className="workspace">
       <div className="shell">
+        <WorkspaceMobileNav activePane={activePane} m={m} onChange={setPane} />
         <div className="workspace-grid">
           <div className={`workspace-pane workspace-pane-task${activePane === 'task' ? ' is-mobile-active' : ''}`}>
             <ResearchTaskBuilder models={models} papers={papers} m={m} locale={locale} />
@@ -61,7 +71,6 @@ export function ResearchWorkspace({ locale = 'zh' }: Props) {
           <SubstituteLab models={models} papers={papers} m={m} locale={locale} />
           <DecisionMemo models={models} papers={papers} m={m} locale={locale} />
         </div>
-        <WorkspaceMobileNav activePane={activePane} m={m} onChange={setPane} />
         <ModelQuickViewDialog models={models} m={m} locale={locale} />
       </div>
     </div>

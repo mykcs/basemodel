@@ -1,6 +1,7 @@
 ---
 import AppLayout from '../../../../../layouts/AppLayout.astro';
 import SeedOpenEvoProgressBriefing from '../../../../../components/research/SeedOpenEvoProgressBriefing.astro';
+import ResearchChartReader from '../../../../../components/research/ResearchChartReader.astro';
 const locale = 'zh' as const;
 ---
 
@@ -10,4 +11,5 @@ const locale = 'zh' as const;
   locale={locale}
 >
   <SeedOpenEvoProgressBriefing locale={locale} />
+  <ResearchChartReader />
 </AppLayout>

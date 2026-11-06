@@ -1,0 +1,1930 @@
+{
+  "snapshot_date": "2026-10-17",
+  "basis": "generated static public HTML; interactive runtime charts require browser acceptance",
+  "summary": {
+    "generated_routes": 268,
+    "figure_instances": 66,
+    "table_source_instances": 123,
+    "routes_with_figures": 26,
+    "routes_with_tables": 62,
+    "routes_with_either": 66,
+    "roles": {
+      "fixed-presentation-slide": 2,
+      "mechanism-and-workflow": 10,
+      "operations-and-asset-reference": 2,
+      "paper-reference-and-catalog": 22,
+      "research-evidence": 54,
+      "site-navigation-and-product": 178
+    },
+    "figure_modes": {
+      "component-owned-plot": 6,
+      "double": 3,
+      "method-or-multipanel-native": 31,
+      "nonpaper-ui": 4,
+      "presentation-owned": 8,
+      "semantic-table-figure": 2,
+      "single": 3,
+      "wide-evidence": 9
+    }
+  },
+  "routes": [
+    {
+      "route": "/",
+      "role": "site-navigation-and-product",
+      "figures": [
+        {
+          "owner": "mission-chain",
+          "mode": "nonpaper-ui"
+        }
+      ],
+      "tables": 0
+    },
+    {
+      "route": "/404",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/compare/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/data-status/",
+      "role": "operations-and-asset-reference",
+      "figures": [],
+      "tables": 6
+    },
+    {
+      "route": "/development/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/families/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/guide/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/guide/today/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/lab/",
+      "role": "operations-and-asset-reference",
+      "figures": [
+        {
+          "owner": "irx-paper-figure",
+          "mode": "nonpaper-ui"
+        },
+        {
+          "owner": "irx-host-boundary",
+          "mode": "nonpaper-ui"
+        },
+        {
+          "owner": "lab-storage-map",
+          "mode": "nonpaper-ui"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/landscape/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/methodology/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-2/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-3-5-sonnet/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-3-7-sonnet/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-3-opus/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-fable-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-haiku-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-mythos-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4-6/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4-7/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4-8/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-opus-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-sonnet-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-sonnet-4-6/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-sonnet-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/claude-sonnet-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-coder-v2-lite-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-r1-0528/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-r1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3-0324/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3-2-exp/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3-2-speciale/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3-2/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v4-flash-base/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v4-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v4-pro-base/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/deepseek-v4-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/devstral-medium/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/devstral-small/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-1-5-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-2-0-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-2-5-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-2-5-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-1-flash-lite/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-1-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-5-flash-lite/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-5-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-6-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemini-3-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-3-12b-it/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-3-27b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-3-4b-it/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-4-12b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-4-26b-a4b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-4-31b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-4-e2b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gemma-4-e4b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-4-5-air/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-4-6/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-4-7/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-4-9b-chat/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-5-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-5-2/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/glm-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-3-5-turbo/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-4-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-4-v/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-4o/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-2/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-3-codex/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-4-mini/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-4-nano/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-4-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-5-pro/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-6-luna/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-6-sol/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-6-terra/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-mini/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5-nano/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-oss-120b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/gpt-oss-20b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4-20-multi-agent/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4-20/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4-3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/grok-build-0-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-audio-7b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-dev-72b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-6/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-7-code/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-base/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-instruct-0905/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k2-thinking/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-k3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-linear-48b-a3b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/kimi-vl-a3b-thinking-2506/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-2-13b-chat/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-2-70b-chat/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-1-405b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-1-70b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-1-8b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-2-11b-vision-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-3-70b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-70b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-3-8b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-4-maverick-17b-128e/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/llama-4-scout-17b-16e/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/magistral-medium/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/magistral-small/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/minimax-m1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/minimax-m2-7/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/minimax-m2/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/minimax-m3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-7b-instruct-v0-3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-large-3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-medium-3-5/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-medium-3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-small-24b-instruct-2501/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/mistral-small-4/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/moonlight-16b-a3b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/muse-spark-1-1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/muse-spark/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/o1/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/o3/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/o4-mini/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen-7b-chat/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-0-5b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-0-5b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-1-5b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-1-5b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-14b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-14b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-32b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-32b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-3b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/models/qwen2-5-3b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-72b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-72b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-7b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-5-7b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen2-72b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-1-7b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-235b-a22b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-30b-a3b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-32b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-5-27b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-6-27b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-6-35b-a3b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-6-flash/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-6-max-preview/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-6-plus/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-7-max/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-7-plus/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-8b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-coder-480b-a35b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-max/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-next-80b-a3b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/qwen3-vl-235b-a22b-instruct/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/text-davinci-003/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/models/vicuna-13b/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/papers/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 2
+    },
+    {
+      "route": "/papers/adaplanner/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/agentbench/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/agentboard/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/agentverse/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/appworld/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/camel/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/chameleon/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/critic/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/dspy/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/expel/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/generative-agents/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/metagpt/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/openhands/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/osworld/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/reflexion/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/seed/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 3
+    },
+    {
+      "route": "/papers/self-refine/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/swe-agent/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/swe-bench/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/voyager/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/papers/webarena/",
+      "role": "paper-reference-and-catalog",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/",
+      "role": "mechanism-and-workflow",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/alfworld/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "irx-paper-figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/base-model/",
+      "role": "mechanism-and-workflow",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/flow/benchmarks/",
+      "role": "mechanism-and-workflow",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/loops/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "comparison-body",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/openevo/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "irx-paper-figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/sd-lora/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "sdlora-map",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/flow/seed/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "irx-paper-figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/flow/server/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "lifecycle-flow",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/flow/webshop/",
+      "role": "mechanism-and-workflow",
+      "figures": [
+        {
+          "owner": "irx-paper-figure",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "dataset-world",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "world-story",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "generation-story",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "split-story",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "usage-story",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "evaluation-story",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "setting-map",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/advisor-questions/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/briefing/",
+      "role": "fixed-presentation-slide",
+      "figures": [
+        {
+          "owner": "dynamics-chart score-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart loss-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart score-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart loss-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart score-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart loss-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart score-chart",
+          "mode": "presentation-owned"
+        },
+        {
+          "owner": "dynamics-chart loss-chart",
+          "mode": "presentation-owned"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/briefing/technical-notes/",
+      "role": "fixed-presentation-slide",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "task-example",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/archive/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/bounded-effective-state-gdr/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "paper-table-figure paper-table-figure--hero",
+          "mode": "semantic-table-figure"
+        },
+        {
+          "owner": "paper-table-figure",
+          "mode": "semantic-table-figure"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "paper__derived-figure",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "metric-evidence",
+          "mode": "wide-evidence"
+        }
+      ],
+      "tables": 21
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/first-run/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "gds-runtime",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/gdr-directapply/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "task-example",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "mechanism-route",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/harness-2-0/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "h2study__flow",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/openevo-2-0/report/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "(none)",
+          "mode": "component-owned-plot"
+        },
+        {
+          "owner": "(none)",
+          "mode": "component-owned-plot"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/q17-directapply-frontier/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "training-chart score-chart",
+          "mode": "component-owned-plot"
+        },
+        {
+          "owner": "training-chart loss-chart",
+          "mode": "component-owned-plot"
+        }
+      ],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-acceleration/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "ba-accel__equation",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "ba-accel__order",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 4
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "bounded__flow",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "v2-rule",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-future-learning/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-history-novelty/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-history/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-present-function/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/sd-lora-scaling/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "task-example",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "scaling-chart",
+          "mode": "wide-evidence"
+        },
+        {
+          "owner": "mechanism-figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage1-evolution/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage1-learning-objectives/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage1-previous/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage2-256-window/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage2-7b-analysis/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/stage2-ceiling/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/text-memory/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 3
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/vanilla-sd-lora/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/design/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/minimax-teacher/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/openevo-methods/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "evo-article__figure",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "advisor-method__figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/parameter-memory-results/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "advisor-viz advisor-viz--q01",
+          "mode": "component-owned-plot"
+        },
+        {
+          "owner": "advisor-viz advisor-viz--q03",
+          "mode": "component-owned-plot"
+        },
+        {
+          "owner": "q03-world4__flow",
+          "mode": "method-or-multipanel-native"
+        },
+        {
+          "owner": "paper-effect paper-effect--double",
+          "mode": "double"
+        },
+        {
+          "owner": "paper-effect paper-effect--double",
+          "mode": "double"
+        },
+        {
+          "owner": "paper-effect",
+          "mode": "single"
+        },
+        {
+          "owner": "paper-effect paper-effect--double",
+          "mode": "double"
+        },
+        {
+          "owner": "paper-effect",
+          "mode": "single"
+        },
+        {
+          "owner": "paper-effect",
+          "mode": "single"
+        }
+      ],
+      "tables": 13
+    },
+    {
+      "route": "/research/seed-openevo/study/results/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "transfer-figure",
+          "mode": "wide-evidence"
+        }
+      ],
+      "tables": 7
+    },
+    {
+      "route": "/research/seed-openevo/study/results/3b-minimax-analysis/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/results/3b-self-analysis/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/results/7b-minimax-analysis/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/results/7b-self-analysis/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "exp-scaffold__gate-figure",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 2
+    },
+    {
+      "route": "/research/seed-openevo/study/results/benchmark-first/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/current-conclusion/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/first-positive-transfer/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/four-arm-analysis/",
+      "role": "research-evidence",
+      "figures": [
+        {
+          "owner": "reasoning-line",
+          "mode": "method-or-multipanel-native"
+        }
+      ],
+      "tables": 4
+    },
+    {
+      "route": "/research/seed-openevo/study/results/independent-replication/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/measurement-boundary/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/openevo-benchmark-design/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/results/openevo-training/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/second-generation/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/seed-faithful-benchmark/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 1
+    },
+    {
+      "route": "/research/seed-openevo/study/results/seed-training/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/webshop-training/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/results/why-it-kept-failing/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/research/seed-openevo/study/run/",
+      "role": "research-evidence",
+      "figures": [],
+      "tables": 0
+    },
+    {
+      "route": "/workspace/",
+      "role": "site-navigation-and-product",
+      "figures": [],
+      "tables": 0
+    }
+  ]
+}

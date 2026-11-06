@@ -1,8 +1,16 @@
 # Deployment and validation policy
 
-Last reviewed: **2026-09-21**
+Last reviewed: **2026-11-01**
 
-## Authority
+**Vercel-default release selection (current):** Publish accepted `main` explicitly to the existing Vercel Authentication-protected Production when a release is necessary; Cloudflare Workers + Access remains the protected standby. The one `release-provider.yml` selector defaults to `vercel + plan` (no provider deployment). Choose `deploy` explicitly only after confirming the selected provider's current quota and target source SHA. Vercel's staged Production release verifies project identity, exact SHA, anonymous SSO, authorized routes, alias identity and post-promotion SSO; Cloudflare uses its existing Access pre/post-gated exact-main workflow. Protect both independent hostnames; no DNS, billing, Access or Authentication change is authorized by switching the default.
+
+**Required CI remains unchanged:** `public-ci-gate` and `cloudflare-artifact-gate` must both succeed on the exact fresh PR head from GitHub Actions App 15368 under current-base strict ruleset and branch protection. Neither deploys or uses provider secrets. Do **not** reinstate a mandatory Vercel Preview or automatic Git `main` deploy; `vercel.json` `git.deploymentEnabled.main=false` still saves Vercel Hobby quota. `ci/vercel-gate-final` is optional historical/provider diagnostics. CircleCI/Mac remain explicit manual CI recovery.
+
+**Evidence boundary:** The successful protected Vercel [run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) proved staged/promoted Vercel identity, login wall and authorized route checks for `main@7cf12902`, after [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed the v13 API shape. A green run does not itself prove logged-in desktop/mobile visual quality. The protected Cloudflare Worker retains its own deployed SHA and Access; never claim it mirrors Vercel by default. The current release switch [SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md) owns step-by-step execution; [hosting architecture](hosting-architecture.md) owns provider roles.
+
+**Historical compatibility boundary:** Everything below is retained to explain the retired Vercel-*required* PR gate and preserve existing test/incident evidence. Where it describes Vercel as a compulsory exact-head merge check, Cloudflare as legacy-only, or one old gate ref as the normal path, that instruction is superseded by the current two GitHub checks and manual Vercel-default selector. No test asserting an old token makes that old operating instruction live.
+
+## Previous Vercel-first authority (historical/fallback; no longer required by current GitHub protection)
 
 Provider-selection rationale: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns the executable release/validation policy; the rationale file explains why the provider topology was chosen and when to reconsider it.
 
@@ -16,7 +24,7 @@ working PR / development branch
 
 final non-draft current-base candidate
 -> run `node scripts/request-vercel-final-gate.mjs <PR_NUMBER>`; it first proves exact-head public-ci-gate success, then records live `main` in non-deploy `ci/vercel-gate-base` before moving persistent `ci/vercel-gate-final` to the exact PR head SHA
--> Vercel Pro Preview on that exact SHA
+-> Vercel Preview on that exact SHA
 -> npm run build
 -> required GitHub statuses: public-ci-gate + Vercel on the exact candidate SHA
 -> CircleCI automatic PR/main workflows disabled; API-triggered manual fallback only
@@ -100,7 +108,7 @@ Use this lane by default when the owner asks to repeatedly see the page after sm
 
 ### Required Public PR CI + provider-only Vercel gate
 
-Public PR CI and Vercel have different owners so they no longer repeat the same expensive work. Public PR CI owns deterministic repository validation and the risk-aware browser matrix. Its planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work is timing-balanced over eight independent shards with one worker each; every allocated runner re-evaluates the plan, unknown ownership fails closed, and Lab/server-relevant diffs run the 6-case active-Lab gate on shard 1.
+Public PR CI and Vercel have different owners so they no longer repeat the same expensive work. Public PR CI owns deterministic repository validation and the risk-aware browser matrix. Its planner allocates browser runners before spend: skip=0, focused=1, full/global=8. Full/global work uses native Playwright sharding over eight independent shards with one worker each; canonical list-only union checks protect imported helper registrations, and the historical timing-list CLI is retired; every allocated runner re-evaluates the plan, unknown ownership fails closed, and Lab/server-relevant diffs run the 6-case active-Lab gate on shard 1.
 
 `public-ci-gate` is required merge evidence. `scripts/request-vercel-final-gate.mjs` refuses to spend Vercel compute unless that exact-head check is already completed/success from the expected GitHub Actions App. The Vercel final gate then answers a different question: can this exact accepted tree build and deploy through the real Production provider?
 
@@ -135,7 +143,7 @@ Changes to Public PR CI, planner, Vercel gate tooling, deployment config, Circle
 
 ### Budget-first execution
 
-Vercel Pro is metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
+Vercel deployments are quota-metered, so ordinary pushes use the public GHA preflight and spend zero Vercel compute. Keep `github.autoJobCancelation=true`, finish coherent batches before requesting the persistent Vercel final gate, and let the shared risk-aware planner control unchanged browser work. A skipped/focused/full browser plan is an optimization of **which unchanged tests need to run**, never an assertion reduction.
 
 Routine Dependabot version updates keep their existing weekly schedule, grouping and major-upgrade boundaries, with at most one open version-update PR. Security updates have a separate GitHub limit and are not disabled. This bounds concurrent update churn; it does not retroactively cancel existing PRs or guarantee fewer eventual updates.
 
@@ -196,13 +204,19 @@ Post-merge verification therefore checks the deployed `main` SHA and READY state
 - Optimize test selection and sharding before buying larger runners or moving the same inefficient gate to another provider.
 - Re-check CircleCI/Cloudflare/GitHub/Vercel quota and billing semantics live; dated free-tier numbers are historical evidence, not repository authority.
 - Vercel project build-machine selection remains fixed Standard unless a measured same-workload cost reason justifies a change.
-- Deterministic/Chromium/Lab merge acceptance belongs on required Public PR CI; exact final Preview and Production provider build/deploy acceptance remain on Vercel Pro. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
+- Deterministic/Chromium/Lab merge acceptance belongs on required Public PR CI; exact final Preview and Production provider build/deploy acceptance remain on Vercel. CircleCI may run the retained contract only when explicitly triggered through the manual API fallback; it must not duplicate ordinary merge authority.
 - CircleCI fork PR builds and fork-secret passing remain disabled; SSH reruns remain disabled; redundant branch workflows remain auto-cancelled.
 - A provider scheduler is not the compute surface. Keep source hosting, CI control plane, CI compute, deployment, and post-deploy monitoring conceptually separate.
 
 The Mac/OrbStack architecture was the accepted 2026-08-29 baseline and the 20–25 minute CI investigation/optimization is preserved in the dated history documents. Those files explain why the architecture changed; they do not override this current authority. See [`../history/2026-09-05-ci-first-principles-cloud-migration-and-web-ci-retrospective.md`](../history/2026-09-05-ci-first-principles-cloud-migration-and-web-ci-retrospective.md) and [`../history/2026-09-05-basemodel-ci-optimization-closeout-experience.md`](../history/2026-09-05-basemodel-ci-optimization-closeout-experience.md).
 
 ## Vercel build-budget discipline
+
+### Read-only post-merge identity alarm
+
+`.github/workflows/production-identity.yml` runs after `main` changes and Production deployment-status events. `scripts/verify-production-identity.mjs` compares a stable live `main` with the latest successful Production deployment/status reported by the pinned Vercel bot identity for the basemodel-preview project. A different project or unrecognized deployment hostname fails closed. It needs only GitHub read permissions, polls existing records, and never creates a deployment, changes protection, or spends build compute. Non-Production deployment events use a distinct concurrency group, so a skipped Preview event cannot cancel a running main/Production alarm. A moved main is re-observed; missing/untrusted evidence fails closed. A proven docs-only difference is explicitly `INTENTIONAL_NON_DEPLOY_DIFF`, not an exact SHA match.
+
+`MIRROR_MATCH` proves only GitHub's Vercel mirror. Final release acceptance still reads the Vercel READY Production SHA and verifies that the canonical alias points to that same deployment, followed by protected real-page checks. `MIRROR_MISMATCH` / `UNKNOWN` produces a failed Action and a recovery instruction for #964; inspect existing queued/building deployments before using the already-approved exact-main recovery below. Do not promote Preview or create duplicate recovery jobs. The historical missing event remains unclassified while Vercel user-event access is denied; a green alarm does not prove that historical root cause was fixed.
 
 Vercel deployments/builds are finite resources. Optimize the **number of provider-triggering ref updates**, not only the runtime of each build.
 

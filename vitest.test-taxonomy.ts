@@ -9,4 +9,5 @@ export const behaviorTestFiles = [
   'src/lib/researchEngine.test.ts',
   'src/lib/researchEvidence.test.ts',
   'src/lib/researchTaskCodec.test.ts',
+  'src/lib/utils.test.ts',
 ] as const;

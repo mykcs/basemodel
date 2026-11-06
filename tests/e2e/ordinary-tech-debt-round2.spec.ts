@@ -5,12 +5,12 @@ test('long-page outline has real geometry and navigates to a heading', async ({ 
   await page.goto('/research/seed-openevo/study/capability-exploration/mechanism-1-0/');
   const outline = page.locator('[data-page-outline]');
   await expect(outline).toBeVisible();
+  await outline.locator('summary').click();
   const firstLink = outline.locator('a').first();
-  const bar = firstLink.locator('.page-outline__bar');
-  await expect(firstLink).toHaveCSS('display', 'flex');
-  await expect(bar).toHaveCSS('display', 'block');
+  await expect(firstLink).toBeVisible();
+  await expect(firstLink).toHaveCSS('display', 'block');
   expect((await firstLink.boundingBox())?.width ?? 0).toBeGreaterThan(20);
-  expect((await bar.boundingBox())?.width ?? 0).toBeGreaterThan(0);
+  expect((await firstLink.innerText()).trim().length).toBeGreaterThan(1);
   const target = await firstLink.getAttribute('data-outline-target');
   await firstLink.click();
   await expect(page).toHaveURL(new RegExp(`#${target}$`));

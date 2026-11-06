@@ -1,0 +1,605 @@
+{
+  "as_of": "2026-10-15",
+  "role": "Public aggregate projection; immutable private receipts own scientific evidence. Scores use the original 0–1 scale unless explicitly labelled.",
+  "sources": {
+    "rank": {
+      "receipt": "PRIVATE_GPU_RANK_CONFIRMATION_RECOVERY_RECEIPT_20261014.json",
+      "receipt_sha256": "6364e6342a5a8d150b7b234c07999b11b332f7636824ac621753a7c387bdb96a",
+      "recovery_revision": "46ea1da8926d7882e109b11caa8350c9356b70ec",
+      "access": "private; authorization required",
+      "recovery_repository": "openevo-recovery/openevo-full-server-disaster-recovery-v1",
+      "recovery_prefix": "q17-rank-independent-confirmation-20261014"
+    },
+    "direction": {
+      "receipt": "PRIVATE_GPU_TASK_VECTOR_INTERVENTION_RECOVERY_RECEIPT_20261014.json",
+      "receipt_sha256": "9ab04475072360f47d20a7dc09707c675d370c34fead6793c356054fc2b9a4f8",
+      "recovery_revision": "158c80bd9eda1c3ca4cb3acb8ea1112407991d09",
+      "access": "private; authorization required",
+      "recovery_repository": "openevo-recovery/openevo-full-server-disaster-recovery-v1",
+      "recovery_prefix": "q17-gpu-task-vector-interventions-20261014"
+    },
+    "retention": {
+      "receipt": "PRIVATE_GPU_ANCHOR_RETENTION_RECOVERY_RECEIPT_20261014.json",
+      "receipt_sha256": "5b3387621cb2a4d6b3afb391a3a6d9196d6a8fc07a63cbe0a36e4b081f71870b",
+      "recovery_revision": "3d5d4225106896c6c9527f9486384dce69cc6aa3",
+      "access": "private; authorization required",
+      "recovery_repository": "openevo-recovery/openevo-full-server-disaster-recovery-v1",
+      "recovery_prefix": "q17-gpu-anchor-retention-20261014"
+    },
+    "context": {
+      "receipt": "PRIVATE_GPU_CONTEXT_COUNTERFACTUAL_RECOVERY_RECEIPT_20261014.json",
+      "receipt_sha256": "f691fc01f942926d5288417471fb696698c5da6a3ee296a51debf66e9b298730",
+      "recovery_revision": "3cbb035d5b0e83558f72192d3eb4ff95f9e122ab",
+      "access": "private; authorization required",
+      "recovery_repository": "openevo-recovery/openevo-full-server-disaster-recovery-v1",
+      "recovery_prefix": "q17-gpu-context-counterfactuals-20261014"
+    }
+  },
+  "rank": {
+    "records": 3840,
+    "cohorts": {
+      "primary": {
+        "r129": {
+          "native_full": {
+            "score": {
+              "mean": 0.5971131516053392,
+              "native_full_mean": 0.5971131516053392,
+              "ratio_to_native_full": 1.0,
+              "paired_mean_delta": 0.0,
+              "pointwise_paired64_task_bootstrap95": [
+                0.0,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 828537336,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4269722944,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "rank_128": {
+            "score": {
+              "mean": 0.5872080176767678,
+              "native_full_mean": 0.5971131516053392,
+              "ratio_to_native_full": 0.9834116299365683,
+              "paired_mean_delta": -0.009905133928571428,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.028738839285714284,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 102791024,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 3543976632,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "remove_top_8": {
+            "score": {
+              "mean": 0.3522814641955267,
+              "native_full_mean": 0.5971131516053392,
+              "ratio_to_native_full": 0.5899743846679941,
+              "paired_mean_delta": -0.2448316874098124,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.3601902676316739,
+                -0.1302149987599207
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 828537336,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4269722944,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "svd_full": {
+            "score": {
+              "mean": 0.5906647389069264,
+              "native_full_mean": 0.5971131516053392,
+              "ratio_to_native_full": 0.9892006855299097,
+              "paired_mean_delta": -0.006448412698412696,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.03794642857142857,
+                0.021825396825396824
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 825784824,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4266970432,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          }
+        },
+        "r159": {
+          "native_full": {
+            "score": {
+              "mean": 0.608753832972583,
+              "native_full_mean": 0.608753832972583,
+              "ratio_to_native_full": 1.0,
+              "paired_mean_delta": 0.0,
+              "pointwise_paired64_task_bootstrap95": [
+                0.0,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 1021213200,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4462398808,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "rank_128": {
+            "score": {
+              "mean": 0.6000732774170274,
+              "native_full_mean": 0.608753832972583,
+              "ratio_to_native_full": 0.9857404502684314,
+              "paired_mean_delta": -0.008680555555555554,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.03906249999999999,
+                0.016493055555555556
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 102791024,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 3543976632,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "remove_top_8": {
+            "score": {
+              "mean": 0.1950923859126984,
+              "native_full_mean": 0.608753832972583,
+              "ratio_to_native_full": 0.32047828752067165,
+              "paired_mean_delta": -0.4136614470598845,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.5180927086151695,
+                -0.3060900790832432
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 1021213200,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4462398808,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "svd_full": {
+            "score": {
+              "mean": 0.5865316107503608,
+              "native_full_mean": 0.608753832972583,
+              "ratio_to_native_full": 0.9634955526871843,
+              "paired_mean_delta": -0.022222222222222223,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.05520833333333333,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 935885312,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4377070920,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          }
+        }
+      },
+      "confirmation": {
+        "r129": {
+          "native_full": {
+            "score": {
+              "mean": 0.5257815318362193,
+              "native_full_mean": 0.5257815318362193,
+              "ratio_to_native_full": 1.0,
+              "paired_mean_delta": 0.0,
+              "pointwise_paired64_task_bootstrap95": [
+                0.0,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 828537336,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4269722944,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "rank_128": {
+            "score": {
+              "mean": 0.5123345621392497,
+              "native_full_mean": 0.5257815318362193,
+              "ratio_to_native_full": 0.9744247964548926,
+              "paired_mean_delta": -0.013446969696969693,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.061886837121212124,
+                0.03059303977272719
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 102791024,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 3543976632,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "remove_top_8": {
+            "score": {
+              "mean": 0.3371017654220779,
+              "native_full_mean": 0.5257815318362193,
+              "ratio_to_native_full": 0.6411441730271442,
+              "paired_mean_delta": -0.18867976641414141,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.29600098360840543,
+                -0.07656658662518045
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 828537336,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4269722944,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "svd_full": {
+            "score": {
+              "mean": 0.550943869498557,
+              "native_full_mean": 0.5257815318362193,
+              "ratio_to_native_full": 1.0478570207182092,
+              "paired_mean_delta": 0.025162337662337664,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.0014204545454545442,
+                0.06452922077922078
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 825784824,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4266970432,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          }
+        },
+        "r159": {
+          "native_full": {
+            "score": {
+              "mean": 0.6293118123196249,
+              "native_full_mean": 0.6293118123196249,
+              "ratio_to_native_full": 1.0,
+              "paired_mean_delta": 0.0,
+              "pointwise_paired64_task_bootstrap95": [
+                0.0,
+                0.0
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 1021213200,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4462398808,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "rank_128": {
+            "score": {
+              "mean": 0.6232354234307359,
+              "native_full_mean": 0.6293118123196249,
+              "ratio_to_native_full": 0.9903443908569084,
+              "paired_mean_delta": -0.006076388888888892,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.014756944444444451,
+                0.0005208333333333333
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 102791024,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 3543976632,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "remove_top_8": {
+            "score": {
+              "mean": 0.25414242875180376,
+              "native_full_mean": 0.6293118123196249,
+              "ratio_to_native_full": 0.40384182177519,
+              "paired_mean_delta": -0.3751693835678211,
+              "pointwise_paired64_task_bootstrap95": [
+                -0.47877851477949135,
+                -0.2710918476055195
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 1021213200,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4462398808,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          },
+          "svd_full": {
+            "score": {
+              "mean": 0.6298326456529582,
+              "native_full_mean": 0.6293118123196249,
+              "ratio_to_native_full": 1.0008276236408364,
+              "paired_mean_delta": 0.0005208333333333333,
+              "pointwise_paired64_task_bootstrap95": [
+                0.0,
+                0.0015625
+              ],
+              "ratio_undefined_reason": null
+            },
+            "volume": {
+              "compact_bfloat16_factor_file_bytes": 935885312,
+              "base_model_weight_file_bytes": 3441185608,
+              "base_plus_compact_factor_bytes": 4377070920,
+              "volume_scope": "Actual in-RAM safetensors serialization size of compact BF16 factors only; config excluded. Tested generation preserves native zero-padded GEMM shapes. No claim of compact-deployment numerical equivalence, speed or runtime-memory reduction."
+            }
+          }
+        }
+      }
+    }
+  },
+  "direction": {
+    "r129": {
+      "latest_component_loo": {
+        "paired_mean_score_delta": -0.016353546626984128,
+        "paired_task_bootstrap95": [
+          -0.060221354166666664,
+          0.019593253968253968
+        ],
+        "paired_success_delta": 0.0,
+        "first_action_flip_rate": 0.109375,
+        "any_action_sequence_change_rate": 0.3125
+      },
+      "latest_component_reversal": {
+        "paired_mean_score_delta": 0.00968812003968254,
+        "paired_task_bootstrap95": [
+          -0.001953125,
+          0.030257936507936508
+        ],
+        "paired_success_delta": 0.015625,
+        "first_action_flip_rate": 0.125,
+        "any_action_sequence_change_rate": 0.28125
+      }
+    },
+    "r159": {
+      "latest_component_loo": {
+        "paired_mean_score_delta": -0.008506944444444445,
+        "paired_task_bootstrap95": [
+          -0.021705729166666663,
+          0.0
+        ],
+        "paired_success_delta": -0.015625,
+        "first_action_flip_rate": 0.09375,
+        "any_action_sequence_change_rate": 0.3125
+      },
+      "latest_component_reversal": {
+        "paired_mean_score_delta": 0.020008116883116885,
+        "paired_task_bootstrap95": [
+          -0.026967160443722948,
+          0.07507970328282826
+        ],
+        "paired_success_delta": 0.0625,
+        "first_action_flip_rate": 0.0625,
+        "any_action_sequence_change_rate": 0.40625
+      }
+    }
+  },
+  "retention": {
+    "BWT_old": {
+      "ACC_exact_success": {
+        "paired_task_mean_delta": -0.09375,
+        "paired_task_cluster_bootstrap95": [
+          -0.23958333333333334,
+          0.041666666666666664
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r159",
+        "right": "r129"
+      },
+      "reward": {
+        "paired_task_mean_delta": 0.1010206228956229,
+        "paired_task_cluster_bootstrap95": [
+          -0.009490740740740735,
+          0.2233609532828283
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r159",
+        "right": "r129"
+      }
+    },
+    "FWT_old": {
+      "ACC_exact_success": {
+        "paired_task_mean_delta": 0.5729166666666666,
+        "paired_task_cluster_bootstrap95": [
+          0.4270833333333333,
+          0.71875
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r128",
+        "right": "stage1_base"
+      },
+      "reward": {
+        "paired_task_mean_delta": 0.302868265993266,
+        "paired_task_cluster_bootstrap95": [
+          0.18654471801346803,
+          0.417478587962963
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r128",
+        "right": "stage1_base"
+      }
+    },
+    "FWT_new": {
+      "ACC_exact_success": {
+        "paired_task_mean_delta": 0.796875,
+        "paired_task_cluster_bootstrap95": [
+          0.671875,
+          0.90625
+        ],
+        "tasks": 8,
+        "repeats_per_task": 8,
+        "left": "r158",
+        "right": "stage1_base"
+      },
+      "reward": {
+        "paired_task_mean_delta": 0.5215773809523809,
+        "paired_task_cluster_bootstrap95": [
+          0.382514880952381,
+          0.6600824652777776
+        ],
+        "tasks": 8,
+        "repeats_per_task": 8,
+        "left": "r158",
+        "right": "stage1_base"
+      }
+    },
+    "current_learning_old": {
+      "ACC_exact_success": {
+        "paired_task_mean_delta": -0.010416666666666666,
+        "paired_task_cluster_bootstrap95": [
+          -0.14583333333333334,
+          0.13541666666666666
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r129",
+        "right": "r128"
+      },
+      "reward": {
+        "paired_task_mean_delta": 0.0034722222222222238,
+        "paired_task_cluster_bootstrap95": [
+          -0.11007812499999999,
+          0.11875000000000001
+        ],
+        "tasks": 12,
+        "repeats_per_task": 8,
+        "left": "r129",
+        "right": "r128"
+      }
+    },
+    "current_learning_new": {
+      "ACC_exact_success": {
+        "paired_task_mean_delta": -0.09375,
+        "paired_task_cluster_bootstrap95": [
+          -0.28125,
+          0.046875
+        ],
+        "tasks": 8,
+        "repeats_per_task": 8,
+        "left": "r159",
+        "right": "r158"
+      },
+      "reward": {
+        "paired_task_mean_delta": -0.03933531746031747,
+        "paired_task_cluster_bootstrap95": [
+          -0.10364583333333335,
+          0.020709325396825393
+        ],
+        "tasks": 8,
+        "repeats_per_task": 8,
+        "left": "r159",
+        "right": "r158"
+      }
+    }
+  },
+  "context": {
+    "r129": {
+      "memory_guidance_removed": {
+        "paired_mean_score_delta": -0.02301390016233766,
+        "paired_task_bootstrap95": [
+          -0.09819813649891775,
+          0.050951366341991336
+        ],
+        "first_action_flip_rate": 0.0
+      },
+      "skill_guidance_removed": {
+        "paired_mean_score_delta": -0.011805555555555557,
+        "paired_task_bootstrap95": [
+          -0.050694444444444445,
+          0.02048611111111111
+        ],
+        "first_action_flip_rate": 0.578125
+      },
+      "agent_guidance_removed": {
+        "paired_mean_score_delta": -0.011046006944444443,
+        "paired_task_bootstrap95": [
+          -0.05671665736607143,
+          0.028337751116071175
+        ],
+        "first_action_flip_rate": 0.296875
+      },
+      "reverse_current_result_page": {
+        "paired_mean_score_delta": -0.316603253517316,
+        "paired_task_bootstrap95": [
+          -0.4317682968073593,
+          -0.20236571067821074
+        ],
+        "first_action_flip_rate": 0.0
+      }
+    },
+    "r159": {
+      "memory_guidance_removed": {
+        "paired_mean_score_delta": 0.022221658549783554,
+        "paired_task_bootstrap95": [
+          -0.03990681085407647,
+          0.08748146926857862
+        ],
+        "first_action_flip_rate": 0.0
+      },
+      "skill_guidance_removed": {
+        "paired_mean_score_delta": -0.04111426767676768,
+        "paired_task_bootstrap95": [
+          -0.09608664772727273,
+          0.0026041666666666644
+        ],
+        "first_action_flip_rate": 0.515625
+      },
+      "agent_guidance_removed": {
+        "paired_mean_score_delta": 0.016393849206349207,
+        "paired_task_bootstrap95": [
+          -0.014955357142857142,
+          0.05746527777777778
+        ],
+        "first_action_flip_rate": 0.203125
+      },
+      "reverse_current_result_page": {
+        "paired_mean_score_delta": -0.26598203012265514,
+        "paired_task_bootstrap95": [
+          -0.37414219200937954,
+          -0.1563732864357865
+        ],
+        "first_action_flip_rate": 0.0
+      }
+    }
+  },
+  "limits": [
+    "Same 64 development tasks; two generation-seed cohorts are not a fresh held-out task population.",
+    "Post-hoc SVD; generation retains native zero-padded GEMM shapes. No compact deployment equivalence, runtime speed or VRAM claim.",
+    "Pointwise paired-task bootstrap intervals for rank/direction/context; task-cluster bootstrap for retention. No simultaneous or noninferiority claim.",
+    "Guidance neutralization leaves native carrier permissions enabled; no complete carrier-disable experiment.",
+    "Retention anchors precede the current round first SGD; 12 old and 8 new queue tasks, not a full continual-learning matrix.",
+    "78 resolved dispositions include not-applicable and accepted historical gaps; they do not mean 78 numerical measurements passed."
+  ]
+}

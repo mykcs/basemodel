@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { humanDateText } from '../lib/readableDate.js';
 import { architectureLabel, checkpointLabel } from '../lib/format';
 import { familyTree, papersForModel } from '../lib/modelRelations';
 import { familyCoverageRecords, isCurrentModel } from '../lib/familyCoverage';
@@ -30,7 +31,7 @@ export default function FamilyTimeline({ models, papers, locale = 'zh' }: { mode
             {historicalPaperUse ? ` · ${locale === 'zh' ? '历史论文仍按发表时实际模型保留' : 'Historical papers remain linked to the model actually used at publication'}` : ''}
           </p>
           <div className="timeline-track">{visibleGenerations.map(([generation, checkpoints]) => <div className="timeline-generation" key={generation}>
-            <div className="tree-generation-heading"><strong>{generation}</strong><span>{checkpoints[0]?.release_date} · {checkpoints.length} {m.familyUnits.checkpoints}</span></div>
+            <div className="tree-generation-heading"><strong>{generation}</strong><span>{humanDateText(checkpoints[0]?.release_date ?? '',locale)} · {checkpoints.length} {m.familyUnits.checkpoints}</span></div>
             <div className="tree-checkpoints">{checkpoints.map((model) => <div className="tree-checkpoint" key={model.id}>
               <a href={localePath(locale, `/models/${model.id}/`)}><span>{model.name}</span><small>{architectureLabel(model.architecture.type, locale)} · {checkpointLabel(model.checkpoint.type, locale)}{isCurrentModel(model, familyCoverageRecords, models) ? ` · ${m.families.current}` : ''}</small></a>
               <button

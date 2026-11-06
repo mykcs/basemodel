@@ -1,4 +1,5 @@
 import type { AtlasModel } from '../../lib/schemas';
+import { humanDateText } from '../../lib/readableDate.js';
 import type { ResearchFit } from '../../lib/research/types';
 import { architectureLabel, checkpointLabel, parameterSummary, modalityLabel } from '../../lib/format';
 import { localePath, type Locale } from '../../i18n';
@@ -28,7 +29,7 @@ export function ModelDecisionCard({ model, fit, locale, m, inCandidate, inCompar
   return <article className="model-card decision-card">
     <div className="card-topline"><span className="eyebrow">{model.vendor}</span>{paperAdopted && <span className="paper-adoption-tag">{m.explorer.hasPaper}</span>}</div>
     <h3><a href={localePath(locale, `/models/${model.id}/`)}>{model.name}</a></h3>
-    <p className="model-meta">{model.family} · {model.generation} · {model.release_date}</p>
+    <p className="model-meta">{model.family} · {model.generation} · {humanDateText(model.release_date, locale)}</p>
     {fit && <div className={`task-fit task-fit-${fit.overall}`} aria-label={`${m.explorer.taskFitLabel}: ${fitLabel}`}><span>{m.explorer.taskFitLabel}</span><strong>{fitLabel}</strong><small>{fit.overall === 'blocked' ? m.explorer.fitBlockedHint : fit.overall === 'conditional' ? m.explorer.fitConditionalHint : fit.overall === 'explore' ? m.explorer.fitExploreHint : m.explorer.fitHighHint}</small></div>}
     {fit && <dl className="fit-dimensions">{dimensions.map(([label, level]) => <div key={label}><dt>{label}</dt><dd className={`fit-level-${level}`}>{m.explorer[`level${level[0]!.toUpperCase()}${level.slice(1)}` as 'levelHigh' | 'levelMedium' | 'levelLow' | 'levelUnknown']}</dd></div>)}</dl>}
     <p className="model-architecture"><strong>{architectureLabel(model.architecture.type, locale)}</strong><span>{parameterSummary(model.architecture.total_parameters_b, model.architecture.active_parameters_b, model.architecture.type, locale)}</span></p>

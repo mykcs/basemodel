@@ -232,7 +232,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   requireText('src/pages/_bodies/data-status.astro', 'COPY-I18N-002', 'localizedChangeEventNote(event, locale)', 'Data-status change-event notes must be selected by page locale with an explicit fallback.');
 
   const hero = 'src/components/research/SeedOpenEvoMissionHero.astro';
-  requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('SEED 与 OpenEvo：固定同一个 Qwen 和任务，比较两套学习系统', 'SEED and OpenEvo: pin the same Qwen and tasks, compare two learning systems')", 'The first-screen heading must name the durable research subject rather than an editorial instruction.');
+  requireText(hero, 'COPY-SUBJECT-TITLE-001', "t('SEED 与 OpenEVO 的两阶段学习范式', 'The two-stage learning paradigm of SEED and OpenEVO')", 'The first-screen heading must name the durable two-stage method-comparison subject rather than an editorial instruction.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.phase', 'The research hero must expose a dated default-branch snapshot instead of freezing one live phase.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'working branch → experiment ledger (campaign) → reconciliation', 'The research hero must route readers to branch-aware live state in plain language with technical terms attached.');
   requireText(hero, 'COPY-STATE-PROVENANCE-001', 'openEvoScientificState.defaultBranchSnapshot.gpuAllocationAllowed', 'The research hero must delegate GPU permission to the dated scientific-state owner rather than static inventory copy.');
@@ -271,7 +271,7 @@ export function checkStrictAudienceCopyInvariants(root = process.cwd()): CopyFin
   }
 
   const standardPath = 'docs/agents/current/audience-centered-technical-copy.md';
-  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'Prefer the literal experimental operation over a narrative metaphor', 'Eyebrows and kickers are optional', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, literal experimental wording, optional informative eyebrows, first-screen attention, and branch-aware scientific-state provenance.');
+  for (const required of ['Headings name the subject', '标题先命名主题', '首屏先认对象，再回答实验做了什么', 'Canonical background belongs behind a link', 'Prefer the literal experimental operation over a narrative metaphor', 'Eyebrows and kickers are **absent by default**', 'ALFWorld 与 WebShop 研究', 'Current scientific claims must be delegated, not copied', 'actual openevo-experiment checkout / branch / SHA']) requireText(standardPath, 'COPY-STANDARD-001', required, 'The durable copy standard must preserve subject headings, literal experimental wording, the default absence of decorative eyebrows, first-screen attention, and branch-aware scientific-state provenance.');
 
   return failures;
 }

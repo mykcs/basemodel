@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { humanDateText } from '../../lib/readableDate.js';
 import { useHydrated } from '../../lib/useHydrated';
 import './PaperExplorer.css';
 import { categoryLabel, evolutionTargetLabel, roleLabel } from '../../lib/format';
@@ -138,7 +139,7 @@ export default function PaperExplorer({ papers, models, locale = 'zh' }: { paper
       const summary = methodSummary(paper, locale);
       const burden = experimentBurden(paper, modelMap, locale);
       return <article className="paper-case-card" key={paper.id}>
-        <div className="paper-case-meta"><span>{paper.published_at}</span><span>{evidenceCompleteness(paper, locale)}</span></div>
+        <div className="paper-case-meta"><span>{humanDateText(paper.published_at,locale)}</span><span>{evidenceCompleteness(paper, locale)}</span></div>
         <h3><a href={localePath(locale, `/papers/${paper.id}/`)}>{paper.title}</a></h3>
         <p className={`paper-case-summary${summary ? '' : ' is-unverified'}`}><strong>{m.method}:</strong> {summary ?? m.methodPending} {summary && <span className="provenance-badge provenance-checked">{m.checked}</span>}</p>
         <p className="paper-case-scope"><strong>{m.scope}:</strong> {researchScope(paper, locale)} <span className="provenance-badge provenance-derived">{m.derived}</span></p>

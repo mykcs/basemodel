@@ -39,6 +39,8 @@ For substantial research results and advisor/peer reports, load the canonical
 when it is available through the active Harness. This BaseModel contract
 specializes its scientific HTML publication, not a second report-writing authority.
 
+**This is an internal analysis check, not a recipe for question-shaped headings.** Headings normally name the experiment or topic in ordinary declarative Chinese; preserve a question mark only when it is a genuine research question the section actually investigates. Do not manufacture an H1 to make a report seem intriguing, and do not turn section navigation into an invitation such as “从哪里读起？”. This inherits the existing Human Expression heading rules; it does not replace them.
+
 Before approving a page, review the visible artifact as a scientifically literate reader
 who has not followed the author's working sessions:
 
@@ -126,7 +128,7 @@ The current canonical multi-metric owners are:
 - `results/four-arm-analysis`;
 - `stage1-learning-objectives`.
 
-These pages keep their own visual grammar. The shared contract is semantic order, metric locality, evidence boundary, and next-question recovery — not a shared card/table skin.
+These article pages use the shared response-article reading treatment specified in website-design-spec.md §13. Their scientific figures, comparisons, metric locality, evidence boundaries and next-question recovery retain their semantic owners; the common reading frame does not replace those objects with a card/table skin.
 
 A mechanism page, runbook, catalog, archive, or operational page must keep its own role rather than pretending to be a result paper.
 

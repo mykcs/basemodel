@@ -1,0 +1,316 @@
+{
+  "schema": "openevo.q09.s2-final-progress.v1",
+  "captured_utc": "2026-10-28T23:09:19.743281+00:00",
+  "source_sha": "f952c09bbdefc0aa6cef570003702bd09bec87cc",
+  "authority_sha": "33cbc3ac082c0764094c1ca68012e87c6bb29161",
+  "status": "PAUSE_FOR_DIAGNOSTIC",
+  "sealed_through_round": 145,
+  "planned_suffix_end_round": 159,
+  "full_s2_closed": false,
+  "rounds": [
+    {
+      "round": 143,
+      "valid_episodes": 128,
+      "exact_original_task_seed_source_config_carrier_adapter_identity": true,
+      "terminal_stages": [
+        {
+          "stage": "text-memory",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "fee2caec6580daa35b39dca416272593427ab2f2e5f7e250b6a4fa61781ca3cc"
+        },
+        {
+          "stage": "sd-lora",
+          "terminal_status": "UPDATE",
+          "terminal_sha256": "0536ec1ac539c2ed769edf5eb8080a90bf94742ae22346b69cd2c6bce3e6c9eb"
+        },
+        {
+          "stage": "skill-bundle",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "665d3a153d8927d0da1414a94e20e532924699e956ae629589c25521d5d64c90"
+        },
+        {
+          "stage": "agent-system",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "5d98b72196208853979430f03b679b3a0ee4de13debfa0f0fe6854ddc525af50"
+        }
+      ],
+      "artifact_sha256": {
+        "summary.json": "2dd066d2d6241b7c50f9c5968cabd1af74b6765b110d6260e3c17acd18b53a1a",
+        "attempts.jsonl": "7e1b176decd3c320b7ff7e3bbf663d81f55bcfc248f4c4e28390b4be96db10b6",
+        "state-before.json": "e7bc6d76196e142fadff7cb39a261d2a02ddbe230a9fc54f455416a22789acff",
+        "state-after.json": "18566c2bd64d9e132d2b3231ccb3464253758031e76eccd0f71297baad32338c",
+        "ROUND_COMPLETE.json": "009af719ff7af534c31f5928c29c2908474a32b95f3f3590e603f6329b14f48a",
+        "carrier-health-ledger.json": "c0d7d5cfa3f83345e95919eaad59816b1fbeeb239e6a1b0b278abdd673d19b9c",
+        "carrier-health-boundary.json": "ab9d20548e869427287e225293db07c22ad1714c223b2bdf6799b8e01f13b44e"
+      },
+      "health_status": "PASS",
+      "text_model_calls_receipt_count": 6
+    },
+    {
+      "round": 144,
+      "valid_episodes": 128,
+      "exact_original_task_seed_source_config_carrier_adapter_identity": true,
+      "terminal_stages": [
+        {
+          "stage": "text-memory",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "a8f729c458db8fde0beca0523509d6feba9f04722b7f0c33dbc1f2d7cc9c633c"
+        },
+        {
+          "stage": "sd-lora",
+          "terminal_status": "UPDATE",
+          "terminal_sha256": "fa0c769c3a5519124f95c72bb89eb426f8e74ff8f502e59eb9e47f20a0826e89"
+        },
+        {
+          "stage": "skill-bundle",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "3e132e302651f11415724e28bf2bb130f6e6cd0eb5163c2204748654d93173e8"
+        },
+        {
+          "stage": "agent-system",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "717237603a206eb34aadf5f67bbcabcbb76b2744f92604e6b65c679657b1f8be"
+        }
+      ],
+      "artifact_sha256": {
+        "summary.json": "83604429fe771cd4c7c8caa6777808aa63c7cc89ca99e2cfe8fe84d83283d567",
+        "attempts.jsonl": "6a9c96b7d4979053fd68217c3a135526e292e435f859873b69c6c86efcfe7026",
+        "state-before.json": "18566c2bd64d9e132d2b3231ccb3464253758031e76eccd0f71297baad32338c",
+        "state-after.json": "52e2244ec0d85ce21c05d54ee4f3b5552830ff3ad62bb20bdb1f3e617aae73e0",
+        "ROUND_COMPLETE.json": "fcc8ae646de07c40ba2c489d6aff2ddf94bbed2221bc3b2a02656553a52cecde",
+        "carrier-health-ledger.json": "f5ff708f9def6a6c1af08a664682f9d686ee08ca4f86827d65c9f13c9c7ed0fa",
+        "carrier-health-boundary.json": "58920702e5d3cf3bb6932bd6996502909ace3feb615e089911d97f1a71551726"
+      },
+      "health_status": "PASS",
+      "text_model_calls_receipt_count": 6
+    },
+    {
+      "round": 145,
+      "valid_episodes": 128,
+      "exact_original_task_seed_source_config_carrier_adapter_identity": true,
+      "terminal_stages": [
+        {
+          "stage": "text-memory",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "0dc3f845e3636e6931dffc508d578139c52a20043377cfd3ffbabb44327e0127"
+        },
+        {
+          "stage": "sd-lora",
+          "terminal_status": "UPDATE",
+          "terminal_sha256": "80f9ae8458d565c2b1063f3c41a88dce31673212497bbc194cb41baaa5b25e37"
+        },
+        {
+          "stage": "skill-bundle",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "40d74dac569f494752366ce00e3810466e8fffa4f9eda2010c678852080c2a5b"
+        },
+        {
+          "stage": "agent-system",
+          "terminal_status": "NOOP",
+          "terminal_sha256": "443a663a843e485d3d5f1dfab70168397a88ae284053aef8a65ad150dd2528c1"
+        }
+      ],
+      "artifact_sha256": {
+        "summary.json": "035b037758cf4beaa671b6906551feacf93f4aec60ec9bff9c64e2bbc7d0a30a",
+        "attempts.jsonl": "b1faaf8e5d040351cd4090014993df76c404718718a32a502ce1d6db6aa910ed",
+        "state-before.json": "52e2244ec0d85ce21c05d54ee4f3b5552830ff3ad62bb20bdb1f3e617aae73e0",
+        "state-after.json": "0138afa94bf959774b1e5a5d28b7eb4d3013da8701096d7dde6db9c0f2613f88",
+        "ROUND_COMPLETE.json": "23dfdd14d6bdef40c44cbacce302210c4763f37cd9b2ab6356839c0936adb1ee",
+        "carrier-health-ledger.json": "6abfd39c040f09ec3cd1cb91c656f10b871354c231a5c855c292c1a2940a37c3",
+        "carrier-health-boundary.json": "210538a6d4361a2247caef4a7c56a3665fcc1722d77e7c21839b25089cd06416"
+      },
+      "health_status": "FAIL",
+      "text_model_calls_receipt_count": 6
+    }
+  ],
+  "next_round": 146,
+  "rollouts_consumed": 18688,
+  "old101_raw_sha256_preserved": true,
+  "round143_to145_valid_saved_episodes": 384,
+  "new_saved_this_resume": 283,
+  "new_saved_this_resume_definition": "27 finishing R143 + 128 R144 + 128 R145; the prior 101 were already collected earlier in the current goal.",
+  "original_current_goal_new_rollout_total_not_inferred": true,
+  "round146_saved_episodes": 0,
+  "final_panel_access": 0,
+  "external_teacher_calls": 0,
+  "exit_code": 1,
+  "exit_utc": "2026-10-28T22:58:14.277934+00:00",
+  "pause_utc": "2026-10-28T22:58:14.169117+00:00",
+  "holder_restored": false,
+  "resource_lifecycle_status": "RESERVATION_NOT_ACTIVE_FOR_THIS_RUNNER",
+  "owned_processes_absent": true,
+  "q09_running_container_count": 0,
+  "current_state_snapshot_sha256": "0ba318c08b15b0f2054940a5706d3e46d3a1e1a554f8739c84a6fb254154c635",
+  "pause_receipt_sha256": "e98c2185bf234e981ef5d462066e5b407e58bfea531b4bbcd0cc9bd691af3775",
+  "wrapper_terminal_sha256": "457512c50b7fda7331957786efda6f438174836f6953d1e867dfaa2d546b5e10",
+  "resource_lifecycle_sha256": "cfffb7f1dbe7c2d207db77c5d980f2b2bc580ab49fdc8bcc88b8da989deb2af7",
+  "health_boundary": {
+    "action": "PAUSE_FOR_DIAGNOSTIC",
+    "arm": "CARRIERS_ACTIVE",
+    "automatic_mutations": {
+      "arm_specific_fallback": false,
+      "change_acceleration_semantics": false,
+      "change_gdr": false,
+      "change_update_frequency": false,
+      "extra_reflector_call": false,
+      "force_selected": false,
+      "raise_token_cap": false,
+      "reward_conditioned_repair": false,
+      "third_repair": false
+    },
+    "block_next_round": true,
+    "failed_rows": [
+      {
+        "carrier": "text_memory",
+        "health_reasons": [
+          "REPAIR_IDENTICAL_INVALID"
+        ]
+      },
+      {
+        "carrier": "skill_bundle",
+        "health_reasons": [
+          "REPAIR_IDENTICAL_INVALID"
+        ]
+      }
+    ],
+    "ledger_status": "FAIL",
+    "policy_id": "carrier-health-failure-policy-v1",
+    "policy_identity_sha256": "38a4ad15794ad88c334f81ed6ef014c1896862737c20f76e165033e3424e21fc",
+    "preserve_completed_transaction": true,
+    "round_index": 145,
+    "schema": "openevo.carrier-health-boundary-decision.v1"
+  },
+  "criterion_source_sha256": {
+    "carrier_health_failure_policy_v1.py": "5cd5f04601e60b2be693b1526dd788b43e5e371bf620ec69759d1050999b1a5c",
+    "carrier_health_v2.py": "d80e73f79bfba82a71a40efdce3499f7a5fa4a588b1b03e1d6dc296e1c239efb",
+    "q09_carrier_mutation.py": "8685798e374a46634e44b38af343c7b3679bf564285ee0e0713f1af563f85e16"
+  },
+  "diagnosis": "The frozen health gate paused after a sealed transaction: text_memory and skill_bundle each had an invalid primary proposal and an identical invalid allowed repair; prior carrier content was retained. This evidence does not establish a parser or launcher bug, or a score-based stop.",
+  "resume_requirement": "Automatic resume is forbidden. An explicit diagnostic resolution receipt must bind this exact pause, policy and round, and preserve SAME_CONTRACT. No extra model call, token-cap increase, forced content change, third repair or single-arm semantic patch is authorized by this pause.",
+  "unsaved_inflight_physical_consumption": "UNKNOWN_PRESERVED_AS_COST_UNCERTAINTY",
+  "parameter_update_claim": "Independently verified trainer receipts, complete per-step trajectories and actual before/after adapter file SHA-256; this establishes training execution and changed artifacts, not measured capability gain.",
+  "carrier_details": [
+    {
+      "carrier": "text_memory",
+      "health_status": "FAIL",
+      "health_reasons": [
+        "REPAIR_IDENTICAL_INVALID"
+      ],
+      "primary_contract_valid": false,
+      "repair_contract_valid": false,
+      "primary_payload_sha256": "f557c1ff4cde508b22dd834eddf96344210e2757b7333f5dc253eadca864adf2",
+      "repair_payload_sha256": "f557c1ff4cde508b22dd834eddf96344210e2757b7333f5dc253eadca864adf2",
+      "repair_changed_bytes": false,
+      "terminal_disposition": "NOOP_KEEP_PRIOR_CONTRACT_REJECTED",
+      "carrier_content_changed": false,
+      "q09_mechanism_counts": {
+        "accepted_content_changes": 0,
+        "accepted_valid_candidates": 0,
+        "external_teacher_calls": 0,
+        "generated": 1,
+        "model_calls_consumed": 2,
+        "primary_calls": 1,
+        "repair_calls": 1,
+        "repaired": 1,
+        "requested": 1,
+        "selected_in_rollout_prompt": 1,
+        "valid": 0
+      }
+    },
+    {
+      "carrier": "skill_bundle",
+      "health_status": "FAIL",
+      "health_reasons": [
+        "REPAIR_IDENTICAL_INVALID"
+      ],
+      "primary_contract_valid": false,
+      "repair_contract_valid": false,
+      "primary_payload_sha256": "50955636ee63326e5e6d81854c8aea727705b4f18b16699e443e8b2be106b96a",
+      "repair_payload_sha256": "50955636ee63326e5e6d81854c8aea727705b4f18b16699e443e8b2be106b96a",
+      "repair_changed_bytes": false,
+      "terminal_disposition": "NOOP_KEEP_PRIOR_CONTRACT_REJECTED",
+      "carrier_content_changed": false,
+      "q09_mechanism_counts": {
+        "accepted_content_changes": 0,
+        "accepted_valid_candidates": 0,
+        "external_teacher_calls": 0,
+        "generated": 1,
+        "model_calls_consumed": 2,
+        "primary_calls": 1,
+        "repair_calls": 1,
+        "repaired": 1,
+        "requested": 1,
+        "selected_in_rollout_prompt": 1,
+        "valid": 0
+      }
+    },
+    {
+      "carrier": "agent_system",
+      "health_status": "PASS",
+      "health_reasons": [],
+      "primary_contract_valid": false,
+      "repair_contract_valid": false,
+      "primary_payload_sha256": "e285e963dccc977aec4ca38d389bd51c6edb19319268b4e83743161068c5d21e",
+      "repair_payload_sha256": "ef40b1cce2156b70678ee2bbed1c2835c82fbd1cc2e613ec64ce272f4a3359e3",
+      "repair_changed_bytes": true,
+      "terminal_disposition": "NOOP_KEEP_PRIOR_CONTRACT_REJECTED",
+      "carrier_content_changed": false,
+      "q09_mechanism_counts": {
+        "accepted_content_changes": 0,
+        "accepted_valid_candidates": 0,
+        "external_teacher_calls": 0,
+        "generated": 1,
+        "model_calls_consumed": 2,
+        "primary_calls": 1,
+        "repair_calls": 1,
+        "repaired": 1,
+        "requested": 1,
+        "selected_in_rollout_prompt": 1,
+        "valid": 0
+      }
+    }
+  ],
+  "cost_boundary": "R143–145 explicitly report 18 text model calls (one primary plus one allowed repair for each of three carriers per round). These are not 18 independent experiments or exhaustive physical call accounting; external_teacher_calls follows the original project contract.",
+  "independent_parameter_validation": {
+    "method": "Read real trainer receipts and step trajectories; stream-rehash each actual adapter file. No independent gradient recomputation, parameter-distance calculation or base-model weight rehash.",
+    "adapter_file_bytes_each": 205551528,
+    "persistent_state_rank": 128,
+    "transient_current_update_rank": 8,
+    "rounds": [
+      {
+        "round": 143,
+        "optimizer_steps": 114,
+        "current_steps": 57,
+        "replay_steps": 57,
+        "loss_trajectory_entries": 114,
+        "coefficient_trajectory_entries": 114,
+        "trainer_receipt_sha256": "9b37970d077eca7e3afc3b0d2c16c8527ed1ba0bc21fd33bf49eabce17ab4fbb",
+        "adapter_before_sha256": "886e806f452c94ec6111bf7101857b3cad927801ce07163aa6a097ad7fb31751",
+        "adapter_after_sha256": "38dee1d323869f60e49e2927a66d1c3d6020aba39313344a379d8b428beff45b"
+      },
+      {
+        "round": 144,
+        "optimizer_steps": 114,
+        "current_steps": 57,
+        "replay_steps": 57,
+        "loss_trajectory_entries": 114,
+        "coefficient_trajectory_entries": 114,
+        "trainer_receipt_sha256": "6b555527b8fddbd74ebfd811a4bfd2f0b0de87630dea21fb89062805ddd00fb9",
+        "adapter_before_sha256": "38dee1d323869f60e49e2927a66d1c3d6020aba39313344a379d8b428beff45b",
+        "adapter_after_sha256": "d0a755cecd1ce33db47a76e6caeb6fbfe77cfb8fd9c951dcbd1ab00b5f48415e"
+      },
+      {
+        "round": 145,
+        "optimizer_steps": 80,
+        "current_steps": 40,
+        "replay_steps": 40,
+        "loss_trajectory_entries": 80,
+        "coefficient_trajectory_entries": 80,
+        "trainer_receipt_sha256": "9836866f0059c4b55008bf511294df4bea5dfbec88cffd38268ac5c6af8180ab",
+        "adapter_before_sha256": "d0a755cecd1ce33db47a76e6caeb6fbfe77cfb8fd9c951dcbd1ab00b5f48415e",
+        "adapter_after_sha256": "ab844d514e543f90223e5b19d06c70a05b013661bb0f44bdf1f750f7ea6c3fd4"
+      }
+    ]
+  },
+  "publication_kind": "Sanitized independently verified runtime and training receipt metadata; excludes raw task instructions, candidate text, credentials, device identities and private grant records."
+}

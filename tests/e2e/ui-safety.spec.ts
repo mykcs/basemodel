@@ -15,11 +15,11 @@ const routes = [
   { label: 'openevo-guide', path: '/research/seed-openevo/study/run/' },
 ] as const;
 
+// One owner-selected phone viewport. Separate, issue-specific specs may retain
+// older breakpoint fixtures for real regressions; they are not this default matrix.
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -317,7 +317,7 @@ test('theme switching updates page and surface colors without a reload', async (
 
 
 test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/models/', { waitUntil: 'domcontentloaded' });
   const entry = page.locator('.models-research-model');
   await expect(entry).toContainText('Qwen2.5-3B-Instruct');
@@ -329,7 +329,7 @@ test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({
   await expect(setup).toContainText('SEED / OpenEVO 实验设置');
   await expect(setup).toContainText('Checkpoint / revision');
   await expect(setup).toContainText('prompt / parser');
-  await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 390);
+  await expect(page.locator('html')).toHaveJSProperty('scrollWidth', 440);
 
   await page.goto('/models/qwen2-5-3b-instruct/#experiment-setup', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#experiment-setup')).toBeVisible();
@@ -340,3 +340,103 @@ test('SEED / OpenEVO model setup has one canonical model-detail owner', async ({
   await page.goto('/research/seed-openevo/flow/base-model/', { waitUntil: 'domcontentloaded' });
   await page.waitForURL('**/models/qwen2-5-3b-instruct/#experiment-setup');
 });
+
+
+// This is a *rendered keyboard* regression for the #985 contrast fix.
+// Token/unit contrast alone cannot prove the focus ring survives the real
+// browser cascade. These are candidate-build tests, not logged-in Production QA.
+const focusRoutes = [
+  { label: 'home', path: '/' },
+  { label: 'flow', path: '/research/seed-openevo/flow/' },
+  { label: 'results', path: '/research/seed-openevo/study/results/' },
+] as const;
+
+for (const matrix of matrices) {
+  test(`${matrix.name} shows actual keyboard Tab focus on Home, Flow and Results`, async ({ page }, info) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+
+    // At 440px the desktop theme button is hidden; test the exposed menu
+    // button instead. Neither route may require opening a menu to find focus.
+    const target = matrix.viewport.width === 440 ? '[data-menu-toggle]' : '[data-theme-toggle]';
+    for (const route of focusRoutes) {
+      await test.step(route.label, async () => {
+        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+        await settle(page);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
+        await expect(page.locator(target)).toBeVisible();
+
+        // Reach the control through *real Tab events*; .focus() would not
+        // prove keyboard reachability or the :focus-visible modality.
+        let reached = false;
+        for (let index = 0; index < 30; index += 1) {
+          await page.keyboard.press('Tab');
+          reached = await page.locator(target).evaluate(el => document.activeElement === el);
+          if (reached) break;
+        }
+        expect(reached, `${route.label} ${matrix.name}: header control must be Tab-reachable`).toBe(true);
+
+        const evidence = await page.locator(target).evaluate((el) => {
+          const style = getComputedStyle(el);
+          const probe = document.createElement('span');
+          probe.style.color = 'var(--accent-deep)';
+          document.body.append(probe);
+          const expectedColor = getComputedStyle(probe).color;
+          probe.remove();
+          const box = el.getBoundingClientRect();
+          return {
+            focusVisible: el.matches(':focus-visible'),
+            outlineStyle: style.outlineStyle,
+            outlineWidth: Number.parseFloat(style.outlineWidth),
+            outlineColor: style.outlineColor,
+            expectedColor,
+            rect: { left: box.left, right: box.right, top: box.top, bottom: box.bottom },
+            scrollWidth: document.documentElement.scrollWidth,
+            viewportWidth: document.documentElement.clientWidth,
+          };
+        });
+        expect(evidence.focusVisible).toBe(true);
+        expect(evidence.outlineStyle).toBe('solid');
+        expect(evidence.outlineWidth).toBeGreaterThanOrEqual(3);
+        expect(evidence.outlineColor, 'resolved focus color must match opaque semantic accent').toBe(evidence.expectedColor);
+        expect(evidence.rect.left).toBeGreaterThanOrEqual(0);
+        expect(evidence.rect.right).toBeLessThanOrEqual(matrix.viewport.width + 1);
+        expect(evidence.rect.top).toBeGreaterThanOrEqual(0);
+        expect(evidence.rect.bottom).toBeLessThanOrEqual(matrix.viewport.height + 1);
+        expect(evidence.scrollWidth).toBeLessThanOrEqual(evidence.viewportWidth + 2);
+        await page.screenshot({ path: info.outputPath(`keyboard-focus-${matrix.name}-${route.label}.png`), animations: 'disabled' });
+      });
+    }
+  });
+}
+
+for (const matrix of matrices) {
+  test(`${matrix.name} keeps the home challenge link usable with reduced motion`, async ({ page }) => {
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const challenge = page.locator('.challenges-entry');
+    await expect(challenge).toBeVisible();
+
+    const transitionDurationMs = () => challenge.evaluate((element) => {
+      const durations = getComputedStyle(element).transitionDuration.split(',').map((token) => {
+        const value = token.trim();
+        if (value.endsWith('ms')) return Number(value.slice(0, -2));
+        if (value.endsWith('s')) return Number(value.slice(0, -1)) * 1000;
+        return Number.NaN;
+      });
+      return Math.max(...durations);
+    });
+    // Positive control: the ordinary 140ms border feedback still exists.
+    expect(await transitionDurationMs()).toBeGreaterThanOrEqual(100);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    expect(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true);
+    // The established site.css guard caps transitions at 0.01ms !important.
+    // Chromium reports this as 1e-05s, WebKit as 0.00001s, not the string 0s.
+    await expect.poll(transitionDurationMs).toBeLessThanOrEqual(1);
+    await expect(challenge).toHaveAttribute('href', '/research/seed-openevo/recent-challenges/');
+  });
+}

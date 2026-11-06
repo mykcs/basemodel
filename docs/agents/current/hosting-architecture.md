@@ -1,12 +1,18 @@
-# Hosting architecture — required Public PR CI + Vercel provider gate + manual fallbacks
+# Hosting architecture — Vercel-default with protected Cloudflare fallback
 
-Last reviewed: **2026-09-28**
+Last reviewed: **2026-11-01**
 
-Status: **current release architecture. Public GitHub Actions owns required exact-head deterministic/browser acceptance on independent hosted runners; Vercel Pro owns required exact-head provider build/deploy acceptance plus access-protected Preview/Production deployment; CircleCI and Mac/OrbStack are manual fallback only; no anonymous external Production monitor is active.**
+**Current user-selected publishing default:** Vercel Authentication-protected `https://basemodel-preview.vercel.app/` is the normal reader-facing Production release destination. Cloudflare Workers + Access at `https://basemodel-access-standby.gemini202405.workers.dev/` is a protected, independently maintained standby. Choosing which site to publish never implies a same-domain traffic switch, automatic content sync, a billing change, or opening either login gate.
 
-Provider-selection rationale and rejected alternatives: [`ci-provider-decision.md`](ci-provider-decision.md). This file owns current topology; the rationale file explains why this topology is preferred.
+**One manual selector, no automatic provider deployments:** `.github/workflows/release-provider.yml` runs only from `main` and now preselects `provider=vercel`, `operation=plan`. Plan uses GitHub-hosted compute only; explicit `deploy` is needed to spend a provider's quota. Vercel's `vercel-protected` job stages Production without moving the canonical alias, checks exact Git SHA, READY project identity, Vercel Authentication and authorized routes, then promotes and rechecks the alias. Cloudflare selection delegates to the existing `cloudflare-standby.yml` protected Access workflow. Keep `vercel.json` `git.deploymentEnabled.main=false`: default provider does **not** mean automatic Vercel Git deployments.
 
-## Current decision
+**Merge acceptance remains provider-independent:** the live GitHub ruleset and classic protection require the same two exact-head GitHub Actions contexts `public-ci-gate` and `cloudflare-artifact-gate`, with strict current-base semantics. This preserves repository/browser acceptance and the standby Worker package/security dry-run without any provider publication. Never reintroduce a required Vercel Preview on each PR merely because Vercel is the selected release site. CircleCI/Mac stay manual CI recovery only; no anonymous Production monitor is active.
+
+**Live release evidence:** [PR #979](https://github.com/mykcs/basemodel/pull/979) merged the selector. [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed modern Vercel v13 identity handling. The successful [Vercel deploy run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) published exact `main@7cf12902`, with staged/pre/post-promotion SHA, SSO and route checks green. Prior protected Cloudflare releases and authenticated mobile/browser acceptance remain evidence for their own deployed SHA, not proof that Cloudflare automatically mirrors newer `main`. A new website source change needs separate exact-SHA protected publication and logged-in desktop/iPhone 18 Pro Max inspection.
+
+**Current operation owner:** [quota-aware provider switching SOP](../../dev/CI/QUOTA_AWARE_PROVIDER_SWITCH.md). Historical Vercel-required CI decisions below are preserved only for incident analysis, contract-test compatibility and deliberate rollback; they do **not** override the active two GitHub required checks or today's Vercel-default manual release selection.
+
+## Previous Vercel-first architecture (historical reference; superseded only after live cutover)
 
 ```text
 GitHub = source of truth
@@ -14,7 +20,7 @@ GitHub = source of truth
 working PR / development branch
   -> public hosted GitHub Actions preflight
   -> deterministic gate + shared risk planner
-  -> full work uses 8 independent Chromium shards; bounded work uses one focused runner; non-UI work uses zero browser runners
+  -> full work uses Chromium 4 + WebKit 8 independent shards and one seven-case extras runner; bounded work uses one focused runner; non-UI work uses zero browser runners
   -> no Git-integrated Vercel acceptance Preview while iterating
   -> when human visual review is needed: manual GitHub-hosted Fast Review build -> prebuilt upload to a dedicated non-Git-connected review Preview
   -> review Preview is non-authoritative, non-Production, and never moves `ci/vercel-gate-final`
@@ -40,11 +46,15 @@ manual CI recovery only
 
 Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
 
+Performance implementation and qualification are recorded in [`docs/dev/CI/README.md`](../../dev/CI/README.md). Candidate mechanisms there are not effective until merged; executable workflows and live exact-head evidence determine acceptance.
+
 ## Public GitHub Actions preflight
 
-`.github/workflows/public-pr-ci.yml` runs on `pull_request` with `contents: read`, no secrets, immutable-SHA-pinned Actions, exact PR-head binding, and same-PR auto-cancellation. A dependency-free planning job allocates browser compute before runner start: zero runners for skip, one for focused, and eight independent public Linux runners for full/global work; every browser runner re-evaluates the same plan before npm/browser spend. Full work uses the repository timing scheduler with one Playwright worker per shard; the browser runtime is the digest-pinned official Playwright 1.62.1 Noble image. The workflow shares `scripts/vercel-ui-plan.ts` and `scripts/ci-ui-gate.mjs`, so it does not own a weaker provider-specific risk taxonomy.
+`.github/workflows/public-pr-ci.yml` is the sole automatic PR browser graph. It uses immutable-SHA-pinned Actions, read-only permissions, no secrets and same-PR cancellation. Planning resolves one immutable open main-target PR identity, binds the event base and exact head, and allocates zero browser runners for skip, one for focused, or Chromium 4 + WebKit 8 full-population shards plus a distinct seven-case Public extras runner. The existing shared `scripts/vercel-ui-plan.ts` remains the risk owner. A non-skip typography branch upgrades to full work; its exhaustive failure collection and seven-day diagnostics remain. Draft opening/synchronization already runs acceptance; Ready promotion does not repeat it.
 
-The 2026-09-15 scheduler qualification refreshed the current canonical suite to 197 Chromium identities and held the acceptance contract fixed while testing 4/6/8 shards. Runs `34986898313`, `34987545968`, and `34988052276` all covered 197/197 identities exactly once with retries=0; their maximum browser-step times were 138 s, 102 s, and 80 s, and workflow wall times were 209 s, 159 s, and 139 s. The frozen selection rule chooses the smallest shard count within 10% of the fastest result, so full/global work uses 8 shards. This evidence qualifies the required Public PR CI browser topology. Vercel remains separately required for exact-head provider build/deploy success, but it no longer reruns the browser matrix.
+The deterministic job owns one static build and one overflow preflight in the same digest-pinned Playwright 1.63.0 Noble image. Browser consumers wait for success, download only that same run's successful producer attempt and verify exact head/base/tree, configuration, toolchain and every output byte. Full-title duration allocation uses one worker and zero retries. Each engine executes the complete `test:ui:all` population once with expanded figure capture; default light reading at 390/1440 is separately asserted before any evidence-state mutation, preserving the old ordinary route checks. Chromium's distinct core visual capture and six Lab cases run in the extras job, with their own execution proof. `public-ci-gate` requires deterministic validation, all allocated browser work and both verified figure aggregates; missing, failed, canceled or unexpected skipped work fails.
+
+The 2026-09-15 197-case qualification selected eight Chromium shards for that earlier workload. The later 2026-10-29 topology replaces duplicate automatic browser populations with one Chromium/WebKit graph and assigns more independent runners to the slower engine. Historical measurements remain in the [CI performance record](../../dev/CI/README.md); they do not measure the new topology. Vercel remains separately required and does not rerun browser tests.
 
 ## Exact-head acceptance ownership
 
@@ -64,10 +74,10 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 - build: `npm run build`
 - canonical project domain: `https://basemodel-preview.vercel.app`
 
-Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to the complete canonical Chromium matrix. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
+Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to both complete canonical engine populations. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 
 
-Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`. Production is intentionally access-protected and is also emitted as `noindex`; it still uses the stable project domain/canonical. `vercel.json` must not disable `main`.
+Vercel Preview is automatically non-indexable through `VERCEL_ENV=preview`. Production is intentionally access-protected and is also emitted as `noindex`; it still uses the stable project domain/canonical. The historical automatic-Production rule required `main` enabled; the quota-aware target explicitly disables only automatic Git `main` deploys without removing manual Vercel deployment or its existing Production.
 
 ## Manual fallback surfaces
 
@@ -108,3 +118,12 @@ Only load or mention legacy hosting when:
 - live evidence shows unexpected provider activity.
 
 A still-required skip prefix is a silent compatibility safeguard until the external integration is disabled. It is not an ordinary release stage or completion-report item.
+
+
+### Scientific figure cloud evidence lane
+
+`cloud-figure-visual-review.yml` is now a manual entrypoint. Explicit full review calls the same Public reusable graph with `force_full`; there is no second automatic PR build or duplicated browser matrix. A separately named, bounded performance pilot records diagnostic evidence and never produces merge-gate artifact names or substitutes for full acceptance.
+
+Scientific figure acceptance lives in Public's Chromium 4 / WebKit 8 duration-balanced selections, one worker per shard and no retry. It preserves the complete canonical population, six width/theme capture states, applicable grayscale/print images, scientific table hashes, and two original default-reading width checks before expanded capture. The two stable `cloud-figure-{browser}` checks require every allocated shard, verify exact population/source and upload/download round-trip bytes. The verifier binds the expected shard total as well as source and engine; a missing eighth WebKit shard cannot pass as an old four-shard run.
+
+Raw screenshots and failure videos/traces retain three days, or seven for semantic typography branches. The `typography-full-webkit-gate` alias consumes the exhaustive unified population rather than rerunning it. An intentional skip/focused plan still requires successful planning/deterministic validation and an unallocated full matrix. Artifact integrity remains separate from independent visual and reader acceptance.

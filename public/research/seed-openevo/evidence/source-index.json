@@ -1,0 +1,119 @@
+{
+  "schema": "basemodel.anonymous-provenance-index.v1",
+  "baseline_commit": "1ed126cbe2c799520fe365b98a105ef7aa79b7bd",
+  "boundary": "Presentation-only locator redaction. W&B is observability, not scientific authority. Source IDs resolve in an owner-permission archive; original file SHA256 and scientific payload commitments are below. Public Git history and external copies may still identify accounts. This index does not promise historical anonymity.",
+  "original_recovery": "Owner-only local bundle, hash-verified; no remote disaster-recovery certification. Original baseline Git objects also persist in existing public history. No credentials or original account paths are included here.",
+  "sources": [
+    {
+      "id": "wb-001",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "workspace",
+      "run_id": null
+    },
+    {
+      "id": "wb-002",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "report",
+      "run_id": null
+    },
+    {
+      "id": "wb-003",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "run",
+      "run_id": "ceiling1-stage2-7b-202609041833-b01d24a468"
+    },
+    {
+      "id": "wb-004",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "run",
+      "run_id": "ceiling1-stage2-qwen3-1p7b-202609041833-4c1bb58e9f"
+    },
+    {
+      "id": "wb-005",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "run",
+      "run_id": "q17directapplyviz159"
+    },
+    {
+      "id": "wb-006",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "workspace",
+      "run_id": null
+    },
+    {
+      "id": "wb-007",
+      "provider": "Weights & Biases",
+      "access": "Owner permission required for original locator",
+      "kind": "workspace",
+      "run_id": null
+    }
+  ],
+  "receipts": [
+    {
+      "path": "research/seed-openevo/evidence/q17-wandb-lineage-audit-20260915.json",
+      "original_sha256": "191af36002efdae6e536297627a5857df9ea11f3f22e97025e8ca8ee5dbcb835",
+      "scientific_payload_sha256": "c9748747f80d93bf1de0dacb114df5d4f712201f93e12d15a0c5561218e62faf",
+      "locator_fields": [
+        "/read_only_observations/wandb_project",
+        "/historical_stage2_wandb_run",
+        "/visualization_mirror/url",
+        "/native_workspace/url"
+      ]
+    },
+    {
+      "path": "research/seed-openevo/evidence/bounded-effective-state-advisor-analysis-20260919.json",
+      "original_sha256": "30ab5e0eac8179ba6411bb818c7b2057ad8975d11f24c83489360df69740acc0",
+      "scientific_payload_sha256": "f4236b44dbd521ba2b2278f34eb8372f05ce41fc1303e88ecb30158b6132614a",
+      "locator_fields": [
+        "/wandb/workspace"
+      ]
+    },
+    {
+      "path": "research/seed-openevo/evidence/wandb-threeway/receipt.json",
+      "original_sha256": "09f05daebebfce20948a42af2352fe00e50ce7d80cdb0dc6a7f589dd1ed1660f",
+      "scientific_payload_sha256": "807b162f1fde5353972d8021222b1b13ca06d55494d0da15ff34c17fe9786b3c",
+      "locator_fields": [
+        "/source/entity",
+        "/workspace",
+        "/report"
+      ]
+    }
+  ],
+  "scientific_payload_hash_algorithm": "SHA256 of UTF-8 JSON.stringify with recursively sorted object keys; omit privacy_presentation and exactly the listed locator fields; arrays retain order",
+  "source_owners": [
+    {
+      "path": "src/data/effectiveStateGdrLoraStudy.ts",
+      "sha256": "d139d1b9392f8a45dbe03f828359cf7b4bb60ae8327fde2f975fd87d343d7982"
+    },
+    {
+      "path": "src/components/research/OpenEvoQ17DirectApplyAnalysis.astro",
+      "sha256": "5367f3c8ebf07af4fbdc28681561f50f2fed676e19678aed471084361c2346aa"
+    },
+    {
+      "path": "src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro",
+      "sha256": "a9a9ab570f0c64f2133806b57aa31e2354dbb1dfc21d379511cd49152331234a"
+    },
+    {
+      "path": "src/components/research/OpenEvo7BStage2AnalysisMap.astro",
+      "sha256": "a717b5f46dc606c800b9ada0bd6f3eedbf0b289df22326b28915e2623b179cca"
+    },
+    {
+      "path": "src/components/research/SeedOpenEvoBriefingTechnicalNotes.astro",
+      "sha256": "c5cd004479c18968435423a7e0a9028da2edc2641d01a0d0cb37e23e2d154a2e"
+    },
+    {
+      "path": "src/components/OpenEvoSeedBenchmarksGuide.astro",
+      "sha256": "551de2f49941dc9e9959651ecc99356edd3f76512d649d9d17f6b8a7f33ed81b"
+    },
+    {
+      "path": "src/data/openEvoLongRunTrainingDynamics.ts",
+      "sha256": "c03139cb6b41d65497a61d1c29b4e01651962661785a22537ba6ebb9c8303d8a"
+    }
+  ]
+}

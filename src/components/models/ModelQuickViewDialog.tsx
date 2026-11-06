@@ -5,6 +5,7 @@ import { displayBoolean, displayUnknown, licenseLabel, tierLabel } from '../../l
 import { localePath, type Locale } from '../../i18n';
 import type { AtlasModel } from '../../lib/schemas';
 import type { Messages } from '../../i18n/zh';
+import './ModelQuickView.css';
 
 interface Props {
   models: AtlasModel[];

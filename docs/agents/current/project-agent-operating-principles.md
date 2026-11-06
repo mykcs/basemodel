@@ -58,33 +58,15 @@ Before any GitHub/provider mutation:
 
 Tool discovery and capability testing should be read-only whenever a read path exists. This rule is especially important on repositories with Git-connected deployment because every unnecessary ref mutation can also consume build/review attention. If the same target/action mismatch recurs after an explicit correction-to-action witness, stop retrying that mutation surface and switch to an explicit programmatic path whose object and action are visible in one schema/command (for example, `gh pr create` for opening a PR).
 
-### Choose the fastest safe execution surface
+### Follow the repository's cloud-first execution allocation
 
-A connected user device, remote desktop, SSH target, or local checkout is a stronger execution boundary than a repository/provider connector. Crossing that boundary therefore needs a concrete benefit, but **cloud-only is not the goal**. The default is the **fastest safe path**: choose the narrowest surface that materially shortens the feedback loop or improves validation quality without weakening authority, safety, or reproducibility.
+The [root execution allocation](../../../AGENTS.md#github-first-basemodel-execution-owner-directive-2026-10-20) owns BaseModel's GitHub/Vercel-first routing and Mac control-plane exception. [Central Capability Routing](https://github.com/mykcs/.agents/blob/main/docs/dev/CAPABILITY_ROUTING.md) owns shared fallback and authorization-continuity semantics.
 
-Use this routing model for BaseModel work:
-
-```text
-small repository/content/docs change -> GitHub connector
-UI / multi-file / local-execution-heavy change -> isolated local worktree through Remote Desktop Commander when it is faster
-PR / review / merge / exact-SHA status -> GitHub connector
-Preview / Production provider state -> Vercel/provider connector
-```
-
-A local/RDC path has real value when it enables a materially faster or stronger loop such as: targeted Vitest in the same checkout, `astro check`, static build, dev-server inspection, Playwright/browser verification, reuse of a lockfile-compatible dependency tree, or one coherent multi-file Git commit instead of slow sequential file API writes. Shared navigation, layout, CSS, responsive behavior, and component-plus-test edits are typical examples.
-
-Rules:
-
-- **Small and self-contained stays cloud-side.** A one-line copy fix, Markdown/Agent-doc edit, small static-data correction, or ordinary PR metadata change should normally use GitHub directly when that is simpler and equally verifiable.
-- **Use RDC/local worktrees when the gain is concrete.** Prefer it for UI, shared components, multi-file refactors, or changes where local test/build/dev/browser feedback will likely catch mistakes before a hosted gate. Convenience alone is not enough; the expected gain should be shorter feedback, stronger local evidence, fewer provider-triggering iterations, or safer atomic editing.
-- **RDC is an accelerator, never a dependency.** If the Mac/device is offline or unhealthy and the repository/provider path can safely continue, continue without waiting for the device. Do not make ordinary BaseModel development depend on one machine.
-- **Return authority to the cloud.** Local Git/test/build evidence is preflight evidence only. GitHub remains canonical source/PR state, and exact-head hosted acceptance remains the release authority. Never substitute a green local build for the required Vercel/provider gate.
-- **Isolate local work.** Before mutation, resolve the repository root, exact remote/base SHA, branch, dirty state, shell, and intended worktree. Prefer a task-owned worktree and unique port; never reuse or overwrite another Agent's dirty checkout merely because it is already open.
-- **Keep device access scoped.** Do not inspect unrelated files/processes or use SSH/device access that the task does not need. The fact that RDC is online does not authorize broad machine inspection.
-- **Avoid provider churn.** When a local loop can cheaply prove a UI/multi-file candidate before the final Vercel gate, use it. Conversely, do not run an expensive local matrix that adds no useful evidence for a trivial docs/content edit.
-- **Programmatic control planes remain first choice for control-plane actions.** GitHub/Vercel/Cloudflare mutations, PR state, checks, deployments, and settings should use their connector/CLI/API rather than coordinate-based browser clicking unless no supported programmatic route exists.
-
-This is deliberately neither `GitHub-first` nor `RDC-first`. It is **fastest-safe-path first**: use RDC when it buys real development speed or validation value; otherwise do not call it.
+- Repository/PR/provider operations use the connected GitHub/Vercel capability first.
+- Deterministic checks, builds and browser workloads run on the existing hosted lanes; local worktree speed alone does not move these workloads onto the Mac.
+- Use existing authorized Mac CLI control only for a demonstrated plugin/cloud capability gap. Reuse same-scope explicit standing/task approval; refresh live identities and return to the direct lane afterward.
+- Actual permission or tool-safety refusal and object `DENY`/`HOLD` stop the affected action. Keep scientific, host-resource, privacy and release gates intact.
+- Isolate any necessary local control work, preserve dirty checkouts, avoid provider churn and verify exact-head hosted acceptance before release.
 
 ### Reconstruct from durable state after partial execution or tool confusion
 

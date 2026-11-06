@@ -170,7 +170,7 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).toContain('<details class="evidence-details" id={`evidence-${item.id}`} name="research-evidence">');
     expect(questions).toContain('展开实验依据');
     expect(questions).not.toContain('证据链与代码回溯');
-    expect(questions.indexOf('<table class="obs-table">')).toBeGreaterThan(questions.indexOf('<details class="evidence-details"'));
+    expect(questions.indexOf('<ResearchPaperTable class="obs-table">')).toBeGreaterThan(questions.indexOf('<details class="evidence-details"'));
     expect(questions).not.toContain("href: '#evidence-q");
     expect(questions).not.toContain('查看证据链 →');
   });

@@ -1,0 +1,7 @@
+# C1 five-arm Results index readability — implementation candidate, exact-head CI pending
+
+Source base `00d1a692bfc9ca891091664e870802354d00a41c`. The real consumer is `src/pages/research/seed-openevo/study/results.astro`, mounting `OpenEvoExperimentAnalysisPlanIndex.astro`. Only its semantic CSS and the separately owned existing `typography-product-tools.spec.ts` are touched. All five original experiment labels, titles, numeric outcomes, links and 3B/MiniMax final explicitly NOT RUN are byte-preserved.
+
+The old 11.52px/800 monospaced "01" etc, 13.12px long outcome paragraphs and 12.8px source/action links are moved to existing 13px interface meta, 15px body-small, and 15px interface action. H3=17px, intro body=16px, H2 uses existing article section scale; proper line height and minwidth prevent mobile squeeze. No new semantic token, !important production override or experiment fact change.
+
+New browser witness (same PR acceptance runner) checks six 390/768/1440 light/dark states, actual computed type/geometry and five real pages/links, first+last row PNG separately and a 11/12px negative. No English route is invented (Astro locales=['zh']). The Results reader contract, latest state addendum and sitewide Typography standard were read. No other Agent's #898 Figure or historical scaffold file was overwritten. **No C1 acceptance claim until this C1 SHA completes Public PR CI + screenshot review**.

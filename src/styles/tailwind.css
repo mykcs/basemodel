@@ -1,0 +1,36 @@
+/* Opt-in utilities: tokens.css still owns the site's design values.
+ * Omit Preflight so existing articles, figures and native controls keep their
+ * validated base styles. Prefix classes and theme variables to avoid collisions.
+ */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme) prefix(tw);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) source('../');
+
+@theme inline {
+  --color-background: var(--surface);
+  --color-foreground: var(--ink);
+  --color-primary: var(--accent-fill);
+  --color-primary-foreground: var(--accent-on-fill);
+  --color-secondary: var(--surface-muted);
+  --color-secondary-foreground: var(--ink);
+  --color-accent: var(--surface-muted);
+  --color-accent-foreground: var(--ink);
+  --color-input: var(--line);
+  --color-ring: var(--focus-ring);
+  --radius-control: var(--radius-control);
+  --font-sans: var(--font-interface);
+  --text-control: var(--type-meta);
+  --text-control--line-height: var(--type-leading-caption);
+  --font-weight-label: var(--type-weight-label);
+}
+
+/* daisyUI owns count-badge structure only, never research status semantics,
+ * global themes, button styles or the root scrollbar.
+ */
+@plugin 'daisyui' {
+  themes: false;
+  include: badge;
+  prefix: 'dui-';
+  root: '.context-counts';
+  logs: false;
+}

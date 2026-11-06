@@ -33,25 +33,10 @@ const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
   </figure>
 </section>
 <style>
-  .webshop-dataset { width: 100%; margin: 1.5rem auto; padding: 1.1rem 0 1.5rem; border-top: 1px solid var(--line); }
-  .figure-header { max-width: 860px; }
-  .figure-label { color: var(--accent-deep); font: 750 .66rem/1.3 var(--font-mono); }
-  .figure-header h3 { margin: .4rem 0 .55rem; font-size: clamp(1.26rem, 2.7vw, 1.95rem); line-height: 1.26; letter-spacing: -.02em; }
-  .figure-header p { max-width: 75ch; margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.65; }
-  .dataset-world { margin: 1rem 0 0; }
-  .dataset-columns { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: clamp(.6rem, 2vw, 1.4rem); align-items: start; }
-  .product-ledger,.instruction-ledger { min-width: 0; padding: .9rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-panel); background: var(--surface); }
-  .ledger-kicker { display: block; color: var(--muted); font-size: .72rem; font-weight: 750; }
-  .product-ledger>strong,.instruction-ledger>strong { display: block; margin: .4rem 0 .25rem; font: 800 clamp(1.55rem, 3vw, 2.3rem)/1.1 var(--font-mono); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-  .product-ledger>p,.instruction-ledger>p { margin: 0; color: var(--muted); font-size: .81rem; line-height: 1.58; }
-  .dataset-plus { padding-top: 2.7rem; color: var(--muted); font-size: 1rem; }
-  .task-splits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin: .85rem 0 0; border-top: 1px solid var(--line); }
-  .task-splits>div { min-width: 0; padding: .6rem .3rem 0; }
-  .task-splits dt { color: var(--muted); font-size: .7rem; }
-  .task-splits dd { margin: .2rem 0 0; color: var(--ink); font: 750 .86rem/1.4 var(--font-mono); }
-  .dataset-world figcaption { max-width: 90ch; margin-top: .75rem; color: var(--muted); font-size: .75rem; line-height: 1.6; }
-  @media(max-width:680px) {
-    .dataset-columns { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
-    .dataset-plus { justify-self: start; padding: 0 .75rem; }
-  }
+  .webshop-dataset{width:min(1120px,calc(100% - 2rem));margin:2.2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:16px;background:var(--surface)}
+  .figure-header{max-width:860px}.figure-label{color:var(--accent);font:var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface);letter-spacing:.1em}.figure-header h2{margin:.42rem 0 .65rem;font-size:clamp(1.55rem,3.5vw,2.7rem);line-height:1.08;letter-spacing:-.04em}.figure-header p{margin:0;color:var(--muted);line-height:var(--type-leading-body)}
+  .dataset-world{display:grid;grid-template-columns:minmax(210px,.7fr) auto minmax(0,1.3fr);gap:1rem;align-items:center;margin:1.45rem 0 0}.product-warehouse,.task-world{padding:clamp(.9rem,2vw,1.35rem);border:1px solid var(--line);border-radius:12px;background:var(--surface-muted)}.product-warehouse{border-top:5px solid var(--accent)}.product-warehouse small,.product-warehouse span,.task-world small,.task-world span{display:block;color:var(--muted);font-size:.68rem;line-height:1.45}.product-warehouse strong,.task-world>header strong{display:block;margin:.5rem 0 .18rem;font-size:clamp(2rem,5vw,4rem);line-height:.92;letter-spacing:-.06em}.dataset-arrow{color:var(--muted);font-size:1.75rem;font-weight:800}.task-world>header{padding-bottom:.95rem;border-bottom:1px solid var(--line)}.task-splits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;padding-top:.8rem}.task-splits article{min-width:0;padding:.65rem;border-left:3px solid var(--line);background:var(--surface)}.task-splits article:first-child{border-color:var(--accent)}.task-splits article:last-child{border-color:var(--success)}.task-splits strong{display:block;margin:.3rem 0;font-size:1.25rem}.dataset-world figcaption{grid-column:1/-1;color:var(--muted);font-size:var(--type-caption);line-height:var(--type-leading-caption)}
+  :global(.evo-approved-reader) .dataset-world{grid-template-columns:minmax(0,1fr)}
+  :global(.evo-approved-reader) .dataset-arrow{justify-self:center}
+  @media(max-width:700px){.dataset-world{grid-template-columns:1fr}.dataset-arrow{justify-self:center}.task-splits{grid-template-columns:1fr}.webshop-dataset{width:min(100% - 1rem,1120px);padding:1rem}}
 </style>
