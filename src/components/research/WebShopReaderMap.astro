@@ -24,6 +24,19 @@ const t = (cn: string, en: string) => locale === 'zh' ? cn : en;
 </section>
 <style>
   .webshop-entry{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem;width:min(1120px,100%);margin:0 auto 2.2rem}
+  /* The actual shopping brief is a two-column reader object, not unstyled prose.
+   * Restore its existing #840 composition with current semantic typography tokens. */
+  .shopping-brief{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(240px,.7fr);gap:clamp(1rem,4vw,2.4rem);align-items:start;min-width:0;padding:1.1rem 0;border-top:1px solid var(--line)}
+  .shopping-brief__copy>span,.shopping-brief__receipt>span{display:block;color:var(--accent-deep);font:var(--type-weight-label) var(--type-meta)/var(--type-leading-caption) var(--font-interface)}
+  .shopping-brief__copy>strong{display:block;max-width:28ch;margin:.6rem 0;color:var(--ink);font-size:var(--type-subsection);line-height:var(--type-leading-heading);font-weight:var(--type-weight-heading)}
+  .shopping-brief__copy p{max-width:57ch;margin:0;color:var(--muted);font-size:var(--type-body-small);line-height:var(--type-leading-body)}
+  .shopping-brief__receipt{min-width:0;padding:.75rem 1rem;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--surface)}
+  .shopping-brief__receipt ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem .65rem;margin:.55rem 0 .6rem;padding:0;list-style:none}
+  .shopping-brief__receipt li{min-width:0;padding:.45rem 0;border-bottom:1px solid var(--line);font-size:var(--type-body-small);font-weight:var(--type-weight-label)}
+  .shopping-brief__receipt small{display:block;margin-top:.25rem;color:var(--muted);font-size:var(--type-meta);line-height:var(--type-leading-caption)}
+  .shopping-brief__action{display:inline-flex;align-items:center;gap:.8rem;width:fit-content;padding:.45rem 0;border-bottom:1px solid var(--accent-deep);color:var(--accent-deep);font-size:var(--type-body-small);font-weight:var(--type-weight-heading);text-decoration:none}
+  .shopping-brief__action:hover,.shopping-brief__action:focus-visible{text-decoration:underline;text-underline-offset:4px}
+  @media(max-width:780px){.shopping-brief{grid-template-columns:minmax(0,1fr);gap:.9rem}.shopping-brief__receipt{max-width:500px}}
   .page-contents{padding:.9rem 0 1rem;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
   .page-contents h2{margin:0 0 .75rem;font-size:1rem;letter-spacing:-.01em}
   .page-contents ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:0;padding:0;list-style:none}
