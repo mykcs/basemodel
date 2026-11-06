@@ -175,6 +175,18 @@ describe('OpenEvo × WebShop research findings information architecture', () => 
     expect(questions).not.toContain('查看证据链 →');
   });
 
+  it('names the measurement audit and six question articles for accessible article navigation', () => {
+    expect(questions).toContain('<article aria-labelledby="results-audit-action-title">');
+    expect(questions).toContain('<strong id="results-audit-action-title">');
+    expect(questions).toContain('<article aria-labelledby="results-audit-identity-title">');
+    expect(questions).toContain('<strong id="results-audit-identity-title">');
+    expect(questions).toContain('id={item.id} aria-labelledby={`results-question-title-${item.id}`}');
+    expect(questions).toContain('<h3 id={`results-question-title-${item.id}`}>{item.question}</h3>');
+    // Q7 is a distinct current-science section, not a seventh card in this loop.
+    expect(questions).not.toContain("id: 'q7'");
+    expect(currentQ7).toContain('id="q7"');
+  });
+
   it('protects the internal transfer, multi-generation, and measurement boundaries', () => {
     expect(questions).toContain('+0.124');
     expect(questions).toContain('[0.0326, 0.2194]');
