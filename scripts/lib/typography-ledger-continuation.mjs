@@ -82,8 +82,8 @@ export const reviewedSourceContinuations = {
   },
   'src/components/research/SeedOpenEvoResearchHub.astro': {
     priorReviewedSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc',
-    currentSourceSha256: '3faab90e1c550f227668cb458f1e5ed99d98166f77696d026d935f60f3a3e895',
-    reason: 'The method-comparison hub retains four bilingual anchors, but puts the optional chapter navigation behind one native details/summary control, instead of overloading the first viewport with four equal-weight actions. The original Reader Attention budget and scientific limitations remain unchanged; exact-head browser review on both themes, 390/440px, keyboard and no-JS is still required.',
+    currentSourceSha256: '65664bcc811355659a35a3848e54ec89b778bb70f7b196f170a57d75b501a931',
+    reason: 'The method-comparison hub retains four bilingual anchors behind one keyboard-native disclosure without overloading the first viewport. Reviewed prior Flow source SHA256 3faab90e1c550f227668cb458f1e5ed99d98166f77696d026d935f60f3a3e895 remains explicitly recorded as its predecessor. The subsequent 2026-11-07 accessibility-only source edit adds aria-labelledby and unique H2 ids to the existing site-map and evidence sections, completing four explicitly named region landmarks without changing visible text, CSS declarations, research facts, navigation destinations, or Reader Attention budgets. The historical observation is not reused as proof of this changed source; require exact-head Chromium/WebKit, 440x956 and 1440x1000 bilingual light/dark keyboard and no-overflow verification, and still independently review rendered screenshots.',
   },
 };
 
