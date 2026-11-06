@@ -139,6 +139,11 @@ export const contentReorganizationProofs = {
     "priorSourceSha256": "a0bf9e23f420eb6dd25601c4ae19f7aff0dbf320f2ba12e65cf0f3ae24289faa",
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. The previously reviewed current source SHA was 41561fc6d4f6b72ed3f66615c078362f7a0b7f52e3773de3f2ea589c54214554. 2026-11-06: three existing Home evidence links now include their existing finding titles in bilingual accessible names, preserving visible copy, targets, scientific claims, all CSS/typography declarations, and existing route ownership. The exact new source identity is reviewed here after Cloudflare's first CI run correctly rejected the stale hash. Historical rendered text/geometry remains invalidated; fresh exact-head Chromium/WebKit and authenticated Production review are separate and still required."
   },
+  "src/components/research/WebShopReaderMap.astro": {
+    "currentSourceSha256": "1f88931d30a3aa7d35c197d93e7215fabc11924e6f7a5d501346c65ce378c23f",
+    "priorSourceSha256": "ba1f9f5f92091344d5a61a2854584975952825bc3ce2f8084c510dfbe7b62114",
+    "reason": "2026-11-06 #840 shopping-brief recovery: the prior SHA is the exact 5208d9e main component before this change, not a rewrite of the historical sealed ledger. The reader component now restores the two-column shopping request/four-condition receipt and the <=780px one-column handoff using the original scoped CSS owner and existing semantic tokens. The six new typography selectors are independently classified in reviewedWebshopShoppingBriefTypography; pre-existing declarations, product facts, scientific denominators, URLs and privacy rules are unchanged. The old sealed typography observations and any previous Preview/browser snapshots do not prove this new source; the first exact-head Public and Cloudflare runs correctly failed on the stale source-proof gate. Fresh Chromium/WebKit, both viewport sizes and themes, and separately authenticated Production review are required before claiming visual or published acceptance."
+  },
   "src/components/research/OpenEvoCapabilityMapLobby.astro": {
     "currentSourceSha256": "21584e442fe25685e6da1469de6cbb0154fbee488dc85b73162e52b25e7e4e40",
     "priorSourceSha256": "01d74f8b0111f8cf7d72792667c0ba57c718ba507a91d3df8bb021c1f980763e",
