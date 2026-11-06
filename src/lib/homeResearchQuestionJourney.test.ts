@@ -32,6 +32,16 @@ describe('BaseModel wish-aligned homepage research journey', () => {
     expect(home).toContain('方法对方法公平比较还没有完成');
   });
 
+  it('distinguishes the 3B comparison design from separately measured 7B and 1.7B findings in both languages', () => {
+    expect(hero).toContain('这里以 Qwen2.5-3B-Instruct 说明对照设计');
+    expect(hero).toContain('下方 7B 与 1.7B 来自另外的实验');
+    expect(hero).toContain('完整的方法对方法比较仍未完成');
+    expect(hero).toContain('The 7B and 1.7B findings below belong to separate experiments');
+    expect(home).toContain('7B 同题测量还没有证明可靠优势');
+    expect(home).toContain('三组 1.7B 最终模型已经能在同一冻结题集上并排看');
+    expect(contracts).toContain('明确 3B 属对照设计、7B 和 1.7B 属其他实测');
+  });
+
   it('uses reader tasks rather than feature names in the global research navigation', () => {
     expect(header).toContain("label: t('理解研究', 'Understand')");
     expect(header).toContain("label: t('实验与结果', 'Experiments')");
@@ -42,7 +52,7 @@ describe('BaseModel wish-aligned homepage research journey', () => {
 
   it('updates the executable home reader contract before the HTML change ships', () => {
     expect(contracts).toContain("'home', '/', '/', 'narrative'");
-    expect(contracts).toContain('固定同一 Base Model 与任务后');
+    expect(contracts).toContain('公平比较要固定同一 Base Model 与任务');
     expect(contracts).toContain('SEED 与 OpenEvo 方法对方法公平比较仍未完成');
   });
 });

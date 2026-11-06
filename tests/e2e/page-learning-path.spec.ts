@@ -201,6 +201,24 @@ test('Home has one primary question and a subordinate evidence heading, not comp
   }
 });
 
+// The comparison design's 3B example must not be confused with the 7B / 1.7B
+// evidence rows. Check real rendered copy in both themes and viewport sizes.
+test('Home explicitly separates comparison model from measured findings', async ({ page }) => {
+  for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+    for (const theme of ['light', 'dark'] as const) {
+      await page.setViewportSize({ width, height });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      const lead = page.locator('.mission-hero:not(.mission-hero--compact) .mission-hero__lede');
+      await expect(lead).toContainText('Qwen2.5-3B-Instruct');
+      await expect(lead).toContainText('下方 7B 与 1.7B 来自另外的实验');
+      await expect(lead).toContainText('完整的方法对方法比较仍未完成');
+      await expect(page.locator('.home-answer .answer-row')).toHaveCount(3);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+    }
+  }
+});
+
 // The homepage naturally sizes its hero so the Current answer enters the first screen without a blank slide.
 // Keep the attention budget fixed: the evidence CTA is primary; an optional
 // provenance disclosure is the second interactive target. Flow is still
