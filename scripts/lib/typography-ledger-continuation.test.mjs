@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedWebshopShoppingBriefTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -61,6 +61,26 @@ test('Flow native disclosure permits only two exact token-backed summary declara
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, approved[0]], approved), /missing from current source/);
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], value: '11px' }], approved), /outside page-local Astro/);
   assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...approved, { ...approved[0], selector: '.unrelated-summary' }], approved), /outside page-local Astro/);
+});
+
+test('WebShop shopping receipt typography has an exact semantic owner and remains fail-closed', () => {
+  const reviewed = reviewedSharedTypographyRows(reviewedWebshopShoppingBriefTypography);
+  assert.equal(reviewed.length, 12);
+  assert.equal(new Set(reviewed.map(row => row.selector)).size, 6);
+  assert.equal(reviewedWebshopShoppingBriefTypography.file, 'src/components/research/WebShopReaderMap.astro');
+  const source = readFileSync(new URL('../../src/components/research/WebShopReaderMap.astro', import.meta.url), 'utf8');
+  for (const row of reviewed) {
+    assert(source.includes(row.selector), `Missing reviewed selector: ${row.selector}`);
+    assert(source.includes(`${row.property}:${row.value}`), `Missing reviewed semantic declaration: ${row.selector} ${row.property}`);
+  }
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed], reviewed), {
+    newTokenDeclarations: reviewed.length,
+    newFiles: [reviewedWebshopShoppingBriefTypography.file],
+  });
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed.slice(1)], reviewed), /missing from current source/);
+  assert.throws(() => verifyAppendOnlyArticleTypography([baseline], [baseline, ...reviewed, {
+    ...reviewed[0], selector: '.unrelated-panel',
+  }], reviewed), /outside page-local Astro/);
 });
 
 test('later hero layout review keeps the original approved source SHA as evidence', () => {
