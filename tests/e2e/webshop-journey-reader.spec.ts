@@ -62,7 +62,7 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(brief).toBeVisible();
       await expect(receipt).toBeVisible();
       await expect(brief).toHaveCSS('display', 'grid');
-      const columns = await brief.evaluate(node => getComputedStyle(node).gridTemplateColumns.trim().split(/\\s+/).length);
+      const columns = await brief.evaluate(node => getComputedStyle(node).gridTemplateColumns.trim().split(/\s+/).length);
       expect(columns).toBe(width === 440 ? 1 : 2);
       await expect(receipt).toHaveCSS('border-top-width', '1px');
       expect(await receipt.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
