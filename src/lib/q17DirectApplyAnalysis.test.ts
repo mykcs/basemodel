@@ -17,7 +17,8 @@ describe('Q17 DirectApply complete analysis page', () => {
     expect(contracts).toContain("c('capability-q17-directapply-analysis'");
     expect(routes).toContain('"route": "q17-directapply-analysis"');
     expect(sitemap).toContain("'/research/seed-openevo/study/capability-exploration/q17-directapply-analysis/'");
-    expect(lobby).toContain('directApplyAnalysisHref');
+    expect(lobby).toContain('CAPABILITY_READER_ROUTES');
+    expect(read('../data/capabilityReaderRoutes.ts')).toContain("'q17-directapply-analysis'");
   });
 
   it('keeps training, frozen final, and D1 as distinct evidence layers', () => {
@@ -87,10 +88,10 @@ describe('Q17 DirectApply complete analysis page', () => {
 
   it('publishes native W&B Workspace LinePlots without changing Q17 scientific authority', () => {
     expect(component).toContain('data-wandb-native-workspace');
-    expect(component).toContain('jey7zo1544l');
+    expect(component).toContain('/research/seed-openevo/evidence/source-index.json#wb-007');
     expect(component).toContain('原生 Workspace LinePlot');
     expect(component).toContain('只负责交互查看，不改变封存证据、Final 结果或科学权威');
-    expect(component).toContain('历史 1.7B Stage2 W&B（不同实验）');
+    expect(component).toContain('历史 1.7B Stage2 来源（不同实验）');
     expect(wandbAudit.schema).toBe('basemodel.q17-wandb-lineage-audit.v3');
     expect(wandbAudit.visualization_mirror.score_points).toBe(160);
     expect(wandbAudit.visualization_mirror.loss_points).toBe(159);

@@ -18,7 +18,7 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 | 普通页面标题 | `--type-page` | 目录、模型/论文页面 H1 |
 | 长文标题 | `--type-article-page` | 技术博客、研究长文 H1 |
 | 页面分节 | `--type-section`、`--type-article-section` | 有层次的 H2 |
-| 子问题 | `--type-subsection`、`--type-article-subsection` | H3 |
+| 子问题 | `--type-subsection`、`--type-article-subsection` | 普通 H3 |
 | 次级标题 | `--type-minor-heading` | H4 / 实验小节 |
 | 导语与正文 | `--type-lead`、`--type-body`、`--type-body-small` | 自然说明文本 |
 | 真实科研表 | `--type-table` | 原生 HTML table，booktabs 风格 |
@@ -32,10 +32,22 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 - 单一曲线、单个置信区间：类似 LaTeX `figure`，宽度紧凑，主体居于阅读列内；多曲线/多面板可采用 `figure*` 宽度。不能为了填满卡片而无端放大。
 - 图形标题、坐标轴、数值、图注由不同字号角色承担。原始数据点保持来源可核对，点标与轴至少留出真实字形空隙，手机端布局也要检查；所有点有图形语义，黑白打印也能分辨。
 - 学术图不默认加圆角卡片边框、阴影或悬浮工具条。浏览器原生 SVG `<title>` 可能作为覆盖式 hover tooltip 盖住正文；为科研 SVG 优先使用 `role=img` + `aria-label` + `<desc>`，既保留读屏解释又不盖图。
-- 简短科研数据表使用真正的三线表：顶线、表头线、底线，无逐行视觉隔断；比较对象做行、指标做列，数值右对齐，统计口径在 caption。小表按内容紧凑居中；宽表在 320/390/768/1440px 内保留完整列名和数值，默认不要求横滑。无法清晰放入窄阅读列时，使用来自同一原生单元格、带对应列名的完整逐行记录；不得缩成微字、裁列或丢失未测状态。交互式工作台表和固定演示文稿保留各自语义布局。
+- 简短科研数据表使用真正的三线表：顶线、表头线、底线，无逐行视觉隔断；比较对象做行、指标做列，数值右对齐，统计口径在 caption。小表按内容紧凑居中；宽表在默认 iPhone 18 Pro Max 竖屏 440×956 CSS px 和桌面验收视口内保留完整列名和数值，默认不要求横滑。无法清晰放入窄阅读列时，使用来自同一原生单元格、带对应列名的完整逐行记录；不得缩成微字、裁列或丢失未测状态。交互式工作台表和固定演示文稿保留各自语义布局。
 - 图上能直接读到的四个数字不必原封不动再铺一段；正文主要讲**结果关系和限制**。图注标明样本、窗口、纵轴裁剪、未测点和不可直接对比的论文协议。不能拿展示比例冒充性能归因。
 
 ## 全站实施与例外
+
+### “用实验回答 L 学长十问”长文阅读样板
+
+当用户指定这一页面作为排版参考时，**以真实页面及其 CSS 为可执行的视觉标准**，不要只凭“参考博客风格”的印象重建：
+
+- 样板：`src/pages/research/seed-openevo/study/parameter-memory-results/index.astro`，复用 `.evo-blog.evo-article.evo-approved-reader`；
+- 纸张宽度、左右留白、正文、H1/H2/H3、明暗主题：`src/styles/research-article.css`；
+- 问题索引、问题编号、折叠目录和科研回应细节：`src/styles/advisor-ten-approved-reader.css` 与 `src/components/research/OpenEvoQuestionIndex.astro`；
+- 编号问题标题有一项实际样板例外：`openevo-research-blogs.css` 为十问页面设定 `1.28rem`，已迁入私人档案的旧 W 沟通准备页不再作为公开阅读样板；普通导语 H3 仍由共享层级决定。全站 token 文件被历史排版证据按 SHA 封存，未获得重新分类前不修改其值或添加伪全站变量。
+- 必须在 440×956 手机及 1440×1000 桌面上检查：纸张边界、中文长句换行、折叠回答、首屏可读性、明暗两套文本对比。见 `ui-change-visual-acceptance-gate.md`。
+
+此处只是引用已有代码作为样板，**不创建另一份字号或间距数值副本**。样板只适用于明确选用这一阅读模式的长文，不能把它全站强制套用到科研工作台、图表或其他页面。
 
 本规范在所有路由继承同一 token。具体 DOM 仍由 `site.css` / `editorial-hierarchy.css`、`openevo-research-blogs.css`、`research-booktabs.css` 及各科研组件负责。页面角色允许差异：Home Hero、PPT 演示、论文正文、工作台控件、公式、代码、Plot 坐标轴、状态标签；**每一处例外都应有读者任务理由**，不能用“这是历史 CSS”作理由。
 
@@ -44,7 +56,8 @@ BaseModel 仍采用 Research Editorial × Experimental Workbench。参考苏剑�
 ## 验收与防止再次假绿色
 
 1. `npm run audit:typography`：在 `npm run build` 后遍历生成的全部 HTML 路由，检查角色 token、科研图存在、Q03 无遮挡型 SVG title，汇总全部 CSS 字体声明和剩余硬编码债务。审计不是视觉验收。
-2. 浏览器实际覆盖 Home、Models、Papers、Research、Flow、Compare、Workspace 等代表性路径；390/768/1440 宽屏、明暗主题、主要标题/正文/图注级别、无横向溢出。科研网页必须用生产形态访问，不能只读 Astro 源码。
+   - 2026-10-22 的 5,491 条声明档案是历史收据，不是禁止未来新增页面的永久源码指纹。`verify-typography-ledger.mjs` 保证旧声明未被隐式删除或改值；新文章只允许追加使用既有语义字号 token 的局部声明。改动全站/共享 CSS、删除旧声明或引入新的硬编码字号仍需重新分类。新增页面没有继承历史截图验收，必须取得自己的浏览器证据。
+2. 浏览器实际覆盖 Home、Models、Papers、Research、Flow、Compare、Workspace 等代表性路径；iPhone 18 Pro Max 440px（唯一默认手机尺寸）与桌面 1440px、明暗主题、主要标题/正文/图注级别、无横向溢出。科研网页必须用生产形态访问，不能只读 Astro 源码。
 3. 对 Q03 回归做**旧坏例**和**修正例**：旧 SVG 标注距纵轴 13px 的重叠、原生 title 的遮挡必须判失败；新图在桌面和手机可读、图注不等于正文、数学与真实四点保留。Q01 相邻科研图也需检查；对合法的短方法标签/代码和必要的数学符号不误伤。
 4. 每次发布读取最终 Vercel artifact 并浏览器看真实图像。测试绿灯仅证明所检测的性质；读者能否快速理解还需独立冷读，未完成应标记 `NEEDS_READER`。
 

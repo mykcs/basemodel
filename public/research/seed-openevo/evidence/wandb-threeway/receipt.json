@@ -2,7 +2,7 @@
   "schema": "basemodel.wandb-threeway-evidence.v1",
   "checked_at": "2026-09-20T20:13:09+08:00",
   "source": {
-    "entity": "zju-openevo-wangrui",
+    "entity": "WITHHELD_PROVIDER_LOCATOR",
     "project": "zju-openevo-experiments",
     "three_way_run_id": "f587a9687171dadb",
     "final_run_ids": {
@@ -12,8 +12,8 @@
     },
     "action_entropy_analysis_sha256": "60eda60d00f600420ab48b8de39618ded0f36e041e6d1d9286ff13d6a8fe1e6f"
   },
-  "workspace": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments?nw=aq3kg4ro7rf",
-  "report": "https://wandb.ai/zju-openevo-wangrui/zju-openevo-experiments/reports/OpenEVO-1.7B-%C2%B7-%E4%B8%89%E7%BB%84%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90--VmlldzoxNzk2ODUyMg==",
+  "workspace": "/research/seed-openevo/evidence/source-index.json#wb-006",
+  "report": "/research/seed-openevo/evidence/source-index.json#wb-002",
   "report_contents": [
     "three-way final summary",
     "interactive final-run comparer",
@@ -92,5 +92,17 @@
       "transform": "display = source * 100",
       "sha256": "5101233423a4b9bdde03127d3f6d50e7ca6f00087a5c3895f1d8fcacc9cda89e"
     }
+  },
+  "privacy_presentation": {
+    "kind": "presentation_derivative",
+    "baseline_commit": "1ed126cbe2c799520fe365b98a105ef7aa79b7bd",
+    "original_sha256": "09f05daebebfce20948a42af2352fe00e50ce7d80cdb0dc6a7f589dd1ed1660f",
+    "locator_fields": [
+      "/source/entity",
+      "/workspace",
+      "/report"
+    ],
+    "source_index": "/research/seed-openevo/evidence/source-index.json",
+    "boundary": "Only provider account/access locators are withheld. Measurements, run IDs, source SHAs and scientific-authority flags are unchanged. The original is preserved separately; this derivative is not the original receipt."
   }
 }

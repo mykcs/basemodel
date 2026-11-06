@@ -3,6 +3,14 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { pageFileToRoute, planHostedUi } from '../../scripts/vercel-ui-plan';
 
 describe('Vercel hosted UI gate planner', () => {
+  it('selects the existing retrospective regression when its report page changes', () => {
+    const plan = planHostedUi(['src/pages/research/seed-openevo/recent-challenges/index.astro']);
+    expect(plan.mode).toBe('focused');
+    expect(plan.routes).toEqual(['/research/seed-openevo/recent-challenges/']);
+    expect(plan.specs).toContain('tests/e2e/research-retrospective.spec.ts');
+    expect(plan.specs).toContain('tests/e2e/sitewide-figure-width-scope.spec.ts');
+  });
+
   it('maps concrete Astro page files to their deployed routes', () => {
     expect(pageFileToRoute('src/pages/index.astro')).toBe('/');
     expect(pageFileToRoute('docs/archive/site-en/src/pages/en/index.astro.archive')).toBeUndefined();
@@ -158,9 +166,39 @@ describe('Vercel hosted UI gate planner', () => {
     expect(planHostedUi(['scripts/ci-ui-test-timings-202609061200.json']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-ui-test-timings-202609152256.json']).mode).toBe('full');
     expect(planHostedUi(['.github/workflows/self-hosted-ci.yml']).mode).toBe('full');
+    expect(planHostedUi(['.github/workflows/cloudflare-standby.yml']).mode).toBe('full');
+    expect(planHostedUi(['wrangler.standby.jsonc']).mode).toBe('full');
+    expect(planHostedUi(['scripts/hosting/verify-cloudflare-access.mjs']).mode).toBe('full');
     expect(planHostedUi(['.circleci/config.yml']).mode).toBe('full');
     expect(planHostedUi(['scripts/ci-circleci-prepare.sh']).mode).toBe('full');
     expect(planHostedUi(['.github/runner/Dockerfile']).mode).toBe('full');
+  });
+
+  it('preserves full Cloud Figure acceptance for every former path-filter owner', () => {
+    expect(planHostedUi([
+      'src/components/research/explainer/EnvironmentExplainers.tsx',
+      'tests/e2e/research-explainer-layout.spec.ts',
+    ]).mode).toBe('full');
+    for (const file of [
+      '.github/workflows/cloud-figure-visual-review.yml',
+      'src/components/research/AdvisorTenEvidenceVisual.astro',
+      'src/components/research/AdvisorTenConceptUI.astro',
+      'src/components/research/OpenEvoSdLoraScaling.astro',
+      'src/components/research/OpenEvoCheckpointCurve.astro',
+      'scripts/audit-sitewide-research-figure-widths.mjs',
+      'scripts/verify-cloud-figure-evidence.mjs',
+      'scripts/verify-cloud-figure-evidence.test.mjs',
+      'scripts/verify-cloud-figure-evidence-future.mjs',
+      'scripts/wait-for-cloud-figure-artifact.mjs',
+      'scripts/ci-ui-test-timings-20261029-figure.json',
+      'scripts/ci-ui-test-timings-20261029-public.json',
+      'tests/e2e/figure-evidence.ts',
+      'tests/e2e/sitewide-figure-width-scope.spec.ts',
+      'tests/e2e/site-reader-contracts.spec.ts',
+      'tests/e2e/sitewide-math-rendering.spec.ts',
+      'tests/fixtures/research-paper-table-values.json',
+      'package.json', 'package-lock.json',
+    ]) expect(planHostedUi([file]).mode, file).toBe('full');
   });
 
   it('fails closed when a local source file cannot be mapped to one concrete route', () => {

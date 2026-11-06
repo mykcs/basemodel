@@ -9,26 +9,14 @@ const stage2Path = `${lobbyPath}stage2-7b-analysis/`;
 const principle = '在与 SEED 对齐的购物任务、尝试次数和评测预算内，先固定规则再看结果，研究 OpenEvo 能把模型提高到什么程度。';
 
 export function registerOpenEvoResearchDeepDiveTests() {
-  test('OpenEvo lobby keeps three primary maps and exposes both successor reading modes', async ({ page }) => {
+  test('research topics preserve distinct results, diagnosis and archive destinations', async ({ page }) => {
     await page.goto(lobbyPath, { waitUntil: 'domcontentloaded' });
-    const orientation = page.locator('[data-research-orientation]');
-    await expect(orientation).toBeVisible();
-    await expect(orientation.locator('[data-orientation-field]')).toHaveCount(5);
-    await expect(orientation).toContainText('从哪里开始');
-    await expect(orientation).toContainText('什么时候结束');
-    await expect(page.locator('[data-research-journey] [data-research-step]')).toHaveCount(3);
-    await expect(page.locator('[data-map-choice]')).toHaveCount(3);
-    await expect(page.locator('[data-research-step="redesign"]')).toContainText('新一轮设计');
-    await expect(page.locator('[data-map-choice="redesign"]')).toHaveAttribute('href', gatewayPath);
-    await expect(page.locator('[data-map-choice="mechanism-1-0"]')).toContainText('Mechanism-1.0');
-    await expect(page.locator('[data-deep-dive="successor-exploration"]')).toHaveAttribute('href', explorationPath);
-    await expect(page.locator('[data-deep-dive="successor-report"]')).toHaveAttribute('href', reportPath);
-    await expect(page.locator('[data-deep-dive="stage2-7b-analysis"]')).toHaveAttribute('href', stage2Path);
-    await expect(page.locator('[data-deep-dive="stage1-evolution"]')).toHaveCount(0);
-    const history = page.locator('[data-research-depth="history"]').last();
-    await history.locator('summary').click();
-    await expect(history.locator('[data-archive-tier="history-evidence"]')).toBeVisible();
-    await expect(history.locator(`a[href="${stage1CompatPath}"]`)).toContainText('兼容旧书签');
+    await expect(page.locator('[data-topic-group]')).toHaveCount(4);
+    for (const path of [gatewayPath, explorationPath, reportPath, stage2Path, `${lobbyPath}mechanism-1-0/`, `${lobbyPath}archive/`]) {
+      await expect(page.locator(`[data-topic-route] a[href="${path}"]`)).toHaveCount(1);
+    }
+    await expect(page.locator(`[data-topic-route] a[href="${stage1CompatPath}"]`)).toHaveCount(0);
+    await expect(page.locator('[data-topic-group="history"] [data-topic-route="stage1-previous"]')).toBeVisible();
   });
 
   test('successor gateway makes exploration and report two views of one evidence set', async ({ page }) => {

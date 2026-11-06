@@ -53,7 +53,7 @@ describe('SEED × OpenEvo research navigation', () => {
     expect(navigation).toContain("label: t('OpenEVO 购物实验 · WebShop', 'OpenEVO experiments · WebShop')");
     expect(navigation).toContain("t('实验目录', 'Experiment index')");
     expect(navigation).toContain("t('运行实验', 'Run experiment')");
-    expect(navigation).toContain("t('OpenEVO 基础能力探索实验', 'OpenEVO capability exploration')");
+    expect(navigation).toContain("t('研究专题', 'Research topics')");
     expect(navigation).toContain("t('阶段汇报', 'Progress briefing')");
     expect(navigation).not.toContain("id: 'model'");
     expect(navigation).not.toContain("label: t('模型', 'Model')");

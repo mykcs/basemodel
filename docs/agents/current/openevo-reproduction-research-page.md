@@ -60,7 +60,7 @@ Visualization must make it harder—not easier—to confuse setup success with s
 
 ## Scientific boundary
 
-Historical 2026-07-29 WEIYING/Kaggle/Colab evidence is a real core-path reference: real WebShop, Qwen2.5-3B-Instruct, Transformers, CUDA, real model actions, real reflector, evolution injection, gen0→gen1. `0.0` is valid execution evidence; `0.0→0.0` is not improvement. Historical OpenEvo `COMPLETED` stub evidence is orchestration-only.
+Historical 2026-07-29 Kaggle/Colab evidence is a real core-path reference: real WebShop, Qwen2.5-3B-Instruct, Transformers, CUDA, real model actions, real reflector, evolution injection, gen0→gen1. `0.0` is valid execution evidence; `0.0→0.0` is not improvement. Historical OpenEvo `COMPLETED` stub evidence is orchestration-only.
 
 Do not claim current RTX6 OpenEvo × WebShop reproduction complete without fresh P0 artifacts.
 

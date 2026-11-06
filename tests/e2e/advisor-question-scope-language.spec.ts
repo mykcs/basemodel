@@ -39,7 +39,8 @@ for (const {width,theme} of [
     await expect(page.locator('#q10')).toContainText('会后新增的独立复现问题');
     await expect(page.locator('#question-index')).not.toContainText('SFT 和 OPSD 能替代持续学习');
     await expect(page.locator('#origin')).toContainText('Q10 是会后另行增加');
-    await expect(page.locator('.evo-article__abstract a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
+    await expect(page.locator('.evo-article__abstract')).toContainText('原始讨论记录仅在私有档案保管');
+    await expect(page.locator('a[href*="meeting-transcript.raw.md"]')).toHaveCount(0);
     response=await page.goto(responseRoute,{waitUntil:'domcontentloaded'});
     expect(response?.status()).toBe(200);
     for(const [id,title] of Object.entries(titles)) {
@@ -76,7 +77,8 @@ for (const {width,theme} of [
     await expect(q09).toContainText('完整消融还没有完成');
     await expect(q09).toContainText('95% 区间都包含零');
     await expect(page.locator('#response-q10')).toContainText('三条新随机流');
-    await expect(page.locator('[data-meeting-provenance] a[href*="2026-09-22-meeting-transcript.raw.md"]')).toBeVisible();
+    await expect(page.locator('[data-meeting-provenance]')).toContainText('原始讨论记录仅在私有档案保管');
+    await expect(page.locator('a[href*="meeting-transcript.raw.md"]')).toHaveCount(0);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
     expect(overflow,'no entire-page horizontal overflow').toBeLessThanOrEqual(2);
   });

@@ -14,10 +14,8 @@ type HeaderState = {
 };
 
 const headerStates: HeaderState[] = [
-  { name: 'mobile-light', theme: 'light', viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark', viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light', viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark', viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light', viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark', viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light', viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark', viewport: { width: 1440, height: 1000 } },
 ];
@@ -186,7 +184,7 @@ for (let shardIndex = 0; shardIndex < globalHeaderRouteShardCount; shardIndex +=
         expect(response?.status(), `${path}: public route must render successfully`).toBe(200);
 
         // One navigation per route is enough: theme attributes and media queries are
-        // switched live so the same page is checked at 390 / 768 / 1440 and light / dark.
+        // switched live so the same page is checked at iPhone 18 Pro Max 440 / desktop 1440 and light / dark.
         for (const state of headerStates) {
           await assertGlobalHeader(page, path, state);
         }
@@ -197,7 +195,7 @@ for (let shardIndex = 0; shardIndex < globalHeaderRouteShardCount; shardIndex +=
 
 test('responsive navigation controls remain operable instead of merely visible', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('atlas-theme', 'light'));
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
 
   const toggle = page.locator('[data-menu-toggle]');
@@ -279,7 +277,7 @@ test('shared navigation does not promote the model catalog as a direct destinati
   await expect(page.locator('.research-navigation__links a[href="/models/qwen2-5-3b-instruct/#experiment-setup"]')).toHaveCount(0);
   await expect(page.locator('.research-navigation__links').getByRole('link', { name: '模型', exact: true })).toHaveCount(0);
 
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.locator('[data-menu-toggle]').click();
   await expect(page.locator('.mobile-utility-links a[href="/models/"]')).toHaveCount(0);

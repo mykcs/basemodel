@@ -99,10 +99,12 @@ test('core distinction remains readable without JavaScript', async ({ browser })
   }
 });
 
-test('capability lobby reflects the sealed four-round D1 instead of the old interim state', async ({ page }) => {
+test('topic directory links to the canonical sealed qualification owner', async ({ page }) => {
   for (const locale of locales) {
     await page.goto(`${locale.prefix}${routes.lobby}`, { waitUntil: 'domcontentloaded' });
-    const deepLink = page.locator('[data-deep-dive="gated-delta-sd-lora"]');
-    await expect(deepLink).toContainText('已经封存的四轮 paired D1 资格结果');
+    const deepLink = page.locator('[data-topic-route="gated-delta-sd-lora"] a');
+    await expect(deepLink).toHaveAttribute('href', `${locale.prefix}${routes.current}`);
+    await deepLink.click();
+    await expect(page.locator('body')).toContainText('四轮配对资格实验已完成并封存');
   }
 });

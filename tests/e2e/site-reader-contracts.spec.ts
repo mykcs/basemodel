@@ -206,47 +206,30 @@ for (const theme of ['light', 'dark'] as const) for (const variant of ['bounded-
 }
 
 
-test('Study phone first screen exposes exactly the seven experiment parents', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+test('Study phone keeps all child destinations usable through native disclosures', async ({ page }) => {
+  await page.setViewportSize({ width: 440, height: 956 });
   await page.goto('/research/seed-openevo/study/', { waitUntil: 'domcontentloaded' });
-  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-
-  const visible = await page.locator('#main-content [data-experiment-primary]').evaluateAll((links) => links
-    .filter((el) => {
-      const rect = el.getBoundingClientRect();
-      const style = getComputedStyle(el);
-      const visibleHeight = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
-      return rect.width > 0 && rect.height > 0 && visibleHeight >= Math.min(12, Math.max(2, rect.height * 0.25))
-        && style.display !== 'none' && style.visibility !== 'hidden' && Number.parseFloat(style.opacity || '1') > 0;
-    })
-    .map((el) => el.getAttribute('data-experiment-primary')));
-
-  expect(visible).toEqual([
-    'gate-no-update',
-    '7b-long-run',
-    'successor-3b-1p7b',
-    'gdr-v1-1p7b',
-    'directapply-1p7b',
-    'bounded-effective-state-1p7b',
-    'stage1-learning-objectives',
-  ]);
-  const visibleChildren = await page.locator('#main-content .experiment-children a').evaluateAll((links) => links.filter((el) => el.getClientRects().length > 0).length);
-  expect(visibleChildren).toBe(0);
-  const featured = page.locator('#main-content .experiment-mobile-featured--group');
-  await expect(featured).toHaveCount(1);
-  await expect(featured).toBeVisible();
-  await expect(featured.locator(':scope > strong')).toHaveText('05 · SD-LoRA 加速');
-  const branchLinks = featured.locator('a');
-  await expect(branchLinks).toHaveCount(3);
-  await expect(branchLinks.nth(0)).toBeVisible();
-  await expect(branchLinks.nth(0)).toHaveText(/两条路线说明/);
-  await expect(branchLinks.nth(0)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-history/');
-  await expect(branchLinks.nth(1)).toBeVisible();
-  await expect(branchLinks.nth(1)).toHaveText(/Stable Reduction/);
-  await expect(branchLinks.nth(1)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-equivalence/');
-  await expect(branchLinks.nth(2)).toBeVisible();
-  await expect(branchLinks.nth(2)).toHaveText(/Bounded Online Recurrence/);
-  await expect(branchLinks.nth(2)).toHaveAttribute('href', '/research/seed-openevo/study/capability-exploration/sd-lora-bounded-state/');
+  await expect(page.locator('[data-experiment-primary]')).toHaveCount(7);
+  const details = page.locator('[data-experiment-details]');
+  await expect(details).toHaveCount(7);
+  for (const detail of await details.all()) {
+    await expect(detail).not.toHaveAttribute('open', '');
+    const primaryHref = await detail.locator('..').locator('[data-experiment-primary]').getAttribute('href');
+    await detail.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(detail).toHaveAttribute('open', '');
+    const children = detail.locator('.experiment-children a');
+    expect(await children.count()).toBeGreaterThan(0);
+    for (const link of await children.all()) {
+      await expect(link).toBeVisible();
+      expect(await link.getAttribute('href')).not.toBe(primaryHref);
+    }
+    await detail.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(detail).not.toHaveAttribute('open', '');
+  }
+  await expect(page.locator('.experiment-mobile-featured')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
 });
 
 
@@ -255,6 +238,7 @@ test('Study desktop keeps the three SD-LoRA acceleration entries grouped and sho
   for (const route of ['/research/seed-openevo/study/']) {
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     const directApply = page.locator('[data-experiment-primary="directapply-1p7b"]').locator('..').locator('..');
+    await directApply.locator('[data-experiment-details] > summary').click();
     const expectedGroupLabel = 'SD-LoRA 加速';
     const group = directApply.locator('.experiment-child-group').filter({ hasText: expectedGroupLabel });
     await expect(group).toHaveCount(1);

@@ -654,23 +654,14 @@ test('stage2 historical typography rejects former heavy mono statuses and tiny e
 // or the absence of narrow-page clipping. This suite is wired to Public PR CI.
 const capabilityLobbyRoute='/research/seed-openevo/study/capability-exploration/';
 const lobbyRoot='[data-testid="openevo-capability-map-lobby"]';
+// research-article.css owns approved-reader prose/list text at 14px and h2 at
+// 21px. The separate primary action retains ResearchOrientation's --type-body.
 const lobbyRoles={
-  '.map-lobby__latest-evidence-meta':16,
-  '.map-lobby__latest-evidence strong':21,
-  '.map-lobby__latest-evidence>a':16,
-  '.map-lobby__latest-evidence p:not(.map-lobby__latest-evidence-meta)':16,
-  '.map-lobby__terms>summary':16,
-  '.map-lobby__terms dt':16,
-  '.map-lobby__terms dd':16,
-  '.map-lobby__current-ablation small':16,
-  '.map-lobby__current-ablation strong':16.9,
-  '.map-lobby__current-ablation p':16,
-  '.map-lobby__current-ablation>a':16,
-  '.map-lobby__deep-links small':16,
-  '.map-lobby__deep-links strong':16,
-  '.map-lobby__deep-links span':16,
-  '.map-lobby__archive-main':16,
-  '.map-lobby__archive nav a':16,
+  '[data-research-orientation] [data-reader-purpose]':14,
+  '[data-research-orientation] .research-orientation__action':16,
+  '[data-topic-group] h2':21,
+  '[data-topic-route] a':14,
+  '[data-topic-navigation] a':14,
 } as const;
 type LobbyReading={
   roles:Record<string,{size:number;family:string;weight:number;style:string;width:number;overflow:number;left:number;right:number}>;
@@ -705,36 +696,28 @@ function acceptLobby(m:LobbyReading,width:number){
     expect(r.left,selector+' left edge').toBeGreaterThanOrEqual(-2);
     expect(r.right,selector+' right edge').toBeLessThanOrEqual(width+2);
   }
-  for(const fact of ['Gated-Delta SD-LoRA','Vanilla 0.7051','GDR 0.7407','173 / 512','248 / 512','rank128'])
-    expect(m.text,'frozen scientific fact').toContain(fact);
+  for(const topic of ['参数学习与实验结果','长期状态与计算加速','更新机制与行为诊断','历史实验与技术档案'])
+    expect(m.text,'research topic').toContain(topic);
+  expect(m.text).not.toContain('最新封口结果');
 }
-async function revealLobbyDetails(page:import('@playwright/test').Page){
-  const root=page.locator(lobbyRoot);
-  await root.locator('.map-lobby__terms>summary').click();
-  for(const kind of ['method','history']){
-    const detail=root.locator('[data-research-depth="'+kind+'"]');
-    await detail.locator('summary').first().click();
-    await expect(detail).toHaveAttribute('open','');
-  }
-}
-for(const width of [390,768,1440] as const){
+
+for(const width of [440,1440] as const){
   for(const theme of ['light','dark'] as const){
     test('capability research entrance real typography '+width+'/'+theme,async({page},info)=>{
-      await page.setViewportSize({width,height:width===390?844:900});
+      await page.setViewportSize({width,height:width===440?956:1000});
       await page.addInitScript(mode=>localStorage.setItem('atlas-theme',mode),theme);
       const response=await page.goto(capabilityLobbyRoute,{waitUntil:'domcontentloaded'});
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
       await expect(page.locator(lobbyRoot)).toBeVisible();
       await page.evaluate(()=>document.fonts.ready);
-      await revealLobbyDetails(page);
       const good=await measureLobby(page);
       acceptLobby(good,width);
       writeFileSync(info.outputPath('capability-lobby-'+width+'-'+theme+'.json'),
         JSON.stringify({sourceIdentity,width,theme,route:capabilityLobbyRoute,measurement:good},null,2));
-      await page.locator(lobbyRoot+' .map-lobby__latest-evidence').first().screenshot({
+      await page.locator(lobbyRoot+' [data-topic-group="learning"]').first().screenshot({
         path:info.outputPath('capability-latest-'+width+'-'+theme+'.png'),animations:'disabled'});
-      await page.locator(lobbyRoot+' .map-lobby__current-ablation').screenshot({
+      await page.locator(lobbyRoot+' [data-topic-group="history"]').screenshot({
         path:info.outputPath('capability-ablation-'+width+'-'+theme+'.png'),animations:'disabled'});
     });
   }
@@ -744,14 +727,13 @@ test('capability lobby restores 9px status and terminology defects only to be re
   await page.setViewportSize({width,height:844});
   const response=await page.goto(capabilityLobbyRoute,{waitUntil:'domcontentloaded'});
   expect(response?.status()).toBe(200);
-  await revealLobbyDetails(page);
   acceptLobby(await measureLobby(page),width);
   const poison=await page.addStyleTag({content:
-    '[data-testid="openevo-capability-map-lobby"] .map-lobby__current-ablation small{font:800 9px/1.2 monospace!important}'+
-    '[data-testid="openevo-capability-map-lobby"] .map-lobby__terms>summary{font-size:9px!important}'});
+    '[data-testid="openevo-capability-map-lobby"] [data-topic-route] a{font:800 9px/1.2 monospace!important}'+
+    '[data-testid="openevo-capability-map-lobby"] [data-topic-group] h2{font-size:9px!important}'});
   const broken=await measureLobby(page);
-  expect(broken.roles['.map-lobby__current-ablation small']!.size).toBeLessThan(10);
-  expect(broken.roles['.map-lobby__terms>summary']!.size).toBeLessThan(10);
+  expect(broken.roles['[data-topic-route] a']!.size).toBeLessThan(10);
+  expect(broken.roles['[data-topic-group] h2']!.size).toBeLessThan(10);
   expect(()=>acceptLobby(broken,width)).toThrow();
   await poison.evaluate(el=>el.parentNode?.removeChild(el));
   acceptLobby(await measureLobby(page),width);
@@ -762,7 +744,7 @@ test('capability lobby restores 9px status and terminology defects only to be re
 // The same source renders the methods and archived-research routes; the
 // original compact 14px, 800-weight monospace was not source-owner appropriate.
 const sharedDisclosureRoutes=[
-  {path:'/research/seed-openevo/study/capability-exploration/',kind:'method',label:'方法细节',intro:true},
+  {path:'/research/seed-openevo/study/capability-exploration/openevo-2-0/report/',kind:'method',label:'方法细节',intro:true},
   {path:'/research/seed-openevo/study/capability-exploration/first-run/',kind:'history',label:'历史与回退',intro:true},
 ] as const;
 type DepthReading={

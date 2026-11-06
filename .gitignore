@@ -30,3 +30,6 @@ id_ed25519
 reports/
 playwright-report/
 test-results/
+
+# Same-run static build identity.
+ci-public-build-manifest.json

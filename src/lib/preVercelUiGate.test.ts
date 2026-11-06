@@ -68,7 +68,8 @@ describe('pre-Vercel UI regression gate', () => {
     expect(uiAcceptancePolicy).toContain('npm run preflight:ui:plan');
     expect(uiAcceptancePolicy).toContain('npm run preflight:ui');
     expect(uiAcceptancePolicy).toContain('first provider-triggering ref update');
-    expect(uiAcceptancePolicy).toContain('A GitHub/Vercel commit status is not by itself proof');
+    expect(uiAcceptancePolicy).toContain('A GitHub status callback, a Cloudflare `--dry-run` or a provider READY label does not prove');
+    expect(uiAcceptancePolicy).toContain('`public-ci-gate` and `cloudflare-artifact-gate`');
     expect(uiAcceptancePolicy).toContain('visible H1 / lede / primary controls in both locales');
   });
 

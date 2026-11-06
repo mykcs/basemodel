@@ -10,8 +10,8 @@ const routes = [...new Set(
 )];
 
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;

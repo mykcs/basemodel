@@ -44,6 +44,7 @@ const importantDebtBaselinePath = 'scripts/css-important-debt-baseline.json';
 
 const expectedLayoutImports = ['../styles/app.css'];
 const expectedAppImports = [
+  './tailwind.css',
   './global.css',
   './v2-closeout.css',
   './visual-upgrade.css',
@@ -65,6 +66,14 @@ const expectedFoundationImports = [
 equal(jsCssImports(read(appLayoutPath)), expectedLayoutImports, `${appLayoutPath} CSS imports`);
 equal(cssImports(read(appEntryPath)), expectedAppImports, `${appEntryPath} imports`);
 equal(cssImports(read(foundationPath)), expectedFoundationImports, `${foundationPath} imports`);
+
+const utilities = read('src/styles/tailwind.css');
+if (/^\s*@import\s+['"]tailwindcss(?:['"]|\/preflight)/m.test(utilities)) {
+  fail('Tailwind must remain opt-in: import theme/utilities separately without Preflight.');
+}
+for (const invariant of ["prefix(tw)", 'themes: false;', 'include: badge;', "prefix: 'dui-';", '--color-primary: var(--accent-fill);']) {
+  if (!utilities.includes(invariant)) fail(`Tailwind/daisyUI lost its token or isolation boundary: ${invariant}`);
+}
 
 const layoutsRoot = join(root, 'src/layouts');
 for (const name of readdirSync(layoutsRoot)) {
@@ -337,4 +346,4 @@ console.log('  patch-style layers: frozen; design-refinement, visual-closeout, a
 console.log(`  radius system: 6/10/16px tokens; legacy non-canonical debt ${observedRadiusDebtTotal}/${radiusBaseline.baseline_total} and may only decrease`);
 console.log('  state colors: semantic selectors contain zero raw hex colors');
 console.log(`  !important compatibility debt: ${observedImportantDebtTotal}/${importantBaseline.baseline_total} and may only decrease`);
-console.log('  Tailwind migration: not justified by the current ownership evidence');
+console.log('  Tailwind/daisyUI: prefixed opt-in utilities, canonical tokens, no Preflight or built-in themes');

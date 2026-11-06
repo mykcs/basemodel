@@ -65,7 +65,13 @@ for (const file of htmlFiles) {
     const paragraph = match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
     if (!paragraph) continue;
     const opening = textOnly(paragraph[1]);
-    if (negativeOpening.test(opening)) {
+    // This one exact, owner-approved Stage-2 sentence describes the scientific
+    // absence of a teacher API in *both* compared systems. It is a genuine
+    // mechanism boundary, not a rhetorical defensive opening. Keep every
+    // other negation opening subject to the normal audit.
+    const isStage2TeacherBoundary = relative === 'research/seed-openevo/flow/index.html' &&
+      opening === '不再为每轮经验分析调用 Stage 1 的外部大模型 API，转而利用新轨迹和当前系统自身的能力反复改进。';
+    if (negativeOpening.test(opening) && !isStage2TeacherBoundary) {
       findings.push({ file: relative, rule: 'HUMAN-EXPRESSION-DEFENSIVE-NEGATION-OPENING', detail: opening.slice(0, 220) });
     }
   }

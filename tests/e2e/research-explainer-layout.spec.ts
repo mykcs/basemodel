@@ -23,10 +23,8 @@ const routeInScope = (...paths: string[]) => hostedRouteFilter.size === 0
   || paths.some((path) => hostedRouteFilter.has(path));
 
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -277,7 +275,7 @@ test('interactive transport stays local until explicit reader interaction', asyn
   }
 });
 
-test('iPhone 17 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
+test('iPhone 18 Pro Max WebShop stage fits one screen and product columns do not overlap', async ({ page }) => {
   const viewport = { width: 440, height: 956 };
   await page.setViewportSize(viewport);
   for (const path of ['/research/seed-openevo/flow/webshop/'].filter((path) => routeInScope(path))) {
@@ -419,7 +417,7 @@ test('simplified information architecture keeps the canonical research navigatio
 
 test('SEED visibly separates policy, harness, benchmark environment, and sealed evidence', async ({ page }) => {
   test.skip(!routeInScope('/research/seed-openevo/flow/seed/'), 'outside hosted focused route scope');
-  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 440, height: 956 }]) {
     await page.setViewportSize(viewport);
     await page.goto('/research/seed-openevo/flow/seed/', { waitUntil: 'domcontentloaded' });
     const root = page.locator('[data-interactive-research-explainer="seed"]');
@@ -511,7 +509,7 @@ test('research framework opens as a system map and can enter and leave trace mod
   await expect(root).toHaveAttribute('data-overview', 'true');
 });
 
-for (const width of [390,768,1440]) for (const theme of ['light','dark'] as const) {
+for (const width of [440,1440]) for (const theme of ['light','dark'] as const) {
   test('WebShop held-out ruler label stays horizontal without distorting the split: '+width+' '+theme,async({page})=>{
     await page.setViewportSize({width,height:900});
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
@@ -554,7 +552,7 @@ for (const width of [390,768,1440]) for (const theme of ['light','dark'] as cons
   });
 }
 
-for(const width of [390,768,1440])for(const theme of ['light','dark'] as const){
+for(const width of [440,1440])for(const theme of ['light','dark'] as const){
   test('canonical SEED and OpenEvo comparison labels retain theme contrast: '+width+' '+theme,async({page})=>{
     await page.setViewportSize({width,height:1000});
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);

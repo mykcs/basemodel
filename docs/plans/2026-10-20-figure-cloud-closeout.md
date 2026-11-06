@@ -1,4 +1,4 @@
-# BaseModel：学长十问科研图表、全站同类 Figure、云端浏览器与读者验收——Codex 工程交接
+# BaseModel：L 学长十问科研图表、全站同类 Figure、云端浏览器与读者验收——Codex 工程交接
 
 > **接手入口**：[PR #901](https://github.com/mykcs/basemodel/pull/901)；主分支 `main`。
 > **文档性质**：代码级执行计划、交付标准和阻塞检查，不是完成证明。
@@ -10,7 +10,7 @@
 目标不是“再写一份设计建议”，而是把用户截图发现的研究图表缺陷转化成**云端可执行、可复核、能阻止再次漏检的工程验收**。同时清理科研图表同类问题，保留证据与读者理解边界。默认工具链：**GitHub / GitHub Actions / Playwright 云端 Chromium + WebKit / CI Artifacts / Vercel**；MacBook、RDC、个人 SSH 不是正常执行路径。
 
 已经完成、不要重复做或错误重开：
-- [x] 学长十问表达与十问摘要、红黄绿状态、局部结论/未知、原始收据：[#893](https://github.com/mykcs/basemodel/pull/893) 和 [#894](https://github.com/mykcs/basemodel/pull/894) 已合并。
+- [x] L 学长十问表达与十问摘要、红黄绿状态、局部结论/未知、原始收据：[#893](https://github.com/mykcs/basemodel/pull/893) 和 [#894](https://github.com/mykcs/basemodel/pull/894) 已合并。
 - [x] 用户截图 Q03 A0=3.71 标注碰到纵轴、原生 SVG `<title>` 遮挡、论文式单图外框问题；Q01 和 SD-LoRA Scaling 同类问题：[#897](https://github.com/mykcs/basemodel/pull/897) 已合并并验证 Production。
 - [x] GitHub-first 执行规则、Public PR CI 自动保存 Playwright 失败截图/trace/video：[#900](https://github.com/mykcs/basemodel/pull/900) 已合并，至少一份真实 Artifact 下载验证。
 - [x] #901 最新已运行的云端 `Cloud Figure Visual Review`：Chromium/WebKit **均曾在 SHA `dd54b0a1a31f669780c26ee40eb3a11615d774cb` 上 SUCCESS**（Actions run [39423672032](https://github.com/mykcs/basemodel/actions/runs/39423672032)），并生成两个浏览器的 PNG/JSON Artifacts。**这是历史提交的证据，改动后需要新的 exact-head 成功结果。**

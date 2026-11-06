@@ -23,7 +23,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
   it('preserves original meeting and all ten research questions without rewriting raw evidence',()=>{
     expect(OPEN_EVO_ADVISOR_MEETING.points).toHaveLength(6);
     expect(OPEN_EVO_ADVISOR_MEETING.date).toBe('2026-09-22');
-    expect(OPEN_EVO_ADVISOR_MEETING.rawHref).toBe('https://github.com/mykcs/openevo-experiment/blob/85ee773d04f9949db369c8dd928dbbae12c68c8d/docs/evidence/advisor/liaochang/2026-09-22-meeting-transcript.raw.md');
+    expect(OPEN_EVO_ADVISOR_MEETING.rawDisclosure).toContain('仅在私有档案');
     expect(OPEN_EVO_ADVISOR_MEETING.reconciliationHref).toContain('ADVISOR_RESEARCH_RECONCILIATION_2026-09-28.md');
     expect(ADVISOR_QUESTIONS).toHaveLength(10);
     expect(ADVISOR_QUESTIONS.map(q=>q.id)).toEqual(Array.from({length:10},(_,i)=>'q'+String(i+1).padStart(2,'0')));
@@ -31,7 +31,13 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
       for(const k of ['opening','experiment','finding','interpretation','unknown'] as const)
         expect(q[k].length).toBeGreaterThan(12);
       expect(q.evidence.length).toBeGreaterThanOrEqual(1);
-      for(const e of q.evidence) expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
+      for(const e of q.evidence) {
+        if(e.href === 'https://basemodel-preview.vercel.app/research/seed-openevo/evidence/q09-s2-final-progress-20261028.json') {
+          expect(q.id).toBe('q09');
+          continue;
+        }
+        expect(e.href).toMatch(q.id==='q10' ? /^https:\/\/(?:github\.com\/mykcs\/|arxiv\.org\/abs\/)/ : /^https:\/\/github\.com\/mykcs\//);
+      }
     }
     expect(ADVISOR_QUESTIONS[9]?.experiment).toContain('会后问题');
     expect(ADVISOR_RESEARCH_AS_OF).toBe('2026-10-09');
@@ -40,28 +46,28 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     const intro = responses.match(/<p class="evo-article__lede" data-reader-purpose>([\s\S]*?)<\/p>/)?.[1] ?? '';
     const provenance = responses.match(/<p class="evo-article__note" data-meeting-provenance>([\s\S]*?)<\/p>/)?.[1] ?? '';
     expect(intro).toContain('这里先告诉你：十个研究问题已经测到什么');
-    expect(provenance).toContain('2026 年 9 月 22 日，我们和学长开了一次 OpenEVO 研究讨论会');
-    expect(provenance).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
-    expect(provenance).toContain('会议原始逐字记录（RAW）');
+    expect(provenance).toContain('2026 年 9 月 22 日，我们和L 学长开了一次 OpenEVO 研究讨论会');
+    expect(provenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
+    expect(provenance).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(responses).not.toContain('9 月 22 日会议的逐字记录见本文开头。');
-    expect(provenance.indexOf('会议原始逐字记录')).toBeLessThan(provenance.indexOf('Q01–Q09'));
+    expect(provenance.indexOf('OPEN_EVO_ADVISOR_MEETING.rawDisclosure')).toBeLessThan(provenance.indexOf('Q01–Q09'));
     expect(provenance).toContain('Q10');
-    expect(provenance).toContain('不是学长当时逐字提出的十句话');
-    expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.rawHref}');
+    expect(provenance).toContain('不是L 学长当时逐字提出的十句话');
+    expect(questions).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(questions).toContain('href={OPEN_EVO_ADVISOR_MEETING.reconciliationHref}');
     expect(questions).toContain('后续分析（非 RAW）');
     expect(questions).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
     const index=read('src/components/research/OpenEvoExperimentIndex.astro');
-    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.rawHref');
+    expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
     expect(index).toContain('OPEN_EVO_ADVISOR_MEETING.reconciliationHref');
-    expect(index).not.toContain('OPEN_EVO_ADVISOR_MEETING.sourceHref');
+    expect(index).not.toContain('OPEN_EVO_ADVISOR_MEETING.rawHref');
   });
   it('uses the exact owner-requested reading order: methods, questions, our responses',()=>{
     const paths=['openevo-methods/','advisor-questions/','parameter-memory-results/'];
     const positions=paths.map(p=>navigation.indexOf("path:'/research/seed-openevo/study/"+p));
     expect(positions.every(x=>x>=0)).toBe(true);
     expect(positions).toEqual([...positions].sort((a,b)=>a-b));
-    expect(navigation).toContain('学长十问：问题与背景');
+    expect(navigation).toContain('L 学长十问：问题与背景');
     expect(navigation).toContain('我们的回应实验');
     for(const [id,route] of [
       ['study-openevo-methods','openevo-methods'],
@@ -164,7 +170,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('还没有足够证据确认 rank32');
     expect(responses).toContain('不是同一个测量');
     expect(responses).toContain('独立研究');
-    expect(questions).toContain('不能当作学长当时逐字提出的十句话');
+    expect(questions).toContain('不能当作L 学长当时逐字提出的十句话');
   });
   it('protects conversation-reference prose and unframed answer navigation',()=>{
     // Q01 is directly user-requoted; Q02-Q10 are historically discussed reference drafts.
@@ -219,7 +225,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).not.toContain('六类证据的评测口径');
     expect(responses).not.toContain('四种测量不能混成一次对照');
     expect(responses).toContain('十个研究问题的证据');
-    expect(responses).not.toContain('逐项回答学长十问');
+    expect(responses).not.toContain('逐项回答L 学长十问');
     const allReportTables=responses+capacity+read('src/components/research/OpenEvoSeedWorld4Reproduction.astro');
     for(const label of ['表 1｜','表 2｜','表 3｜','表 4｜','表 5｜','表 6｜','表 7｜'])
       expect(allReportTables.split(label).length-1).toBe(1);
@@ -284,7 +290,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(responses).toContain('第二篇的 {q.id.toUpperCase()} 问题正文与背景');
     expect(responses).toContain('data-question-origin-link={q.id}');
     expect(responses).toContain('Q10');
-    expect(responses).toContain('原始逐字');
+    expect(responses).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
   });
   it('keeps each advisor heading within the scientific question actually tested',()=>{
     const visual=read('src/components/research/AdvisorTenEvidenceVisual.astro');
@@ -343,14 +349,17 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(q04.finding).toContain('全部 640 次');
     expect(q05.finding).toContain('512 次评测');
     expect(q06.finding).toContain('NOT_CONFIRMED');
-    expect(q09.finding).toContain('40 轮对照的完整科学验收');
+    expect(q09.finding).toContain('文字在40轮中未改变');
+    expect(q09.finding).toContain('第二条流40轮对照尚未闭合');
+    expect(q09.finding).toMatch(/不能当作文字更新收益.*完整消融验收/);
+    expect(q09.finding).toContain('独立训练复现');
     expect(q09.unknown).toContain('完整消融还没有完成');
 
     expect(q09.experiment).toContain('保留三类载体权限');
     expect(q09.finding).toContain('95% 区间都包含零');
     expect(q09.unknown).toContain('完整消融还没有完成');
     expect(q09.evidence.some(x=>x.href.includes('q17-checkpoint-diagnostics-20261015.json'))).toBe(true);
-    expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('unrun');
+    expect(ADVISOR_QUESTIONS[9]?.evidenceState).toBe('partial');
     for(const phrase of ['实用平台','普通 SFT 和 OPSD 能替代持续学习吗','为什么我们的 SEED 分数只有','Text Memory、Skill、Agent System 真的有用吗'])
       expect(JSON.stringify(ADVISOR_QUESTIONS)+visual).not.toContain(phrase);
     expect(visual).toContain('原始英文收据把它称作 practical plateau');
@@ -367,7 +376,7 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(questions).not.toContain('themes[q.family]');
     expect(questions).toContain('会后新增的独立复现问题');
     expect(questions).toContain('OPEN_EVO_ADVISOR_MEETING.points.map');
-    expect(responses).toContain('会议原始逐字记录（RAW）');
+    expect(responses).toContain('OPEN_EVO_ADVISOR_MEETING.rawDisclosure');
   });
   it('keeps the checkpoint addendum separate from historical conclusions',()=>{
     expect(responses).toContain('data-q17-ledger-appendix');
@@ -521,7 +530,8 @@ describe('OpenEVO blog roles: method, ten questions, response experiments', () =
     expect(progress).toContain("source:'https://github.com/mykcs/openevo-experiment/pull/632'");
     expect(progress).toContain('计划的 6 组训练均已通过检查');
     expect(progress).toContain('40,960 次训练任务和 1,664 次评估');
-    expect(progress).toContain('122,880 次训练任务和 4,224 次评估');
+    expect(progress).toContain('三个保存模型各做相同64题，共192次开发评测');
+    expect(progress).toContain('长期方案由用户暂停');
     expect(responses).toContain('data-question-plan-source={q.id}');
     expect(responses).toContain('2026 年 10 月 19 日只读核对');
     expect(progress).toContain('GPU 小时');

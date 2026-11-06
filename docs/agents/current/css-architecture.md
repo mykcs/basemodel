@@ -1,25 +1,26 @@
 # CSS architecture
 
 Status: **current implementation contract**  
-Decision date: **2026-08-20**  
-Last reviewed: **2026-08-30**
+Decision date: **2026-10-29**
+Last reviewed: **2026-10-29**
 
 ## Decision
 
-Base Model will **not** perform a site-wide Tailwind CSS migration at this stage.
+The owner authorized adopting Tailwind CSS and the related frontend tools on 2026-10-29, from simpler substitutions to stateful components. Tailwind is now an opt-in authoring layer; `tokens.css`, the single `app.css` composition root and existing semantic owners remain authoritative.
 
-The concrete problem in this repository is ownership/cascade drift, not the absence of utility classes. The site already has a token system, semantic component owners, Astro scoped styles, structural CSS audits, and real-browser acceptance. Rewriting the existing surface into utilities would create a second large migration surface without removing the need for component ownership, tokens, responsive contracts, or browser testing.
+The site already has semantic component owners, Astro scoped styles, structural CSS audits and browser acceptance. Adopt utilities on real consumers and remove the corresponding superseded declarations in the same change. Do not rewrite unrelated research figures, typography or validated compatibility layers merely to increase utility-class coverage.
 
 The implementation strategy is:
 
 ```text
-Astro + React + CSS variables
+Astro + React + TypeScript + canonical CSS variables
 -> one global stylesheet composition root
+-> prefixed Tailwind utilities without Preflight
 -> explicit semantic owners
 -> frozen patch-style compatibility layers
 -> delete an old copy whenever its semantic owner is proven
 -> retire whole legacy layers only after required rules have moved
--> reconsider Tailwind only from new evidence
+-> daisyUI for scoped count badges; shadcn/ui for React buttons
 ```
 
 ## Current phase status
@@ -30,9 +31,9 @@ Astro + React + CSS variables
 | 2 · global shell ownership | complete | `components/global-shell.css` and `components/header.css` are final shell owners |
 | 3 · responsive ownership | complete | 1080/1081 navigation handoff and phone menu behavior are owned by `components/header.css` |
 | 4 · retire patch layers | complete for global-shell scope; incremental debt remains | Header/Nav rules are gone from `visual-closeout.css`, `mobile-composition.css`, and `design-refinement.css`; retained patch files still contain required non-shell behavior |
-| 5 · Tailwind evaluation | complete: no pilot | evidence still points to ownership debt, not utility-authoring friction |
+| 5 · Tailwind adoption | owner-authorized implementation | prefixed utilities and a count badge consume existing design tokens; earlier no-pilot decision superseded |
 
-There is no Phase 6 in the current plan. A new phase should exist only for a new, independently testable architecture problem.
+Astro, strict TypeScript and MDX via Starlight were already implemented before this adoption. Lucide replaces hand-authored interface icons; Alpine owns the static Header's mobile menu state; Motion enhances copy feedback; shadcn/ui owns the shared React Button. These tools must have live consumers rather than unused package entries.
 
 ## Canonical import graph
 
@@ -41,6 +42,7 @@ All page-wide CSS enters through one file:
 ```text
 AppLayout.astro
 └─ src/styles/app.css
+   ├─ tailwind.css (prefixed opt-in utilities; no Preflight)
    ├─ global.css
    │  ├─ tokens.css
    │  ├─ site.css
@@ -148,7 +150,7 @@ Do not delete a whole legacy file merely to make the folder tree cleaner. `desig
 
 ## Tailwind evaluation
 
-The current answer remains **no migration and no pilot**.
+The prior no-migration/no-pilot decision was superseded by the owner's explicit 2026-10-29 adoption request. The earlier debt findings remain reasons to preserve the existing ownership model:
 
 The repository-wide debt reviews found:
 
@@ -158,7 +160,9 @@ The repository-wide debt reviews found:
 - existing semantic owner + audit patterns directly prevent the failure mode that previously produced CSS drift;
 - current Production Lighthouse lab baselines on the measured home/results surfaces are 99–100, so there is no performance evidence that replacing native CSS would improve the site.
 
-Tailwind may be reconsidered only if a future isolated surface shows measured authoring/review benefits that the current semantic-owner model cannot provide. A future pilot must preserve `tokens.css` as canonical design truth and must compare browser regressions, review complexity, bundle/build cost, and Agent edit quality against the current implementation. Do not start with a site-wide rewrite.
+`src/styles/tailwind.css` is imported once through `app.css`. It uses the official Vite plugin, `tw:` class/variable prefixes and only the theme/utilities imports, with no Preflight reset. Its inline theme references existing design variables rather than defining another scale. `ResearchContextBar` uses utilities for its flex layout; its previous layout declarations are retired.
+
+daisyUI is limited to `badge`, with `dui-` class prefixes, no built-in themes and variables scoped to the context count. It does not own research status colors or React buttons. shadcn/ui's React Button adapts the existing token pairs and remains separate from Astro status and count markup. Alpine must not manage React island state, and Motion feedback must retain an immediate readable reduced-motion state.
 
 ## Automated gate
 

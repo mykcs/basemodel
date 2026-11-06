@@ -13,11 +13,8 @@ const figureRoutes = [
 ] as const;
 
 const matrices = [
-  { name: 'mobile-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'mobile-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
-  { name: 'tablet-light', theme: 'light' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'tablet-dark', theme: 'dark' as Theme, viewport: { width: 768, height: 1024 } },
-  { name: 'compact-desktop-light', theme: 'light' as Theme, viewport: { width: 1024, height: 900 } },
+  { name: 'iphone18-pro-max-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { name: 'iphone18-pro-max-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { name: 'desktop-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { name: 'desktop-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -170,7 +167,7 @@ test('loops is one canonical comparison with no duplicate interactive player', a
 });
 
 test('canonical static figures remain complete without JavaScript on active Chinese routes', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 440, height: 956 } });
   const page = await context.newPage();
 
   const routes = [
