@@ -89,6 +89,22 @@ test('Results first-screen height review preserves historical proof and rejects 
   assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
 });
 
+
+test('Flow accessible landmark continuation preserves the original reviewed source and rejects silent drift', () => {
+  const file = 'src/components/research/SeedOpenEvoResearchHub.astro';
+  const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
+  const source = bytes.toString('utf8');
+  const prior = { currentSourceSha256: 'ab1a3ca61ee15c7d0b2195bf873381a5866760715a8f0628c628f3409a39edbc' };
+  assert.match(source, /id="site-map" aria-labelledby="site-map-title"/);
+  assert.match(source, /id="evidence" aria-labelledby="evidence-title"/);
+  assert.match(source, /<h2 id="site-map-title">/);
+  assert.match(source, /<h2 id="evidence-title">/);
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '65664bcc811355659a35a3848e54ec89b778bb70f7b196f170a57d75b501a931');
+  assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
+  assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);
+  assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
+});
+
 test('reviewed UI replacement and later page-local semantic tokens reconcile against one sealed ledger', () => {
   const old = { file: 'src/components/research/Example.astro', selector: '.old', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
   const replacement = { ...old, selector: '.new', value: 'var(--type-body-small)' };

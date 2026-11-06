@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const narrativePages = [
   { path: '/research/seed-openevo/flow/seed/', first: '一次任务的轨迹与反馈怎样产生' },
@@ -383,3 +384,59 @@ for (const { path, id } of [
     }
   }
 }
+
+
+// Flow regions must have accessible, uniquely named landmarks: the visible H2 is not enough for screen-reader
+// region navigation when the section itself lacks a name. Keep the four
+// existing reading-path targets and scientific copy unchanged.
+const flowLandmarks = [
+  { id: 'training-design', zh: 'SEED × OpenEVO 两阶段学习范式', en: 'SEED × OpenEVO two-stage learning paradigm' },
+  { id: 'questions', zh: '模型、任务与比较范围', en: 'Models, tasks, and comparison scope' },
+  { id: 'site-map', zh: '实验运行与结果比较', en: 'Experiment execution and result comparison' },
+  { id: 'evidence', zh: '每轮都要留下可重建的证据', en: 'Every run must leave reconstructable evidence' },
+] as const;
+
+// Astro currently builds only the zh locale: astro.config.mjs has locales: ['zh'].
+// Keep rendered landmark checks on a real published route, not a fabricated /en/
+// path (which correctly returns HTTP 404). English labels remain a source-level
+// translation contract until an English route is explicitly restored.
+for (const viewport of [
+  { width: 440, height: 956 },
+  { width: 1440, height: 1000 },
+]) for (const theme of ['light', 'dark'] as const) {
+  test(`Flow's four reading sections expose named regions: zh ${viewport.width}px ${theme}`, async ({ page }, testInfo) => {
+    await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
+    const response = await page.goto('/research/seed-openevo/flow/', { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await page.evaluate(() => document.fonts.ready);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+    const disclosure = page.locator('.flow-learning-disclosure');
+    await disclosure.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(disclosure).toHaveAttribute('open', '');
+
+    for (const landmark of flowLandmarks) {
+      const name = landmark.zh;
+      const section = page.getByRole('region', { name, exact: true });
+      await expect(section, `${landmark.id} should be a uniquely named section landmark`).toHaveCount(1);
+      await expect(section).toHaveAttribute('id', landmark.id);
+      await expect(section.getByRole('heading', { name, exact: true })).toHaveCount(1);
+      await expect(disclosure.locator(`a[href="#${landmark.id}"]`)).toHaveCount(1);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+    await testInfo.attach('flow-landmarks-viewport', { body: await page.screenshot(), contentType: 'image/png' });
+  });
+}
+
+test('Flow archived English section translations retain the same four heading labels', () => {
+  // No live English route exists; this asserts source integrity, not English
+  // browser accessibility or a published locale.
+  const source = readFileSync(new URL('../../src/components/research/SeedOpenEvoResearchHub.astro', import.meta.url), 'utf8');
+  for (const landmark of flowLandmarks) {
+    expect(source).toContain(landmark.en);
+    expect(source).toContain(landmark.zh);
+  }
+});

@@ -60,8 +60,8 @@ const objectGroups = [
     </dl>
   </section>
 
-  <section class="mission-section" id="site-map">
-    <div class="mission-section__heading"><h2><span class="evo-article__heading-number" aria-hidden="true">03</span> {t('实验运行与结果比较', 'Experiment execution and result comparison')}</h2></div>
+  <section class="mission-section" id="site-map" aria-labelledby="site-map-title">
+    <div class="mission-section__heading"><h2 id="site-map-title"><span class="evo-article__heading-number" aria-hidden="true">03</span> {t('实验运行与结果比较', 'Experiment execution and result comparison')}</h2></div>
     <ol class="run-step-grid">
       <li><h3 id={t('对齐-seed-的实验条件','align-seed-conditions')}><span class="evo-article__heading-number" aria-hidden="true">1</span> {t('对齐 SEED 的实验条件', 'Align SEED conditions')}</h3><p>{t('固定模型、ALFWorld / WebShop 环境和评测条件，避免把“方法差异”和“实验设置差异”混在一起。','Pin the model, ALFWorld / WebShop environments, and evaluation conditions so method differences are not confused with setup differences.')}</p><a href={p('/research/seed-openevo/flow/seed/')}>{t('SEED 方法','SEED method')} →</a></li>
       <li><h3 id={t('运行-openevo','run-openevo')}><span class="evo-article__heading-number" aria-hidden="true">2</span> {t('运行 OpenEvo', 'Run OpenEvo')}</h3><p>{t('正式科学状态以 openevo-experiment 为准；旧的 RTX6 路线保留为历史证据，不代表现在的运行状态。','Current formal scientific state is governed by openevo-experiment; the RTX6 path is retained as historical evidence, not live state.')}</p><a href={p('/research/seed-openevo/study/run/')}>{t('实验指南','Experiment guide')} →</a></li>
@@ -69,8 +69,8 @@ const objectGroups = [
     </ol>
   </section>
 
-  <section class="mission-section" id="evidence">
-    <div class="mission-section__heading"><h2><span class="evo-article__heading-number" aria-hidden="true">04</span> {t('每轮都要留下可重建的证据', 'Every run must leave reconstructable evidence')}</h2></div>
+  <section class="mission-section" id="evidence" aria-labelledby="evidence-title">
+    <div class="mission-section__heading"><h2 id="evidence-title"><span class="evo-article__heading-number" aria-hidden="true">04</span> {t('每轮都要留下可重建的证据', 'Every run must leave reconstructable evidence')}</h2></div>
     <p class="section-intro">{t('实验跑完不代表结论就可信。四类记录分别证明环境真的运行、模型是否更新、任务结果发生了什么，以及这一轮实验到底是哪一轮。','A completed run is not automatically a trustworthy scientific result. Four evidence groups show that the environment ran, whether the model changed, what happened on the tasks, and which run produced the evidence.')}</p>
     <ol class="evidence-grid">
       <li><span>01</span><strong>{t('环境与模型', 'Environment and model')}</strong><p>{t('真实环境重新开始一题（reset）、真实 CUDA 计算，以及明确的模型版本号（revision，也就是本次实验固定的模型版本）。','A real environment reset, real CUDA execution, and a pinned model revision.')}</p></li>
