@@ -443,8 +443,10 @@ test('Flow archived English section translations retain the same four heading la
 
 for (const width of [440, 1440] as const) {
   for (const theme of ['light', 'dark'] as const) {
-    test(`Flow hub keeps a concrete evidence continuation at ${width}px ${theme}`, async ({ page }) => {
-      await page.setViewportSize({ width, height: width === 440 ? 956 : 1000 });
+    test(`Flow hub keeps a concrete evidence continuation at ${width}px ${theme}`, async ({ page }, testInfo) => {
+      const height = width === 440 ? 956 : 1000;
+      await page.setViewportSize({ width, height });
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
       await page.goto('/research/seed-openevo/flow/');
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
@@ -454,6 +456,26 @@ for (const width of [440, 1440] as const) {
       await expect(links).toHaveCount(2);
       await expect(links.first()).toHaveAttribute('href', '/research/seed-openevo/study/results/');
       await expect(links.nth(1)).toHaveAttribute('href', '/models/qwen2-5-3b-instruct/#experiment-setup');
+      // The prior CI screenshot covered only Flow's first viewport, not the new
+      // footer CTA. Capture its actual scrolled state in every required theme/size.
+      await continuation.scrollIntoViewIfNeeded();
+      await page.evaluate(() => document.fonts.ready);
+      const footer = await continuation.boundingBox();
+      expect(footer, 'Flow evidence continuation must have rendered geometry').not.toBeNull();
+      expect(footer!.y).toBeGreaterThanOrEqual(-2);
+      expect(footer!.y + footer!.height).toBeLessThanOrEqual(height + 2);
+      await links.first().focus();
+      await page.keyboard.press('Tab');
+      await expect(links.nth(1)).toBeFocused();
+      await page.keyboard.press('Shift+Tab');
+      await expect(links.first()).toBeFocused();
+      // Retain an actual on-disk PNG in the CI shard artifact; an in-memory
+      // testInfo attachment alone is not included in its exported test-results ZIP.
+      const footerScreenshot = testInfo.outputPath(`flow-evidence-footer-${width}-${theme}.png`);
+      await page.screenshot({ path: footerScreenshot });
+      await testInfo.attach(`flow-evidence-footer-${width}-${theme}`, {
+        path: footerScreenshot, contentType: 'image/png',
+      });
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
       await links.first().click();
       await expect(page).toHaveURL(/\/research\/seed-openevo\/study\/results\/$/);
