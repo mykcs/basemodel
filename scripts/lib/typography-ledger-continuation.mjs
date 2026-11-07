@@ -39,6 +39,60 @@ export const reviewedReaderGuideTypography = {
   },
 };
 
+// The WebShop reader already has a source-backed shopping receipt and chapter
+// journey. Restoring the missing presentation in the same component needs an
+// exact-selector classification, not a blanket exception to the sealed ledger.
+// Keep the rendered typography semantic and preserve this original review
+// separately from later source/visual acceptance.
+export const reviewedWebshopShoppingBriefTypography = {
+  file: 'src/components/research/WebShopReaderMap.astro',
+  reason: 'Restore the actual shopping request/requirements/next-action reading hierarchy from the previously reviewed WebShop reader journey; source-confirmed CSS was missing on current main. Reuse existing typography and surface tokens, with a responsive two-column/one-column receipt. Cloud browser and protected Production are separate evidence classes.',
+  selectors: {
+    '.shopping-brief__copy>span,.shopping-brief__receipt>span': {
+      role: 'Shopping-request and requirements headings',
+      properties: {
+        font: 'var(--type-weight-label) var(--type-meta)/var(--type-leading-caption) var(--font-interface)',
+      },
+    },
+    '.shopping-brief__copy>strong': {
+      role: 'Readable primary shopping request',
+      properties: {
+        'font-size': 'var(--type-subsection)',
+        'line-height': 'var(--type-leading-heading)',
+        'font-weight': 'var(--type-weight-heading)',
+      },
+    },
+    '.shopping-brief__copy p': {
+      role: 'Context explaining option dependency',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'line-height': 'var(--type-leading-body)',
+      },
+    },
+    '.shopping-brief__receipt li': {
+      role: 'Four shopping conditions',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'font-weight': 'var(--type-weight-label)',
+      },
+    },
+    '.shopping-brief__receipt small': {
+      role: 'Clear teaching-example scientific boundary',
+      properties: {
+        'font-size': 'var(--type-meta)',
+        'line-height': 'var(--type-leading-caption)',
+      },
+    },
+    '.shopping-brief__action': {
+      role: 'Primary link to start the simulated shopping experience',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'font-weight': 'var(--type-weight-heading)',
+      },
+    },
+  },
+};
+
 // The Flow study hub uses a single native disclosure as its first-screen
 // navigation entry. The existing type tokens remain authoritative; only the
 // named summary's two typography properties are reviewed here.

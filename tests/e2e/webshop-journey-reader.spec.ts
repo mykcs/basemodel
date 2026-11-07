@@ -47,6 +47,34 @@ for (const { width, theme } of [
   });
 }
 
+// Regression: #840's shopping brief markup survived, but its two-column/receipt CSS
+// disappeared on main. Content-only assertions did not detect the visual regression.
+for (const theme of ['light', 'dark'] as const) {
+  for (const width of [440, 1440] as const) {
+    test(`WebShop shopping brief keeps its hierarchy at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: width === 440 ? 956 : 1000 });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const brief = page.locator('.shopping-brief');
+      const receipt = page.locator('.shopping-brief__receipt');
+      const action = page.locator('.shopping-brief__action');
+      await expect(brief).toBeVisible();
+      await expect(receipt).toBeVisible();
+      await expect(brief).toHaveCSS('display', 'grid');
+      const columns = await brief.evaluate(node => getComputedStyle(node).gridTemplateColumns.trim().split(/\s+/).length);
+      expect(columns).toBe(width === 440 ? 1 : 2);
+      await expect(receipt).toHaveCSS('border-top-width', '1px');
+      expect(await receipt.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+      await action.focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      await expect(action).toBeFocused();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+    });
+  }
+}
+
 test('WebShop teaches combinations with a small matrix rather than a giant standalone formula', async ({ page }) => {
   await open(page, 390, 'light');
   const figure = page.locator('#fig-webshop-goal-generation');
