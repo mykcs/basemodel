@@ -108,14 +108,23 @@ async function auditUi(page: Page): Promise<string[]> {
     };
 
     const nearestBackground = (element: Element): Rgba => {
+      // color-mix(..., transparent) is an alpha overlay, NOT an opaque
+      // background. Compare text with its actual composited surface rather
+      // than the overlay's unblended RGB (which produced false 1:1 reports).
+      const ancestors: Element[] = [];
       let current: Element | null = element;
       while (current) {
-        const background = parseColor(getComputedStyle(current).backgroundColor);
-        if (background && background.a > 0.01) return background;
+        ancestors.push(current);
         current = current.parentElement;
       }
-      return parseColor(getComputedStyle(document.body).backgroundColor)
-        ?? { r: 255, g: 255, b: 255, a: 1 };
+      let composited: Rgba = { r: 255, g: 255, b: 255, a: 1 };
+      for (const ancestor of ancestors.reverse()) {
+        const background = parseColor(getComputedStyle(ancestor).backgroundColor);
+        if (background && background.a > 0) {
+          composited = blend(background, composited);
+        }
+      }
+      return composited;
     };
 
     const cumulativeOpacity = (element: Element) => {
@@ -251,6 +260,35 @@ async function auditUi(page: Page): Promise<string[]> {
     return [...new Set(issues)].slice(0, 30);
   });
 }
+
+// Results uses a 5%-opacity danger tint. Its foreground is compared with
+// the composited page surface, not the overlay's unblended RGB.
+test('contrast audit composites translucent callouts in light and dark themes', async ({ page }) => {
+  for (const fixture of [
+    { page: '#fffdf8', ink: '#963b32', tint: 'rgba(150, 59, 50, 0.05)' },
+    { page: '#1d2525', ink: '#f19a8e', tint: 'rgba(241, 154, 142, 0.05)' },
+  ]) {
+    await page.setContent(`<!doctype html><html><body style="margin:0;background:${fixture.page}">
+      <main data-ui-audit="layout overflow contrast">
+        <p style="padding:12px;background:${fixture.tint};color:${fixture.ink}">
+          A readable warning on a translucent background.
+          <strong>Its important detail is readable too.</strong>
+        </p>
+      </main></body></html>`);
+    expect(await auditUi(page)).toEqual([]);
+  }
+});
+
+test('contrast audit still rejects actually unreadable translucent callouts', async ({ page }) => {
+  await page.setContent(`<!doctype html><html><body style="margin:0;background:#fffdf8">
+    <main data-ui-audit="layout overflow contrast">
+      <p style="padding:12px;background:rgba(150,59,50,0.05);color:#b8b8b8">
+        Unreadable warning must fail.
+      </p>
+    </main></body></html>`);
+  const issues = await auditUi(page);
+  expect(issues.some((issue) => issue.includes('low contrast'))).toBe(true);
+});
 
 for (const matrix of matrices) {
   test(`${matrix.name} keeps representative routes readable and non-overlapping`, async ({ page }) => {
