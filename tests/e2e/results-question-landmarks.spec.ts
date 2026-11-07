@@ -48,7 +48,13 @@ for (const viewport of [
       // Native anchors remain usable with keyboard alone, without adding JS.
       const navigation = page.getByRole('navigation', { name: '研究结果导航' });
       const questionLink = navigation.getByRole('link', { name: '七个问题' });
-      await questionLink.focus();
+      // A scripted focus() on the destination can pass even when normal Tab
+      // navigation cannot reach it. Start at the preceding native link, then
+      // exercise the actual keyboard order before activating the anchor.
+      const precedingLink = navigation.getByRole('link', { name: '实验边界', exact: true });
+      await precedingLink.focus();
+      await expect(precedingLink).toBeFocused();
+      await page.keyboard.press('Tab');
       await expect(questionLink).toBeFocused();
       await page.keyboard.press('Enter');
       await expect(page).toHaveURL(/#questions$/);
