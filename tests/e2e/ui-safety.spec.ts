@@ -184,6 +184,9 @@ async function auditUi(page: Page): Promise<string[]> {
     const auditRoots = new Set<Element>([
       ...document.querySelectorAll('[data-ui-audit]'),
       ...document.querySelectorAll('.ka-primer'),
+      // The Home and Flow first-viewport research claim is an actual contrast
+      // target even without an opt-in marker on the production component.
+      ...document.querySelectorAll('.mission-hero__copy'),
     ]);
 
     auditRoots.forEach((root) => {
@@ -290,6 +293,19 @@ test('contrast audit still rejects actually unreadable translucent callouts', as
   expect(issues.some((issue) => issue.includes('low contrast'))).toBe(true);
 });
 
+test('research mission hero is contrast-audited without a data attribute', async ({ page }) => {
+  await page.setContent(`<!doctype html><html><body style="margin:0;background:#fffdf8">
+    <main><div class="mission-hero__copy">
+      <h1 style="color:#b8b8b8">A hero claim that must not pass silently.</h1>
+    </div></main></body></html>`);
+  expect((await auditUi(page)).some((issue) => issue.includes('low contrast'))).toBe(true);
+
+  await page.locator('.mission-hero__copy h1').evaluate((element) => {
+    (element as HTMLElement).style.color = '#222222';
+  });
+  expect(await auditUi(page)).toEqual([]);
+});
+
 for (const matrix of matrices) {
   test(`${matrix.name} keeps representative routes readable and non-overlapping`, async ({ page }) => {
     await page.setViewportSize(matrix.viewport);
@@ -300,6 +316,9 @@ for (const matrix of matrices) {
         await page.goto(route.path, { waitUntil: 'domcontentloaded' });
         await settle(page);
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
+        if (route.label === 'home' || route.label === 'flow') {
+          await expect(page.locator('.mission-hero__copy')).toHaveCount(1);
+        }
         const issues = await auditUi(page);
         expect(issues, `${matrix.name} / ${route.path}\n${issues.join('\n')}`).toEqual([]);
       });
