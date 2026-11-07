@@ -469,8 +469,12 @@ for (const width of [440, 1440] as const) {
       await expect(links.nth(1)).toBeFocused();
       await page.keyboard.press('Shift+Tab');
       await expect(links.first()).toBeFocused();
+      // Retain an actual on-disk PNG in the CI shard artifact; an in-memory
+      // testInfo attachment alone is not included in its exported test-results ZIP.
+      const footerScreenshot = testInfo.outputPath(`flow-evidence-footer-${width}-${theme}.png`);
+      await page.screenshot({ path: footerScreenshot });
       await testInfo.attach(`flow-evidence-footer-${width}-${theme}`, {
-        body: await page.screenshot(), contentType: 'image/png',
+        path: footerScreenshot, contentType: 'image/png',
       });
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
       await links.first().click();
