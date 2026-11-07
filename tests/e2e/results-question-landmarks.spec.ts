@@ -68,7 +68,14 @@ for (const viewport of [
         let settledFrames = 0;
         const sample = () => {
           const currentY = window.scrollY;
-          settledFrames = Math.abs(currentY - previousY) < 0.5 ? settledFrames + 1 : 0;
+          const headingTop = document.getElementById('questions-title')?.getBoundingClientRect().top;
+          // The URL can update before native anchor scrolling starts. Twelve
+          // stationary frames at the old hero must not count as "settled".
+          const targetEnteredViewport = headingTop !== undefined
+            && headingTop >= 0
+            && headingTop < window.innerHeight - 8;
+          settledFrames = targetEnteredViewport && Math.abs(currentY - previousY) < 0.5
+            ? settledFrames + 1 : 0;
           previousY = currentY;
           if (settledFrames >= 12) {
             resolve(true);
