@@ -70,6 +70,17 @@ for (const width of [440, 1440]) for (const theme of ['light', 'dark'] as const)
     expect(badge.size).toBe('13px');
     expect(badge.contained).toBe(true);
     expect(contrast(badge.foreground, badge.background)).toBeGreaterThanOrEqual(4.5);
+    if (width === 1440) {
+      // The badge's prefixed tw:ml-auto must still separate the task summary
+      // from the counts on roomy screens after its legacy CSS copy is removed.
+      const spaceBeforeBadge = await context.evaluate((node) => {
+        const summary = node.querySelector('[data-context-summary]');
+        const counts = node.querySelector('[data-context-counts]');
+        if (!summary || !counts) throw new Error('Missing research context text or counts');
+        return counts.getBoundingClientRect().left - summary.getBoundingClientRect().right;
+      });
+      expect(spaceBeforeBadge).toBeGreaterThan(32);
+    }
 
     const copy = page.locator('.actionable-result-copy').first();
     await page.locator('details:has(.detail-tools) > summary').click();
