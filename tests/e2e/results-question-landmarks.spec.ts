@@ -48,7 +48,13 @@ for (const viewport of [
       // Native anchors remain usable with keyboard alone, without adding JS.
       const navigation = page.getByRole('navigation', { name: '研究结果导航' });
       const questionLink = navigation.getByRole('link', { name: '七个问题' });
-      await questionLink.focus();
+      // A scripted focus() on the destination can pass even when normal Tab
+      // navigation cannot reach it. Start at the preceding native link, then
+      // exercise the actual keyboard order before activating the anchor.
+      const precedingLink = navigation.getByRole('link', { name: '实验边界', exact: true });
+      await precedingLink.focus();
+      await expect(precedingLink).toBeFocused();
+      await page.keyboard.press('Tab');
       await expect(questionLink).toBeFocused();
       await page.keyboard.press('Enter');
       await expect(page).toHaveURL(/#questions$/);
@@ -62,7 +68,14 @@ for (const viewport of [
         let settledFrames = 0;
         const sample = () => {
           const currentY = window.scrollY;
-          settledFrames = Math.abs(currentY - previousY) < 0.5 ? settledFrames + 1 : 0;
+          const headingTop = document.getElementById('questions-title')?.getBoundingClientRect().top;
+          // The URL can update before native anchor scrolling starts. Twelve
+          // stationary frames at the old hero must not count as "settled".
+          const targetEnteredViewport = headingTop !== undefined
+            && headingTop >= 0
+            && headingTop < window.innerHeight - 8;
+          settledFrames = targetEnteredViewport && Math.abs(currentY - previousY) < 0.5
+            ? settledFrames + 1 : 0;
           previousY = currentY;
           if (settledFrames >= 12) {
             resolve(true);
