@@ -54,6 +54,40 @@ for (const viewport of [
       await expect(page).toHaveURL(/#questions$/);
       await expect(questions).toBeVisible();
 
+      // The site uses smooth native anchor scrolling. A matching URL or a
+      // Playwright "visible" locator can be true while the viewport is still
+      // moving past the hero. Wait for the final scroll position before QA.
+      await page.waitForFunction(() => new Promise<boolean>((resolve) => {
+        let previousY = window.scrollY;
+        let settledFrames = 0;
+        const sample = () => {
+          const currentY = window.scrollY;
+          settledFrames = Math.abs(currentY - previousY) < 0.5 ? settledFrames + 1 : 0;
+          previousY = currentY;
+          if (settledFrames >= 12) {
+            resolve(true);
+          } else {
+            requestAnimationFrame(sample);
+          }
+        };
+        requestAnimationFrame(sample);
+      }), undefined, { timeout: 8000 });
+
+      const anchorPosition = await page.evaluate(() => {
+        const heading = document.getElementById('questions-title');
+        const stickyHeader = document.querySelector<HTMLElement>('[data-site-header]');
+        if (!heading || !stickyHeader) return null;
+        return {
+          headingTop: heading.getBoundingClientRect().top,
+          headerBottom: stickyHeader.getBoundingClientRect().bottom,
+        };
+      });
+      expect(anchorPosition, 'Results anchor/header geometry must be observable').not.toBeNull();
+      if (anchorPosition) {
+        expect(anchorPosition.headingTop, 'Keyboard anchor title is obscured by the sticky header').toBeGreaterThanOrEqual(anchorPosition.headerBottom + 8);
+        expect(anchorPosition.headingTop, 'Keyboard anchor title is outside the viewport').toBeLessThan(viewport.height - 8);
+      }
+
       expect(await page.evaluate(() =>
         document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2,
       )).toBe(true);
