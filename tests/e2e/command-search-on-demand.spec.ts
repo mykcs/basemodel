@@ -151,3 +151,48 @@ test('failed search-index request is retried when search is opened again', async
   await expect(page.locator('.command-results a').first()).toHaveAttribute('href', /models\/qwen3-8b/);
   expect(attempts).toBe(2);
 });
+
+
+/**
+ * W3C APG modal-dialog acceptance: an entirely keyboard-driven researcher must
+ * enter the search, remain inside its dialog, return to the opener on Escape,
+ * then use Ctrl+K and Enter to reach an actual result. Cover both reader
+ * viewport sizes and themes without changing production search behavior.
+ * https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ */
+for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`command search keeps the keyboard path intact at ${viewport.width} ${theme}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
+
+      const trigger = page.locator('[data-command-trigger]');
+      const dialog = page.locator('[data-command-dialog]');
+      const input = page.locator('[data-command-input]');
+      await trigger.focus();
+      await expect(trigger).toBeFocused();
+      await page.keyboard.press('Enter');
+      await expect(dialog).toHaveAttribute('open', '');
+      await expect(input).toBeFocused();
+
+      await page.keyboard.press('Shift+Tab');
+      await expect(dialog.locator('[data-command-close]')).toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(input).toBeFocused();
+
+      await page.keyboard.press('Escape');
+      await expect(dialog).not.toHaveAttribute('open', '');
+      await expect(trigger).toBeFocused();
+
+      await page.keyboard.press('Control+k');
+      await expect(dialog).toHaveAttribute('open', '');
+      await expect(input).toBeFocused();
+      await input.fill('qwen3-8b');
+      await expect(page.locator('.command-results a').first()).toHaveAttribute('href', /\/models\/qwen3-8b\/$/);
+      await input.press('Enter');
+      await expect(page).toHaveURL(/\/models\/qwen3-8b\/$/);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
+    });
+  }
+}
