@@ -440,3 +440,24 @@ test('Flow archived English section translations retain the same four heading la
     expect(source).toContain(landmark.zh);
   }
 });
+
+for (const width of [440, 1440] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`Flow hub keeps a concrete evidence continuation at ${width}px ${theme}`, async ({ page }) => {
+      await page.setViewportSize({ width, height: width === 440 ? 956 : 1000 });
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/research/seed-openevo/flow/');
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      const continuation = page.locator('[data-flow-next-step]');
+      await expect(continuation).toBeVisible();
+      const links = continuation.getByRole('link');
+      await expect(links).toHaveCount(2);
+      await expect(links.first()).toHaveAttribute('href', '/research/seed-openevo/study/results/');
+      await expect(links.nth(1)).toHaveAttribute('href', '/models/qwen2-5-3b-instruct/#experiment-setup');
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+      await links.first().click();
+      await expect(page).toHaveURL(/\/research\/seed-openevo\/study\/results\/$/);
+      await expect(page.locator('.results-primary')).toBeVisible();
+    });
+  }
+}

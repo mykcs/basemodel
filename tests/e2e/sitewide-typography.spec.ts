@@ -1155,7 +1155,18 @@ const currentDevelopmentWitness = (row: ScopedMigrationWitness): ScopedMigration
     throw Error('Unexpected historical /development/ code witness identity');
   return {...row,text:'docs/agents/current/ci-provider-decision.md'};
 };
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute).map(currentDevelopmentWitness),...currentFlowWitnesses,...currentContentWitnesses];
+// The sealed 2026-10-22 Flow metadata witness remains byte-for-byte historical.
+// PR #1003 changed its visible link wording while preserving the same paragraph
+// and typography owner. Redirect only that exact lineage to the current text;
+// the new Results-first action is independently asserted in page-learning-path.
+const currentFlowEvidenceWitness = (row: ScopedMigrationWitness): ScopedMigrationWitness => {
+  if (row.lineageId !== 'a67fec855f9b8e4b3e82') return row;
+  if (row.route !== flowRoute || row.file !== 'src/components/research/SeedOpenEvoResearchHub.astro' ||
+      row.selector !== '.evidence-model-link' || row.text !== '查看固定模型的实验设置 →')
+    throw Error('Unexpected Flow metadata witness identity');
+  return {...row, text:'按需核对固定模型设置 →'};
+};
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute).map(currentDevelopmentWitness).map(currentFlowEvidenceWitness),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{
