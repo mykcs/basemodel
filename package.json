@@ -112,10 +112,10 @@
     "typescript-eslint": "^8.72.1",
     "vitest": "^3.2.0",
     "yaml": "2.9.1",
-    "@tailwindcss/vite": "^4.3.4",
+    "@tailwindcss/vite": "^4.3.5",
     "@types/alpinejs": "^3.17.0",
     "daisyui": "^5.7.50",
-    "tailwindcss": "^4.3.4"
+    "tailwindcss": "^4.3.5"
   },
   "overrides": {
     "@vitejs/plugin-react": "^6.0.5",
