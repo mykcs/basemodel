@@ -13,6 +13,10 @@ const routes = [
   { label: 'data-status', path: '/data-status/' },
   { label: 'methodology', path: '/methodology/' },
   { label: 'openevo-guide', path: '/research/seed-openevo/study/run/' },
+  // These reader routes already have focused keyboard checks below; also
+  // exercise the shared clipping, contrast and geometry audit on their bodies.
+  { label: 'flow', path: '/research/seed-openevo/flow/' },
+  { label: 'results', path: '/research/seed-openevo/study/results/' },
 ] as const;
 
 // One owner-selected phone viewport. Separate, issue-specific specs may retain
