@@ -181,7 +181,7 @@ export function verifyReviewedUiAndArticleTypography(historicalRows, currentRows
 
 /** 
  * 2026-11-08 page-local dead-selector retirement receipt.
- * The sealed 2026-10-22 ledger remains immutable: exactly five historical
+ * The sealed 2026-10-22 ledger remains immutable: exactly eight historical
  * typography tuples have been retired from an Astro-scoped stylesheet whose
  * four CSS classes have zero markup consumers. All other declarations remain
  * subject to the append-only ledger. Do not generalize to arbitrary deletions.
@@ -199,6 +199,9 @@ export const reviewedHomeDeadTypographyRetirement = {
     { selector: '.journey-list h3', property: 'line-height', value: 'var(--type-leading-heading)' },
     { selector: '.journey-list p', property: 'font-size', value: 'var(--type-body-small)' },
     { selector: '.journey-list p', property: 'line-height', value: 'var(--type-leading-body)' },
+    { selector: '.journey-list p', contexts: ['@media (max-width: 700px)'], property: 'font-size', value: 'var(--type-body-small)' },
+    { selector: '.home-section__after a', property: 'font-size', value: 'var(--type-body-small)' },
+    { selector: '.home-section__after a', property: 'font-weight', value: 'var(--type-weight-heading)' },
   ],
 };
 
@@ -212,7 +215,7 @@ export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, curre
   }
   const removed = new Set();
   for (const item of review.retired) {
-    const row = { file: review.file, selector: item.selector, contexts: [], property: item.property, value: item.value };
+    const row = { file: review.file, selector: item.selector, contexts: item.contexts ?? [], property: item.property, value: item.value };
     const key = identity(row);
     assert(!removed.has(key), 'Duplicate retirement tuple');
     assert.equal(historicalRows.filter(candidate => identity(candidate) === key).length, 1, 'Retired tuple must occur once in sealed historical ledger');
