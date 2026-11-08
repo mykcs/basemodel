@@ -10,8 +10,8 @@
 | **Searchable Starlight handbook — source merged** | [#860](https://github.com/mykcs/basemodel/pull/860) 已 **merged**；Starlight 已有实际消费点。 | 不再重复安装／开第二个 handbook PR；若要判断读者能否访问，仍需受保护 Production 的部署 SHA 与登录后路由验收。 |
 | **OpenEVO 三篇博客首屏门 — old candidate closed** | [#855](https://github.com/mykcs/basemodel/pull/855) 已 **closed / not merged**，旧 PR 的几何检查不能自动算入 main。 | 仅按当前 [Reader Attention Contract](../agents/current/site-reader-attention-contract.md) 和真实源代码／浏览器验收是否存在同一缺口再行动。 |
 | **Scientific table HTML / CSV / LaTeX parity — Draft** | [#827](https://github.com/mykcs/basemodel/pull/827) 保持 **Draft / unmerged**。 | 保留原科研数据和实验分母；不要另建第二套 ScientificTable；需要同源证据与新的 exact-head 验收。 |
-| **Root README release/privacy drift — corrected in this candidate** | [README](../../README.md) 现在写明公开仓库、GitHub 双门禁及 Vercel 默认／Cloudflare standby 的**手动受保护发布**，不再把 Vercel Preview 写成必需 PR 检查，或把旧私有化愿望当现行决定。 | 通过 CI 并合并本次文档变更后，依 [hosting architecture](../agents/current/hosting-architecture.md) 和实时 provider 独立核对 Production；不把文档修正误报为已发布。 |
-| **Universal human comprehension — not verified** | [Reader Contract](../agents/current/site-reader-attention-contract.md) 与 [UI visual gate](../agents/current/ui-change-visual-acceptance-gate.md) 是自动化代理指标，不是完整真人冷读。 | 对 Home、Flow、Results 的代表性页面进行真实上下文测试，保留误解、截图和修复证据；不可拿 CI PASS 冒充全部人类阅读验收。 |
+| **Root README 发布／隐私说明：源码漂移已修，线上发布未收口** | [#1013](https://github.com/mykcs/basemodel/pull/1013) 已通过两道 exact-head CI 并作为 `main@5ded583c` 合并；[README](../../README.md) 已明确公开源码、GitHub 双门禁、Vercel 默认与 Cloudflare standby 的手动受保护发布。**这只是源码文档修复**，不改变现有 Production。 | 按 [hosting architecture](../agents/current/hosting-architecture.md) 和实时 provider 独立确认部署 SHA、SSO 及授权登录后的 Home／Flow／Results 页面；没有发布权限与授权会话时保持 BLOCKED。 |
+| **Universal human comprehension — not verified** | [Reader Contract](../agents/current/site-reader-attention-contract.md) 与 [UI visual gate](../agents/current/ui-change-visual-acceptance-gate.md) 是机器代理指标；[#1011](https://github.com/mykcs/basemodel/pull/1011) 已合入 Results 屏幕阅读器标签与手机键盘章节导航回归，仍不是无上下文读者理解证明。 | 对 Home、Flow、Results 做真实阅读任务和登录态 440×956／1440×1000、浅深主题核验，记录误解与修复；不能把 CI、截图或 PR merge 当成人类理解／Production 验收。 |
 
 ## Closing an entry
 
