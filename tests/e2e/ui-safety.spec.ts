@@ -550,6 +550,10 @@ for (const matrix of matrices) {
     expect(focus.outlineColor).toBe(focus.expected);
     expect(focus.textDecoration).toContain('underline');
     expect(focus.overflow).toBeLessThanOrEqual(2);
+    // Tab-focus must be in the actual viewport, not only pass computed-style checks.
+    // Earlier CI image captured the top hero instead of the focused research link.
+    await expect(link, 'keyboard focus must be visible in the viewport').toBeInViewport();
+    await link.scrollIntoViewIfNeeded();
     await page.screenshot({ path: info.outputPath(`home-research-link-focus-${matrix.name}.png`), animations: 'disabled' });
 
     await link.evaluate((el) => (el as HTMLElement).blur());
