@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -124,6 +124,26 @@ test('reviewed UI replacement and later page-local semantic tokens reconcile aga
   assert.throws(() => verifyReviewedUiAndArticleTypography([baseline, old], [...combined, { ...newArticle, file: 'src/styles/app.css' }], review), /outside page-local Astro/);
   assert.throws(() => verifyReviewedUiAndArticleTypography([baseline, old], [...combined, { ...newArticle, value: '12px' }], review), /semantic type token/);
   assert.throws(() => verifyReviewedUiAndArticleTypography([baseline], combined, review), /removal is absent/);
+});
+
+
+test('dead Home-scoped typography has a five-tuple exact-source retirement receipt', () => {
+  const review = reviewedHomeDeadTypographyRetirement;
+  const bytes = readFileSync(new URL('../../src/pages/_bodies/home-v2.astro', import.meta.url));
+  const text = bytes.toString('utf8');
+  const blob = createHash('sha1').update(`blob ${bytes.byteLength}\\0`).update(bytes).digest('hex');
+  assert.equal(blob, review.currentBlobSha, 'reviewed Home source must be the current exact Git blob');
+  assert.equal(review.retired.length, 5);
+  const rows = review.retired.map(({ selector, property, value }) =>
+    ({ file: review.file, selector, contexts: [], property, value }));
+  const result = verifyReviewedHomeDeadTypographyRetirement(rows, [], text);
+  assert.deepEqual(result, { retainedRows: [], retiredCount: 5, retiredOwner: review.file });
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows.slice(1), [], text), /once in sealed historical ledger/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [rows[0]], text), /unexpectedly remains/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text + ' '), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, currentBlobSha: '0'.repeat(40) }), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, absentClasses: ['home-research'] }), /remains a source consumer/);
+  assert.throws(() => verifyAppendOnlyArticleTypography(rows, []), /disappeared or changed/);
 });
 
 test('exact editorial alias substitutions preserve sealed source owner proofs', () => {
