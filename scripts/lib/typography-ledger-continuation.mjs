@@ -205,7 +205,7 @@ export const reviewedHomeDeadTypographyRetirement = {
 export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement) {
   assert(review.file === 'src/pages/_bodies/home-v2.astro' && review.reason?.trim(), 'Home retirement requires its exact owner and reason');
   assert.match(review.priorBlobSha, /^[a-f0-9]{40}$/, 'Home retirement must retain the prior Git blob identity');
-  const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\\0`).update(pageSource).digest('hex');
+  const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\0`).update(pageSource).digest('hex');
   assert.equal(actualBlobSha, review.currentBlobSha, 'Home dead-selector retirement source changed beyond its reviewed Git blob');
   for (const className of review.absentClasses) {
     assert(!pageSource.includes(className), `Retired Home class remains a source consumer: ${className}`);
