@@ -131,7 +131,7 @@ test('dead Home-scoped typography has a five-tuple exact-source retirement recei
   const review = reviewedHomeDeadTypographyRetirement;
   const bytes = readFileSync(new URL('../../src/pages/_bodies/home-v2.astro', import.meta.url));
   const text = bytes.toString('utf8');
-  const blob = createHash('sha1').update(`blob ${bytes.byteLength}\\0`).update(bytes).digest('hex');
+  const blob = createHash('sha1').update(`blob ${bytes.byteLength}\0`).update(bytes).digest('hex');
   assert.equal(blob, review.currentBlobSha, 'reviewed Home source must be the current exact Git blob');
   assert.equal(review.retired.length, 5);
   const rows = review.retired.map(({ selector, property, value }) =>
