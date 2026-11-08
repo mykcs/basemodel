@@ -23,23 +23,23 @@ const directHref = p('/research/seed-openevo/study/capability-exploration/q17-di
   </div>
 
   <div class="same-panel__cards" aria-label={t('三个已完成 1.7B 同题 Final 与一个未做空位', 'Three completed 1.7B same-panel finals and one unrun slot')}>
-    <article>
-      <span>普通 OpenEVO</span>
+    <article aria-labelledby="same-panel-direct-title">
+      <span id="same-panel-direct-title">{t('普通 OpenEVO', 'Ordinary OpenEVO')}</span>
       <strong>{study.threeWayFinal.directApply.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.directApply.exactCount}/128 exact</span>
     </article>
-    <article>
-      <span>OpenEVO + Bounded Online Recurrence</span>
+    <article aria-labelledby="same-panel-bounded-title">
+      <span id="same-panel-bounded-title">OpenEVO + Bounded Online Recurrence</span>
       <strong>{study.threeWayFinal.off.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.off.exactCount}/128 exact</span>
     </article>
-    <article>
-      <span>{t('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）', 'OpenEVO + Bounded Online Recurrence + β-gating (α fixed at 1)')}</span>
+    <article aria-labelledby="same-panel-beta-title">
+      <span id="same-panel-beta-title">{t('OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）', 'OpenEVO + Bounded Online Recurrence + β-gating (α fixed at 1)')}</span>
       <strong>{study.threeWayFinal.on.score.toFixed(2)}</strong>
       <span class="same-panel__exact">{study.threeWayFinal.on.exactCount}/128 exact</span>
     </article>
-    <article class="same-panel__unrun">
-      <span>{t('OpenEVO + Bounded Online Recurrence + 动态 α + 动态 β（未做）', 'OpenEVO + Bounded Online Recurrence + dynamic α + dynamic β (not run)')}</span>
+    <article class="same-panel__unrun" aria-labelledby="same-panel-unrun-title">
+      <span id="same-panel-unrun-title">{t('OpenEVO + Bounded Online Recurrence + 动态 α + 动态 β（未做）', 'OpenEVO + Bounded Online Recurrence + dynamic α + dynamic β (not run)')}</span>
       <strong>—</strong>
       <span class="same-panel__exact">—</span>
     </article>
