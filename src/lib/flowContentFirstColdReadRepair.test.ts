@@ -37,8 +37,10 @@ describe('Flow content-first cold-read repair', () => {
     expect(hub.indexOf('id="training-design"')).toBeLessThan(hub.indexOf('id="questions"'));
     expect(hub).toContain('Stage 2 由当前策略自行复盘，用 GRPO + OPD 持续更新参数');
     expect(hub).not.toContain('OPD / GRPO 的具体做法留到 SEED 方法页');
-    expect(hub).toContain('class="object-map__fact"');
-    expect(hub).not.toContain("Qwen2.5-3B-Instruct', body:t('固定同一版模型参数（checkpoint，也就是模型参数快照）、数值精度和运行设置。','Pin the same model-parameter snapshot (checkpoint), numerical precision, and runtime settings.'), href:");
+    // The canonical model-setup record is now deliberately reachable from
+    // the comparison row; the earlier non-link invariant is superseded.
+    expect(hub).toContain("href:p('/models/qwen2-5-3b-instruct/#experiment-setup')");
+    expect(hub).toContain('group.items.map((item)=><a href={item.href}>');
      expect(hub).toContain('aria-labelledby="research-objects-title"');
     expect(hub).toContain('<h2 id="research-objects-title">');
     expect(hub).not.toContain("<h2>{t('研究对象', 'Research objects')}</h2>");
