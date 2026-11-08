@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { inventoryCSS, inventoryAstro } from './lib/typography-inventory.mjs';
 import { verifyTypographyReconciliation, verifyTypographyObservationSnapshot } from './lib/typography-reconciliation.mjs';
 import { intelligenceTypographyDelta, contentReorganizationProofs } from './lib/typography-intelligence-ui-delta.mjs';
-import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedSourceContinuations, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows } from './lib/typography-ledger-continuation.mjs';
+import { verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedSourceContinuations, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, verifyReviewedHomeDeadTypographyRetirement, reviewedHomeDeadTypographyRetirement } from './lib/typography-ledger-continuation.mjs';
 
 const root = new URL('../', import.meta.url).pathname;
 const built = process.argv.includes('--built');
@@ -52,7 +52,8 @@ assert.equal(ownerDelta.fromSourceFingerprint, ledger.sourceFingerprint, 'Review
 // Subsequent reviewed article pages and editorial anonymization legitimately
 // change it; verify the three #959 source owners by exact SHA instead and
 // reconcile every CSS declaration against both independently reviewed deltas.
-const typographyEvolution = verifyReviewedUiAndArticleTypography(rows, source, ownerDelta, [...reviewedSharedTypographyRows(reviewedReaderGuideTypography), ...reviewedSharedTypographyRows(reviewedFlowDisclosureTypography)]);
+const homeRetirement = verifyReviewedHomeDeadTypographyRetirement(rows, source, fs.readFileSync(path.join(root, reviewedHomeDeadTypographyRetirement.file), 'utf8'));
+const typographyEvolution = verifyReviewedUiAndArticleTypography(homeRetirement.retainedRows, source, ownerDelta, [...reviewedSharedTypographyRows(reviewedReaderGuideTypography), ...reviewedSharedTypographyRows(reviewedFlowDisclosureTypography)]);
 const occurrences = new Map();
 const executionCounts = {};
 const allowedExecution = new Set(['IMPLEMENTED_THIS_CHANGE', 'PREEXISTING_ROLE_BINDING', 'SOURCE_RETAIN', 'CURRENT_OWNER_POLICY_ADOPTION', 'PLANNED_NOT_IMPLEMENTED', 'PLANNED_SELECTOR_SPLIT_NOT_IMPLEMENTED']);
@@ -147,4 +148,4 @@ assert.deepEqual([...changedProducerTransitionIds].sort(), [...expectedTransitio
 assert.deepEqual([...invalidatedTransitionIds].sort(), [...ownerDelta.invalidatedHistoricalTransitionIds].sort(), 'Missing historical consumer invalidation');
 assert.deepEqual(ledger.observationSnapshot.mappingErrors, []);
 for (const observation of ledger.consumerObservations.map(decode)) assert(rows.some(row => row.id === observation.id));
-console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, contentReorganizationInvalidatedProofs: [...contentReorganizationInvalidatedProofs], historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));
+console.log(JSON.stringify({ historicalSourceFingerprint: ledger.sourceFingerprint, intelligenceSourceFingerprint: ownerDelta.toSourceFingerprint, currentSourceFingerprint, contentReorganizationInvalidatedProofs: [...contentReorganizationInvalidatedProofs], historicalClassifiedDeclarations: rows.length, currentDeclarations: source.length, typographyEvolution, homeRetirement: { retiredCount: homeRetirement.retiredCount, owner: homeRetirement.retiredOwner, status: 'REVIEWED_DEAD_SCOPED_SELECTORS_NOT_REOBSERVED' }, deltaStatus: 'REVIEWED_UI_REPLACEMENT_PLUS_EDITORIAL_ARTICLE_CONTINUATION', counts, executionCounts: ledger.executionCounts, pendingRoleMapping: 0, historicalStaticObservationRows: ledger.consumerObservations.length, builtVerification: built ? 'HISTORICAL_ROUTES_PRESERVED_CURRENT_ROUTES_BUILT' : 'EXPLICIT_POST_BUILD_GATE_REQUIRED', visualAcceptance: 'SEPARATE_EXACT_HEAD_RECEIPT_REQUIRED' }));

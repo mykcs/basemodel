@@ -179,6 +179,56 @@ export function verifyReviewedUiAndArticleTypography(historicalRows, currentRows
   return { reviewedRemoved: removed.length, reviewedAdded: added.length, appendOnly };
 }
 
+/** 
+ * 2026-11-08 page-local dead-selector retirement receipt.
+ * The sealed 2026-10-22 ledger remains immutable: exactly eight historical
+ * typography tuples have been retired from an Astro-scoped stylesheet whose
+ * four CSS classes have zero markup consumers. All other declarations remain
+ * subject to the append-only ledger. Do not generalize to arbitrary deletions.
+ * Previous and current Git blob identities are independently reviewable.
+ */
+export const reviewedHomeDeadTypographyRetirement = {
+  file: 'src/pages/_bodies/home-v2.astro',
+  priorBlobSha: '92527338b8d069a25dbe5dfd9b36ee3a4e50487c',
+  currentBlobSha: '2db840ddc074b0c74451ba618cd74467094023d7',
+  reason: 'Four retired Home journey/after class families are absent from this Astro component markup. Their scoped CSS cannot target markup owned by another Astro component. Retain the current-answer and next-step hierarchy, and require independent browser acceptance after removing dead declarations.',
+  absentClasses: ['journey-list', 'journey-number', 'journey-open', 'home-section__after'],
+  retired: [
+    { selector: '.journey-number', property: 'font', value: 'var(--type-weight-medium) var(--type-meta)/var(--type-leading-heading) var(--font-interface)' },
+    { selector: '.journey-list h3', property: 'font-size', value: 'var(--type-minor-heading)' },
+    { selector: '.journey-list h3', property: 'line-height', value: 'var(--type-leading-heading)' },
+    { selector: '.journey-list p', property: 'font-size', value: 'var(--type-body-small)' },
+    { selector: '.journey-list p', property: 'line-height', value: 'var(--type-leading-body)' },
+    { selector: '.journey-list p', contexts: ['@media (max-width: 700px)'], property: 'font-size', value: 'var(--type-body-small)' },
+    { selector: '.home-section__after a', property: 'font-size', value: 'var(--type-body-small)' },
+    { selector: '.home-section__after a', property: 'font-weight', value: 'var(--type-weight-heading)' },
+  ],
+};
+
+export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement) {
+  assert(review.file === 'src/pages/_bodies/home-v2.astro' && review.reason?.trim(), 'Home retirement requires its exact owner and reason');
+  assert.match(review.priorBlobSha, /^[a-f0-9]{40}$/, 'Home retirement must retain the prior Git blob identity');
+  const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\0`).update(pageSource).digest('hex');
+  assert.equal(actualBlobSha, review.currentBlobSha, 'Home dead-selector retirement source changed beyond its reviewed Git blob');
+  for (const className of review.absentClasses) {
+    assert(!pageSource.includes(className), `Retired Home class remains a source consumer: ${className}`);
+  }
+  const removed = new Set();
+  for (const item of review.retired) {
+    const row = { file: review.file, selector: item.selector, contexts: item.contexts ?? [], property: item.property, value: item.value };
+    const key = identity(row);
+    assert(!removed.has(key), 'Duplicate retirement tuple');
+    assert.equal(historicalRows.filter(candidate => identity(candidate) === key).length, 1, 'Retired tuple must occur once in sealed historical ledger');
+    assert.equal(currentRows.filter(candidate => identity(candidate) === key).length, 0, 'Retired tuple unexpectedly remains in current CSS');
+    removed.add(key);
+  }
+  return {
+    retainedRows: historicalRows.filter(row => !removed.has(identity(row))),
+    retiredCount: removed.size,
+    retiredOwner: review.file,
+  };
+}
+
 // A closed set of already-reviewed editorial anonymizations can preserve a
 // sealed owner/consumer proof without rewriting its historical receipt.
 // Every other byte must still match that original proof exactly.
