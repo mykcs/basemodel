@@ -205,11 +205,29 @@ export const reviewedHomeDeadTypographyRetirement = {
   ],
 };
 
-export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement) {
+// Append-only follow-up to #1009: its source retirement proof stays pinned to
+// the old blob, while this later Home-only interaction change has its own SHA.
+export const reviewedHomeScopedLinkFocusContinuation = {
+  file: 'src/pages/_bodies/home-v2.astro',
+  priorBlobSha: reviewedHomeDeadTypographyRetirement.currentBlobSha,
+  currentBlobSha: '4601f3a7be6a0a886b085d404926436c99f1c477',
+  reason: 'The four Home research next-step rows now show a semantic accent ring and underlined destination label on real keyboard focus or hover. No old journey/after selectors or scientific claims return.',
+  snippets: [
+    '.next-list a:hover strong, .next-list a:focus-visible strong { text-decoration: underline; text-decoration-color: var(--accent-deep); text-underline-offset: .22em; }',
+    '.next-list a:focus-visible { outline: 3px solid var(--accent-deep); outline-offset: 3px; }',
+  ],
+};
+
+export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement, continuation = reviewedHomeScopedLinkFocusContinuation) {
   assert(review.file === 'src/pages/_bodies/home-v2.astro' && review.reason?.trim(), 'Home retirement requires its exact owner and reason');
   assert.match(review.priorBlobSha, /^[a-f0-9]{40}$/, 'Home retirement must retain the prior Git blob identity');
   const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\0`).update(pageSource).digest('hex');
-  assert.equal(actualBlobSha, review.currentBlobSha, 'Home dead-selector retirement source changed beyond its reviewed Git blob');
+  // Preserve the historic retirement identity; accept only the new explicitly
+  // reviewed one-step continuation rather than rewriting #1009 provenance.
+  assert(continuation.file === review.file && continuation.reason?.trim(), 'Home interaction continuation requires a semantic owner and reason');
+  assert.equal(continuation.priorBlobSha, review.currentBlobSha, 'Home interaction continuation must start from the sealed retirement source');
+  assert.equal(actualBlobSha, continuation.currentBlobSha, 'Home retirement source changed beyond its exact follow-up review');
+  for (const snippet of continuation.snippets) assert(pageSource.includes(snippet), 'Reviewed Home interaction cue is absent');
   for (const className of review.absentClasses) {
     assert(!pageSource.includes(className), `Retired Home class remains a source consumer: ${className}`);
   }
