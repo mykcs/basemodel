@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, reviewedHomeScopedLinkFocusContinuation, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -132,7 +132,8 @@ test('dead Home-scoped typography has an eight-tuple exact-source retirement rec
   const bytes = readFileSync(new URL('../../src/pages/_bodies/home-v2.astro', import.meta.url));
   const text = bytes.toString('utf8');
   const blob = createHash('sha1').update(`blob ${bytes.byteLength}\0`).update(bytes).digest('hex');
-  assert.equal(blob, review.currentBlobSha, 'reviewed Home source must be the current exact Git blob');
+  assert.equal(blob, reviewedHomeScopedLinkFocusContinuation.currentBlobSha, 'follow-up Home source must match the exact reviewed Git blob');
+  assert.equal(reviewedHomeScopedLinkFocusContinuation.priorBlobSha, review.currentBlobSha, 'the old retirement receipt must remain pinned');
   assert.equal(review.retired.length, 8);
   const rows = review.retired.map(({ selector, contexts = [], property, value }) =>
     ({ file: review.file, selector, contexts, property, value }));
@@ -141,7 +142,9 @@ test('dead Home-scoped typography has an eight-tuple exact-source retirement rec
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows.slice(1), [], text), /once in sealed historical ledger/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [rows[0]], text), /unexpectedly remains/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text + ' '), /source changed beyond/);
-  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, currentBlobSha: '0'.repeat(40) }), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, currentBlobSha: '0'.repeat(40) }), /must start from the sealed/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, { ...reviewedHomeScopedLinkFocusContinuation, currentBlobSha: '0'.repeat(40) }), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, { ...reviewedHomeScopedLinkFocusContinuation, snippets: ['nonexistent focus rule'] }), /cue is absent/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, absentClasses: ['home-research'] }), /remains a source consumer/);
   assert.throws(() => verifyAppendOnlyArticleTypography(rows, []), /disappeared or changed/);
 });
