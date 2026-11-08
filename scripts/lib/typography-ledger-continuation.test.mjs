@@ -79,11 +79,14 @@ test('Results first-screen height review preserves historical proof and rejects 
   const bytes = readFileSync(new URL(`../../${file}`, import.meta.url));
   const prior = { currentSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b' };
   const currentSha = createHash('sha256').update(bytes).digest('hex');
-  assert.equal(currentSha, '1edf01e67c127800f555751cddb6ac8808f910902dd2b81afd7a8f9349806877');
+  // The original 1edf01e6 source identity is retained in the reviewed ledger;
+  // #1011 adds a route-local native-anchor scroll correction, not a new typography scale.
+  assert.equal(currentSha, 'f528f47299f2dc95c6c73c63a860174fea79be594938a75ed7f250e79d6a0043');
   const source = bytes.toString('utf8');
   assert.match(source, /\.results-first-screen\s*\{\s*min-height:\s*0\s*\}/);
   assert.match(source, /统计范围也仍然包含“没有差异”/);
   assert.match(source, /class="progress-detail"/);
+  assert.match(source, /:global\(html:has\(\.results-hero \.paper-nav\)\)\s*\{\s*scroll-behavior:\s*auto;?\s*\}/);
   assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
   assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);
   assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
