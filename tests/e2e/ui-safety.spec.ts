@@ -501,3 +501,59 @@ for (const matrix of matrices) {
     await expect(challenge).toHaveAttribute('href', '/research/seed-openevo/recent-challenges/');
   });
 }
+
+
+// Exercise the real full-row research links, not only the header focus control.
+// All four viewports/themes run on both Chromium and WebKit in the full UI gate.
+for (const matrix of matrices) {
+  test(`home research next steps provide keyboard focus and hover cues: ${matrix.name}`, async ({ page }, info) => {
+    await page.setViewportSize(matrix.viewport);
+    await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await settle(page);
+
+    const link = page.locator('.next-list a').first();
+    await expect(link).toBeVisible();
+    expect(await link.getAttribute('href')).toBe('/research/seed-openevo/flow/');
+
+    let reachedByTab = false;
+    for (let index = 0; index < 80; index += 1) {
+      await page.keyboard.press('Tab');
+      if (await link.evaluate((el) => document.activeElement === el)) {
+        reachedByTab = true;
+        break;
+      }
+    }
+    expect(reachedByTab, 'research destination must be reachable using real Tab presses').toBe(true);
+
+    const focus = await link.evaluate((el) => {
+      const style = getComputedStyle(el);
+      const heading = getComputedStyle(el.querySelector('strong')!);
+      const reference = document.createElement('span');
+      reference.style.color = 'var(--accent-deep)';
+      document.body.append(reference);
+      const expected = getComputedStyle(reference).color;
+      reference.remove();
+      return {
+        focusVisible: el.matches(':focus-visible'),
+        outlineStyle: style.outlineStyle,
+        outlineWidth: parseFloat(style.outlineWidth),
+        outlineColor: style.outlineColor,
+        expected,
+        textDecoration: heading.textDecorationLine,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(focus.focusVisible).toBe(true);
+    expect(focus.outlineStyle).toBe('solid');
+    expect(focus.outlineWidth).toBeGreaterThanOrEqual(3);
+    expect(focus.outlineColor).toBe(focus.expected);
+    expect(focus.textDecoration).toContain('underline');
+    expect(focus.overflow).toBeLessThanOrEqual(2);
+    await page.screenshot({ path: info.outputPath(`home-research-link-focus-${matrix.name}.png`), animations: 'disabled' });
+
+    await page.mouse.move(0, 0);
+    await link.hover();
+    expect(await link.locator('strong').evaluate((el) => getComputedStyle(el).textDecorationLine)).toContain('underline');
+  });
+}
