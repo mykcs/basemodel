@@ -552,6 +552,7 @@ for (const matrix of matrices) {
     expect(focus.overflow).toBeLessThanOrEqual(2);
     await page.screenshot({ path: info.outputPath(`home-research-link-focus-${matrix.name}.png`), animations: 'disabled' });
 
+    await link.evaluate((el) => (el as HTMLElement).blur());
     await page.mouse.move(0, 0);
     await link.hover();
     expect(await link.locator('strong').evaluate((el) => getComputedStyle(el).textDecorationLine)).toContain('underline');
