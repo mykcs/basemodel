@@ -127,17 +127,17 @@ test('reviewed UI replacement and later page-local semantic tokens reconcile aga
 });
 
 
-test('dead Home-scoped typography has a five-tuple exact-source retirement receipt', () => {
+test('dead Home-scoped typography has an eight-tuple exact-source retirement receipt', () => {
   const review = reviewedHomeDeadTypographyRetirement;
   const bytes = readFileSync(new URL('../../src/pages/_bodies/home-v2.astro', import.meta.url));
   const text = bytes.toString('utf8');
   const blob = createHash('sha1').update(`blob ${bytes.byteLength}\0`).update(bytes).digest('hex');
   assert.equal(blob, review.currentBlobSha, 'reviewed Home source must be the current exact Git blob');
-  assert.equal(review.retired.length, 5);
-  const rows = review.retired.map(({ selector, property, value }) =>
-    ({ file: review.file, selector, contexts: [], property, value }));
+  assert.equal(review.retired.length, 8);
+  const rows = review.retired.map(({ selector, contexts = [], property, value }) =>
+    ({ file: review.file, selector, contexts, property, value }));
   const result = verifyReviewedHomeDeadTypographyRetirement(rows, [], text);
-  assert.deepEqual(result, { retainedRows: [], retiredCount: 5, retiredOwner: review.file });
+  assert.deepEqual(result, { retainedRows: [], retiredCount: 8, retiredOwner: review.file });
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows.slice(1), [], text), /once in sealed historical ledger/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [rows[0]], text), /unexpectedly remains/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text + ' '), /source changed beyond/);
