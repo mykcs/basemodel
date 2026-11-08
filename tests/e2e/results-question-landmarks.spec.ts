@@ -14,6 +14,8 @@ for (const viewport of [
       const response = await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      // A smooth focus scroll must never cancel the immediately following native Tab+Enter anchor.
+      expect(await page.locator('html').evaluate((node) => getComputedStyle(node).scrollBehavior)).toBe('auto');
 
       const questions = page.getByRole('region', { name: '七个研究问题' });
       await expect(questions).toBeVisible();
