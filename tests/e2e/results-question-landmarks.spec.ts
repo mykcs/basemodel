@@ -14,6 +14,8 @@ for (const viewport of [
       const response = await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+      // A smooth focus scroll must never cancel the immediately following native Tab+Enter anchor.
+      expect(await page.locator('html').evaluate((node) => getComputedStyle(node).scrollBehavior)).toBe('auto');
 
       const questions = page.getByRole('region', { name: '七个研究问题' });
       await expect(questions).toBeVisible();
@@ -63,7 +65,8 @@ for (const viewport of [
       // The site uses smooth native anchor scrolling. A matching URL or a
       // Playwright "visible" locator can be true while the viewport is still
       // moving past the hero. Wait for the final scroll position before QA.
-      await page.waitForFunction(() => new Promise<boolean>((resolve) => {
+      try {
+        await page.waitForFunction(() => new Promise<boolean>((resolve) => {
         let previousY = window.scrollY;
         let settledFrames = 0;
         const sample = () => {
@@ -85,6 +88,33 @@ for (const viewport of [
         };
         requestAnimationFrame(sample);
       }), undefined, { timeout: 8000 });
+      } catch (error) {
+        // Retain the original failure. A hash change without a visible anchor is
+        // a reader defect until we can identify the real scroll/layout cause.
+        const geometry = await page.evaluate(() => {
+          const bounds = (node: Element | null) => {
+            if (!node) return null;
+            const box = node.getBoundingClientRect();
+            return { top: box.top, bottom: box.bottom, height: box.height };
+          };
+          return {
+            hash: location.hash,
+            focusedElement: (document.activeElement as HTMLElement | null)?.outerHTML.slice(0, 180),
+            scrollY: window.scrollY,
+            scrollHeight: document.documentElement.scrollHeight,
+            viewport: { width: innerWidth, height: innerHeight },
+            rootScrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
+            section: bounds(document.getElementById('questions')),
+            heading: bounds(document.getElementById('questions-title')),
+            stickyHeader: bounds(document.querySelector('[data-site-header]')),
+          };
+        });
+        await testInfo.attach(`results-anchor-failure-${viewport.width}-${theme}`, {
+          body: Buffer.from(JSON.stringify(geometry, null, 2)),
+          contentType: 'application/json',
+        });
+        throw error;
+      }
 
       const anchorPosition = await page.evaluate(() => {
         const heading = document.getElementById('questions-title');

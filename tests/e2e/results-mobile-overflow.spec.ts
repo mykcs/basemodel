@@ -147,3 +147,41 @@ for(const width of [320,390,768,1440]){
     }
   });
 }
+
+
+// The completed 1.7B finals and the explicitly unrun candidate are separate
+// research objects. Each must be reachable by its experiment name in a
+// screen reader's article landmarks; "not run" must remain an em dash, not 0.
+for (const viewport of [
+  { width: 440, height: 956 },
+  { width: 1440, height: 1000 },
+] as const) {
+  for (const theme of themes) {
+    test(`1.7B result articles have distinct accessible names at ${viewport.width}px / ${theme}`, async ({ page }, testInfo) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
+      const response = await page.goto('/research/seed-openevo/study/results/', { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      const results = page.locator('#latest-1p7b .same-panel__cards');
+      const articles = results.getByRole('article');
+      await expect(articles).toHaveCount(4);
+      const labels = [
+        '普通 OpenEVO',
+        'OpenEVO + Bounded Online Recurrence',
+        'OpenEVO + Bounded Online Recurrence + β-gating（α 固定为 1）',
+        'OpenEVO + Bounded Online Recurrence + 动态 α + 动态 β（未做）',
+      ] as const;
+      for (const label of labels) {
+        await expect(results.getByRole('article', { name: label, exact: true })).toHaveCount(1);
+      }
+      const unrun = results.getByRole('article', { name: labels[3], exact: true });
+      await expect(unrun.locator('strong')).toHaveText('—');
+      await expect(unrun.locator('.same-panel__exact')).toHaveText('—');
+      await articles.first().scrollIntoViewIfNeeded();
+      await testInfo.attach(`results-1p7b-named-articles-${viewport.width}-${theme}`, {
+        body: await page.screenshot({ fullPage: false }),
+        contentType: 'image/png',
+      });
+    });
+  }
+}

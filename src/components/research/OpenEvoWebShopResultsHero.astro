@@ -102,6 +102,9 @@ const navItems = [
 </header>
 
 <style>
+  /* Keep keyboard-native Results chapter jumps immediate after focus scrolls;
+     scoped to this route, matching the established WebShop chapter rule. */
+  :global(html:has(.results-hero .paper-nav)) { scroll-behavior: auto; }
   .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
   .results-first-screen{min-height:0}
   .results-hero h1{margin:0;max-width:940px;font-size:var(--article-title-size, clamp(2.35rem,5vw,4.35rem));line-height:var(--article-title-leading, 1.04);letter-spacing:var(--article-title-spacing, -.05em)}
