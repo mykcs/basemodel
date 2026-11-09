@@ -71,7 +71,7 @@ const commandMenuLabels = {
   searchGuide: m.nav.searchGuide,
 };
 ---
-<Tag class="site-header" data-site-header x-data="mobileNavigation" x-on:keydown.escape.window="closeAndRestore" x-on:resize.window="onViewportChange">
+<Tag class="site-header" data-site-header x-data="mobileNavigation" x-on:keydown.escape.window="closeAndRestore" x-on:focusin.window="closeOnFocusExit" x-on:resize.window="onViewportChange">
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">BM</span>
@@ -180,6 +180,12 @@ const commandMenuLabels = {
     },
     toggle() { this.setOpen(!this.open); },
     closeAndRestore() { if (this.open) this.setOpen(false, true); },
+    // A non-modal navigation disclosure must release the scroll lock when
+    // keyboard focus moves to a different part of the page.
+    closeOnFocusExit(event: FocusEvent) {
+      if (!this.open || !(event.target instanceof Node)) return;
+      if (!mobileMenu?.contains(event.target) && event.target !== menuToggle) this.setOpen(false);
+    },
     closeOnNavigation(event: Event) {
       if (event.target instanceof Element && event.target.closest('a')) this.setOpen(false);
     },
