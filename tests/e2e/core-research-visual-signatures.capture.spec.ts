@@ -2,35 +2,42 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import { matrices, routes, settle, screenshotSignature, type Theme } from './core-research-visual-shared';
 
-test('capture accepted core research screenshot signatures', async ({ page }, testInfo) => {
+test('capture accepted core research screenshot signatures', async ({ context }, testInfo) => {
   test.skip(testInfo.project.name !== 'chromium', 'Visual baseline capture is Chromium-specific');
   const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; dhash64: string; avgRgb: [number, number, number] }> = {};
 
   for (const matrix of matrices) {
-    await page.setViewportSize(matrix.viewport);
-    for (const route of routes) {
+    // A page-level init script survives navigation. Reusing one page across
+    // themes accumulates conflicting scripts whose execution order is undefined.
+    const page = await context.newPage();
+    try {
+      await page.setViewportSize(matrix.viewport);
       await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
-      // Captured signatures are reusable evidence. Reject a 404/error page
-      // before it can become a seemingly valid visual baseline.
-      const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-      expect(response?.status(), `cannot capture a missing/error research route: ${route.path}`).toBe(200);
-      await settle(page);
-      await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
-      const { signature, jpeg } = await screenshotSignature(page);
-      signatures[`${route.key}__${matrix.key}`] = {
-        route: route.path,
-        viewport: matrix.viewport,
-        theme: matrix.theme,
-        ...signature,
-      };
-      // Inspectable renders for the main Flow, WebShop, and Results reading paths.
-      // A signature by itself is not a visual or human-comprehension review.
-      if (['overview-zh', 'webshop-zh', 'results-zh'].includes(route.key)) {
-        await testInfo.attach(`research-${route.key}-${matrix.key}.jpeg`, {
-          body: jpeg,
-          contentType: 'image/jpeg',
-        });
+      for (const route of routes) {
+        // Captured signatures are reusable evidence. Reject a 404/error page
+        // before it can become a seemingly valid visual baseline.
+        const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status(), `cannot capture a missing/error research route: ${route.path}`).toBe(200);
+        await settle(page);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
+        const { signature, jpeg } = await screenshotSignature(page);
+        signatures[`${route.key}__${matrix.key}`] = {
+          route: route.path,
+          viewport: matrix.viewport,
+          theme: matrix.theme,
+          ...signature,
+        };
+        // Inspectable renders for the main Flow, WebShop, and Results reading paths.
+        // A signature by itself is not a visual or human-comprehension review.
+        if (['overview-zh', 'webshop-zh', 'results-zh'].includes(route.key)) {
+          await testInfo.attach(`research-${route.key}-${matrix.key}.jpeg`, {
+            body: jpeg,
+            contentType: 'image/jpeg',
+          });
+        }
       }
+    } finally {
+      await page.close();
     }
   }
 
