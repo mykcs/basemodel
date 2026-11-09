@@ -102,7 +102,10 @@ test('Flow accessible landmark continuation preserves the original reviewed sour
   assert.match(source, /id="evidence" aria-labelledby="evidence-title"/);
   assert.match(source, /<h2 id="site-map-title">/);
   assert.match(source, /<h2 id="evidence-title">/);
-  assert.equal(createHash('sha256').update(bytes).digest('hex'), '942f5836f687c07fbc78f74ee02b1419b725ca9ce7aed7058e64cf1fb8e59f57');
+  // Preserve the prior reviewed Flow source in the continuation evidence; this
+  // exact new source binds the already-existing model setup link to its owner.
+  assert.match(source, /title:'Qwen2\.5-3B-Instruct'[^\n]*href:p\('\/models\/qwen2-5-3b-instruct\/#experiment-setup'\)/);
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), 'fe3b44b31588c89239067a589d2603982292beaabf61366a55c975146f14d645');
   assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
   assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);
   assert.throws(() => verifyReviewedSourceContinuation(file, bytes, { currentSourceSha256: '0'.repeat(64) }), /preserve the original approved SHA/);
