@@ -483,3 +483,36 @@ for (const width of [440, 1440] as const) {
     });
   }
 }
+
+/* The homepage's current evidence must follow the question without a large
+   spacer. Capture matched real-view screenshots for visual review as well. */
+for (const viewport of [
+  { width: 440, height: 956 },
+  { width: 1440, height: 1000 },
+] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`home keeps the current answer near the hero at ${viewport.width} ${theme}`, async ({ page }, testInfo) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript((selectedTheme: string) => localStorage.setItem('atlas-theme', selectedTheme), theme);
+      const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
+      expect(response?.status()).toBe(200);
+      await page.evaluate(async () => { await document.fonts.ready; });
+      await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+
+      const answer = page.locator('.home-answer');
+      const title = page.locator('#answer-title');
+      await expect(title).toBeVisible();
+      const padTop = await answer.evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingTop));
+      expect(padTop).toBeLessThanOrEqual(16.5);
+      const headingY = await title.evaluate((node) => node.getBoundingClientRect().top);
+      if (viewport.width === 440) expect(headingY).toBeLessThan(viewport.height);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+      // Screenshots must survive the workflow's on-disk test-results export.
+      const screenshot = testInfo.outputPath(`home-answer-${viewport.width}-${theme}.jpeg`);
+      await page.screenshot({ path: screenshot, type: 'jpeg', quality: 65, animations: 'disabled' });
+      await testInfo.attach(`home-answer-${viewport.width}-${theme}.jpeg`, {
+        path: screenshot, contentType: 'image/jpeg',
+      });
+    });
+  }
+}

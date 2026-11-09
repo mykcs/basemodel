@@ -139,6 +139,9 @@ const nextActions = [
   .home-research { max-width: 1040px; }
   .home-section { padding: 3.2rem 0; border-top: 1px solid var(--line); }
   .home-section:first-child { border-top: 0; }
+  /* Keep the evidence-led answer close to the hero on phone and desktop.
+     Other editorial sections retain their existing, quieter section rhythm. */
+  .home-section.home-answer { padding-block-start: 1rem; }
   .home-section__heading { display: grid; grid-template-columns: minmax(90px, .32fr) minmax(0, 1fr); gap: clamp(1rem, 4vw, 3.4rem); margin-bottom: 1.5rem; }
   .home-section__heading > span { padding-top: .35rem; color: var(--accent-deep); font-size: var(--type-meta); font-family: var(--font-interface); font-weight: var(--type-weight-heading); letter-spacing: normal; }
   .home-section__heading h2 { margin: 0; font-size: var(--type-section); line-height: var(--type-leading-heading); letter-spacing: normal; }
