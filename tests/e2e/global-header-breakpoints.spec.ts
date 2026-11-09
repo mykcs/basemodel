@@ -52,3 +52,34 @@ test('responsive header breakpoint handoff has no navigation dead zone', async (
     });
   }
 });
+
+test('mobile navigation releases scroll lock when keyboard focus leaves the open menu', async ({ page }) => {
+  await page.setViewportSize({ width: 440, height: 956 });
+  const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
+  expect(response?.status()).toBe(200);
+
+  const toggle = page.locator('[data-menu-toggle]');
+  const mobileMenu = page.locator('[data-mobile-menu]');
+  const searchTrigger = page.locator('[data-command-trigger]');
+
+  for (const theme of ['light', 'dark'] as const) {
+    await test.step(`440px ${theme}: focus leaves the mobile disclosure`, async () => {
+      await page.evaluate((nextTheme) => { document.documentElement.dataset.theme = nextTheme; }, theme);
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+      await expect(mobileMenu.locator('.mobile-journeys a').first()).toBeFocused();
+      await expect(page.locator('html')).toHaveClass(/mobile-nav-open/);
+
+      await page.keyboard.press('Shift+Tab');
+      await expect(toggle).toBeFocused();
+      await expect(mobileMenu).toBeVisible();
+
+      await page.keyboard.press('Shift+Tab');
+      await expect(searchTrigger).toBeFocused();
+      await expect(mobileMenu).toBeHidden();
+      await expect(mobileMenu).toHaveAttribute('aria-hidden', 'true');
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.locator('html')).not.toHaveClass(/mobile-nav-open/);
+    });
+  }
+});
