@@ -3,7 +3,13 @@ import { expect, test } from '@playwright/test';
 import { matrices, routes, settle, screenshotSignature, type Theme } from './core-research-visual-shared';
 
 test('capture accepted core research screenshot signatures', async ({ context }, testInfo) => {
-  test.skip(testInfo.project.name !== 'chromium', 'Visual baseline capture is Chromium-specific');
+  // The full 7-route signature baseline is Chromium-only. WebKit still runs a
+  // real, non-skipped 3-route smoke across both viewports and both themes:
+  // our release gate requires every allocated case to pass on its first run.
+  const chromiumCapture = testInfo.project.name === 'chromium';
+  const captureRoutes = chromiumCapture
+    ? routes
+    : routes.filter(({ key }) => ['overview-zh', 'webshop-zh', 'results-zh'].includes(key));
   const signatures: Record<string, { route: string; viewport: { width: number; height: number }; theme: Theme; dhash64: string; avgRgb: [number, number, number] }> = {};
 
   for (const matrix of matrices) {
@@ -13,7 +19,7 @@ test('capture accepted core research screenshot signatures', async ({ context },
     try {
       await page.setViewportSize(matrix.viewport);
       await page.addInitScript((theme: Theme) => localStorage.setItem('atlas-theme', theme), matrix.theme);
-      for (const route of routes) {
+      for (const route of captureRoutes) {
         // Captured signatures are reusable evidence. Reject a 404/error page
         // before it can become a seemingly valid visual baseline.
         const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' });
@@ -41,7 +47,10 @@ test('capture accepted core research screenshot signatures', async ({ context },
     }
   }
 
-  const payload = { version: 2, browser: 'chromium', algorithm: 'dhash64+avgRgb', signatures };
-  await mkdir('dist/__qa__', { recursive: true });
-  await writeFile('dist/__qa__/core-research-visual-signatures.json', `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  // Never write WebKit pixels into the Chromium reference artifact.
+  if (chromiumCapture) {
+    const payload = { version: 2, browser: 'chromium', algorithm: 'dhash64+avgRgb', signatures };
+    await mkdir('dist/__qa__', { recursive: true });
+    await writeFile('dist/__qa__/core-research-visual-signatures.json', `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  }
 });
