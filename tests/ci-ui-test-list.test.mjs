@@ -272,7 +272,7 @@ test('timed current public and figure matrices retain every importing/helper reg
   }
 });
 
-test('Public extras bridge unified Chromium and legacy Public populations without unrelated tests', t => {
+test('Public and unified Chromium populations agree with visual capture included exactly once', t => {
   const root = mkdtempSync(join(tmpdir(), 'public-extras-lists-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const listed = (command, args) => {
@@ -290,6 +290,7 @@ test('Public extras bridge unified Chromium and legacy Public populations withou
   assert.equal(core[0].specFile, 'core-research-visual-signatures.capture.spec.ts');
   assert.equal(lab.length, 6);
   assert.ok(lab.every(item => item.specFile === 'lab-server-visual-qa.spec.ts'));
-  requireExactCases(publicCases, [...unified, ...core]);
+  assert.equal(unified.filter(item => item.id === core[0].id).length, 1, 'unified gate must include the core visual capture once');
+  requireExactCases(publicCases, unified);
   assert.equal(new Set([...publicCases, ...lab].map(item => item.id)).size, publicCases.length + lab.length);
 });
