@@ -25,11 +25,10 @@ const routes = [
   { key: 'openevo-zh', path: '/research/seed-openevo/flow/openevo/' },
   { key: 'loops-zh', path: '/research/seed-openevo/flow/loops/' },
   { key: 'results-zh', path: '/research/seed-openevo/study/results/' },
-  { key: 'results-en', path: '/en/research/seed-openevo/study/results/' },
 ] as const;
 const matrices = [
-  { key: '390-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { key: '390-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
+  { key: '440-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { key: '440-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { key: '1440-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { key: '1440-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -119,7 +118,23 @@ async function attachFailure(testInfo: TestInfo, key: string, jpeg: Buffer, metr
   });
 }
 
-const baseline = JSON.parse(await readFile(baselinePath, 'utf8')) as BaselineFile;
+// Missing approval is a real blocker, not permission to auto-accept a capture.
+const baseline = JSON.parse(await readFile(baselinePath, 'utf8').catch((error: unknown) => {
+  if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'ENOENT') {
+    throw new Error(
+      `No approved baseline at ${baselinePath}. Capture with npm run test:visual:capture, inspect the rendered screenshots, and accept a baseline explicitly before running this opt-in regression.`,
+      { cause: error },
+    );
+  }
+  throw error;
+})) as BaselineFile;
+
+// Fail closed if an archived route or omitted matrix entry sneaks back in.
+const expectedKeys = matrices.flatMap(matrix => routes.map(route => `${route.key}__${matrix.key}`)).sort();
+const actualKeys = Object.keys(baseline.signatures).sort();
+if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys)) {
+  throw new Error(`Visual baseline scope mismatch: expected ${expectedKeys.length} active entries, got ${actualKeys.length}; review and accept a current capture.`);
+}
 
 for (const matrix of matrices) {
   test(`${matrix.key} core research screenshots stay near the accepted visual signatures`, async ({ page }, testInfo) => {
@@ -136,7 +151,8 @@ for (const matrix of matrices) {
         expect(expectedEntry?.theme).toBe(matrix.theme);
         expect(expectedEntry?.viewport).toEqual(matrix.viewport);
 
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+        const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+        expect(response?.status(), `visual regression route must render: ${route.path}`).toBe(200);
         await settle(page);
         await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
         const actual = await captureSignature(page);

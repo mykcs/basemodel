@@ -14,8 +14,8 @@ const routes = [
 ] as const;
 
 const matrices = [
-  { key: '390-light', theme: 'light' as Theme, viewport: { width: 390, height: 844 } },
-  { key: '390-dark', theme: 'dark' as Theme, viewport: { width: 390, height: 844 } },
+  { key: '440-light', theme: 'light' as Theme, viewport: { width: 440, height: 956 } },
+  { key: '440-dark', theme: 'dark' as Theme, viewport: { width: 440, height: 956 } },
   { key: '1440-light', theme: 'light' as Theme, viewport: { width: 1440, height: 1000 } },
   { key: '1440-dark', theme: 'dark' as Theme, viewport: { width: 1440, height: 1000 } },
 ] as const;
@@ -30,7 +30,7 @@ async function settle(page: Page) {
 
 async function screenshotSignature(page: Page) {
   const jpeg = await page.screenshot({ type: 'jpeg', quality: 52, fullPage: false, animations: 'disabled' });
-  return page.evaluate(async (source) => {
+  const signature = await page.evaluate(async (source) => {
     const image = new Image();
     image.src = source;
     await image.decode();
@@ -72,6 +72,7 @@ async function screenshotSignature(page: Page) {
       avgRgb: [Math.round(red / count), Math.round(green / count), Math.round(blue / count)] as [number, number, number],
     };
   }, `data:image/jpeg;base64,${jpeg.toString('base64')}`);
+  return { signature, jpeg };
 }
 
 test('capture accepted core research screenshot signatures', async ({ page }, testInfo) => {
@@ -88,12 +89,21 @@ test('capture accepted core research screenshot signatures', async ({ page }, te
       expect(response?.status(), `cannot capture a missing/error research route: ${route.path}`).toBe(200);
       await settle(page);
       await expect(page.locator('html')).toHaveAttribute('data-theme', matrix.theme);
+      const { signature, jpeg } = await screenshotSignature(page);
       signatures[`${route.key}__${matrix.key}`] = {
         route: route.path,
         viewport: matrix.viewport,
         theme: matrix.theme,
-        ...(await screenshotSignature(page)),
+        ...signature,
       };
+      // Inspectable renders for the main Flow, WebShop, and Results reading paths.
+      // A signature by itself is not a visual or human-comprehension review.
+      if (['overview-zh', 'webshop-zh', 'results-zh'].includes(route.key)) {
+        await testInfo.attach(`research-${route.key}-${matrix.key}.jpeg`, {
+          body: jpeg,
+          contentType: 'image/jpeg',
+        });
+      }
     }
   }
 
