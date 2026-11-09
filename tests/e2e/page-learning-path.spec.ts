@@ -507,9 +507,11 @@ for (const viewport of [
       const headingY = await title.evaluate((node) => node.getBoundingClientRect().top);
       if (viewport.width === 440) expect(headingY).toBeLessThan(viewport.height);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+      // Screenshots must survive the workflow's on-disk test-results export.
+      const screenshot = testInfo.outputPath(`home-answer-${viewport.width}-${theme}.jpeg`);
+      await page.screenshot({ path: screenshot, type: 'jpeg', quality: 65, animations: 'disabled' });
       await testInfo.attach(`home-answer-${viewport.width}-${theme}.jpeg`, {
-        body: await page.screenshot({ type: 'jpeg', quality: 65, animations: 'disabled' }),
-        contentType: 'image/jpeg',
+        path: screenshot, contentType: 'image/jpeg',
       });
     });
   }
