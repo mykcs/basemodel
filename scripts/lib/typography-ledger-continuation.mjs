@@ -218,16 +218,28 @@ export const reviewedHomeScopedLinkFocusContinuation = {
   ],
 };
 
-export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement, continuation = reviewedHomeScopedLinkFocusContinuation) {
+// Separate, exact-source Home answer spacing continuation (#1020). Preserve
+// both the #1009 retirement and the reviewed keyboard-focus predecessor.
+export const reviewedHomeAnswerSpacingContinuation = {
+  file: 'src/pages/_bodies/home-v2.astro',
+  priorBlobSha: reviewedHomeScopedLinkFocusContinuation.currentBlobSha,
+  currentBlobSha: '4ecb64845ee7350b85e3d036d14422a2e72dc3f0',
+  reason: 'The Home current-answer section followed the research question after excess vertical spacing. The page-local top padding is now 1rem, while eight retired typography tuples, the reviewed focus cues, scientific claims, privacy aliases and other sections are unchanged. Older screenshots are not acceptance of this new source; require new 440x956 and 1440x1000 light/dark Chromium/WebKit evidence before integration.',
+  snippets: ['.home-section.home-answer { padding-block-start: 1rem; }'],
+};
+
+export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement, continuation = reviewedHomeScopedLinkFocusContinuation, answerContinuation = reviewedHomeAnswerSpacingContinuation) {
   assert(review.file === 'src/pages/_bodies/home-v2.astro' && review.reason?.trim(), 'Home retirement requires its exact owner and reason');
   assert.match(review.priorBlobSha, /^[a-f0-9]{40}$/, 'Home retirement must retain the prior Git blob identity');
   const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\0`).update(pageSource).digest('hex');
-  // Preserve the historic retirement identity; accept only the new explicitly
-  // reviewed one-step continuation rather than rewriting #1009 provenance.
+  // Do not silently replace older proof identities to make a new layout green.
   assert(continuation.file === review.file && continuation.reason?.trim(), 'Home interaction continuation requires a semantic owner and reason');
   assert.equal(continuation.priorBlobSha, review.currentBlobSha, 'Home interaction continuation must start from the sealed retirement source');
-  assert.equal(actualBlobSha, continuation.currentBlobSha, 'Home retirement source changed beyond its exact follow-up review');
+  assert(answerContinuation.file === review.file && answerContinuation.reason?.trim(), 'Home answer continuation requires a semantic owner and reason');
+  assert.equal(answerContinuation.priorBlobSha, continuation.currentBlobSha, 'Home answer continuation must preserve its reviewed focus predecessor');
+  assert.equal(actualBlobSha, answerContinuation.currentBlobSha, 'Home retirement source changed beyond its exact answer-spacing follow-up review');
   for (const snippet of continuation.snippets) assert(pageSource.includes(snippet), 'Reviewed Home interaction cue is absent');
+  for (const snippet of answerContinuation.snippets) assert(pageSource.includes(snippet), 'Reviewed Home answer cue is absent');
   for (const className of review.absentClasses) {
     assert(!pageSource.includes(className), `Retired Home class remains a source consumer: ${className}`);
   }
