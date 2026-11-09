@@ -71,7 +71,7 @@ const commandMenuLabels = {
   searchGuide: m.nav.searchGuide,
 };
 ---
-<Tag class="site-header" data-site-header x-data="mobileNavigation" x-on:keydown.escape.window="closeAndRestore" x-on:focusin.window="closeOnFocusExit" x-on:resize.window="onViewportChange">
+<Tag class="site-header" data-site-header x-data="mobileNavigation" x-on:keydown.escape.window="closeAndRestore" x-on:focusin.window="closeOnFocusExit" x-on:click.window="closeOnOutsideClick" x-on:resize.window="onViewportChange">
   <div class="shell nav-inner">
     <a class="brand" href={localePath(locale, '/')} aria-label={m.site.backHome}>
       <span class="brand-mark" aria-hidden="true">BM</span>
@@ -185,6 +185,12 @@ const commandMenuLabels = {
     closeOnFocusExit(event: FocusEvent) {
       if (!this.open || !(event.target instanceof Node)) return;
       if (!mobileMenu?.contains(event.target) && event.target !== menuToggle) this.setOpen(false);
+    },
+    // Outside pointer activation does not always move focus. In that case a
+    // disclosure left open would continue to lock the entire document.
+    closeOnOutsideClick(event: MouseEvent) {
+      if (!this.open || !(event.target instanceof Node)) return;
+      if (!mobileMenu?.contains(event.target) && !menuToggle?.contains(event.target)) this.setOpen(false);
     },
     closeOnNavigation(event: Event) {
       if (event.target instanceof Element && event.target.closest('a')) this.setOpen(false);

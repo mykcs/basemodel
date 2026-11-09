@@ -80,6 +80,17 @@ test('mobile navigation releases scroll lock when keyboard focus leaves the open
       await expect(mobileMenu).toHaveAttribute('aria-hidden', 'true');
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
       await expect(page.locator('html')).not.toHaveClass(/mobile-nav-open/);
+
+      // Outside pointer input does not itself transfer keyboard focus.
+      // Clicking the empty top-left edge must dismiss the mobile disclosure.
+      await toggle.click();
+      await expect(mobileMenu).toBeVisible();
+      await expect(page.locator('html')).toHaveClass(/mobile-nav-open/);
+      await page.mouse.click(2, 2);
+      await expect(mobileMenu).toBeHidden();
+      await expect(mobileMenu).toHaveAttribute('aria-hidden', 'true');
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect(page.locator('html')).not.toHaveClass(/mobile-nav-open/);
     });
   }
 });
