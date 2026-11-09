@@ -381,24 +381,24 @@ for(const width of [390,1280])for(const theme of ['light','dark'] as const){
 }
 
 
-// When Flow introduces the pinned model, a keyboard reader can open the single
-// canonical experiment-setup record without scrolling past the whole page.
-for (const { locale, width, height, theme } of [
-  { locale: 'zh', width: 440, height: 956, theme: 'dark' },
-  { locale: 'en', width: 1440, height: 1000, theme: 'light' },
+// This site currently builds only the zh locale (astro.config.mjs); the
+// archived /en/ route is a 404 and must not be used as a live Flow witness.
+// Exercise the real published route at both required viewports and themes.
+for (const { width, height, theme } of [
+  { width: 440, height: 956, theme: 'dark' },
+  { width: 1440, height: 1000, theme: 'light' },
 ] as const) {
-  test(`Flow model row opens its canonical setup by keyboard (${locale}, ${width}, ${theme})`, async ({ page }) => {
+  test(`Flow model row opens its canonical setup by keyboard (zh, ${width}, ${theme})`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     await page.addInitScript(value => localStorage.setItem('atlas-theme', value), theme);
-    const prefix = locale === 'zh' ? '' : '/en';
-    await page.goto(`${prefix}/research/seed-openevo/flow/`);
+    await page.goto('/research/seed-openevo/flow/');
     const modelLink = page.locator('#questions .object-map__row').first().getByRole('link', { name: /Qwen2[.]5-3B-Instruct/ });
     await expect(modelLink).toHaveCount(1);
-    await expect(modelLink).toHaveAttribute('href', `${prefix}/models/qwen2-5-3b-instruct/#experiment-setup`);
+    await expect(modelLink).toHaveAttribute('href', '/models/qwen2-5-3b-instruct/#experiment-setup');
     await modelLink.focus();
     await expect(modelLink).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(new RegExp(`${prefix}/models/qwen2-5-3b-instruct/#experiment-setup$`));
+    await expect(page).toHaveURL(/\/models\/qwen2-5-3b-instruct\/#experiment-setup$/);
     await expect(page.locator('[data-seed-openevo-experiment-setup]')).toHaveCount(1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
   });
