@@ -207,7 +207,7 @@ test('Home has one primary question and a subordinate evidence heading, not comp
 
 // The comparison design's 3B example must not be confused with the 7B / 1.7B
 // evidence rows. Check real rendered copy in both themes and viewport sizes.
-test('Home explicitly separates comparison model from measured findings', async ({ page }) => {
+test('Home explicitly separates comparison model from measured findings', async ({ page }, info) => {
   for (const { width, height } of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
     for (const theme of ['light', 'dark'] as const) {
       await page.setViewportSize({ width, height });
@@ -232,6 +232,13 @@ test('Home explicitly separates comparison model from measured findings', async 
       }
       await expect(page.locator('.home-answer .answer-row')).toHaveCount(3);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
+      // Exact-head, real-engine, identical-viewport evidence; CI uploads test-results.
+      // Do not substitute the standalone HTML prototype for the built BaseModel route.
+      await page.screenshot({
+        path: info.outputPath(`home-workbench-${width}x${height}-${theme}.png`),
+        fullPage: false,
+        animations: 'disabled',
+      });
     }
   }
 });
