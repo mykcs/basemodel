@@ -381,6 +381,7 @@ for (const { path, id } of [
             h1: rectOf('#main-content h1'),
             missionHero: rectOf('.mission-hero__copy'),
             missionActions: rectOf('.mission-hero__actions'),
+            missionBrief: rectOf('.mission-hero__brief'),
             firstMissionSection: rectOf('.home-answer'),
             firstAnswerHeading: rectOf('#answer-title'),
           };
@@ -394,8 +395,14 @@ for (const { path, id } of [
           expect(geometry.firstAnswerHeading, 'homepage current-answer heading must have a real geometry owner').not.toBeNull();
           expect(geometry.firstAnswerHeading!.bottom, 'homepage current answer heading should enter the first screen without scrolling').toBeLessThan(geometry.viewport.height);
           expect(geometry.firstMissionSection!.top, 'the next section should follow the primary actions with real breathing room').toBeGreaterThan(geometry.missionActions!.bottom + 24);
-          expect(geometry.missionHero!.bottom - geometry.missionActions!.bottom,
-            'homepage must not reserve a blank viewport below its only primary CTA').toBeLessThan(96);
+          // In workbench B, the scientific comparison brief follows the CTA on
+          // phones and occupies the right column on desktops. Content after the
+          // CTA is not blank filler; guard the actual last meaningful element.
+          expect(geometry.missionBrief, 'homepage scientific comparison brief must be present').not.toBeNull();
+          expect(geometry.missionBrief!.bottom, 'the scientific boundaries must remain in the first reading screen').toBeLessThan(geometry.viewport.height);
+          const lastContentBottom = Math.max(geometry.missionActions!.bottom, geometry.missionBrief!.bottom);
+          expect(geometry.missionHero!.bottom - lastContentBottom,
+            'homepage must not reserve a blank viewport below its question, CTA, and science brief').toBeLessThan(96);
         }
         await testInfo.attach(`reader-${id}-${width}-${theme}`, { path: screenshotPath, contentType: 'image/png' });
         await testInfo.attach(`reader-${id}-${width}-${theme}-geometry`, {
