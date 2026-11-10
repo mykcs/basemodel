@@ -196,3 +196,44 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
     });
   }
 }
+
+
+/**
+ * A fast close can happen before the search dialog's deferred autofocus runs.
+ * Once closed, its input must not receive a stale focus request. The spy
+ * observes calls, not merely document.activeElement: browsers may silently
+ * ignore focus() on elements inside a closed <dialog>.
+ */
+for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000 }] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`a quickly closed search never receives delayed focus at ${viewport.width} ${theme}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.addInitScript((value) => localStorage.setItem('atlas-theme', value), theme);
+      await page.goto('/');
+      const result = await page.evaluate(async () => {
+        const trigger = document.querySelector<HTMLButtonElement>('[data-command-trigger]')!;
+        const dialog = document.querySelector<HTMLDialogElement>('[data-command-dialog]')!;
+        const input = dialog.querySelector<HTMLInputElement>('[data-command-input]')!;
+        const actualFocus = input.focus.bind(input);
+        let focusAfterClose = 0;
+        input.focus = (...args) => {
+          if (!dialog.open) focusAfterClose += 1;
+          actualFocus(...args);
+        };
+        trigger.focus();
+        trigger.click();
+        if (!dialog.open) throw new Error('Search dialog did not open');
+        dialog.close();
+        await new Promise<void>((resolve) => setTimeout(resolve, 60));
+        return {
+          focusAfterClose,
+          open: dialog.open,
+          restoredToTrigger: document.activeElement === trigger,
+        };
+      });
+      expect(result).toEqual({ focusAfterClose: 0, open: false, restoredToTrigger: true });
+      await page.locator('[data-command-trigger]').click();
+      await expect(page.locator('[data-command-input]')).toBeFocused();
+    });
+  }
+}
