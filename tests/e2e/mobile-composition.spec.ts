@@ -111,3 +111,47 @@ test('mobile navigation opens as a compact touch sheet and returns focus on Esca
   await expect(toggle).toBeFocused();
   await expect(page.locator('[data-mobile-menu]')).not.toHaveClass(/is-open/);
 });
+
+
+test('Home leads from measured answers directly to research next steps before reflection', async ({ page }) => {
+  for (const { width, height } of [
+    { width: 440, height: 956 },
+    { width: 1440, height: 1000 },
+  ]) {
+    await page.setViewportSize({ width, height });
+    for (const theme of ['light', 'dark'] as const) {
+      await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
+      for (const route of ['/', '/en/']) {
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+        const answer = page.locator('.home-answer');
+        const next = page.locator('.home-next');
+        const reflection = page.locator('.home-challenges');
+        await expect(answer).toBeVisible();
+        await expect(next).toBeVisible();
+        await expect(reflection).toBeVisible();
+        await expect(next.getByRole('link')).toHaveCount(4);
+
+        const geometry = await page.evaluate(() => {
+          const rect = (selector: string) =>
+            document.querySelector<HTMLElement>(selector)!.getBoundingClientRect();
+          const answerBox = rect('.home-answer');
+          const nextBox = rect('.home-next');
+          const reflectionBox = rect('.home-challenges');
+          return {
+            nextAfterAnswer: nextBox.top >= answerBox.bottom - 2,
+            reflectionAfterNext: reflectionBox.top >= nextBox.bottom - 2,
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          };
+        });
+        expect(geometry.nextAfterAnswer, `${route} ${width} ${theme}: next step follows answers`).toBe(true);
+        expect(geometry.reflectionAfterNext, `${route} ${width} ${theme}: reflection is supporting material`).toBe(true);
+        expect(geometry.overflow).toBeLessThanOrEqual(2);
+
+        const firstPath = next.getByRole('link').first();
+        await firstPath.focus();
+        await expect(firstPath).toBeFocused();
+      }
+    }
+  }
+});
