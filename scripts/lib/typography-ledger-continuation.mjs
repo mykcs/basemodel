@@ -56,6 +56,39 @@ export const reviewedFlowDisclosureTypography = {
   },
 };
 
+// 2026-11-10 owner-selected Home workbench. This is a bounded, reviewed
+// shared-component addition, not permission to add arbitrary typography. The
+// compact Flow hero and the historical 5,537-row ledger are unchanged.
+export const reviewedHomeWorkbenchTypography = {
+  file: 'src/components/research/SeedOpenEvoMissionHero.astro',
+  reason: 'The owner selected Experimental Workbench B: a concise research question and a three-row scientific-boundary briefing. All newly introduced text roles use existing semantic tokens; desktop and phone browsers must still prove the Current answer remains in the first viewport.',
+  selectors: {
+    '.mission-hero__brief-title': {
+      role: 'Secondary, explicitly bounded comparison-check heading (not a competing H2)',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'font-weight': 'var(--type-weight-heading)',
+        'line-height': 'var(--type-leading-caption)',
+      },
+    },
+    '.mission-hero__brief-rows dt': {
+      role: 'Comparison facet name: model, experiment, or scientific boundary',
+      properties: {
+        'font-size': 'var(--type-meta)',
+        'font-weight': 'var(--type-weight-heading)',
+        'line-height': 'var(--type-leading-body)',
+      },
+    },
+    '.mission-hero__brief-rows dd': {
+      role: 'Readable, evidenced explanation of a facet, without an invented result',
+      properties: {
+        'font-size': 'var(--type-body-small)',
+        'line-height': 'var(--type-leading-body)',
+      },
+    },
+  },
+};
+
 export function reviewedSharedTypographyRows(review) {
   assert(review.file?.trim() && review.reason?.trim(), 'Shared typography needs an identified owner and reason');
   return Object.entries(review.selectors).flatMap(([selector, entry]) => {
@@ -72,8 +105,8 @@ export function reviewedSharedTypographyRows(review) {
 export const reviewedSourceContinuations = {
   'src/components/research/SeedOpenEvoMissionHero.astro': {
     priorReviewedSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
-    currentSourceSha256: '3f349c7d458254d33cf1febf344aec839d5c5db1582928bea0b51238ebb69d11',
-    reason: 'Exact-head 3ad8713 Chromium/WebKit browser logs verified that the shorter 62svh hero brought Current answer into 440x956 viewport (heading y818-848), but the formerly below-fold provenance summary became a third competing control alongside two CTAs at 390x844 and 1280x633, exceeding the existing two-target Reader Attention budget. The home hero now keeps one primary results link and its keyboard-native scientific provenance disclosure; the existing home Next section still contains the Flow learning route. No science text, compact Flow variant, global CSS token, attention budget or existing provenance is removed. The subsequent exact-head 18e76f12 Chromium screenshots at 440x956 / 1440x1000, both themes, proved the 62svh panel still left 233px/206px blank below the only CTA. Previous source SHA256 9e073580d8fdf6751d9495d3aab10c0303b64fe454b88c1e4be2d84ae1221476 is preserved here as the reviewed predecessor; the component now has natural min-height 0 and a browser guard against a new blank slide. The earlier Home geometry remains protected by its browser gate. 2026-11-06 copy clarification: the noncompact Home lead treats Qwen2.5-3B-Instruct as a controlled-comparison example, separates the measured 7B and 1.7B findings into different experiments, and makes clear that the complete method-to-method comparison remains unfinished. The compact Flow hero, measured results, anchors, scientific source links, all typography/CSS declarations and previous fingerprints are unchanged; current-head bilingual mobile/desktop browser acceptance is required.',
+    currentSourceSha256: '1f515f1cb8109c23cd916512e5fa010b9d02a88922c5309d196726d52ccee57c',
+    reason: 'Exact-head 3ad8713 Chromium/WebKit browser logs verified that the shorter 62svh hero brought Current answer into 440x956 viewport (heading y818-848), but the formerly below-fold provenance summary became a third competing control alongside two CTAs at 390x844 and 1280x633, exceeding the existing two-target Reader Attention budget. The home hero now keeps one primary results link and its keyboard-native scientific provenance disclosure; the existing home Next section still contains the Flow learning route. No science text, compact Flow variant, global CSS token, attention budget or existing provenance is removed. The subsequent exact-head 18e76f12 Chromium screenshots at 440x956 / 1440x1000, both themes, proved the 62svh panel still left 233px/206px blank below the only CTA. Previous source SHA256 9e073580d8fdf6751d9495d3aab10c0303b64fe454b88c1e4be2d84ae1221476 is preserved here as the reviewed predecessor; the component now has natural min-height 0 and a browser guard against a new blank slide. The earlier Home geometry remains protected by its browser gate. 2026-11-06 copy clarification: the noncompact Home lead treats Qwen2.5-3B-Instruct as a controlled-comparison example, separates the measured 7B and 1.7B findings into different experiments, and makes clear that the complete method-to-method comparison remains unfinished. The compact Flow hero, measured results, anchors, scientific source links, all typography/CSS declarations and previous fingerprints are unchanged; current-head bilingual mobile/desktop browser acceptance is required. 2026-11-10 Home workbench B follows user-selected A/B visual review; prior exact-source SHA256 3f349c7d458254d33cf1febf344aec839d5c5db1582928bea0b51238ebb69d11 remains as the preceding reviewed snapshot, and new SHA256 1f515f1cb8109c23cd916512e5fa010b9d02a88922c5309d196726d52ccee57c is only a candidate identity, not approved visual evidence. The compact Flow branch, measurement claims, and disclosure stay intact; require exact-head light/dark 440x956/1440x1000 Chromium and WebKit artifact screenshots before this review is complete.',
   },
   'src/components/research/OpenEvoWebShopResultsHero.astro': {
     priorReviewedSourceSha256: 'cd5b2feb3d4aef5591990c66e3c6377f4688111289e4c1bc370e1e6a1bd2621b',
