@@ -228,7 +228,17 @@ export const reviewedHomeAnswerSpacingContinuation = {
   snippets: ['.home-section.home-answer { padding-block-start: 1rem; }'],
 };
 
-export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement, continuation = reviewedHomeScopedLinkFocusContinuation, answerContinuation = reviewedHomeAnswerSpacingContinuation) {
+// Separate Home reading-order continuation (#1023). Keep the source identities
+// for the dead-selector retirement, focus treatment, and answer spacing sealed.
+export const reviewedHomeNextStepOrderContinuation = {
+  file: 'src/pages/_bodies/home-v2.astro',
+  priorBlobSha: reviewedHomeAnswerSpacingContinuation.currentBlobSha,
+  currentBlobSha: 'fda89e5fe11d4446fa9657cbd073ca66e37a8fcd',
+  reason: 'After the three existing evidence-bounded answers, show the four existing research-action destinations before the long recent-reflection section. This is only a section reorder: source copy, destinations, privacy aliases, scientific findings, existing page-local CSS, and the older typography receipts remain unchanged. Real browser screenshots must be inspected before integration.',
+  sectionOrder: ['home-answer', 'home-next', 'home-challenges'],
+};
+
+export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, currentRows, pageSource, review = reviewedHomeDeadTypographyRetirement, continuation = reviewedHomeScopedLinkFocusContinuation, answerContinuation = reviewedHomeAnswerSpacingContinuation, nextContinuation = reviewedHomeNextStepOrderContinuation) {
   assert(review.file === 'src/pages/_bodies/home-v2.astro' && review.reason?.trim(), 'Home retirement requires its exact owner and reason');
   assert.match(review.priorBlobSha, /^[a-f0-9]{40}$/, 'Home retirement must retain the prior Git blob identity');
   const actualBlobSha = createHash('sha1').update(`blob ${Buffer.byteLength(pageSource, 'utf8')}\0`).update(pageSource).digest('hex');
@@ -237,7 +247,12 @@ export function verifyReviewedHomeDeadTypographyRetirement(historicalRows, curre
   assert.equal(continuation.priorBlobSha, review.currentBlobSha, 'Home interaction continuation must start from the sealed retirement source');
   assert(answerContinuation.file === review.file && answerContinuation.reason?.trim(), 'Home answer continuation requires a semantic owner and reason');
   assert.equal(answerContinuation.priorBlobSha, continuation.currentBlobSha, 'Home answer continuation must preserve its reviewed focus predecessor');
-  assert.equal(actualBlobSha, answerContinuation.currentBlobSha, 'Home retirement source changed beyond its exact answer-spacing follow-up review');
+  assert(nextContinuation.file === review.file && nextContinuation.reason?.trim(), 'Home next-step continuation requires a semantic owner and reason');
+  assert.equal(nextContinuation.priorBlobSha, answerContinuation.currentBlobSha, 'Home next-step continuation must preserve its reviewed answer predecessor');
+  assert.equal(actualBlobSha, nextContinuation.currentBlobSha, 'Home source changed beyond its exact next-step reorder review');
+  assert.deepEqual(nextContinuation.sectionOrder, ['home-answer', 'home-next', 'home-challenges'], 'Home next-step reading order review must remain bounded');
+  const sectionOrder = [...pageSource.matchAll(/<section class="home-section (home-answer|home-next|home-challenges)"/g)].map(([, name]) => name);
+  assert.deepEqual(sectionOrder, nextContinuation.sectionOrder, 'Home evidence, next steps and reflection no longer follow the reviewed reading order');
   for (const snippet of continuation.snippets) assert(pageSource.includes(snippet), 'Reviewed Home interaction cue is absent');
   for (const snippet of answerContinuation.snippets) assert(pageSource.includes(snippet), 'Reviewed Home answer cue is absent');
   for (const className of review.absentClasses) {

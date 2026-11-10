@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
-import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
+import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, reviewedHomeNextStepOrderContinuation, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
   assert.equal(Object.keys(reviewedPrivacyProofs).length, 4);
@@ -138,7 +138,8 @@ test('dead Home-scoped typography has an eight-tuple exact-source retirement rec
   const bytes = readFileSync(new URL('../../src/pages/_bodies/home-v2.astro', import.meta.url));
   const text = bytes.toString('utf8');
   const blob = createHash('sha1').update(`blob ${bytes.byteLength}\0`).update(bytes).digest('hex');
-  assert.equal(blob, reviewedHomeAnswerSpacingContinuation.currentBlobSha, 'new Home answer-spacing source must match its exact reviewed Git blob');
+  assert.equal(blob, reviewedHomeNextStepOrderContinuation.currentBlobSha, 'Home action-order source must match its exact reviewed Git blob');
+  assert.equal(reviewedHomeNextStepOrderContinuation.priorBlobSha, reviewedHomeAnswerSpacingContinuation.currentBlobSha, 'the reviewed answer-spacing predecessor remains pinned');
   assert.equal(reviewedHomeAnswerSpacingContinuation.priorBlobSha, reviewedHomeScopedLinkFocusContinuation.currentBlobSha, 'the earlier focus review remains pinned');
   assert.equal(reviewedHomeScopedLinkFocusContinuation.priorBlobSha, review.currentBlobSha, 'the old retirement receipt must remain pinned');
   assert.equal(review.retired.length, 8);
@@ -151,9 +152,12 @@ test('dead Home-scoped typography has an eight-tuple exact-source retirement rec
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text + ' '), /source changed beyond/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, currentBlobSha: '0'.repeat(40) }), /must start from the sealed/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, { ...reviewedHomeScopedLinkFocusContinuation, currentBlobSha: '0'.repeat(40) }), /preserve its reviewed focus predecessor/);
-  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, { ...reviewedHomeAnswerSpacingContinuation, currentBlobSha: '0'.repeat(40) }), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, { ...reviewedHomeAnswerSpacingContinuation, currentBlobSha: '0'.repeat(40) }), /preserve its reviewed answer predecessor/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, { ...reviewedHomeAnswerSpacingContinuation, priorBlobSha: '0'.repeat(40) }), /preserve its reviewed focus predecessor/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, { ...reviewedHomeAnswerSpacingContinuation, snippets: ['nonexistent answer spacing rule'] }), /answer cue is absent/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, { ...reviewedHomeNextStepOrderContinuation, priorBlobSha: '0'.repeat(40) }), /preserve its reviewed answer predecessor/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, { ...reviewedHomeNextStepOrderContinuation, currentBlobSha: '0'.repeat(40) }), /source changed beyond/);
+  assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, { ...reviewedHomeNextStepOrderContinuation, sectionOrder: ['home-answer', 'home-challenges', 'home-next'] }), /reading order review must remain bounded/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, review, { ...reviewedHomeScopedLinkFocusContinuation, snippets: ['nonexistent focus rule'] }), /cue is absent/);
   assert.throws(() => verifyReviewedHomeDeadTypographyRetirement(rows, [], text, { ...review, absentClasses: ['home-research'] }), /remains a source consumer/);
   assert.throws(() => verifyAppendOnlyArticleTypography(rows, []), /disappeared or changed/);
