@@ -166,6 +166,7 @@ test('Home has one primary question and a subordinate evidence heading, not comp
         const answer = document.querySelector<HTMLElement>('#answer-title')!;
         const cta = document.querySelector<HTMLElement>('.mission-hero__actions > a')!;
         const hero = document.querySelector<HTMLElement>('.mission-hero__copy')!;
+        const briefing = document.querySelector<HTMLElement>('.mission-hero__brief')!;
         const h1Size = parseFloat(getComputedStyle(primary).fontSize);
         const h2Size = parseFloat(getComputedStyle(answer).fontSize);
         const answerBox = answer.getBoundingClientRect();
@@ -177,6 +178,7 @@ test('Home has one primary question and a subordinate evidence heading, not comp
           answerTop: answerBox.top,
           ctaBottom: ctaBox.bottom,
           heroBottom: heroBox.bottom,
+          briefingBottom: briefing.getBoundingClientRect().bottom,
           documentWidth: document.documentElement.scrollWidth,
           viewportWidth: innerWidth,
           viewportHeight: innerHeight,
@@ -190,7 +192,8 @@ test('Home has one primary question and a subordinate evidence heading, not comp
       // A new hero-size H2 would be a real competing visual title.
       expect(measured.h2Size / measured.h1Size, 'the Current answer must remain visually subordinate').toBeLessThan(0.86);
       expect(measured.answerTop - measured.ctaBottom, 'the evidence chapter must follow the primary CTA').toBeGreaterThan(72);
-      expect(measured.heroBottom - measured.ctaBottom, 'do not hide a third competing owner with blank hero space').toBeLessThan(96);
+      expect(measured.heroBottom - measured.briefingBottom, 'the science briefing must end near the bottom of the hero without blank filler').toBeLessThan(96);
+      expect(measured.briefingBottom, 'the scientific boundaries should stay within the first reading screen').toBeLessThan(height);
       expect(measured.nextSectionTitles, 'only the Current answer H2 may reach the first viewport').toEqual(
         measured.answerTop < height ? ['answer-title'] : [],
       );
@@ -211,9 +214,22 @@ test('Home explicitly separates comparison model from measured findings', async 
       await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       const lead = page.locator('.mission-hero:not(.mission-hero--compact) .mission-hero__lede');
-      await expect(lead).toContainText('Qwen2.5-3B-Instruct');
-      await expect(lead).toContainText('下方 7B 与 1.7B 来自另外的实验');
-      await expect(lead).toContainText('完整的方法对方法比较仍未完成');
+      await expect(lead).toContainText('要公平比较，需要固定模型、任务环境和评估规则');
+      const briefing = page.getByRole('complementary', { name: '比较条件与科学边界' });
+      await expect(briefing.locator('dt')).toHaveText(['模型', '实验', '边界']);
+      await expect(briefing).toContainText('Qwen2.5-3B-Instruct');
+      await expect(briefing).toContainText('下方 7B 与 1.7B 来自另外的实验');
+      await expect(briefing).toContainText('完整的方法对方法比较仍未完成');
+      await expect(briefing).toContainText('WebShop 和 ALFWorld 分别计分');
+      const question = page.locator('.mission-hero__intro');
+      const q = await question.boundingBox();
+      const b = await briefing.boundingBox();
+      expect(q && b).toBeTruthy();
+      if (width === 1440) {
+        expect(b!.x, 'desktop science brief belongs to the right of the question').toBeGreaterThan(q!.x + q!.width - 3);
+      } else {
+        expect(b!.y, 'phone science brief must stack below the question').toBeGreaterThan(q!.y + q!.height - 3);
+      }
       await expect(page.locator('.home-answer .answer-row')).toHaveCount(3);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(2);
     }
