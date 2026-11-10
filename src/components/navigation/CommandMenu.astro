@@ -45,7 +45,20 @@ const { locale, labels } = Astro.props;
     if (active) input.setAttribute('aria-activedescendant', active.id); else input.removeAttribute('aria-activedescendant');
   };
   const syncExpanded = () => input.setAttribute('aria-expanded', String(dialog.open && !results.hidden));
-  const open = () => { queryRevision += 1; if (!dialog.open) dialog.showModal(); input.value = ''; results.replaceChildren(); results.hidden = true; rendered = []; setActive(0); syncExpanded(); load(); setTimeout(() => input.focus()); };
+  const open = () => {
+    const revision = ++queryRevision;
+    if (!dialog.open) dialog.showModal();
+    input.value = '';
+    results.replaceChildren();
+    results.hidden = true;
+    rendered = [];
+    setActive(0);
+    syncExpanded();
+    load();
+    // Closing or reopening the dialog cancels focus scheduled by an older open.
+    // Never focus an input inside a dialog that is already closed.
+    setTimeout(() => { if (dialog.open && revision === queryRevision) input.focus(); });
+  };
   dialog?.addEventListener('close', () => { queryRevision += 1; input.removeAttribute('aria-activedescendant'); syncExpanded(); });
   trigger?.addEventListener('click', open);
   dialog?.querySelector('[data-command-close]')?.addEventListener('click', () => dialog.close());
