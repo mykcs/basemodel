@@ -112,14 +112,13 @@ test('mobile navigation opens as a compact touch sheet and returns focus on Esca
   await expect(page.locator('[data-mobile-menu]')).not.toHaveClass(/is-open/);
 });
 
-
-test('Home leads from measured answers directly to research next steps before reflection', async ({ page }) => {
-  for (const { width, height } of [
-    { width: 440, height: 956 },
-    { width: 1440, height: 1000 },
-  ]) {
-    await page.setViewportSize({ width, height });
-    for (const theme of ['light', 'dark'] as const) {
+for (const { width, height } of [
+  { width: 440, height: 956 },
+  { width: 1440, height: 1000 },
+] as const) {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`Home leads from evidence to research next steps at ${width}px in ${theme} theme`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
       await page.addInitScript((value: string) => localStorage.setItem('atlas-theme', value), theme);
       for (const route of ['/', '/en/']) {
         await page.goto(route, { waitUntil: 'domcontentloaded' });
@@ -152,6 +151,6 @@ test('Home leads from measured answers directly to research next steps before re
         await firstPath.focus();
         await expect(firstPath).toBeFocused();
       }
-    }
+    });
   }
-});
+}
