@@ -89,23 +89,6 @@ const nextActions = [
     </div>
   </section>
 
-  <section class="home-section home-challenges" aria-labelledby="challenges-title">
-    <div class="home-section__heading">
-      <span>{t('近期复盘', 'Recent reflection')}</span>
-      <div>
-        <h2 id="challenges-title">{t('最近遇到的问题', 'Recent challenges')}</h2>
-        <p>{t('资源、技术、学习方法和沟通上确实遇到困难。这里说清楚发生了什么、我们仍在做什么，以及下一步如何改进。', 'A candid account of resource, technical, learning, and communication challenges—and what we are doing next.')}</p>
-      </div>
-    </div>
-    <a class="challenges-entry" href={p('/research/seed-openevo/recent-challenges/')}>
-      <div>
-        <strong>{t('读一份诚实的阶段性复盘', 'Read the research reflection')}</strong>
-        <p>{t('包括服务器与 Codex 执行问题、Agent 学习、AI 科研方法、汇报和时间安排，以及面对追问时的具体回应。', 'Includes server/Codex execution, learning Agent methods, research workflows, reporting expectations, and practical answers to questions.')}</p>
-      </div>
-      <span aria-hidden="true">→</span>
-    </a>
-  </section>
-
   <section class="home-section home-next" aria-labelledby="next-title">
     <div class="home-section__heading">
       <span>{t('继续', 'Continue')}</span>
@@ -127,6 +110,23 @@ const nextActions = [
         </a>
       ))}
     </nav>
+  </section>
+
+  <section class="home-section home-challenges" aria-labelledby="challenges-title">
+    <div class="home-section__heading">
+      <span>{t('近期复盘', 'Recent reflection')}</span>
+      <div>
+        <h2 id="challenges-title">{t('最近遇到的问题', 'Recent challenges')}</h2>
+        <p>{t('资源、技术、学习方法和沟通上确实遇到困难。这里说清楚发生了什么、我们仍在做什么，以及下一步如何改进。', 'A candid account of resource, technical, learning, and communication challenges—and what we are doing next.')}</p>
+      </div>
+    </div>
+    <a class="challenges-entry" href={p('/research/seed-openevo/recent-challenges/')}>
+      <div>
+        <strong>{t('读一份诚实的阶段性复盘', 'Read the research reflection')}</strong>
+        <p>{t('包括服务器与 Codex 执行问题、Agent 学习、AI 科研方法、汇报和时间安排，以及面对追问时的具体回应。', 'Includes server/Codex execution, learning Agent methods, research workflows, reporting expectations, and practical answers to questions.')}</p>
+      </div>
+      <span aria-hidden="true">→</span>
+    </a>
   </section>
 
   <nav class="home-maintenance-shortcuts" aria-label={t('站点维护入口', 'Site maintenance')}>
