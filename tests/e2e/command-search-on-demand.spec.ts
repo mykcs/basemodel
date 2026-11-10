@@ -216,9 +216,9 @@ for (const viewport of [{ width: 440, height: 956 }, { width: 1440, height: 1000
         const input = dialog.querySelector<HTMLInputElement>('[data-command-input]')!;
         const actualFocus = input.focus.bind(input);
         let focusAfterClose = 0;
-        input.focus = (options?: FocusOptions) => {
+        input.focus = () => {
           if (!dialog.open) focusAfterClose += 1;
-          actualFocus(options);
+          actualFocus();
         };
         trigger.focus();
         trigger.click();
