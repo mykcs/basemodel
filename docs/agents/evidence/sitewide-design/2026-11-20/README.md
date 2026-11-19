@@ -2,6 +2,14 @@
 
 状态：**源码与本地确定性检查通过；正式双引擎渲染、CI、合并和发布待执行。** 这是规格提交 `063ad3d` 加本地变更的收据，不是该提交自身或未来提交的浏览器证据。[local-build.json](local-build.json) 保存实现文件 SHA-256、全部272路由的 HTML 哈希/实际样式依赖、源文件分组、67条例外、108条阅读宽度归属及7个动态 spacing sink。
 
+## 组件作用域门禁修复
+
+后继候选 `9631bf676122a710ec89d44c8cf6667e3c8cbdf6` 的 [Public CI 44626431427](https://github.com/mykcs/basemodel/actions/runs/44626431427) 和 [Cloudflare 44626431395](https://github.com/mykcs/basemodel/actions/runs/44626431395) 在同一结构测试失败：机制图的既有局部作用域合同禁止 `:global` 子选择器，因而浏览器没有启动。原先只跑选定读者测试未覆盖此相邻planner约束。
+
+新修复把字段衬距留在 `ResearchOrientation` 的原有字段owner，机制图仅通过继承的 `--article-orientation-field-padding` 传入8px/12px既有角色；没有传值的页面保留原输入。机制图不再跨作用域选中子组件。原scope限制、产品几何预算、全部字体/科学数据均不变。
+
+[作用域修复收据](scope-owner-correction.json) 绑定该后继候选及本次源码：完整structural147文件/941例、22个精确continuation、272页重建和全部产物检查通过。没有再次重跑本地浏览器，也没有浏览器PASS；此前 `first-screen-correction.json` 保留为9631候选对应的历史文件身份，当前变更由新收据承接。
+
 ## 首次正式 CI 的首屏反馈与定点修复
 
 候选 `d4d93442ac6ed279e96def75a345869f4576ad8b` 的 [Public PR CI 44622799986](https://github.com/mykcs/basemodel/actions/runs/44622799986) 实际发现四处首屏回归：手机 Gated Delta 出现第二个竞争标题；桌面 Results 的完整结论超出首屏、档案 h1 到达 y=532.53125；机制导读在两个引擎的 1280×633 视口底部到达668.1875。**该候选没有通过完整验收，不能用于合并。**

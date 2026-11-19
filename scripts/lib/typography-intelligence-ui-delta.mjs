@@ -124,15 +124,20 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/ResearchOrientation.astro": {
+      "currentSourceSha256": "1bef6d9663f0bb2328951d4f240f9f7298d2717b9ecaa5e18955e816b4db0d2d",
+      "priorSourceSha256": "7b94cfba4517250cc796f295f1d1326816666aa85b639b074b2e37efb907c5c9",
+      "reason": "2026-11-20 #1026 scope correction: candidate 9631bf67 was rejected by the existing mechanism-map isolation planner because the map used a :global descendant selector. Keep the planner restriction unchanged. The shared ResearchOrientation field owner now reads one inherited article-orientation-field-padding custom property with its exact former .72rem .8rem fallback. Only the mechanism map sets this local density to existing inline/heading rhythm roles. All other routes, source text and font declarations retain their prior inputs. Exact reversal reconstructs the former owner source; current-head full UI acceptance remains required."
+  },
   "src/components/research/OpenEvoExperimentArchive.astro": {
       "currentSourceSha256": "6afaba2dc42be7b244d0124b715dd4b512a8bc69c52325680b54e55b64edebde",
       "priorSourceSha256": "6b6255604f778b9e8be82855e157b50f9295123d95854e21043426f9022027a7",
       "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the archive h1 at y=532.53125 in a 1280x633 viewport. Align its existing grid cells at the start so the primary title is not pushed down by the longer adjacent explanation. No source text, font, data, or heading budget changes. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
   },
   "src/components/research/OpenEvoMechanismMap.astro": {
-      "currentSourceSha256": "0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364",
+      "currentSourceSha256": "56586ca814ede71c2610f3803f3007952201b8020e8c585f0973223b52aa94c0",
       "priorSourceSha256": "4a40f9b7bb8f7448b855d911855142621af9497ec95239f1d380a41400bafc57",
-      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the five-field orientation bottom at 668.1875 in a 1280x633 viewport in both Chromium and WebKit. Use the existing panel inset and inline field density at desktop widths; keep every visible field, existing typography and scientific boundary. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the five-field orientation bottom at 668.1875 in a 1280x633 viewport in both Chromium and WebKit. Use the existing panel inset and inline field density at desktop widths; keep every visible field, existing typography and scientific boundary. The intermediate source 0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364 at candidate 9631bf67 failed the existing local-scope planner due to :global. The same field density now passes by inherited custom property to its shared ResearchOrientation owner; the local-scope gate remains intact. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
   },
   "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro": {
       "currentSourceSha256": "5071cb59cd58a3102c43bc0d371df09f603d7f4ba4da3b4dcb3ca80c4171c4ff",

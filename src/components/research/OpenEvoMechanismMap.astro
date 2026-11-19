@@ -161,7 +161,6 @@ const stateItems = experiments.map((row) => ({
 /* The overview retains its five visible fields at short desktop heights.
    Use the existing panel/inline density; text and scientific evidence stay intact. */
 @media(min-width:901px){
-  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel)}
-  .mechanism-map :global(.research-orientation__fields > div){padding-block:var(--rhythm-inline)}
+  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel);--article-orientation-field-padding:var(--rhythm-inline) var(--rhythm-heading)}
 }
 </style>

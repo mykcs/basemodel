@@ -38,6 +38,8 @@
 
 ## 证据
 
-[本地实现收据](../agents/evidence/sitewide-design/2026-11-20/README.md)及同目录`local-build.json`保留实际路由、HTML/源码哈希、角色/例外和命令结果。源间距6,291条、归一5,217条；正文阅读宽度108条；7个DOM/React动态spacing出口；所有272页日期和CSS图检查通过。源声明与编译记录分别计数，历史5,491条ledger未重写。
+[本地实现收据](../agents/evidence/sitewide-design/2026-11-20/README.md)及同目录`local-build.json`保留实际路由、HTML/源码哈希、角色/例外和命令结果。源间距6,290条、归一5,217条；正文阅读宽度108条；7个DOM/React动态spacing出口；所有272页日期和CSS图检查通过。源声明与编译记录分别计数，历史5,491条ledger未重写。
 
 正式浏览器已接现有`test:ui:all`双引擎完整分片：两视口各16批枚举全部页面（17页/批、180秒/批，按已观测的34页批次超时拆分），main分角色消费与真实宽度扰动均等待两帧、验证恢复；10类代表页面留明暗截图。此执行器不能启动浏览器。首次正式候选d4d93442的双引擎CI发现4处首屏回归；定点修复与精确源码证明已完成、重新构建通过，新head正式渲染仍待验收。当前没有完整浏览器PASS，也没有合并或上线声明。独立只读复审已闭合已发现的边界、main/inline、reading width和恢复问题；由root推送当前代码后取得正式精确head证据。
+
+后继9631bf67在组件局部作用域门禁被拒绝，未进入浏览器。当前通过共享ResearchOrientation owner接收继承密度变量，保持原scope规则；完整structural147文件941例及22个source-continuation重新通过，详见同证据目录scope-owner-correction.json。

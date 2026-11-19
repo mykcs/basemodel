@@ -74,7 +74,7 @@ const layout = props.layout ?? 'compact';
 .research-orientation h1{margin:0;font-size:var(--article-title-size, clamp(1.8rem,3.2vw,2.5rem));line-height:var(--article-title-leading, 1.3);letter-spacing:normal}
 .research-orientation__intro p{margin:0;color:var(--muted);font-size:var(--article-body-size, 1rem);line-height:var(--article-body-leading, 1.68)}
 .research-orientation__fields{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin:1rem 0 0;border-block:1px solid var(--line)}
-.research-orientation__fields>div{min-width:0;padding:.72rem .8rem;border-right:1px solid var(--line)}.research-orientation__fields>div:last-child{border-right:0}
+.research-orientation__fields>div{min-width:0;padding:var(--article-orientation-field-padding,.72rem .8rem);border-right:1px solid var(--line)}.research-orientation__fields>div:last-child{border-right:0}
 .research-orientation dt{color:var(--muted);font:var(--type-weight-heading) .875rem/1.2 var(--font-interface);letter-spacing:normal}.research-orientation dd{margin:.28rem 0 0;font-size:var(--article-body-size,1rem);line-height:var(--article-body-leading,1.7);overflow-wrap:anywhere}
 .research-orientation__fields .is-state{background:var(--surface-muted)}.research-orientation[data-state-tone="running"] .is-state,.research-orientation[data-state-tone="authorized"] .is-state{box-shadow:inset 0 -3px 0 var(--accent)}
 .research-orientation__action{display:inline-flex;margin-top:.8rem;color:var(--accent-deep);font-size:var(--type-body);font-weight:var(--type-weight-heading);text-underline-offset:.2em}

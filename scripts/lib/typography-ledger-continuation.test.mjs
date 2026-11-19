@@ -67,8 +67,9 @@ test('spacing roles and the winning reading width preserve the sealed typography
 const newArticle = { file: 'src/pages/research/new/index.astro', selector: '.question', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
 
 for (const [name, restore] of [
+  ['ResearchOrientation.astro', source => source.replace('padding:var(--article-orientation-field-padding,.72rem .8rem);border-right:1px', 'padding:.72rem .8rem;border-right:1px')],
   ['OpenEvoExperimentArchive.astro', source => source.replace('gap:.6rem 1.5rem;align-items:start;padding:1.25rem', 'gap:.6rem 1.5rem;align-items:end;padding:1.25rem')],
-  ['OpenEvoMechanismMap.astro', source => source.replace('/* The overview retains its five visible fields at short desktop heights.\n   Use the existing panel/inline density; text and scientific evidence stay intact. */\n@media(min-width:901px){\n  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel)}\n  .mechanism-map :global(.research-orientation__fields > div){padding-block:var(--rhythm-inline)}\n}\n', '')],
+  ['OpenEvoMechanismMap.astro', source => source.replace('/* The overview retains its five visible fields at short desktop heights.\n   Use the existing panel/inline density; text and scientific evidence stay intact. */\n@media(min-width:901px){\n  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel);--article-orientation-field-padding:var(--rhythm-inline) var(--rhythm-heading)}\n}\n', '')],
   ['OpenEvoGatedDeltaSdLoraExplainer.astro', source => source.replace('/* A new derivation chapter uses the shared section break after the introduction. */\n.gds-hero + .gds-section{padding-block-start:var(--space-section)}\n', '')],
 ]) {
   test('measured first-screen layout correction preserves exact prior source: ' + name, () => {

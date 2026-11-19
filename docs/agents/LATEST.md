@@ -6,6 +6,8 @@
 
 **正式CI反馈：** 初始候选 `d4d93442` 的 [Public PR CI 44622799986](https://github.com/mykcs/basemodel/actions/runs/44622799986) 在4个页面首屏契约处失败。现有4个布局owner已完成定点间距/对齐修复，文案、字体、科研值及所有UX阈值保留；新构建272页、21个精确continuation测试和40个读者测试通过。详细失败坐标和新文件身份见[修复收据](evidence/sitewide-design/2026-11-20/first-screen-correction.json)。旧候选的34页设计批次还触发180秒超时，执行层已拆为17页批次、复用导航页并保留逐页partial证据；全部272路由、角色和原断言不变。修复后仍需新head的完整双引擎验收，初始候选不具备合并条件。
 
+**作用域修正：** 后继候选9631bf67被既有机制图局部scope规则拦截，未进入浏览器。间距现通过共享导读owner的继承变量传递；scope规则不变。完整147文件941个structural测试、22个continuation和272页重建通过，见[新源码收据](evidence/sitewide-design/2026-11-20/scope-owner-correction.json)。
+
 **仍待正式验收：** 本地浏览器被执行器能力阻挡，不能声称computed或截图PASS。全272页的440×956/1440×1000、Chromium/WebKit实际消费检查已接入现有完整CI分片；新probe对变更和恢复都等待两帧。当前候选仍需同一head的`public-ci-gate`、`cloudflare-artifact-gate`、受保护合并和部署身份/真实页面验收。下面发布拓扑保持不变，旧候选绿灯不转移到本PR。
 
 ## 2026-11-01 Vercel default / Cloudflare protected standby — current user decision
