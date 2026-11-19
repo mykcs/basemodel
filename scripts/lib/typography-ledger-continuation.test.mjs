@@ -66,6 +66,22 @@ test('spacing roles and the winning reading width preserve the sealed typography
 });
 const newArticle = { file: 'src/pages/research/new/index.astro', selector: '.question', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
 
+for (const [name, restore] of [
+  ['OpenEvoExperimentArchive.astro', source => source.replace('gap:.6rem 1.5rem;align-items:start;padding:1.25rem', 'gap:.6rem 1.5rem;align-items:end;padding:1.25rem')],
+  ['OpenEvoMechanismMap.astro', source => source.replace('/* The overview retains its five visible fields at short desktop heights.\n   Use the existing panel/inline density; text and scientific evidence stay intact. */\n@media(min-width:901px){\n  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel)}\n  .mechanism-map :global(.research-orientation__fields > div){padding-block:var(--rhythm-inline)}\n}\n', '')],
+  ['OpenEvoGatedDeltaSdLoraExplainer.astro', source => source.replace('/* A new derivation chapter uses the shared section break after the introduction. */\n.gds-hero + .gds-section{padding-block-start:var(--space-section)}\n', '')],
+]) {
+  test('measured first-screen layout correction preserves exact prior source: ' + name, () => {
+    const file = 'src/components/research/' + name;
+    const review = contentReorganizationProofs[file];
+    const bytes = readFileSync(new URL('../../' + file, import.meta.url));
+    assert.equal(createHash('sha256').update(restore(bytes.toString('utf8'))).digest('hex'), review.priorSourceSha256);
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), review.currentSourceSha256);
+    assert.equal(verifySealedProofWithEditorialAnonymization({ file, sha256: review.priorSourceSha256 }, bytes, review).historicalObservationInvalidated, true);
+    assert.throws(() => verifySealedProofWithEditorialAnonymization({ file, sha256: review.priorSourceSha256 }, Buffer.concat([bytes, Buffer.from(' ')]), review), /beyond the reviewed source/);
+  });
+}
+
 test('unchanged historical declarations remain valid', () => {
   assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline]), { newTokenDeclarations: 0, newFiles: [] });
 });
@@ -128,11 +144,19 @@ test('Results first-screen height review preserves historical proof and rejects 
   const currentSha = createHash('sha256').update(bytes).digest('hex');
   // The original 1edf01e6 source identity is retained in the reviewed ledger;
   // #1011 adds a route-local native-anchor scroll correction, not a new typography scale.
-  assert.equal(currentSha, 'f528f47299f2dc95c6c73c63a860174fea79be594938a75ed7f250e79d6a0043');
+  assert.equal(currentSha, '935850b568d630fb8ca28dc1f6af66e57eabd48ae8ff7f8f53129013459e96b1');
   const source = bytes.toString('utf8');
   assert.match(source, /\.results-first-screen\s*\{\s*min-height:\s*0\s*\}/);
   assert.match(source, /统计范围也仍然包含“没有差异”/);
   assert.match(source, /class="progress-detail"/);
+  const previousSource = source
+    .replace('  /* The shared reading-overview article already owns the outer inset.\n     Keep this nested introduction on its reading column without a second gutter. */\n', '')
+    .replace('padding:0 0 var(--space-heading)', 'padding:36px 24px 12px')
+    .replace('max-width:800px;margin:var(--space-prose) 0 0', 'max-width:800px;margin:22px 0 0')
+    .replace('max-width:820px;margin-top:var(--space-prose);padding:var(--space-heading) 0', 'max-width:820px;margin-top:24px;padding:18px 0')
+    .replace('.results-hero{padding-block-end:var(--space-inline)}', '.results-hero{padding:24px 18px 8px}');
+  assert.equal(createHash('sha256').update(previousSource).digest('hex'), 'f528f47299f2dc95c6c73c63a860174fea79be594938a75ed7f250e79d6a0043');
+
   assert.match(source, /:global\(html:has\(\.results-hero \.paper-nav\)\)\s*\{\s*scroll-behavior:\s*auto;?\s*\}/);
   assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
   assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);

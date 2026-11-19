@@ -30,7 +30,7 @@ describe('Typography UI Gate wiring',()=>{
   });
   it('all built design routes and compiler counterexamples run in the normal gates',()=>{
     const source=readFileSync(new URL('../../tests/e2e/sitewide-typography.spec.ts',import.meta.url),'utf8');
-    expect(source).toContain('partitionRoundRobin(allDesignDocuments,8)');
+    expect(source).toContain('partitionRoundRobin(allDesignDocuments,16)');
     expect(source).toContain('for(const width of [440,1440])');
     expect(source).toContain('readRenderedDesign');
     expect(pkg.scripts['audit:typography']).toContain('scripts/lib/sitewide-spacing.test.mjs');

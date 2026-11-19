@@ -124,6 +124,21 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/OpenEvoExperimentArchive.astro": {
+      "currentSourceSha256": "6afaba2dc42be7b244d0124b715dd4b512a8bc69c52325680b54e55b64edebde",
+      "priorSourceSha256": "6b6255604f778b9e8be82855e157b50f9295123d95854e21043426f9022027a7",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the archive h1 at y=532.53125 in a 1280x633 viewport. Align its existing grid cells at the start so the primary title is not pushed down by the longer adjacent explanation. No source text, font, data, or heading budget changes. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+  },
+  "src/components/research/OpenEvoMechanismMap.astro": {
+      "currentSourceSha256": "0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364",
+      "priorSourceSha256": "4a40f9b7bb8f7448b855d911855142621af9497ec95239f1d380a41400bafc57",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the five-field orientation bottom at 668.1875 in a 1280x633 viewport in both Chromium and WebKit. Use the existing panel inset and inline field density at desktop widths; keep every visible field, existing typography and scientific boundary. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+  },
+  "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro": {
+      "currentSourceSha256": "5071cb59cd58a3102c43bc0d371df09f603d7f4ba4da3b4dcb3ca80c4171c4ff",
+      "priorSourceSha256": "cb1a6e04c0bcd3e091be60090d7d1ee27259f607f174e43a98eefcab361cd5b7",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 detected two competing phone first-screen headings against the unchanged budget of one. Use the shared section spacing for the derivation chapter following the introduction. This is a normal chapter boundary, with no artificial height, hidden content, or changed heading/font size. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+  },
   "src/styles/tokens.css": {
     "currentSourceSha256": "7e77b75eae21c33e0648f8dceeef449244bbc832e930957eccb0ba1403c78b73",
     "priorSourceSha256": "7ac2f8ef309ea4aa49e5491eb96bcc25b54c42251f6f6feacdcb62818ab60e88",

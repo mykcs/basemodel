@@ -16,25 +16,47 @@ const allDesignDocuments=(function walk(dir:string):string[]{
 // The same full population is checked by the existing formal UI gate in both
 // engines. Static HTML uses no-JS to inspect even redirect fallback documents;
 // the representative and date suites below separately exercise hydration.
+// The first hosted run exceeded 180s for 34-document batches in both engines.
+// Halve each batch, retaining the same population, probes and per-batch budget.
+const designBatchCount = 16;
 for(const width of [440,1440]){
-  for(const [batchIndex,documents] of partitionRoundRobin(allDesignDocuments,8).entries()){
-    test('every built route consumes the shared design: '+width+'px batch '+(batchIndex+1)+'/8',async({browser,baseURL},info)=>{
+  for(const [batchIndex,documents] of partitionRoundRobin(allDesignDocuments,16).entries()){
+    test('every built route consumes the shared design: '+width+'px batch '+(batchIndex+1)+'/'+designBatchCount,async({browser,baseURL},info)=>{
       test.setTimeout(180_000);
       expect(allDesignDocuments.length).toBeGreaterThanOrEqual(260);
       const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width,height:width===440?956:1000},colorScheme:'light'});
       const receipts:Array<Record<string,unknown>>=[];
       const failures:Array<{route:string;reason:string}>=[];
+      const completedRoutes:string[]=[];
+      const started=Date.now();
+      let activeRoute:string|null=null;
+      const evidence=(complete:boolean)=>({
+        width,batch:batchIndex+1,batches:designBatchCount,totalBuilt:allDesignDocuments.length,
+        plannedRoutes:documents.map(document=>document.route),completedRoutes,activeRoute,
+        elapsedMs:Date.now()-started,complete,receipts,failures,
+      });
+      // Synchronous progress survives a Playwright test timeout, which can
+      // abort browser cleanup before a final attachment is possible.
+      const checkpoint=()=>writeFileSync(info.outputPath('all-route-design.json'),JSON.stringify({
+        ...evidence(false),sha:process.env.CI_HEAD_SHA??process.env.GITHUB_SHA??'local-dirty',engine:info.project.name,test:info.title,
+      },null,2));
+      checkpoint();
       try{
+        const page=await context.newPage();
         for(const {file,route} of documents){
+          activeRoute=route;
+          const routeStarted=Date.now();
+          checkpoint();
           const redirect=redirectTarget(readFileSync(file,'utf8'));
-          if(redirect){receipts.push({route,redirect});continue;}
-          const page=await context.newPage();
+          if(redirect){receipts.push({route,redirect});completedRoutes.push(route);activeRoute=null;checkpoint();continue;}
           try{
+            // Navigation replaces the document and its CSS. Reusing a no-JS
+            // page avoids per-route WebKit process creation, not route checks.
             const response=await page.goto(route,{waitUntil:'domcontentloaded'});
             expect(route==='/404.html'?[200,404]:[200],route+' built response').toContain(response?.status());
             await page.evaluate(()=>document.fonts.ready);
             const receipt=await page.evaluate(readRenderedDesign,DESIGN_TOKENS);
-            receipts.push({route,width,...receipt});
+            receipts.push({route,width,elapsedMs:Date.now()-routeStarted,...receipt});
             expect(receipt.missingTokens,route+' inherited tokens').toEqual([]);
             expect(receipt.fontConsumer,route+' body must consume --font-interface').toBe(true);
             expect(receipt.leadingConsumer,route+' body must consume --type-leading-body').toBe(true);
@@ -49,11 +71,17 @@ for(const width of [440,1440]){
             expect(receipt.body.size,route+' body size').toBeGreaterThan(0);
             expect(receipt.overflow,route+' document overflow').toBeLessThanOrEqual(2);
             expect(receipt.rootOverflowX,route+' overflow must remain observable').not.toMatch(/hidden|clip/);
-          }catch(error){failures.push({route,reason:error instanceof Error?error.message:String(error)});}
-          finally{await page.close();}
+          }catch(error){
+            const reason=error instanceof Error?error.message:String(error);
+            failures.push({route,reason});
+            // A closed test context cannot visit later documents. Preserve
+            // partial coverage and let the original timeout fail the batch.
+            if(page.isClosed()||/Test ended|Target page, context or browser has been closed/.test(reason))throw error;
+          }
+          finally{completedRoutes.push(route);activeRoute=null;checkpoint();}
         }
-      }finally{await context.close();}
-      await persistJsonAttachment(info,'all-route-design.json',{body:Buffer.from(JSON.stringify({width,totalBuilt:allDesignDocuments.length,receipts,failures})),contentType:'application/json'});
+      }finally{checkpoint();await context.close();}
+      await persistJsonAttachment(info,'all-route-design.json',{body:Buffer.from(JSON.stringify(evidence(true))),contentType:'application/json'});
       expect(failures).toEqual([]);
     });
   }

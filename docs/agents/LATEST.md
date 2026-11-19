@@ -4,6 +4,8 @@
 
 [PR #1026](https://github.com/mykcs/basemodel/pull/1026) 的实现已在任务分支本地完成；272个页面的实际CSS依赖、有限间距/阅读宽度执行层、内联和动态出口、年月日显示与历史ledger检查通过。`verify:deploy`的22条命令全部通过（本执行器只把需要Unix IPC的tsx启动器换为同一loader）；历史字体ledger未刷新。详细数字和源码/HTML哈希在[本地收据](evidence/sitewide-design/2026-11-20/README.md)，标准继续由现有[全站排版owner](current/sitewide-typography-standard.md)与[日期owner](current/website-engineering-standard.md#11-全站可读日期的统一显示)持有。
 
+**正式CI反馈：** 初始候选 `d4d93442` 的 [Public PR CI 44622799986](https://github.com/mykcs/basemodel/actions/runs/44622799986) 在4个页面首屏契约处失败。现有4个布局owner已完成定点间距/对齐修复，文案、字体、科研值及所有UX阈值保留；新构建272页、21个精确continuation测试和40个读者测试通过。详细失败坐标和新文件身份见[修复收据](evidence/sitewide-design/2026-11-20/first-screen-correction.json)。旧候选的34页设计批次还触发180秒超时，执行层已拆为17页批次、复用导航页并保留逐页partial证据；全部272路由、角色和原断言不变。修复后仍需新head的完整双引擎验收，初始候选不具备合并条件。
+
 **仍待正式验收：** 本地浏览器被执行器能力阻挡，不能声称computed或截图PASS。全272页的440×956/1440×1000、Chromium/WebKit实际消费检查已接入现有完整CI分片；新probe对变更和恢复都等待两帧。当前候选仍需同一head的`public-ci-gate`、`cloudflare-artifact-gate`、受保护合并和部署身份/真实页面验收。下面发布拓扑保持不变，旧候选绿灯不转移到本PR。
 
 ## 2026-11-01 Vercel default / Cloudflare protected standby — current user decision

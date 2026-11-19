@@ -24,8 +24,10 @@ export async function readRenderedDesign(requiredTokens: string[]) {
   const body = getComputedStyle(document.body);
   const bodyType = { family: body.fontFamily, size: parseFloat(body.fontSize), leading: parseFloat(body.lineHeight) };
   const restoreErrors: Array<{ token: string; before: unknown; restored: unknown }> = [];
+  let tokenProbes = 0;
   const settle = () => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
   async function withToken<T>(token: string, value: string, measure: () => T) {
+    tokenProbes += 1;
     const previous = root.style.getPropertyValue(token), priority = root.style.getPropertyPriority(token);
     const before = measure();
     root.style.setProperty(token, value);
@@ -89,6 +91,10 @@ export async function readRenderedDesign(requiredTokens: string[]) {
     const spaced = candidates.filter(element => measuredProperties.some(property => parseFloat(getComputedStyle(element).getPropertyValue(property)) > 0));
     let witness: Witness | null = null;
     for (const element of spaced) {
+      // Multiple cascade layers can name the same token/property pair. Once
+      // its computed response is measured and restored, repeating that exact
+      // intervention cannot add evidence about this unchanged element.
+      const attemptedPairs = new Set<string>();
       const inline = Array.from(element.style).filter(property => spacingProperties.test(property))
         .map(property => ({ selector: '<inline>', property, value: element.style.getPropertyValue(property) }));
       for (const rule of [...inline, ...spacingRules]) {
@@ -96,6 +102,9 @@ export async function readRenderedDesign(requiredTokens: string[]) {
         for (const match of rule.value.matchAll(/var\((--(?:space|rhythm)-[\w-]+)\)/g)) {
           const token = match[1];
           if (!token) continue;
+          const pair = rule.property + '\0' + token;
+          if (attemptedPairs.has(pair)) continue;
+          attemptedPairs.add(pair);
           const { before, after } = await withToken(token, token === '--space-em-factor' ? '3' : '113px', () => getComputedStyle(element).getPropertyValue(rule.property));
           if (before !== after) {
             witness = { role, element: element.tagName.toLowerCase(), selector: rule.selector, property: rule.property, token, before, after };
@@ -137,7 +146,7 @@ export async function readRenderedDesign(requiredTokens: string[]) {
     }
   }
   return {
-    missingTokens, tokens, body: bodyType, fontConsumer, leadingConsumer, restoreErrors,
+    missingTokens, tokens, body: bodyType, fontConsumer, leadingConsumer, restoreErrors, tokenProbes,
     spacingConsumer: spacingConsumers[0] ?? null, spacingConsumers, roleCoverage, missingRoleConsumers, inlineSpacing,
     readingCandidates: readingCandidates.length, readingLayoutCaps: visibleProse.length - readingCandidates.length, readingConsumer,
     readingWidth: getComputedStyle(root).getPropertyValue('--reading-width').trim(),
