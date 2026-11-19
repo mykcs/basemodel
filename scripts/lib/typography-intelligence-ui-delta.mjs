@@ -120,10 +120,25 @@ export const intelligenceTypographyDelta = {
   ],
 };
 
-/** Exact content-only source changes; historical observations stay historical.
+/** Exact content or value-preserving source changes; historical observations stay historical.
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/styles/tokens.css": {
+    "currentSourceSha256": "7e77b75eae21c33e0648f8dceeef449244bbc832e930957eccb0ba1403c78b73",
+    "priorSourceSha256": "7ac2f8ef309ea4aa49e5491eb96bcc25b54c42251f6f6feacdcb62818ab60e88",
+    "reason": "2026-11-20 #1026: add finite spacing aliases/relative rhythm consumed by every compiled CSS entry. Preserve every existing font, type-size, weight, leading and color value. Link the legacy type-reading-measure alias to the same reading width. The previously winning 68ch reading measure moves here from design-refinement.css; retire the stale 720px/72ch override chain. Source reconstruction tests retain the prior sealed bytes. Historical observations remain invalidated and fresh all-route Chromium/WebKit evidence is required."
+  },
+  "src/styles/visual-upgrade.css": {
+    "currentSourceSha256": "97ad749c43b307aa98700074f0b59052a6a533cd61efddbb3d4047cd37e59329",
+    "priorSourceSha256": "9296c259dc03812e084d9cb85637a9a457d0ffab4fdc7394c3c085d15ec77bd0",
+    "reason": "2026-11-20 #1026: remove only the superseded 72ch reading-width declaration. tokens.css now owns the prior final 68ch measure. All remaining source bytes, scientific values and typography declarations are unchanged; retain the original proof and require current browser acceptance."
+  },
+  "src/styles/site.css": {
+    "currentSourceSha256": "d3a6c68e2218ae6962232af5668e322fbd5f7a9840fb371e691033a0e1e65c08",
+    "priorSourceSha256": "b87de801460715bfce262ddadef3ae65c09c47c957d48b4f59227d5f87b6d440",
+    "reason": "2026-11-20 #1026: 87 existing margin/padding/gap declarations consume existing shared spacing tokens (91 references); add paragraph/list rhythm and reading measure, retire two shadowed shell widths, and bind ordinary strong/b to its existing weight token via one separately classified declaration. Reversing these exact changes reconstructs the sealed prior CSS byte for byte. The compiler separately normalizes ordinary spacing and reading measures; historical fonts and scientific declarations are not relabelled as new evidence. Current built-route CSS reachability and separate 440x956/1440x1000 Chromium/WebKit runtime evidence are required; historical screenshots are not reused."
+  },
   "src/components/research/SeedOpenEvoResearchDetail.astro": {
     "currentSourceSha256": "c70c5287fda5be80b4e5ffd8e431721691e6f730a3021751e5e65d863cbf820e",
     "priorSourceSha256": "4229fbbf7a71bf9c8a603afea471628b8ca02bfb2bd57e2deb734bdbb7e9a67c",

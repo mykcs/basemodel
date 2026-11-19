@@ -3,6 +3,9 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
+import postcss from 'postcss';
+import { contentReorganizationProofs } from './typography-intelligence-ui-delta.mjs';
+import { reviewedGlobalEmphasisTypography } from './typography-ledger-continuation.mjs';
 import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, reviewedHomeNextStepOrderContinuation, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
@@ -17,6 +20,50 @@ test('privacy continuations accept only exact reviewed source pairs', () => {
 });
 
 const baseline = { file: 'src/styles/old.css', selector: '.reader', contexts: [], property: 'font-size', value: 'var(--type-body)' };
+
+test('spacing bindings and explicit paragraph/shell changes reconstruct the exact sealed CSS',()=>{
+  const file='src/styles/site.css';
+  const review=contentReorganizationProofs[file];
+  const bytes=readFileSync(new URL('../../'+file,import.meta.url));
+  const values=new Map();
+  postcss.parse(readFileSync(new URL('../../src/styles/tokens.css',import.meta.url),'utf8'))
+    .walkDecls(declaration=>{if(/^--space-/.test(declaration.prop))values.set(declaration.prop,declaration.value);});
+  const restored=postcss.parse(bytes.toString('utf8')
+    .replace('strong, b { font-weight: var(--type-weight-strong); }\n','')
+    .replace('/* Page shell geometry is owned by components/global-shell.css. */','.shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }')
+    .replace('p { margin-bottom: var(--rhythm-prose); max-width: var(--reading-width); }\nul, ol { margin-block: var(--rhythm-prose); padding-inline-start: var(--rhythm-list); }\n','')
+    .replace('@media (max-width: 560px) { .hero','@media (max-width: 560px) { .shell { width: min(100% - 28px, 1160px); } .hero'));
+  let references=0;
+  restored.walkDecls(declaration=>{
+    if(!/^(?:margin|padding)(?:-|$)|^(?:row-|column-)?gap$/.test(declaration.prop))return;
+    declaration.value=declaration.value.replace(/var\((--space-\d+)\)/g,(_match,token)=>{references++;assert(values.has(token));return values.get(token);});
+  });
+  assert.equal(references,91);
+  assert.equal(createHash('sha256').update(restored.toString()).digest('hex'),review.priorSourceSha256);
+  const proof={file,sha256:review.priorSourceSha256};
+  assert.equal(verifySealedProofWithEditorialAnonymization(proof,bytes,review).historicalObservationInvalidated,true);
+  assert.throws(()=>verifySealedProofWithEditorialAnonymization(proof,Buffer.from(bytes.toString('utf8').replace('var(--space-5)','25px')),review),/beyond the reviewed source/);
+});
+
+test('ordinary emphasis has one exact shared-token continuation, not a new arbitrary weight allowance',()=>{
+  const approved=reviewedSharedTypographyRows(reviewedGlobalEmphasisTypography);
+  assert.equal(approved.length,1);
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline],[baseline,...approved],approved),{newTokenDeclarations:1,newFiles:['src/styles/site.css']});
+  assert.throws(()=>verifyAppendOnlyArticleTypography([baseline],[baseline,{...approved[0],value:'700'}],approved),/new classification/);
+});
+
+test('spacing roles and the winning reading width preserve the sealed typography source',()=>{
+  const file='src/styles/tokens.css',review=contentReorganizationProofs[file];
+  const source=readFileSync(new URL('../../'+file,import.meta.url),'utf8');
+  const restored=source.replace(/  --space-half:[\s\S]*?(?=\n  \/\* Only three ordinary radius levels)/,'')
+    .replace('--reading-width: 68ch','--reading-width: 720px')
+    .replace('--type-reading-measure: var(--reading-width)','--type-reading-measure: 70ch');
+  assert.equal(createHash('sha256').update(restored).digest('hex'),review.priorSourceSha256);
+  assert.equal(createHash('sha256').update(source).digest('hex'),review.currentSourceSha256);
+  const upgrade=readFileSync(new URL('../../src/styles/visual-upgrade.css',import.meta.url),'utf8');
+  const upgradeReview=contentReorganizationProofs['src/styles/visual-upgrade.css'];
+  assert.equal(createHash('sha256').update(upgrade.replace(':root {\n',':root {\n  --reading-width: 72ch;\n')).digest('hex'),upgradeReview.priorSourceSha256);
+});
 const newArticle = { file: 'src/pages/research/new/index.astro', selector: '.question', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
 
 test('unchanged historical declarations remain valid', () => {

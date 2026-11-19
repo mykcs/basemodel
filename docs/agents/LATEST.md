@@ -1,5 +1,11 @@
 # Latest Agent handoff
 
+## 2026-11-20 全站排版、间距与日期 · #1026候选
+
+[PR #1026](https://github.com/mykcs/basemodel/pull/1026) 的实现已在任务分支本地完成；272个页面的实际CSS依赖、有限间距/阅读宽度执行层、内联和动态出口、年月日显示与历史ledger检查通过。`verify:deploy`的22条命令全部通过（本执行器只把需要Unix IPC的tsx启动器换为同一loader）；历史字体ledger未刷新。详细数字和源码/HTML哈希在[本地收据](evidence/sitewide-design/2026-11-20/README.md)，标准继续由现有[全站排版owner](current/sitewide-typography-standard.md)与[日期owner](current/website-engineering-standard.md#11-全站可读日期的统一显示)持有。
+
+**仍待正式验收：** 本地浏览器被执行器能力阻挡，不能声称computed或截图PASS。全272页的440×956/1440×1000、Chromium/WebKit实际消费检查已接入现有完整CI分片；新probe对变更和恢复都等待两帧。当前候选仍需同一head的`public-ci-gate`、`cloudflare-artifact-gate`、受保护合并和部署身份/真实页面验收。下面发布拓扑保持不变，旧候选绿灯不转移到本PR。
+
 ## 2026-11-01 Vercel default / Cloudflare protected standby — current user decision
 
 **Release preference now: Vercel Authentication Production by default, Cloudflare Workers + Access as the protected standby.** The single main-only GitHub Actions selector in [PR #979](https://github.com/mykcs/basemodel/pull/979) preselects `provider=vercel`, with no-spend `operation=plan`; only explicit `deploy` publishes. [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed the Vercel API identity check, and [run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) successfully staged/promoted exact `main@7cf12902` under Vercel Authentication, with SHA/SSO/route checks. Cloudflare keeps its existing Access-protected last-good SHA and can be selected any time without editing CI. There is no shared domain or automatic traffic switching; authenticated desktop/mobile visual QA remains a separate release requirement.

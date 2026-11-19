@@ -1,9 +1,111 @@
 import { persistJsonAttachment } from './evidence-json';
 import { expect, test } from '@playwright/test';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { relative } from 'node:path';
+import { partitionRoundRobin } from '../../src/lib/ciRouteSharding';
+import { DESIGN_TOKENS, redirectTarget } from '../../scripts/lib/rendered-design-contract.mjs';
+import { inlineSpacingViolations, readRenderedDesign } from './design-contract-browser';
 
-// Representative reader roles, not a claim that these paths are every static
-// route. The build audit separately walks all generated HTML.
+const allDesignDocuments=(function walk(dir:string):string[]{
+  return readdirSync(dir,{withFileTypes:true}).flatMap(entry=>{
+    const file=dir+'/'+entry.name;
+    return entry.isDirectory()?walk(file):entry.name.endsWith('.html')?[file]:[];
+  });
+})('dist').sort().map(file=>({file,route:'/'+relative('dist',file).replace(/index\.html$/,'')}));
+
+// The same full population is checked by the existing formal UI gate in both
+// engines. Static HTML uses no-JS to inspect even redirect fallback documents;
+// the representative and date suites below separately exercise hydration.
+for(const width of [440,1440]){
+  for(const [batchIndex,documents] of partitionRoundRobin(allDesignDocuments,8).entries()){
+    test('every built route consumes the shared design: '+width+'px batch '+(batchIndex+1)+'/8',async({browser,baseURL},info)=>{
+      test.setTimeout(180_000);
+      expect(allDesignDocuments.length).toBeGreaterThanOrEqual(260);
+      const context=await browser.newContext({baseURL,javaScriptEnabled:false,viewport:{width,height:width===440?956:1000},colorScheme:'light'});
+      const receipts:Array<Record<string,unknown>>=[];
+      const failures:Array<{route:string;reason:string}>=[];
+      try{
+        for(const {file,route} of documents){
+          const redirect=redirectTarget(readFileSync(file,'utf8'));
+          if(redirect){receipts.push({route,redirect});continue;}
+          const page=await context.newPage();
+          try{
+            const response=await page.goto(route,{waitUntil:'domcontentloaded'});
+            expect(route==='/404.html'?[200,404]:[200],route+' built response').toContain(response?.status());
+            await page.evaluate(()=>document.fonts.ready);
+            const receipt=await page.evaluate(readRenderedDesign,DESIGN_TOKENS);
+            receipts.push({route,width,...receipt});
+            expect(receipt.missingTokens,route+' inherited tokens').toEqual([]);
+            expect(receipt.fontConsumer,route+' body must consume --font-interface').toBe(true);
+            expect(receipt.leadingConsumer,route+' body must consume --type-leading-body').toBe(true);
+            expect(receipt.restoreErrors,route+' probes must restore the original computed values').toEqual([]);
+            expect(receipt.spacingConsumer,route+' needs a real winning spacing consumer').not.toBeNull();
+            expect(receipt.missingRoleConsumers,route+' each present main-content role must consume shared spacing').toEqual([]);
+            expect(inlineSpacingViolations(receipt.inlineSpacing),route+' inline styles must share the spacing owner').toEqual([]);
+            expect(receipt.readingWidth,route+' single reading-width owner').toBe('68ch');
+            if(receipt.readingCandidates>0)expect(receipt.readingConsumer,route+' actual main prose must consume the reading width').not.toBeNull();
+            expect(receipt.heading,route+' heading').not.toBeNull();
+            expect(receipt.heading!.size,route+' heading size').toBeGreaterThan(0);
+            expect(receipt.body.size,route+' body size').toBeGreaterThan(0);
+            expect(receipt.overflow,route+' document overflow').toBeLessThanOrEqual(2);
+            expect(receipt.rootOverflowX,route+' overflow must remain observable').not.toMatch(/hidden|clip/);
+          }catch(error){failures.push({route,reason:error instanceof Error?error.message:String(error)});}
+          finally{await page.close();}
+        }
+      }finally{await context.close();}
+      await persistJsonAttachment(info,'all-route-design.json',{body:Buffer.from(JSON.stringify({width,totalBuilt:allDesignDocuments.length,receipts,failures})),contentType:'application/json'});
+      expect(failures).toEqual([]);
+    });
+  }
+}
+
+test('computed design gate rejects declared tokens with no real consumers',async({page})=>{
+  const values=DESIGN_TOKENS.map(token=>token+':16px').join(';');
+  await page.setContent('<style>:root{'+values+'}.never-matches{font-family:var(--font-interface);line-height:var(--type-leading-body);padding:var(--space-4)}</style><main><h1>Detached design</h1><p>Body</p></main>');
+  const receipt=await page.evaluate(readRenderedDesign,DESIGN_TOKENS);
+  expect(receipt.missingTokens).toEqual([]);
+  expect(receipt.fontConsumer).toBe(false);
+  expect(receipt.leadingConsumer).toBe(false);
+  expect(receipt.spacingConsumer).toBeNull();
+});
+
+test('connected chrome cannot conceal an unconnected main, including inline calc',async({page})=>{
+  await page.setContent('<style>:root{--font-interface:serif;--type-leading-body:1.7;--space-4:16px;--reading-width:68ch}body{font-family:var(--font-interface);line-height:var(--type-leading-body)}header{padding:var(--space-4)}header p{max-width:var(--reading-width)}main p{padding:19px;max-width:70ch}</style><header><p>Connected chrome</p></header><main><h1>Orphan article</h1><p style="margin:-1px 19px;padding:calc(18px)">Unconnected main</p></main>');
+  const receipt=await page.evaluate(readRenderedDesign,[]);
+  expect(receipt.fontConsumer).toBe(true);
+  expect(receipt.leadingConsumer).toBe(true);
+  expect(receipt.spacingConsumer).toBeNull();
+  expect(receipt.missingRoleConsumers).toContain('prose');
+  expect(receipt.readingConsumer).toBeNull();
+  expect(inlineSpacingViolations(receipt.inlineSpacing)).toHaveLength(2);
+});
+
+test('ordinary nested emphasis consumes the shared weight rather than multiplying UA bolder',async({page})=>{
+  await page.goto('/',{waitUntil:'domcontentloaded'});
+  const result=await page.evaluate(async()=>{
+    const paragraph=document.createElement('p');
+    paragraph.innerHTML='<strong>Outer <b>Nested emphasis</b></strong>';
+    document.querySelector('main')!.append(paragraph);
+    const strong=paragraph.querySelector('strong')!,nested=paragraph.querySelector('b')!;
+    const before=[getComputedStyle(strong).fontWeight,getComputedStyle(nested).fontWeight];
+    const root=document.documentElement,previous=root.style.getPropertyValue('--type-weight-strong');
+    const settle=()=>new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+    root.style.setProperty('--type-weight-strong','500');
+    await settle();
+    const after=[getComputedStyle(strong).fontWeight,getComputedStyle(nested).fontWeight];
+    if(previous)root.style.setProperty('--type-weight-strong',previous);else root.style.removeProperty('--type-weight-strong');
+    await settle();
+    const restored=[getComputedStyle(strong).fontWeight,getComputedStyle(nested).fontWeight];
+    paragraph.remove();
+    return {before,after,restored};
+  });
+  expect(result.before).toEqual(['650','650']);
+  expect(result.after).toEqual(['500','500']);
+  expect(result.restored).toEqual(result.before);
+});
+
+// Hydrated representative reader roles supplement the exhaustive static-route
+// runtime checks above and the build's actual stylesheet reachability audit.
 const routes=[
   '/',
   '/guide/',
@@ -17,10 +119,10 @@ const routes=[
   '/research/seed-openevo/flow/webshop/',
 ] as const;
 
-for(const width of [390,1440] as const) {
+for(const width of [440,1440] as const) {
   for(const route of routes) {
-    test('shared type roles remain legible: '+route+' at '+width,async({page})=>{
-      await page.setViewportSize({width,height:900});
+    test('shared type roles remain legible: '+route+' at '+width,async({page},info)=>{
+      await page.setViewportSize({width,height:width===440?956:1000});
       const response=await page.goto(route,{waitUntil:'domcontentloaded'});
       expect(response?.status(),route).toBe(200);
       const reader=await page.evaluate(()=>{
@@ -52,6 +154,11 @@ for(const width of [390,1440] as const) {
       expect(reader!.h1Rect.left).toBeGreaterThanOrEqual(-2);
       expect(reader!.h1Rect.right).toBeLessThanOrEqual(width+2);
       if(reader!.h2!==null)expect(reader!.h1).toBeGreaterThanOrEqual(reader!.h2-1);
+      const hydrated=await page.evaluate(readRenderedDesign,DESIGN_TOKENS);
+      expect(inlineSpacingViolations(hydrated.inlineSpacing),route+' hydrated spacing').toEqual([]);
+      expect(hydrated.missingRoleConsumers,route+' hydrated main-content roles').toEqual([]);
+      expect(hydrated.restoreErrors,route+' hydrated probes restore layout').toEqual([]);
+      await page.screenshot({path:info.outputPath('design-light.png'),animations:'disabled'});
 
       // The type system is stable when changing theme after initial render.
       await page.evaluate(()=>{document.documentElement.dataset.theme='dark'});
@@ -64,6 +171,7 @@ for(const width of [390,1440] as const) {
       expect(dark.body).toBe(reader!.family);
       expect(dark.overflow).toBeLessThanOrEqual(2);
       expect(dark.foreground).not.toBe(dark.background);
+      await page.screenshot({path:info.outputPath('design-dark.png'),animations:'disabled'});
       await page.evaluate(()=>{document.documentElement.dataset.theme='light'});
       expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
     });

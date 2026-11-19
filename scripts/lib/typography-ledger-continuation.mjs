@@ -66,6 +66,19 @@ export function reviewedSharedTypographyRows(review) {
   });
 }
 
+// Ordinary semantic emphasis must not inherit UA `bolder` (which can reach 900
+// inside an already emphasized parent). Existing scoped scientific roles win.
+export const reviewedGlobalEmphasisTypography = {
+  file: 'src/styles/site.css',
+  reason: '2026-11-20 #1026 binds ordinary strong/b to the existing emphasis token; the historical ledger and all prior scientific declarations stay unchanged.',
+  selectors: {
+    'strong, b': {
+      role: 'Ordinary semantic emphasis independent of parent weight',
+      properties: { 'font-weight': 'var(--type-weight-strong)' },
+    },
+  },
+};
+
 // A historical Intelligence UI owner was already source-pinned by a prior
 // review. Keep that earlier exact SHA intact; a subsequent content/layout
 // edit has its own source identity and browser-acceptance boundary.

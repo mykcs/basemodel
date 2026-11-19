@@ -1,6 +1,6 @@
 /* workspace.css — P0 研究工作台样式，依赖 global.css 变量 */
 .workspace { padding: 24px 0 48px; }
-.workspace .shell { width: min(1360px, calc(100% - 32px)); }
+.workspace .shell { width: min(var(--workbench-max), calc(100% - var(--page-gutter) * 2)); }
 .workspace-grid {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr) 320px;
@@ -114,7 +114,6 @@
 .candidate-row { border-radius: 9px; }
 
 @media (max-width: 980px) {
-  .workspace .shell { width: min(100% - 24px, 760px); }
   .workspace-grid { grid-template-columns: 1fr; }
   .workspace-pane { display: none; }
   .workspace-pane.is-mobile-active { display: block; }

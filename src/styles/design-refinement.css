@@ -3,7 +3,6 @@
    noise, strengthening reading order, and making dense UI safer at narrow widths. */
 
 :root {
-  --reading-width: 68ch;
   --quiet-shadow: 0 8px 26px color-mix(in srgb, var(--ink) 5%, transparent);
 }
 
