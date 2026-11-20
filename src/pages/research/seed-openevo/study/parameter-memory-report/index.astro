@@ -1,0 +1,234 @@
+---
+import AppLayout from '../../../../../layouts/AppLayout.astro';
+import PaperIntervalPlot from '../../../../../components/research/PaperIntervalPlot.astro';
+import { ADVISOR_Q04_CAPACITY } from '../../../../../data/openEvoAdvisorTenQuestions';
+import intervalData from '../../../../../data/advisorConfidenceIntervals.json';
+import '../../../../../styles/research-article.css';
+
+// The research owner stores the measurements. This page only arranges their
+// reader-facing explanation; never create an independent result ledger here.
+const capacityBaseline = ADVISOR_Q04_CAPACITY[0];
+const capacityCandidate = ADVISOR_Q04_CAPACITY[1];
+const mb = (value: string) => Number.parseFloat(value);
+if (capacityBaseline.method !== 'rank128' || capacityCandidate.method !== 'rank32') {
+  throw new Error('Unexpected Q04 capacity identity');
+}
+const ratio = mb(capacityCandidate.bytes) / mb(capacityBaseline.bytes) * 100;
+const figure = intervalData.figures.find(item => item.id === 'rank32-paired');
+const effect = figure?.effects[0];
+if (!figure || !effect || effect.id !== 'rank32') {
+  throw new Error('Missing frozen paired-capacity confidence interval');
+}
+const percentText = (100 - ratio).toFixed(0);
+---
+
+<AppLayout
+  title="OpenEVO 长期参数记忆：阶段汇报"
+  description="用一次真实的 rank128 与 rank32 后段同题实验，解释参数容量、WebShop 任务能力、统计边界和下一步研究。"
+  locale="zh"
+>
+  <main class="evo-blog evo-article evo-approved-reader stage-report" data-reader-page="research-blog" data-copy-review data-stage-report="capacity">
+    <nav class="stage-report__toc" aria-labelledby="stage-toc-title">
+      <div class="stage-report__toc-head">
+        <strong id="stage-toc-title">本页目录</strong>
+        <span>先看结论，再按需要检查原始实验</span>
+      </div>
+      <ol>
+        <li><a href="#progress"><span>01</span> 本次研究与完成情况</a></li>
+        <li><a href="#outcome"><span>02</span> 结论：文件大小与任务得分</a></li>
+        <li><a href="#protocol"><span>03</span> 依据：比较是怎样做的</a></li>
+        <li><a href="#limits"><span>04</span> 限制：现有证据不能证明什么</a></li>
+        <li><a href="#next"><span>05</span> 下一步实验</a></li>
+        <li><a href="#reading"><span>06</span> 方法、十问和详细证据</a></li>
+      </ol>
+    </nav>
+
+    <header class="stage-report__cover">
+      <p class="stage-report__eyebrow">OPENEVO · Qwen3-1.7B × WebShop · 历史后段容量实验</p>
+      <h1>OpenEVO 长期参数记忆</h1>
+      <p class="stage-report__lede" data-reader-purpose><strong>训练末尾八轮，我们把长期适配参数文件从 {capacityBaseline.bytes} 缩到 {capacityCandidate.bytes}。</strong>但智能体的平均购物任务得分，从 {capacityBaseline.score} 降至 {capacityCandidate.score} 分（满分 100 分）。容量减少已经测到；能否长期接受能力代价，还需要更严格的实验。</p>
+      <p>这里研究的是一个具体问题：智能体经历越来越多任务时，能否把学到的经验保存在更小的参数状态中，同时继续把商品买对？</p>
+      <p class="stage-report__boundary">本页是已记录实验的阅读汇报，不代表当日训练进度。rank128 和 rank32 <strong>都是固定容量方案</strong>，不能把这次比较说成“从普通逐轮累积改成固定容量”所产生的收益。</p>
+    </header>
+
+    <section id="progress" class="stage-report__section" aria-labelledby="progress-title">
+      <h2 id="progress-title">本次研究与完成情况</h2>
+      <p>OpenEVO 尝试让任务经验影响下一轮模型。普通路线会持续追加低秩组件；固定容量路线把历史整合到指定的 rank 上限。本次只检验固定容量内部的两档设置，而不是对整个框架作一张算法排行榜。</p>
+      <div class="stage-report__table-wrap">
+        <table class="stage-report__status-table">
+          <thead><tr><th scope="col">研究问题</th><th scope="col">实际结果</th><th scope="col">判断</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">能否缩小文件</th><td>第 159 轮末：{capacityBaseline.bytes} 与 {capacityCandidate.bytes}；减少约 {percentText}%。</td><td>已测到</td></tr>
+            <tr><th scope="row">任务能力会怎样变化</th><td>1,024 组同题比较，平均得分低约 1.79 分；95% 配对区间跨过 0。</td><td>有结果，边界未定</td></tr>
+            <tr><th scope="row">小容量能否长期学习</th><td>后段对照与五档容量开发题筛选已有记录；更长时间的匹配比较未闭合。</td><td>仍待验证</td></tr>
+            <tr><th scope="row">能否称为最优方案</th><td>历史长跑与 SEED 相关复现的起点、任务或协议不完全一致。</td><td>证据不足</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stage-report__brief">
+        <p><strong>已经做成：</strong>在这个末尾实验窗口，长期参数文件可以明显更小。</p>
+        <p><strong>还没做成：</strong>证明从更早轮次持续使用较小容量也能稳定保留旧任务能力，并继续学习。</p>
+        <p><strong>下一步：</strong>同起点、同任务、同评估方法对比长周期的 rank128 / rank64 / rank32。</p>
+      </div>
+    </section>
+
+    <section id="outcome" class="stage-report__section" aria-labelledby="outcome-title">
+      <h2 id="outcome-title">结论：容量与任务得分</h2>
+      <p>文件更小很直观，但研究的目标不是节省文件本身，而是在长期学习中控制成本、留住有用能力。我们把这两个指标分开呈现。</p>
+      <figure class="stage-report__capacity-figure" data-report-figure="rank-capacity">
+        <h3>长期适配参数文件</h3>
+        <div class="stage-report__bars" role="img" aria-label={`rank128 为 ${capacityBaseline.bytes}；rank32 为 ${capacityCandidate.bytes}，约缩小 ${percentText}%`}>
+          {[capacityBaseline, capacityCandidate].map((item, i) => (
+            <div class="stage-report__bar-row">
+              <span>{item.method}</span>
+              <div class="stage-report__bar-track"><div class:list={['stage-report__bar-fill',{'stage-report__bar-fill--candidate':i===1}]} style={`width:${mb(item.bytes)/mb(capacityBaseline.bytes)*100}%`} /></div>
+              <strong>{item.bytes}</strong>
+            </div>
+          ))}
+        </div>
+        <figcaption>横条以同一尺度表示第 159 轮结束时的适配参数文件；不包含基础模型文件，也不代表整个训练系统加速 {percentText}%。</figcaption>
+      </figure>
+      <h3>更少参数，还能买对商品吗？</h3>
+      <p>两档容量在第 152–159 轮 1,024 组配对 WebShop 任务上的平均 Task Score 分别是 <strong>{capacityBaseline.score}</strong> 和 <strong>{capacityCandidate.score}</strong> 分。rank32 的均值低了 1.79 分，但这种差距是否稳定，需要看统计不确定性。</p>
+      <div class="stage-report__interval">
+        <PaperIntervalPlot
+          id={figure.id}
+          title="平均任务得分差的 95% 置信区间"
+          unit="分"
+          min={figure.axis.min}
+          max={figure.axis.max}
+          ticks={figure.axis.ticks}
+          effects={figure.effects}
+          widthTier="single"
+          comparison="rank32 − rank128，负值表示小容量得分较低"
+          negativeLabel="rank32 更低"
+          positiveLabel="rank32 更高"
+          caption="第 152–159 轮，1,024 组任务尝试；区间来自封存的配对统计。区间跨过 0，不等于统计等价，也没有证明不劣于事先设定的损失门槛。"
+        />
+      </div>
+      <p class="stage-report__takeaway"><strong>目前的判断：</strong>参数文件减少约 {percentText}% 已被直接测量；长期任务能力是否足够接近，尚无确定结论。</p>
+    </section>
+
+    <section id="protocol" class="stage-report__section" aria-labelledby="protocol-title">
+      <h2 id="protocol-title">依据：实验怎么做的</h2>
+      <div class="stage-report__steps">
+        <div><span>01</span><div><h3>复用历史参照</h3><p>先前已有 rank128 的任务记录。本次没有为 rank128 再跑一条完整训练流。</p></div></div>
+        <div><span>02</span><div><h3>加入 rank32 后段续训</h3><p>在第 152–159 轮对小容量进行续训，与封存的同任务、同随机条件结果作配对比较。</p></div></div>
+        <div><span>03</span><div><h3>分开测量文件和做题能力</h3><p>文件大小来自第 159 轮结束时；Task Score 汇总了末尾八轮的任务尝试。两种数字不是同一个测量对象。</p></div></div>
+      </div>
+      <p class="stage-report__source">数据来源：<a href="https://github.com/mykcs/openevo-experiment/pull/597" target="_blank" rel="noopener noreferrer">Q04 匹配容量实验与收据</a>；<a href={figure.source.url} target="_blank" rel="noopener noreferrer">配对置信区间原始摘要</a>。页面显示值由 BaseModel 已存在的数据文件提供。</p>
+    </section>
+
+    <section id="limits" class="stage-report__section" aria-labelledby="limits-title">
+      <h2 id="limits-title">限制与未完成项</h2>
+      <div class="stage-report__boundaries">
+        <div><strong>已有观察</strong><p>后段匹配窗口内，rank32 的参数文件更小，同题 Task Score 均分略低。</p></div>
+        <div><strong>没有证明</strong><p>从较早阶段持续采用 rank32 后，新任务学习、旧任务保持和长期稳定性依然可接受。</p></div>
+        <div><strong>不能混比</strong><p>普通 OpenEVO、Bounded 和历史复杂 β/GDR 的 160 轮记录，不是完全匹配的随机三臂实验；与 SEED 论文结果更不能直接排名。</p></div>
+      </div>
+    </section>
+
+    <section id="next" class="stage-report__section" aria-labelledby="next-title">
+      <h2 id="next-title">下一步实验</h2>
+      <ol class="stage-report__next">
+        <li><strong>补齐长周期容量实验。</strong>从相同模型起点比较 rank128、rank64、rank32，固定任务和评测方法，记录任务能力与成本。</li>
+        <li><strong>分开判断旧任务保持与新任务泛化。</strong>压缩后的状态能否继续学习，以及是否遗忘旧任务，分别给出实验结果。</li>
+        <li><strong>与其他问题分开记账。</strong>Q03 的正式 SEED 复现尚未闭合；Q10 的长期方案处于用户暂停状态。这页的研究建议不构成恢复或启动授权。</li>
+      </ol>
+    </section>
+
+    <section id="reading" class="stage-report__section" aria-labelledby="reading-title">
+      <h2 id="reading-title">方法、十问与详细证据</h2>
+      <p>这是一个适合从头读的阶段汇报。更深入的数学、历史实验与十个科研问题，仍由现有的三篇文章分别维护，不在这里复制第二套数据。</p>
+      <nav aria-label="继续阅读" class="stage-report__reading">
+        <a href="/research/seed-openevo/study/openevo-methods/"><span>01</span><span><strong>OpenEVO 的参数记忆方法</strong><small>LoRA / SD-LoRA、Bounded 与写入控制的机制与来源</small></span></a>
+        <a href="/research/seed-openevo/study/advisor-questions/"><span>02</span><span><strong>L 学长十问：问题与背景</strong><small>研究问题从何而来、为什么值得检验</small></span></a>
+        <a href="/research/seed-openevo/study/parameter-memory-results/"><span>03</span><span><strong>我们的回应实验</strong><small>Q01–Q10 的现有结果、证据身份、局限与下一步</small></span></a>
+      </nav>
+      <p class="stage-report__source">关于容量比较的细节，可以直接查看 <a href="/research/seed-openevo/study/parameter-memory-results/#response-q04">Q04 的完整实验回答</a>；关于写入方向的另一次局部干预，请阅读 <a href="/research/seed-openevo/study/parameter-memory-results/#response-q07">Q07</a>，不要与本页容量比较混合。</p>
+    </section>
+    <footer class="stage-report__footer">这是已有科研数据的阅读重排，没有新增训练、评测或科研结论。</footer>
+  </main>
+</AppLayout>
+
+<style>
+  :global(.evo-approved-reader.stage-report) {
+    width: min(calc(var(--reading-width) + var(--space-6)), calc(100% - var(--space-5)));
+    padding: var(--space-7) var(--space-6) var(--space-8);
+  }
+  .stage-report__toc {padding:var(--space-4) 0 var(--space-5);border-block:1px solid var(--paper-line);margin-bottom:var(--space-7);}
+  .stage-report__toc-head {display:flex;justify-content:space-between;gap:var(--space-4);align-items:baseline;margin-bottom:var(--space-3);}
+  .stage-report__toc-head strong {font-size:var(--type-body-small);}
+  .stage-report__toc-head span {font-size:var(--type-meta);color:var(--paper-muted);}
+  .stage-report__toc ol {list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-1) var(--space-4);}
+  .stage-report__toc a {display:flex;gap:var(--space-3);padding:var(--space-2) 0;color:var(--paper-ink);text-decoration:none;font-size:var(--type-body-small);}
+  .stage-report__toc a:hover,.stage-report__toc a:focus-visible {text-decoration:underline;}
+  .stage-report__toc a span {font-size:var(--type-meta);color:var(--paper-muted);min-width:1.5em;}
+  .stage-report__cover {padding:0 0 var(--space-7);border-bottom:1px solid var(--paper-line);}
+  .stage-report__eyebrow {font-size:var(--type-meta);color:var(--paper-muted);}
+  :global(.evo-approved-reader.stage-report h1) {font-size:var(--type-article-page);line-height:var(--type-leading-heading);margin:var(--space-5) 0;}
+  :global(.evo-approved-reader.stage-report h2) {font-size:var(--type-article-section);}
+  :global(.evo-approved-reader.stage-report h3) {font-size:var(--type-article-subsection);}
+  :global(.evo-approved-reader.stage-report p),:global(.evo-approved-reader.stage-report li) {font-size:var(--type-body);line-height:var(--type-leading-body);}
+  :global(.evo-approved-reader.stage-report .stage-report__lede) {font-size:var(--type-lead);line-height:1.7;color:var(--paper-ink);}
+  :global(.evo-approved-reader.stage-report .stage-report__boundary),:global(.evo-approved-reader.stage-report .stage-report__source),:global(.evo-approved-reader.stage-report .stage-report__footer) {font-size:var(--type-caption);color:var(--paper-muted);}
+  .stage-report__section {padding:var(--space-7) 0;border-bottom:1px solid var(--paper-line);scroll-margin-top:calc(var(--site-header-height) + var(--space-4));}
+  .stage-report__section h2 {margin:0 0 var(--space-4);}
+  .stage-report__section > h3 {margin:var(--space-6) 0 var(--space-3);}
+  .stage-report__table-wrap {margin:var(--space-5) 0;}
+  .stage-report__status-table {width:100%;border-collapse:collapse;border-top:1px solid var(--paper-line);font-size:var(--type-table);}
+  .stage-report__status-table th,.stage-report__status-table td {text-align:left;vertical-align:top;padding:var(--space-3) var(--space-3) var(--space-3) 0;border-bottom:1px solid var(--paper-line);}
+  .stage-report__status-table thead th {font-size:var(--type-meta);color:var(--paper-muted);}
+  .stage-report__status-table th:first-child {width:27%;}
+  .stage-report__status-table td:nth-child(2) {color:var(--paper-muted);}
+  .stage-report__status-table td:last-child {text-align:right;padding-right:0;width:24%;font-weight:650;}
+  .stage-report__brief {border-block:1px solid var(--paper-line);padding:var(--space-4) 0;}
+  :global(.evo-approved-reader.stage-report .stage-report__brief p) {font-size:var(--type-body-small);margin:0 0 var(--space-2);}
+  .stage-report__brief p:last-child {margin-bottom:0;}
+  .stage-report__capacity-figure {margin:var(--space-6) 0;}
+  .stage-report__capacity-figure h3 {margin-bottom:var(--space-4);}
+  .stage-report__bar-row {display:grid;grid-template-columns:5.5em minmax(0,1fr) 6.5em;gap:var(--space-3);align-items:center;margin:var(--space-4) 0;font-size:var(--type-body-small);}
+  .stage-report__bar-row strong {text-align:right;font-variant-numeric:tabular-nums;}
+  .stage-report__bar-track {background:var(--color-surface-muted);height:var(--space-5);width:100%;}
+  .stage-report__bar-fill {height:100%;background:var(--color-border);}
+  .stage-report__bar-fill--candidate {background:var(--color-positive);}
+  :global(.evo-approved-reader.stage-report figcaption) {font-size:var(--type-caption);color:var(--paper-muted);line-height:var(--type-leading-caption);}
+  .stage-report__interval {margin:var(--space-5) 0;}
+  .stage-report__takeaway {border-top:1px solid var(--paper-line);padding-top:var(--space-4);}
+  .stage-report__steps {border-top:1px solid var(--paper-line);}
+  .stage-report__steps > div {display:grid;grid-template-columns:2em 1fr;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--paper-line);}
+  .stage-report__steps > div > span {font-family:var(--font-editorial);font-size:var(--type-article-subsection);color:var(--paper-muted);}
+  .stage-report__steps h3 {margin:0 0 var(--space-2);}
+  .stage-report__boundaries {border-top:1px solid var(--paper-line);}
+  .stage-report__boundaries > div {display:grid;grid-template-columns:7em 1fr;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--paper-line);}
+  .stage-report__boundaries > div > strong {color:var(--color-positive);}
+  .stage-report__next {padding-left:var(--space-5);}
+  .stage-report__next li {padding:var(--space-2) 0;}
+  .stage-report__reading {border-top:1px solid var(--paper-line);}
+  .stage-report__reading a {display:grid;grid-template-columns:2em 1fr;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--paper-line);color:var(--paper-ink);text-decoration:none;}
+  .stage-report__reading a:hover strong {text-decoration:underline;}
+  .stage-report__reading a>span:first-child {color:var(--paper-muted);font-size:var(--type-meta);}
+  .stage-report__reading strong {display:block;font-size:var(--type-body);}
+  .stage-report__reading small {display:block;color:var(--paper-muted);font-size:var(--type-caption);line-height:var(--type-leading-caption);margin-top:var(--space-1);}
+  .stage-report__footer {padding-top:var(--space-5);}
+  @media(max-width:600px) {
+    :global(.evo-approved-reader.stage-report) {padding:var(--space-5) var(--space-4) var(--space-7);}
+    .stage-report__toc-head {display:block;}
+    .stage-report__toc-head span {display:block;margin-top:var(--space-1);}
+    .stage-report__toc ol {grid-template-columns:1fr;}
+    .stage-report__bar-row {grid-template-columns:4.4em minmax(0,1fr) 5.6em;gap:var(--space-2);}
+    .stage-report__status-table thead {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
+    .stage-report__status-table,.stage-report__status-table tbody,.stage-report__status-table tr,.stage-report__status-table th,.stage-report__status-table td {display:block;width:100%;}
+    .stage-report__status-table tr {position:relative;border-bottom:1px solid var(--paper-line);padding:var(--space-4) 0;}
+    .stage-report__status-table th,.stage-report__status-table td {border:0;padding:0;}
+    .stage-report__status-table th:first-child {padding-right:7.5em;}
+    .stage-report__status-table td:nth-child(2) {margin-top:var(--space-2);}
+    .stage-report__status-table td:last-child {position:absolute;right:0;top:var(--space-4);width:7.25em;text-align:right;}
+    .stage-report__boundaries > div {grid-template-columns:5em 1fr;gap:var(--space-3);}
+  }
+  @media print {
+    .stage-report__toc a {text-decoration:none;}
+    .stage-report__section {break-inside:auto;}
+    .stage-report__bar-row,.stage-report__steps>div,.stage-report__status-table tr {break-inside:avoid;}
+  }
+</style>
