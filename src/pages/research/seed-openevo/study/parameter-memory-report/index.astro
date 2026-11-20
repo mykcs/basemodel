@@ -35,21 +35,20 @@ const percentText = (100 - ratio).toFixed(0);
         <span>先看结论，再按需要检查原始实验</span>
       </div>
       <ol>
-        <li><a href="#progress"><span>01</span> 本次研究与完成情况</a></li>
-        <li><a href="#outcome"><span>02</span> 结论：文件大小与任务得分</a></li>
-        <li><a href="#protocol"><span>03</span> 依据：比较是怎样做的</a></li>
-        <li><a href="#limits"><span>04</span> 限制：现有证据不能证明什么</a></li>
-        <li><a href="#next"><span>05</span> 下一步实验</a></li>
-        <li><a href="#reading"><span>06</span> 方法、十问和详细证据</a></li>
+        <li><a href="#progress"><span>01</span> 本次进度</a></li>
+        <li><a href="#outcome"><span>02</span> 容量与得分</a></li>
+        <li><a href="#protocol"><span>03</span> 实验依据</a></li>
+        <li><a href="#limits"><span>04</span> 尚未证明</a></li>
+        <li><a href="#next"><span>05</span> 下一步</a></li>
+        <li><a href="#reading"><span>06</span> 深入阅读</a></li>
       </ol>
     </nav>
 
     <header class="stage-report__cover">
-      <p class="stage-report__eyebrow">OPENEVO · Qwen3-1.7B × WebShop · 历史后段容量实验</p>
       <h1>OpenEVO 长期参数记忆</h1>
-      <p class="stage-report__lede" data-reader-purpose><strong>训练末尾八轮，我们把长期适配参数文件从 {capacityBaseline.bytes} 缩到 {capacityCandidate.bytes}。</strong>但智能体的平均购物任务得分，从 {capacityBaseline.score} 降至 {capacityCandidate.score} 分（满分 100 分）。容量减少已经测到；能否长期接受能力代价，还需要更严格的实验。</p>
+      <p class="stage-report__lede" data-reader-purpose><strong>末八轮同题实验：长期适配文件从 {capacityBaseline.bytes} 缩到 {capacityCandidate.bytes}。</strong>平均购物任务得分从 {capacityBaseline.score} 降至 {capacityCandidate.score} / 100 分；这样的损失能否长期接受，还没有证明。</p>
       <p>这里研究的是一个具体问题：智能体经历越来越多任务时，能否把学到的经验保存在更小的参数状态中，同时继续把商品买对？</p>
-      <p class="stage-report__boundary">本页是已记录实验的阅读汇报，不代表当日训练进度。rank128 和 rank32 <strong>都是固定容量方案</strong>，不能把这次比较说成“从普通逐轮累积改成固定容量”所产生的收益。</p>
+      <p class="stage-report__boundary">本页汇报 Qwen3-1.7B × WebShop 的已记录实验，不代表当日训练进度。rank128 和 rank32 <strong>都是固定容量方案</strong>，不能把这次比较说成“从普通逐轮累积改成固定容量”所产生的收益。</p>
     </header>
 
     <section id="progress" class="stage-report__section" aria-labelledby="progress-title">
@@ -155,19 +154,19 @@ const percentText = (100 - ratio).toFixed(0);
 <style>
   :global(.evo-approved-reader.stage-report) {
     width: min(calc(var(--reading-width) + var(--space-6)), calc(100% - var(--space-5)));
-    padding: var(--space-7) var(--space-6) var(--space-8);
+    padding: var(--space-4) var(--space-6) var(--space-8);
   }
-  .stage-report__toc {padding:var(--space-4) 0 var(--space-5);border-block:1px solid var(--paper-line);margin-bottom:var(--space-7);}
+  .stage-report__toc {padding:var(--space-2) 0 var(--space-2);border-block:1px solid var(--paper-line);margin-bottom:var(--space-4);}
   .stage-report__toc-head {display:flex;justify-content:space-between;gap:var(--space-4);align-items:baseline;margin-bottom:var(--space-3);}
   .stage-report__toc-head strong {font-size:var(--type-body-small);}
   .stage-report__toc-head span {font-size:var(--type-meta);color:var(--paper-muted);}
-  .stage-report__toc ol {list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-1) var(--space-4);}
-  .stage-report__toc a {display:flex;gap:var(--space-3);padding:var(--space-2) 0;color:var(--paper-ink);text-decoration:none;font-size:var(--type-body-small);}
+  .stage-report__toc ol {list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-1) var(--space-4);}
+  .stage-report__toc a {display:flex;gap:var(--space-3);padding:var(--space-1) 0;color:var(--paper-ink);text-decoration:none;font-size:var(--type-body-small);}
   .stage-report__toc a:hover,.stage-report__toc a:focus-visible {text-decoration:underline;}
   .stage-report__toc a span {font-size:var(--type-meta);color:var(--paper-muted);min-width:1.5em;}
   .stage-report__cover {padding:0 0 var(--space-7);border-bottom:1px solid var(--paper-line);}
   .stage-report__eyebrow {font-size:var(--type-meta);color:var(--paper-muted);}
-  :global(.evo-approved-reader.stage-report h1) {font-size:var(--type-article-page);line-height:var(--type-leading-heading);margin:var(--space-5) 0;}
+  :global(.evo-approved-reader.stage-report h1) {font-size:var(--type-article-page);line-height:var(--type-leading-heading);margin:var(--space-3) 0;}
   :global(.evo-approved-reader.stage-report h2) {font-size:var(--type-article-section);}
   :global(.evo-approved-reader.stage-report h3) {font-size:var(--type-article-subsection);}
   :global(.evo-approved-reader.stage-report p),:global(.evo-approved-reader.stage-report li) {font-size:var(--type-body);line-height:var(--type-leading-body);}
@@ -213,10 +212,10 @@ const percentText = (100 - ratio).toFixed(0);
   .stage-report__reading small {display:block;color:var(--paper-muted);font-size:var(--type-caption);line-height:var(--type-leading-caption);margin-top:var(--space-1);}
   .stage-report__footer {padding-top:var(--space-5);}
   @media(max-width:600px) {
-    :global(.evo-approved-reader.stage-report) {padding:var(--space-5) var(--space-4) var(--space-7);}
+    :global(.evo-approved-reader.stage-report) {padding:var(--space-3) var(--space-4) var(--space-7);}
     .stage-report__toc-head {display:block;}
     .stage-report__toc-head span {display:block;margin-top:var(--space-1);}
-    .stage-report__toc ol {grid-template-columns:1fr;}
+    .stage-report__toc ol {grid-template-columns:repeat(2,minmax(0,1fr));}
     .stage-report__bar-row {grid-template-columns:4.4em minmax(0,1fr) 5.6em;gap:var(--space-2);}
     .stage-report__status-table thead {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);}
     .stage-report__status-table,.stage-report__status-table tbody,.stage-report__status-table tr,.stage-report__status-table th,.stage-report__status-table td {display:block;width:100%;}
