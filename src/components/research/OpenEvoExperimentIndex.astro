@@ -50,6 +50,7 @@ const directoryRowsFor = (children: OpenEvoExperimentChildLink[]): DirectoryRow[
   <header class="study-hero">
     <h1>{zh ? 'OpenEVO × WebShop 实验目录' : 'OpenEVO × WebShop experiment directory'}</h1>
     <p class="study-hero__lede">{studyIntro}</p>
+    <p class="study-hero__lede" data-stage-report-entry><a href={p('/research/seed-openevo/study/parameter-memory-report/')}>{zh ? '阅读长期参数记忆阶段汇报：实际结果、局限与下一步' : 'Read the long-term memory stage report: results, limits and next steps'}</a></p>
     <details data-study-reading-options>
       <summary>{zh ? '研究文章与专题入口' : 'Articles and topic entry points'}</summary>
     <nav id="reader-entry" aria-label={zh ? '研究阅读入口' : 'Research reading entry points'}>
