@@ -46,6 +46,39 @@ export function registerAdvisorFocusedChecks(){
     expect(columns).toHaveLength(2);
     expect(columns[0]!.x).toBeLessThan(columns[1]!.x);
     expect(Math.abs(columns[0]!.top-columns[1]!.top)).toBeLessThanOrEqual(2);
+
+    // Keep every paired stage in a shared row, and preserve the four-step
+    // top-to-bottom mechanism instead of allowing either route to collapse
+    // into a generic card.
+    const stages=await figure.evaluate(root=>{
+      const selectors=['[data-q02-task]','[data-q02-supervision]','[data-q02-objective]','[data-q02-update]'];
+      const read=(route:string)=>selectors.map(selector=>{
+        const node=root.querySelector(`[data-q02-track="${route}"] ${selector}`);
+        if(!node) throw new Error(`Missing Q02 ${route} stage: ${selector}`);
+        const rect=node.getBoundingClientRect();
+        return {top:rect.top,bottom:rect.bottom};
+      });
+      return {sft:read('sft'),opsd:read('opsd')};
+    });
+    expect(stages.sft).toHaveLength(4);
+    expect(stages.opsd).toHaveLength(4);
+    for(let index=0;index<4;index+=1){
+      const left=stages.sft[index]!;
+      const right=stages.opsd[index]!;
+      expect(Math.abs(left.top-right.top),'mirrored Q02 stages share a row').toBeLessThanOrEqual(2);
+      expect(Math.abs(left.bottom-right.bottom),'mirrored Q02 stage bottoms align').toBeLessThanOrEqual(2);
+      if(index>0){
+        expect(left.top).toBeGreaterThan(stages.sft[index-1]!.top);
+        expect(right.top).toBeGreaterThan(stages.opsd[index-1]!.top);
+      }
+    }
+
+    const q02Link=page.locator('#response-index a[href="#response-q02"]');
+    await q02Link.scrollIntoViewIfNeeded();
+    await expect(q02Link).toBeVisible();
+    await q02Link.click();
+    await expect(page).toHaveURL(/#response-q02$/);
+    await expect(page.locator('#response-q02')).toBeInViewport();
     await assertNoPageOverflow(page);
   });
 
