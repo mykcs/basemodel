@@ -76,7 +76,7 @@ const percentText = (100 - ratio).toFixed(0);
     <section id="outcome" class="stage-report__section" aria-labelledby="outcome-title">
       <h2 id="outcome-title">结论：容量与任务得分</h2>
       <p>文件更小很直观，但研究的目标不是节省文件本身，而是在长期学习中控制成本、留住有用能力。我们把这两个指标分开呈现。</p>
-      <figure class="stage-report__capacity-figure" data-report-figure="rank-capacity">
+      <figure class="evo-article__figure stage-report__capacity-figure" data-report-figure="rank-capacity">
         <h3>长期适配参数文件</h3>
         <div class="stage-report__bars" role="img" aria-label={`rank128 为 ${capacityBaseline.bytes}；rank32 为 ${capacityCandidate.bytes}，约缩小 ${percentText}%`}>
           {[capacityBaseline, capacityCandidate].map((item, i) => (
