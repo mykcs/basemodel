@@ -16,8 +16,10 @@ describe('approved stage-report reading path',()=>{
     expect(ADVISOR_Q04_CAPACITY.map(x=>x.score)).toEqual(['62.98','61.19']);
     const f=intervalData.figures.find(x=>x.id==='rank32-paired');
     expect(f?.effects[0]).toMatchObject({id:'rank32',low:expect.any(Number),high:expect.any(Number)});
-    expect(f!.effects[0].low).toBeLessThan(0);
-    expect(f!.effects[0].high).toBeGreaterThan(0);
+    const effect = f?.effects[0];
+    if (!effect) throw new Error('Missing rank32 paired confidence interval');
+    expect(effect.low).toBeLessThan(0);
+    expect(effect.high).toBeGreaterThan(0);
     expect(source).toContain('ADVISOR_Q04_CAPACITY');
     expect(source).toContain("id === 'rank32-paired'");
     expect(source).toContain('<PaperIntervalPlot');
