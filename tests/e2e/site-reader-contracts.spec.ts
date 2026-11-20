@@ -19,6 +19,39 @@ const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxH
   comparison: { maxInteractive: 16, maxHeadings: 5, maxTextChars: 1_700 },
 };
 
+for (const theme of ['light','dark'] as const) {
+  test(`exploration keeps all five orientation answers in the short desktop screen: ${theme}`,async({page},info)=>{
+    await page.setViewportSize({width:1280,height:633});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/',{waitUntil:'domcontentloaded'});
+    await page.evaluate(()=>document.fonts.ready);
+    const orientation=page.locator('[data-research-orientation]');
+    const answers=orientation.locator('[data-orientation-field] dd');
+    await expect(answers).toHaveCount(5);
+    for(const answer of await answers.all()){
+      await expect(answer).toBeVisible();
+      const box=await answer.boundingBox();
+      expect(box!.y+box!.height).toBeLessThanOrEqual(635);
+      expect(await answer.evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(14);
+    }
+    const box=await orientation.boundingBox();
+    expect(box!.y+box!.height).toBeLessThanOrEqual(635);
+    await page.screenshot({path:info.outputPath('exploration-first-screen.png'),animations:'disabled'});
+  });
+  test(`Gated Delta phone continuation is usable without competing with the introduction: ${theme}`,async({page},info)=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',{waitUntil:'domcontentloaded'});
+    await page.evaluate(()=>document.fonts.ready);
+    const continuation=page.locator('.gds-hero__history a');
+    await expect(continuation).toBeVisible();
+    expect((await continuation.boundingBox())!.height,'history continuation touch target').toBeGreaterThanOrEqual(44);
+    const chapter=await page.locator('#recurrence-title').boundingBox();
+    expect(chapter!.y,'derivation follows the phone introduction').toBeGreaterThanOrEqual(844*.8);
+    await page.screenshot({path:info.outputPath('gated-delta-first-screen.png'),animations:'disabled'});
+  });
+}
+
 for (const viewport of viewports) {
   test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }, info) => {
     // This case visits all 71 route contracts, including hydration settlement.

@@ -124,6 +124,11 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/OpenEvoSuccessorExplorationMap.astro": {
+    "currentSourceSha256": "2e119d53f2aa94e5c5d5b2c5458f8bf655f4f3c735c2e31dcca2304eac9518e2",
+    "priorSourceSha256": "3734580d6d7e90bebaeee05f6cf4bc268b7c335544e073871366ed34179431eb",
+    "reason": "2026-11-20 #1026 follow-up to FAILED exact-head de3f66e8 / Public PR CI 44627761650: full Chromium and WebKit job logs identify exploration orientation bottoms 662.78125 and 687.96875 at 1280x633, above the unchanged 635px maximum. Keep the five fields, all HTML/copy, and every font declaration byte-identical. At desktop widths restore the existing two-column title/lede composition and use shared panel/inline spacing via existing ResearchOrientation variables. No hiding, spacer or new type scale. Source reconstruction is deterministic evidence only; fresh exact-head browser geometry remains PENDING."
+  },
   "src/components/research/ResearchOrientation.astro": {
       "currentSourceSha256": "1bef6d9663f0bb2328951d4f240f9f7298d2717b9ecaa5e18955e816b4db0d2d",
       "priorSourceSha256": "7b94cfba4517250cc796f295f1d1326816666aa85b639b074b2e37efb907c5c9",
@@ -140,9 +145,9 @@ export const contentReorganizationProofs = {
       "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the five-field orientation bottom at 668.1875 in a 1280x633 viewport in both Chromium and WebKit. Use the existing panel inset and inline field density at desktop widths; keep every visible field, existing typography and scientific boundary. The intermediate source 0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364 at candidate 9631bf67 failed the existing local-scope planner due to :global. The same field density now passes by inherited custom property to its shared ResearchOrientation owner; the local-scope gate remains intact. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
   },
   "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro": {
-      "currentSourceSha256": "5071cb59cd58a3102c43bc0d371df09f603d7f4ba4da3b4dcb3ca80c4171c4ff",
+      "currentSourceSha256": "75d1e82677781970178d8d4baee3601a703bee4693a1286260c3dba2f944cc95",
       "priorSourceSha256": "cb1a6e04c0bcd3e091be60090d7d1ee27259f607f174e43a98eefcab361cd5b7",
-      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 detected two competing phone first-screen headings against the unchanged budget of one. Use the shared section spacing for the derivation chapter following the introduction. This is a normal chapter boundary, with no artificial height, hidden content, or changed heading/font size. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 detected two competing phone first-screen headings against the unchanged budget of one. Use the shared section spacing for the derivation chapter following the introduction. This is a normal chapter boundary, with no artificial height, hidden content, or changed heading/font size. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions. Follow-up: this spacing-only candidate still FAILED in exact-head run 44627761650 (h2 y671.296875 at 390x844). The current candidate adds a genuine 44px history-link touch target without changing text, fonts or attention budgets; its browser result is still PENDING."
   },
   "src/styles/tokens.css": {
     "currentSourceSha256": "7e77b75eae21c33e0648f8dceeef449244bbc832e930957eccb0ba1403c78b73",

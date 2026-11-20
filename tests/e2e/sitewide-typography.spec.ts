@@ -30,10 +30,14 @@ for(const width of [440,1440]){
       const completedRoutes:string[]=[];
       const started=Date.now();
       let activeRoute:string|null=null;
+      let activeStage:string|null=null;
+      // Divide the unchanged batch allowance, reserving 15s for context/evidence
+      // cleanup. One stalled font/paint/probe must not erase the other routes.
+      const routeBudgetMs=Math.floor((180_000-15_000)/documents.length);
       const evidence=(complete:boolean)=>({
         width,batch:batchIndex+1,batches:designBatchCount,totalBuilt:allDesignDocuments.length,
         plannedRoutes:documents.map(document=>document.route),completedRoutes,activeRoute,
-        elapsedMs:Date.now()-started,complete,receipts,failures,
+        elapsedMs:Date.now()-started,complete,receipts,failures,activeStage,routeBudgetMs,
       });
       // Synchronous progress survives a Playwright test timeout, which can
       // abort browser cleanup before a final attachment is possible.
@@ -42,21 +46,31 @@ for(const width of [440,1440]){
       },null,2));
       checkpoint();
       try{
-        const page=await context.newPage();
+        let page=await context.newPage();
         for(const {file,route} of documents){
           activeRoute=route;
           const routeStarted=Date.now();
+          const timings:Record<string,number>={};
+          let watchdog:ReturnType<typeof setTimeout>|undefined;
+          let expired=false;
           checkpoint();
           const redirect=redirectTarget(readFileSync(file,'utf8'));
           if(redirect){receipts.push({route,redirect});completedRoutes.push(route);activeRoute=null;checkpoint();continue;}
           try{
+            await Promise.race([(async()=>{
             // Navigation replaces the document and its CSS. Reusing a no-JS
             // page avoids per-route WebKit process creation, not route checks.
-            const response=await page.goto(route,{waitUntil:'domcontentloaded'});
+            activeStage='navigation';checkpoint();
+            const response=await page.goto(route,{waitUntil:'domcontentloaded',timeout:routeBudgetMs});
+            timings.navigation=Date.now()-routeStarted;
             expect(route==='/404.html'?[200,404]:[200],route+' built response').toContain(response?.status());
-            await page.evaluate(()=>document.fonts.ready);
-            const receipt=await page.evaluate(readRenderedDesign,DESIGN_TOKENS);
-            receipts.push({route,width,elapsedMs:Date.now()-routeStarted,...receipt});
+            activeStage='fonts';checkpoint();
+            const fontsStarted=Date.now();
+            await page.evaluate(()=>document.fonts.ready.then(()=>undefined));
+            timings.fonts=Date.now()-fontsStarted;
+            activeStage='token-probes';checkpoint();
+            const receipt=await page.evaluate(readRenderedDesign,{requiredTokens:DESIGN_TOKENS,staticDocument:true as const});
+            receipts.push({route,width,elapsedMs:Date.now()-routeStarted,timings,...receipt});
             expect(receipt.missingTokens,route+' inherited tokens').toEqual([]);
             expect(receipt.fontConsumer,route+' body must consume --font-interface').toBe(true);
             expect(receipt.leadingConsumer,route+' body must consume --type-leading-body').toBe(true);
@@ -71,14 +85,23 @@ for(const width of [440,1440]){
             expect(receipt.body.size,route+' body size').toBeGreaterThan(0);
             expect(receipt.overflow,route+' document overflow').toBeLessThanOrEqual(2);
             expect(receipt.rootOverflowX,route+' overflow must remain observable').not.toMatch(/hidden|clip/);
+            })(),new Promise<never>((_resolve,reject)=>{
+              watchdog=setTimeout(()=>{expired=true;reject(new Error(route+' exceeded its '+routeBudgetMs+'ms share of the batch at '+activeStage));},routeBudgetMs);
+            })]);
           }catch(error){
             const reason=error instanceof Error?error.message:String(error);
             failures.push({route,reason});
+            if(expired){
+              // Closing cancels the outstanding evaluation; never reuse a page
+              // that can still mutate tokens from an abandoned probe.
+              await page.close();
+              page=await context.newPage();
+            }
             // A closed test context cannot visit later documents. Preserve
             // partial coverage and let the original timeout fail the batch.
             if(page.isClosed()||/Test ended|Target page, context or browser has been closed/.test(reason))throw error;
           }
-          finally{completedRoutes.push(route);activeRoute=null;checkpoint();}
+          finally{clearTimeout(watchdog);completedRoutes.push(route);activeRoute=null;activeStage=null;checkpoint();}
         }
       }finally{checkpoint();await context.close();}
       await persistJsonAttachment(info,'all-route-design.json',{body:Buffer.from(JSON.stringify(evidence(true))),contentType:'application/json'});
@@ -95,6 +118,28 @@ test('computed design gate rejects declared tokens with no real consumers',async
   expect(receipt.fontConsumer).toBe(false);
   expect(receipt.leadingConsumer).toBe(false);
   expect(receipt.spacingConsumer).toBeNull();
+});
+
+test('static token probes measure and restore winning styles without a paint callback',async({page})=>{
+  await page.setContent(`<style>
+    :root{--font-interface:serif;--type-leading-body:1.7;--space-prose:16px;--reading-width:68ch}
+    body{font-family:var(--font-interface);line-height:var(--type-leading-body)}
+    main p{margin:var(--space-prose);max-width:var(--reading-width)}
+    main h1{padding:var(--space-prose)}
+  </style><main><h1>Real heading</h1><p>Real reading-width and spacing consumer</p></main>`);
+  const before=await page.locator('main p').evaluate(node=>({width:node.getBoundingClientRect().width,margin:getComputedStyle(node).margin}));
+  // Reproduce a throttled/absent frame callback without changing computed CSS.
+  await page.evaluate(()=>{window.requestAnimationFrame=()=>0;document.documentElement.style.setProperty('--space-prose','24px','important');});
+  const receipt=await page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  expect(receipt.fontConsumer).toBe(true);
+  expect(receipt.leadingConsumer).toBe(true);
+  expect(receipt.missingRoleConsumers).toEqual([]);
+  expect(receipt.readingConsumer).not.toBeNull();
+  expect(receipt.restoreErrors).toEqual([]);
+  expect(receipt.tokenProbes).toBeGreaterThanOrEqual(5);
+  expect(await page.evaluate(()=>({value:document.documentElement.style.getPropertyValue('--space-prose'),priority:document.documentElement.style.getPropertyPriority('--space-prose')}))).toEqual({value:'24px',priority:'important'});
+  await page.evaluate(()=>document.documentElement.style.removeProperty('--space-prose'));
+  expect(await page.locator('main p').evaluate(node=>({width:node.getBoundingClientRect().width,margin:getComputedStyle(node).margin}))).toEqual(before);
 });
 
 test('connected chrome cannot conceal an unconnected main, including inline calc',async({page})=>{
@@ -145,6 +190,8 @@ const routes=[
   '/research/seed-openevo/study/openevo-methods/',
   '/research/seed-openevo/study/parameter-memory-results/',
   '/research/seed-openevo/flow/webshop/',
+  '/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/',
+  '/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',
 ] as const;
 
 for(const width of [440,1440] as const) {

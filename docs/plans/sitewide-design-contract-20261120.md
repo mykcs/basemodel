@@ -1,6 +1,6 @@
 # 全站字体、排版、间距与日期交付
 
-> #1026 · Implementation: SOURCE COMPLETE · Local deterministic: PASS
+> #1026 · Implementation: CORRECTION CANDIDATE · Local deterministic constituents: PASS (tsx loader fallback)
 > Full-route browser / exact-head CI / merge / deployment: PENDING
 > Workstream: website-wide presentation · Size: L
 
@@ -40,6 +40,14 @@
 
 [本地实现收据](../agents/evidence/sitewide-design/2026-11-20/README.md)及同目录`local-build.json`保留实际路由、HTML/源码哈希、角色/例外和命令结果。源间距6,290条、归一5,217条；正文阅读宽度108条；7个DOM/React动态spacing出口；所有272页日期和CSS图检查通过。源声明与编译记录分别计数，历史5,491条ledger未重写。
 
-正式浏览器已接现有`test:ui:all`双引擎完整分片：两视口各16批枚举全部页面（17页/批、180秒/批，按已观测的34页批次超时拆分），main分角色消费与真实宽度扰动均等待两帧、验证恢复；10类代表页面留明暗截图。此执行器不能启动浏览器。首次正式候选d4d93442的双引擎CI发现4处首屏回归；定点修复与精确源码证明已完成、重新构建通过，新head正式渲染仍待验收。当前没有完整浏览器PASS，也没有合并或上线声明。独立只读复审已闭合已发现的边界、main/inline、reading width和恢复问题；由root推送当前代码后取得正式精确head证据。
+正式浏览器已接现有`test:ui:all`双引擎完整分片：两视口各16批枚举全部页面（17页/批、180秒/批，按已观测的34页批次超时拆分），main分角色消费与真实宽度扰动均逐次验证恢复；无脚本全路由同步读取computed style/真实几何，启用脚本的12个代表路由保留两帧与明暗截图。此执行器不能启动浏览器。首次正式候选d4d93442的双引擎CI发现4处首屏回归；定点修复与精确源码证明已完成、重新构建通过，新head正式渲染仍待验收。当前没有完整浏览器PASS，也没有合并或上线声明。独立只读复审已闭合已发现的边界、main/inline、reading width和恢复问题；由root推送当前代码后取得正式精确head证据。
 
 后继9631bf67在组件局部作用域门禁被拒绝，未进入浏览器。当前通过共享ResearchOrientation owner接收继承密度变量，保持原scope规则；完整structural147文件941例及22个source-continuation重新通过，详见同证据目录scope-owner-correction.json。
+
+## de3f66e8 失败后的隔离克隆候选（未提交）
+
+[正式运行44627761650](https://github.com/mykcs/basemodel/actions/runs/44627761650)在 exact head `de3f66e86562ac3819c37c7fb50083b54febf7b8` 仍失败：Gated Delta 手机h2为y671.296875；实际溢出的导读路由是 `openevo-2-0/exploration/`，Chromium/WebKit底部662.78125/687.96875（上限635），不是之前已修改的mechanism页面；17页token批次仍达到180秒。此前收据不是PASS。
+
+本轮只改两个页面布局：历史链接成为真实44px触控目标；探索页桌面标题和导语并排，使用既有panel/inline衬距。两个组件的frontmatter/HTML/科学文案与该head逐字节相同。token探针保留全部272×2路由/引擎、原角色、扰动及恢复断言，静态分支移除paint等待并记录阶段耗时；每路由使用原批预算的份额，超时仍失败。CI矩阵、重试、单批上限和产品预算未改变。
+
+本地Node24：272页构建及全部产物门禁PASS；16个verify:deploy顶层constituent分别PASS（tsx CLI的Unix IPC被拒绝，后续使用同一 `node --import tsx` loader）；structural147文件942例、behavior8文件39例、精确continuation23例PASS；严格浏览器spec类型检查PASS；双引擎相关测试收集686例，其中全路由批次64例。**没有运行本轮真实浏览器，当前布局坐标与实际加速仍待验证。** localhost监听被sandbox拒绝，现有浏览器版本也不匹配。用户要求不commit/push/merge/deploy/换分支；源码和测试留在工作区，由用户审阅集成后运行完整CI。

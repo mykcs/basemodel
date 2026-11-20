@@ -1,5 +1,31 @@
 # #1026 本地实现收据
 
+## de3f66e8 FAILED CI follow-up (uncommitted)
+
+Baseline: `fix/sitewide-design-contract-20261120@de3f66e86562ac3819c37c7fb50083b54febf7b8`. The working tree is the candidate; no commit/push/merge/deploy or branch change was performed. Earlier JSON receipts remain historical, including `first-screen-correction.json`; this follow-up does not promote them to browser PASS.
+
+Freshly retrieved logs from [run44627761650](https://github.com/mykcs/basemodel/actions/runs/44627761650) identify:
+
+| Failure | Actual measurement | Existing requirement |
+| --- | --- | --- |
+| [Chromium phone Gated Delta, job135927826003](https://github.com/mykcs/basemodel/actions/runs/44627761650/job/135927826003) | h1 y186.1875/26px; h2 y671.296875/21px; two headings | one competing heading; later chapter may start in final fifth |
+| [Chromium orientation, job135927826116](https://github.com/mykcs/basemodel/actions/runs/44627761650/job/135927826116) | **openevo-2-0/exploration/** bottom662.78125 | bottom ≤635 at1280×633 |
+| [WebKit orientation, job135927826078](https://github.com/mykcs/basemodel/actions/runs/44627761650/job/135927826078) | same exploration route bottom687.96875 | same635px maximum |
+| [Chromium token batch, job135927826063](https://github.com/mykcs/basemodel/actions/runs/44627761650/job/135927826063) | 440px batch5/16 hit180000ms | same180000ms batch allowance |
+
+The current orientation failure is not the mechanism page from the older receipt. An exploratory mechanism-layout candidate was removed after reading the full logs; there is no remaining change to `ResearchOrientation.astro` or `OpenEvoMechanismMap.astro` in this delta.
+
+The two production edits are CSS-only. Exploration uses the existing two-column title/lede composition at desktop widths and panel/inline spacing through existing inherited variables. Gated Delta gives the history continuation a real44px touch target, adding usable control area rather than an empty spacer. Both components' frontmatter/HTML, visible scientific text, data and figures are byte-identical to baseline. All font declarations remain reconciled at5528 current /5491 historical.
+
+The full-route suite still enumerates every actual built document at440/1440 in Chromium/WebKit:272×2 visits per engine,16 batches per viewport,64 batch cases overall. Every token mutation, actual role/width response and restoration assertion remains. No-script probes now read computed style/layout synchronously instead of awaiting paint callbacks for each mutation and restoration. Hydrated representatives keep two-frame settlement; the two affected routes were added to representative light/dark screenshots. The bounded route watchdog divides the unchanged180000ms allowance after a15000ms context/evidence reserve (9705ms per route for17 documents). A stalled route fails, is closed to cancel its evaluation, and a fresh page visits remaining routes. Partial JSON now includes navigation/font/probe stage, timings and probe counts. No CI-matrix, retry, route-population or product-budget change was made.
+
+**Measured locally on Node24.20.0:** `npm ci`; final `npm run build` with272 HTML and every built artifact audit PASS; all16 `verify:deploy` top-level constituents PASS across the original invocation and same-loader fallback;147 structural files/942 tests and8 behavior files/39 tests PASS;23 exact source-continuation tests PASS; strict TypeScript check of changed browser specs PASS; related Playwright collection686 tests including64 exhaustive batch cases. The scheduling unit fixture proves token response and restoration of an existing inline `!important` value with zero animation-frame calls. This is scheduler evidence, not a browser speed measurement.
+
+The original `npm run verify:deploy` reached0 Astro errors/warnings, then the `tsx` CLI failed to open its Unix IPC socket (`EPERM`). Remaining commands used the identical `node --import tsx` loader, with no config/credential/network change. A temporary orchestration parser stopped at `npm test`; it was corrected and all remaining constituents then passed. Local command logs are `/private/tmp/basemodel-1026-{verify,remaining-gates,final-gates,build-final,continuation,browser-typecheck,collection}.log`.
+
+**NOT VERIFIED:** candidate browser geometry, screenshots, actual token-probe latency and current-head full matrix. The sandbox rejects a localhost listener (`listen EPERM127.0.0.1`); installed Playwright expects an unavailable browser revision. Per user instruction, no alternate local browser route or unapproved push was used. The pre-patch failures above are the red browser evidence; there is no new green browser evidence. Integration must run the unchanged full Chromium/WebKit gate against the resulting exact head. Token scheduling is a candidate cause/fix; timings from that run must confirm it.
+
+
 状态：**源码与本地确定性检查通过；正式双引擎渲染、CI、合并和发布待执行。** 这是规格提交 `063ad3d` 加本地变更的收据，不是该提交自身或未来提交的浏览器证据。[local-build.json](local-build.json) 保存实现文件 SHA-256、全部272路由的 HTML 哈希/实际样式依赖、源文件分组、67条例外、108条阅读宽度归属及7个动态 spacing sink。
 
 ## 组件作用域门禁修复

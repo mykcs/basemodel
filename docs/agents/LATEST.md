@@ -1,6 +1,15 @@
 # Latest Agent handoff
 
-## 2026-11-20 全站排版、间距与日期 · #1026候选
+## 2026-11-20 #1026 exact-head失败跟进 · 隔离克隆未提交
+
+当前基线仍为 `fix/sitewide-design-contract-20261120@de3f66e86562ac3819c37c7fb50083b54febf7b8`；[44627761650](https://github.com/mykcs/basemodel/actions/runs/44627761650)失败，下面旧候选的本地通过不构成浏览器PASS。完整job日志确认导读溢出发生在 `openevo-2-0/exploration/`（Chromium662.78125、WebKit687.96875 >635），手机Gated Delta第二标题y671.296875；17页token批次仍180秒超时。
+
+当前工作区候选：探索页复用现有双列intro与panel/inline衬距；Gated Delta历史链接使用真实44px触控目标。科学文案/HTML、字体及预算不变。静态全路由逐次同步测量token响应与恢复，代表路由仍等待两帧；路由阶段/耗时与超时失败被保留，CI矩阵和180秒上限未改。
+
+本地272页构建、16个确定性constituent（tsx同loader回退）、942 structural +39 behavior、23 continuation及严格spec类型检查PASS。真实浏览器未执行：sandbox拒绝localhost socket，浏览器版本不匹配。**未commit/push/merge/deploy/换分支**；唯一写入者为本隔离克隆任务，由用户审阅后集成。下一步是集成候选后取得同一head完整双引擎CI证据；具体候选与失败来源见[现有证据页](evidence/sitewide-design/2026-11-20/README.md#de3f66e8-failed-ci-follow-up-uncommitted)。
+
+
+## 2026-11-20 全站排版、间距与日期 · #1026早期候选记录
 
 [PR #1026](https://github.com/mykcs/basemodel/pull/1026) 的实现已在任务分支本地完成；272个页面的实际CSS依赖、有限间距/阅读宽度执行层、内联和动态出口、年月日显示与历史ledger检查通过。`verify:deploy`的22条命令全部通过（本执行器只把需要Unix IPC的tsx启动器换为同一loader）；历史字体ledger未刷新。详细数字和源码/HTML哈希在[本地收据](evidence/sitewide-design/2026-11-20/README.md)，标准继续由现有[全站排版owner](current/sitewide-typography-standard.md)与[日期owner](current/website-engineering-standard.md#11-全站可读日期的统一显示)持有。
 

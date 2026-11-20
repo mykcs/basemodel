@@ -16,7 +16,10 @@ export function inlineSpacingViolations(candidates: InlineSpacing[]) {
 }
 
 /** Runs inside the real page: token presence alone cannot satisfy these probes. */
-export async function readRenderedDesign(requiredTokens: string[]) {
+export async function readRenderedDesign(input: string[] | { requiredTokens: string[]; staticDocument: true }) {
+  const requiredTokens = Array.isArray(input) ? input : input.requiredTokens;
+  const staticDocument = !Array.isArray(input) && input.staticDocument;
+  const probeStarted = performance.now();
   const root = document.documentElement;
   const rootStyle = getComputedStyle(root);
   const tokens = Object.fromEntries(requiredTokens.map(token => [token, rootStyle.getPropertyValue(token).trim()]));
@@ -32,10 +35,14 @@ export async function readRenderedDesign(requiredTokens: string[]) {
     const before = measure();
     root.style.setProperty(token, value);
     let after: T;
-    try { await settle(); after = measure(); }
+    // In a no-script document these reads synchronously flush style/layout.
+    // Waiting for paint adds no cascade evidence and can stall indefinitely
+    // when an offscreen hosted page's animation frames are throttled.
+    // Hydrated representatives retain their two-frame settlement separately.
+    try { if (!staticDocument) await settle(); after = measure(); }
     finally {
       if (previous) root.style.setProperty(token, previous, priority); else root.style.removeProperty(token);
-      await settle();
+      if (!staticDocument) await settle();
     }
     const restored = measure();
     if (JSON.stringify(before) !== JSON.stringify(restored)) restoreErrors.push({ token, before, restored });
@@ -147,6 +154,7 @@ export async function readRenderedDesign(requiredTokens: string[]) {
   }
   return {
     missingTokens, tokens, body: bodyType, fontConsumer, leadingConsumer, restoreErrors, tokenProbes,
+    probeElapsedMs: performance.now() - probeStarted, settlement: staticDocument ? 'computed-style' : 'two-frames',
     spacingConsumer: spacingConsumers[0] ?? null, spacingConsumers, roleCoverage, missingRoleConsumers, inlineSpacing,
     readingCandidates: readingCandidates.length, readingLayoutCaps: visibleProse.length - readingCandidates.length, readingConsumer,
     readingWidth: getComputedStyle(root).getPropertyValue('--reading-width').trim(),

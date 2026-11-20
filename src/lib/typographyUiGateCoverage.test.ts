@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { readRenderedDesign } from '../../tests/e2e/design-contract-browser';
 
 // Wiring assertions complement the browser predicates. A test file can exist
 // and pass manually while being absent from the real release gate.
@@ -35,5 +36,37 @@ describe('Typography UI Gate wiring',()=>{
     expect(source).toContain('readRenderedDesign');
     expect(pkg.scripts['audit:typography']).toContain('scripts/lib/sitewide-spacing.test.mjs');
     expect(pkg.scripts['audit:typography']).toContain('scripts/lib/rendered-design-contract.test.mjs');
+  });
+});
+
+describe('static computed-style probe scheduling',()=>{
+  it('measures font/leading responses and restores inline value and priority without scheduling paint',async()=>{
+    // A minimal CSSOM scheduler fixture, not rendered-route acceptance.
+    // The browser regression additionally measures real spacing and width.
+    const values=new Map([['--type-leading-body',{value:'1.7',priority:'important'}]]);
+    const root={style:{
+      getPropertyValue:(key:string)=>values.get(key)?.value??'',
+      getPropertyPriority:(key:string)=>values.get(key)?.priority??'',
+      setProperty:(key:string,value:string,priority='')=>values.set(key,{value,priority}),
+      removeProperty:(key:string)=>values.delete(key),
+    },scrollWidth:100,clientWidth:100};
+    const body={};
+    const frames=vi.fn(()=>{throw new Error('Static probes must not depend on paint');});
+    vi.stubGlobal('requestAnimationFrame',frames);
+    vi.stubGlobal('document',{documentElement:root,body,styleSheets:[],querySelector:()=>null,querySelectorAll:()=>[]});
+    vi.stubGlobal('getComputedStyle',(node:unknown)=>node===body?{
+      fontFamily:values.get('--font-interface')?.value??'Inter',fontSize:'16px',
+      lineHeight:String(16*Number(values.get('--type-leading-body')?.value??'1.7'))+'px',
+    }:{getPropertyValue:(key:string)=>values.get(key)?.value??({'--reading-width':'68ch'}[key]??''),overflowX:'visible'});
+    try{
+      const receipt=await readRenderedDesign({requiredTokens:[],staticDocument:true});
+      expect(receipt.fontConsumer).toBe(true);
+      expect(receipt.leadingConsumer).toBe(true);
+      expect(receipt.restoreErrors).toEqual([]);
+      expect(receipt.tokenProbes).toBe(2);
+      expect(frames).not.toHaveBeenCalled();
+      expect([...values]).toEqual([['--type-leading-body',{value:'1.7',priority:'important'}]]);
+      expect(receipt.spacingConsumer).toBeNull();
+    }finally{vi.unstubAllGlobals();}
   });
 });
