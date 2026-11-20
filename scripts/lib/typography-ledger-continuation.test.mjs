@@ -3,6 +3,9 @@ import { readFileSync } from 'node:fs';
 import { reviewedPrivacyProofs } from './typography-ledger-continuation.mjs';
 import test from 'node:test';
 import { createHash } from 'node:crypto';
+import postcss from 'postcss';
+import { contentReorganizationProofs } from './typography-intelligence-ui-delta.mjs';
+import { reviewedGlobalEmphasisTypography } from './typography-ledger-continuation.mjs';
 import { verifyAppendOnlyArticleTypography, verifyReviewedUiAndArticleTypography, verifySealedProofWithEditorialAnonymization, verifyReviewedSourceContinuation, reviewedReaderGuideTypography, reviewedFlowDisclosureTypography, reviewedSharedTypographyRows, reviewedHomeDeadTypographyRetirement, reviewedHomeScopedLinkFocusContinuation, reviewedHomeAnswerSpacingContinuation, reviewedHomeNextStepOrderContinuation, verifyReviewedHomeDeadTypographyRetirement } from './typography-ledger-continuation.mjs';
 
 test('privacy continuations accept only exact reviewed source pairs', () => {
@@ -17,7 +20,69 @@ test('privacy continuations accept only exact reviewed source pairs', () => {
 });
 
 const baseline = { file: 'src/styles/old.css', selector: '.reader', contexts: [], property: 'font-size', value: 'var(--type-body)' };
+
+test('spacing bindings and explicit paragraph/shell changes reconstruct the exact sealed CSS',()=>{
+  const file='src/styles/site.css';
+  const review=contentReorganizationProofs[file];
+  const bytes=readFileSync(new URL('../../'+file,import.meta.url));
+  const values=new Map();
+  postcss.parse(readFileSync(new URL('../../src/styles/tokens.css',import.meta.url),'utf8'))
+    .walkDecls(declaration=>{if(/^--space-/.test(declaration.prop))values.set(declaration.prop,declaration.value);});
+  const restored=postcss.parse(bytes.toString('utf8')
+    .replace('strong, b { font-weight: var(--type-weight-strong); }\n','')
+    .replace('/* Page shell geometry is owned by components/global-shell.css. */','.shell { width: min(1160px, calc(100% - 40px)); margin: 0 auto; }')
+    .replace('p { margin-bottom: var(--rhythm-prose); max-width: var(--reading-width); }\nul, ol { margin-block: var(--rhythm-prose); padding-inline-start: var(--rhythm-list); }\n','')
+    .replace('@media (max-width: 560px) { .hero','@media (max-width: 560px) { .shell { width: min(100% - 28px, 1160px); } .hero'));
+  let references=0;
+  restored.walkDecls(declaration=>{
+    if(!/^(?:margin|padding)(?:-|$)|^(?:row-|column-)?gap$/.test(declaration.prop))return;
+    declaration.value=declaration.value.replace(/var\((--space-\d+)\)/g,(_match,token)=>{references++;assert(values.has(token));return values.get(token);});
+  });
+  assert.equal(references,91);
+  assert.equal(createHash('sha256').update(restored.toString()).digest('hex'),review.priorSourceSha256);
+  const proof={file,sha256:review.priorSourceSha256};
+  assert.equal(verifySealedProofWithEditorialAnonymization(proof,bytes,review).historicalObservationInvalidated,true);
+  assert.throws(()=>verifySealedProofWithEditorialAnonymization(proof,Buffer.from(bytes.toString('utf8').replace('var(--space-5)','25px')),review),/beyond the reviewed source/);
+});
+
+test('ordinary emphasis has one exact shared-token continuation, not a new arbitrary weight allowance',()=>{
+  const approved=reviewedSharedTypographyRows(reviewedGlobalEmphasisTypography);
+  assert.equal(approved.length,1);
+  assert.deepEqual(verifyAppendOnlyArticleTypography([baseline],[baseline,...approved],approved),{newTokenDeclarations:1,newFiles:['src/styles/site.css']});
+  assert.throws(()=>verifyAppendOnlyArticleTypography([baseline],[baseline,{...approved[0],value:'700'}],approved),/new classification/);
+});
+
+test('spacing roles and the winning reading width preserve the sealed typography source',()=>{
+  const file='src/styles/tokens.css',review=contentReorganizationProofs[file];
+  const source=readFileSync(new URL('../../'+file,import.meta.url),'utf8');
+  const restored=source.replace(/  --space-half:[\s\S]*?(?=\n  \/\* Only three ordinary radius levels)/,'')
+    .replace('--reading-width: 68ch','--reading-width: 720px')
+    .replace('--type-reading-measure: var(--reading-width)','--type-reading-measure: 70ch');
+  assert.equal(createHash('sha256').update(restored).digest('hex'),review.priorSourceSha256);
+  assert.equal(createHash('sha256').update(source).digest('hex'),review.currentSourceSha256);
+  const upgrade=readFileSync(new URL('../../src/styles/visual-upgrade.css',import.meta.url),'utf8');
+  const upgradeReview=contentReorganizationProofs['src/styles/visual-upgrade.css'];
+  assert.equal(createHash('sha256').update(upgrade.replace(':root {\n',':root {\n  --reading-width: 72ch;\n')).digest('hex'),upgradeReview.priorSourceSha256);
+});
 const newArticle = { file: 'src/pages/research/new/index.astro', selector: '.question', contexts: [], property: 'font-size', value: 'var(--type-meta)' };
+
+for (const [name, restore] of [
+  ['OpenEvoSuccessorExplorationMap.astro', source => source.replace("/* Desktop overview: title and explanation share a row; the five fields\n   retain their text and type roles, with the existing panel/inline density. */\n@media(min-width:901px){\n  .explore-map.evo-reading-overview{padding-block-start:var(--space-panel);--article-intro-columns:minmax(0,.9fr) minmax(0,1.1fr);--article-orientation-field-padding:var(--rhythm-inline) var(--rhythm-heading)}\n}\n", '')],
+  ['ResearchOrientation.astro', source => source.replace('padding:var(--article-orientation-field-padding,.72rem .8rem);border-right:1px', 'padding:.72rem .8rem;border-right:1px')],
+  ['OpenEvoExperimentArchive.astro', source => source.replace('gap:.6rem 1.5rem;align-items:start;padding:1.25rem', 'gap:.6rem 1.5rem;align-items:end;padding:1.25rem')],
+  ['OpenEvoMechanismMap.astro', source => source.replace('/* The overview retains its five visible fields at short desktop heights.\n   Use the existing panel/inline density; text and scientific evidence stay intact. */\n@media(min-width:901px){\n  .mechanism-map.evo-reading-overview{padding-block-start:var(--space-panel);--article-orientation-field-padding:var(--rhythm-inline) var(--rhythm-heading)}\n}\n', '')],
+  ['OpenEvoGatedDeltaSdLoraExplainer.astro', source => source.replace('/* The history continuation is a touch target as well as an inline citation. */\n.gds-hero__history a{display:inline-flex;align-items:center;min-block-size:44px}\n','').replace('/* A new derivation chapter uses the shared section break after the introduction. */\n.gds-hero + .gds-section{padding-block-start:var(--space-section)}\n', '')],
+]) {
+  test('measured first-screen layout correction preserves exact prior source: ' + name, () => {
+    const file = 'src/components/research/' + name;
+    const review = contentReorganizationProofs[file];
+    const bytes = readFileSync(new URL('../../' + file, import.meta.url));
+    assert.equal(createHash('sha256').update(restore(bytes.toString('utf8'))).digest('hex'), review.priorSourceSha256);
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), review.currentSourceSha256);
+    assert.equal(verifySealedProofWithEditorialAnonymization({ file, sha256: review.priorSourceSha256 }, bytes, review).historicalObservationInvalidated, true);
+    assert.throws(() => verifySealedProofWithEditorialAnonymization({ file, sha256: review.priorSourceSha256 }, Buffer.concat([bytes, Buffer.from(' ')]), review), /beyond the reviewed source/);
+  });
+}
 
 test('unchanged historical declarations remain valid', () => {
   assert.deepEqual(verifyAppendOnlyArticleTypography([baseline], [baseline]), { newTokenDeclarations: 0, newFiles: [] });
@@ -81,11 +146,19 @@ test('Results first-screen height review preserves historical proof and rejects 
   const currentSha = createHash('sha256').update(bytes).digest('hex');
   // The original 1edf01e6 source identity is retained in the reviewed ledger;
   // #1011 adds a route-local native-anchor scroll correction, not a new typography scale.
-  assert.equal(currentSha, 'f528f47299f2dc95c6c73c63a860174fea79be594938a75ed7f250e79d6a0043');
+  assert.equal(currentSha, '935850b568d630fb8ca28dc1f6af66e57eabd48ae8ff7f8f53129013459e96b1');
   const source = bytes.toString('utf8');
   assert.match(source, /\.results-first-screen\s*\{\s*min-height:\s*0\s*\}/);
   assert.match(source, /统计范围也仍然包含“没有差异”/);
   assert.match(source, /class="progress-detail"/);
+  const previousSource = source
+    .replace('  /* The shared reading-overview article already owns the outer inset.\n     Keep this nested introduction on its reading column without a second gutter. */\n', '')
+    .replace('padding:0 0 var(--space-heading)', 'padding:36px 24px 12px')
+    .replace('max-width:800px;margin:var(--space-prose) 0 0', 'max-width:800px;margin:22px 0 0')
+    .replace('max-width:820px;margin-top:var(--space-prose);padding:var(--space-heading) 0', 'max-width:820px;margin-top:24px;padding:18px 0')
+    .replace('.results-hero{padding-block-end:var(--space-inline)}', '.results-hero{padding:24px 18px 8px}');
+  assert.equal(createHash('sha256').update(previousSource).digest('hex'), 'f528f47299f2dc95c6c73c63a860174fea79be594938a75ed7f250e79d6a0043');
+
   assert.match(source, /:global\(html:has\(\.results-hero \.paper-nav\)\)\s*\{\s*scroll-behavior:\s*auto;?\s*\}/);
   assert.deepEqual(verifyReviewedSourceContinuation(file, bytes, prior), { subsequentReview: true });
   assert.throws(() => verifyReviewedSourceContinuation(file, Buffer.concat([bytes, Buffer.from(' ')]), prior), /differs from its exact subsequent review/);

@@ -7,6 +7,7 @@
 @import 'tailwindcss/utilities.css' layer(utilities) prefix(tw) source('../');
 
 @theme inline {
+  --spacing: var(--space-1);
   --color-background: var(--surface);
   --color-foreground: var(--ink);
   --color-primary: var(--accent-fill);

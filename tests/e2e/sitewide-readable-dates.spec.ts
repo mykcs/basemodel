@@ -10,9 +10,9 @@ const pages=[
   '/research/seed-openevo/study/parameter-memory-results/',
 ];
 
-for(const width of [390,1440]){
+for(const width of [440,1440]){
   test('human dates stay canonical across static and hydrated pages at '+width+'px',async ({page})=>{
-    await page.setViewportSize({width,height:900});
+    await page.setViewportSize({width,height:width===440?956:1000});
     for(const path of pages){
       const response=await page.goto(path,{waitUntil:'domcontentloaded'});
       expect(response?.status(),path).toBe(200);
@@ -29,6 +29,18 @@ for(const width of [390,1440]){
       expect(result.rawDates,path).toEqual([]);
       expect(result.formattedDates.length,path).toBeGreaterThan(0);
       expect(result.overflow,path+' whole-page overflow').toBeLessThanOrEqual(2);
+      if(path==='/models/'){
+        await page.getByRole('tab',{name:'时间线',exact:true}).click();
+        await expect(page.locator('.model-timeline time').first()).toBeVisible();
+        const times=await page.locator('.model-timeline time').evaluateAll(nodes=>nodes.map(node=>({machine:node.getAttribute('datetime'),text:node.textContent?.trim()})));
+        expect(times.length).toBeGreaterThan(0);
+        for(const time of times){
+          expect(time.machine).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+          const [year,month,day]=time.machine!.split('-');
+          expect(time.text).toBe(`${year} 年 ${Number(month)} 月 ${Number(day)} 日`);
+        }
+        expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(2);
+      }
     }
     await page.goto('/models/qwen3-1-7b/',{waitUntil:'domcontentloaded'});
     const time=page.locator('time[datetime]').first();
