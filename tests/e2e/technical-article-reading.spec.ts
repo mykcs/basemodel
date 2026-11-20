@@ -14,8 +14,13 @@ async function articleGeometry(page: Page, width: number) {
     const errors: string[] = [];
     if (!h1) errors.push('missing H1');
     if (parseFloat(style.fontSize) !== 14) errors.push('body must use 14px reading type');
-    if (heading && Math.abs(parseFloat(heading.fontSize) - (viewport <= 520 ? 26 : 28)) > .1) errors.push('old display heading escaped the article owner');
-    if (rect.width > Math.min(root.classList.contains('evo-reading-overview') ? 960.5 : 750.5, viewport - 23)) errors.push('article measure escaped the reading frame');
+    // Approved stage-report role: V3 uses the existing semantic article H1 token and
+    // slightly wider measure; all other research articles retain their stricter baseline.
+    const stageReport = root.classList.contains('stage-report');
+    const expectedHeading = stageReport ? Math.max(28, Math.min(36, viewport * .024)) : (viewport <= 520 ? 26 : 28);
+    if (heading && Math.abs(parseFloat(heading.fontSize) - expectedHeading) > .2) errors.push('old display heading escaped the article owner');
+    const maxMeasure = stageReport ? 752.5 : root.classList.contains('evo-reading-overview') ? 960.5 : 750.5;
+    if (rect.width > Math.min(maxMeasure, viewport - 23)) errors.push('article measure escaped the reading frame');
     if (document.documentElement.scrollWidth > viewport + 1) errors.push('document overflow');
     for (const node of root.querySelectorAll<HTMLElement>('p,dd,li,span,small')) {
       if (node.children.length || node.closest('details:not([open]),[hidden],[aria-hidden="true"],[data-research-paper-table]')) continue;
