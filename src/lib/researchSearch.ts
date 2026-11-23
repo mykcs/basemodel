@@ -6,6 +6,7 @@ const root = '/research/seed-openevo/study/capability-exploration/';
 const titles: Record<string, string> = {
   home: 'BaseModel 研究首页',
   development: '网站开发与验收',
+  'agent-reader': '给 Agent 读',
   handbook: '技术手册',
   'handbook-harness': 'Agent Harness 操作说明',
   'handbook-gpu': 'GPU 操作规则',
@@ -34,6 +35,7 @@ const titles: Record<string, string> = {
   'study-results': '跨实验结果与证据',
   'study-openevo-methods': 'OpenEVO 的参数记忆方法',
   'study-advisor-ten': 'L 学长十问：问题与背景',
+  'study-parameter-memory-report': 'OpenEVO 长期参数记忆阶段汇报',
   'study-parameter-memory-results': '我们的回应实验',
   'study-briefing': '研究阶段汇报',
   'recent-challenges': '研究阶段复盘',

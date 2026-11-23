@@ -70,9 +70,53 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
     try { visit(sheet.cssRules); } catch { /* An external sheet cannot establish the local contract. */ }
   }
   const spacingProperties = /^(?:margin|padding)(?:-|$)|^(?:row-|column-)?gap$/;
-  const spacingRules = rules.flatMap(rule => Array.from(rule.style)
-    .filter(property => spacingProperties.test(property))
-    .map(property => ({ selector: rule.selectorText, property, value: rule.style.getPropertyValue(property) }))
+  // CSSOM enumerates longhands even when the author set a shorthand. For
+  // unresolved var() shorthand values, its enumerated longhands serialize
+  // to the empty string. Recover the actual authored shorthand explicitly.
+  const shorthandParts: Record<string, string[]> = {
+    margin: ['margin-top','margin-right','margin-bottom','margin-left'],
+    padding: ['padding-top','padding-right','padding-bottom','padding-left'],
+    'margin-inline': ['margin-inline-start','margin-inline-end'],
+    'margin-block': ['margin-block-start','margin-block-end'],
+    'padding-inline': ['padding-inline-start','padding-inline-end'],
+    'padding-block': ['padding-block-start','padding-block-end'],
+    gap: ['row-gap','column-gap'],
+  };
+  function spacingDeclarations(style: CSSStyleDeclaration) {
+    const declarations: Array<{property: string; value: string}> = [];
+    const represented = new Set<string>();
+    for (const [property, parts] of Object.entries(shorthandParts)) {
+      const value = style.getPropertyValue(property);
+      if (!value) continue;
+      declarations.push({property, value});
+      for (const part of parts) represented.add(part);
+    }
+    for (const property of Array.from(style)) {
+      if (!spacingProperties.test(property) || represented.has(property) || property in shorthandParts) continue;
+      const value = style.getPropertyValue(property);
+      if (value) declarations.push({property, value});
+    }
+    return declarations;
+  }
+  function measureSpacing(element: HTMLElement, property: string) {
+    const computed = getComputedStyle(element);
+    return (shorthandParts[property] ?? [property]).map(part => computed.getPropertyValue(part)).join(' | ');
+  }
+  // Positive geometry is not sufficient evidence of visibility: closed
+  // details descendants may retain layout rects even though they cannot be read.
+  function isRendered(element: HTMLElement) {
+    if (element.closest('svg,math,.katex,[aria-hidden="true"]')) return false;
+    for (let ancestor = element.parentElement?.closest('details:not([open])'); ancestor;
+      ancestor = ancestor.parentElement?.closest('details:not([open])') ?? null) {
+      const summary = Array.from(ancestor.children).find(child => child.tagName === 'SUMMARY');
+      if (!summary?.contains(element)) return false;
+    }
+    if (typeof element.checkVisibility === 'function' && !element.checkVisibility({visibilityProperty: true})) return false;
+    const style = getComputedStyle(element), rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  }
+  const spacingRules = rules.flatMap(rule => spacingDeclarations(rule.style)
+    .map(declaration => ({ selector: rule.selectorText, ...declaration }))
     .filter(({ value }) => /var\(--(?:space|rhythm)-/.test(value))).reverse();
   const main = document.querySelector('main, .site-main, [role="main"]');
   const roleSelectors = {
@@ -90,20 +134,20 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
   for (const [role, selector] of Object.entries(roleSelectors)) {
     // A correct header cannot hide an orphan article. Each available reading,
     // list, card, control and utility role supplies its own real token response.
-    const candidates = Array.from(main?.querySelectorAll<HTMLElement>(selector) ?? []).filter(element => {
-      if (element.closest('svg,math,.katex,[aria-hidden="true"]')) return false;
-      const style = getComputedStyle(element), rect = element.getBoundingClientRect();
-      return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
-    }).slice(0, 8);
-    const spaced = candidates.filter(element => measuredProperties.some(property => parseFloat(getComputedStyle(element).getPropertyValue(property)) > 0));
+    const candidates = Array.from(main?.querySelectorAll<HTMLElement>(selector) ?? []).filter(isRendered);
+    // Sample spaced candidates, not the first eight elements regardless of
+    // spacing. A role with no visible nonzero spacing needs no witness.
+    const spaced = candidates.filter(element => {
+      const style = getComputedStyle(element);
+      return measuredProperties.some(property => parseFloat(style.getPropertyValue(property)) > 0);
+    });
     let witness: Witness | null = null;
-    for (const element of spaced) {
+    for (const element of spaced.slice(0, 8)) {
       // Multiple cascade layers can name the same token/property pair. Once
       // its computed response is measured and restored, repeating that exact
       // intervention cannot add evidence about this unchanged element.
       const attemptedPairs = new Set<string>();
-      const inline = Array.from(element.style).filter(property => spacingProperties.test(property))
-        .map(property => ({ selector: '<inline>', property, value: element.style.getPropertyValue(property) }));
+      const inline = spacingDeclarations(element.style).map(declaration => ({selector: '<inline>', ...declaration}));
       for (const rule of [...inline, ...spacingRules]) {
         try { if (rule.selector !== '<inline>' && !element.matches(rule.selector)) continue; } catch { continue; }
         for (const match of rule.value.matchAll(/var\((--(?:space|rhythm)-[\w-]+)\)/g)) {
@@ -112,7 +156,7 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
           const pair = rule.property + '\0' + token;
           if (attemptedPairs.has(pair)) continue;
           attemptedPairs.add(pair);
-          const { before, after } = await withToken(token, token === '--space-em-factor' ? '3' : '113px', () => getComputedStyle(element).getPropertyValue(rule.property));
+          const { before, after } = await withToken(token, token === '--space-em-factor' ? '3' : '113px', () => measureSpacing(element, rule.property));
           if (before !== after) {
             witness = { role, element: element.tagName.toLowerCase(), selector: rule.selector, property: rule.property, token, before, after };
             break;
@@ -126,10 +170,7 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
     roleCoverage.push({ role, visibleCandidates: candidates.length, spacedCandidates: spaced.length, consumer: Boolean(witness) });
   }
   const missingRoleConsumers = roleCoverage.filter(role => role.spacedCandidates > 0 && !role.consumer).map(role => role.role);
-  const visibleProse = Array.from(main?.querySelectorAll<HTMLElement>('p') ?? []).filter(element => {
-    const rect = element.getBoundingClientRect();
-    return rect.width > 0 && rect.height > 0 && !element.closest('svg,math,.katex,[aria-hidden="true"]');
-  });
+  const visibleProse = Array.from(main?.querySelectorAll<HTMLElement>('p') ?? []).filter(isRendered);
   // A percentage/none cap may be the actual mobile owner. Do not pretend a
   // fixed reading measure governs it. Perturb a wider, fixed-measure paragraph
   // below its available width and require actual visible geometry to change.
@@ -147,9 +188,13 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
   const inlineSpacing: InlineSpacing[] = [];
   for (const element of Array.from(document.querySelectorAll<HTMLElement>('[style]'))) {
     if (element.closest('svg,math,.katex')) continue;
-    for (const property of Array.from(element.style)) {
-      if (!spacingProperties.test(property) && !/^(?:max-width|max-inline-size)$/.test(property)) continue;
-      inlineSpacing.push({ element: element.tagName, selector: element.tagName.toLowerCase() + '.' + Array.from(element.classList).join('.'), property, value: element.style.getPropertyValue(property) });
+    const declarations = spacingDeclarations(element.style);
+    for (const property of ['max-width','max-inline-size']) {
+      const value = element.style.getPropertyValue(property);
+      if (value) declarations.push({property,value});
+    }
+    for (const declaration of declarations) {
+      inlineSpacing.push({ element: element.tagName, selector: element.tagName.toLowerCase() + '.' + Array.from(element.classList).join('.'), ...declaration });
     }
   }
   return {

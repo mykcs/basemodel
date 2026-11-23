@@ -177,6 +177,42 @@ test('ordinary nested emphasis consumes the shared weight rather than multiplyin
   expect(result.restored).toEqual(result.before);
 });
 
+
+test('CSSOM shorthand tokens are real spacing witnesses, not empty expanded longhands', async ({page}) => {
+  await page.setContent(`<style>
+    :root{--font-interface:serif;--type-leading-body:1.7;--space-2:8px;--space-relative:1rem;--reading-width:68ch}
+    body{font-family:var(--font-interface);line-height:var(--type-leading-body)}
+    h1{margin:var(--space-2)}
+    p{margin-block:var(--space-relative);max-width:var(--reading-width)}
+    button{padding:var(--space-2)}
+    .fixture-utility{display:flex;gap:var(--space-2);padding-inline:var(--space-2)}
+  </style><main><h1>Heading</h1><p>Connected paragraph</p><button>Connected control</button>
+    <div class="tw:fixture fixture-utility" style="padding-block:var(--space-2)"><span>One</span><span>Two</span></div></main>`);
+  const receipt=await page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  expect(receipt.missingRoleConsumers).toEqual([]);
+  expect(receipt.spacingConsumers.map(w=>w.role)).toEqual(expect.arrayContaining(['heading','prose','control','utility']));
+  expect(receipt.restoreErrors).toEqual([]);
+  expect(receipt.readingConsumer).not.toBeNull();
+  expect(inlineSpacingViolations(receipt.inlineSpacing)).toEqual([]);
+  // A visible literal override must not be accepted merely because a token
+  // appears in a lower-priority shorthand rule.
+  await page.locator('button').evaluate(node=>node.style.setProperty('padding','19px','important'));
+  const overridden=await page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  expect(overridden.missingRoleConsumers).toContain('control');
+  expect(inlineSpacingViolations(overridden.inlineSpacing)).toEqual(expect.arrayContaining([expect.objectContaining({property:'padding',value:'19px'})]));
+});
+
+test('closed disclosure geometry cannot satisfy or fail a visible role; opening it still tests the role', async ({page}) => {
+  await page.setContent('<style>:root{--font-interface:serif;--type-leading-body:1.7;--space-2:8px}body{font-family:var(--font-interface);line-height:var(--type-leading-body)}h1{margin:var(--space-2)}details button{padding:19px}</style><main><h1>Visible</h1><details><summary>More</summary><button class="tw:fixture">Unconnected control</button></details></main>');
+  const closed=await page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  expect(closed.roleCoverage.find(r=>r.role==='control')?.visibleCandidates).toBe(0);
+  expect(closed.missingRoleConsumers).not.toContain('control');
+  await page.locator('summary').click();
+  const opened=await page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  expect(opened.roleCoverage.find(r=>r.role==='control')?.visibleCandidates).toBe(1);
+  expect(opened.missingRoleConsumers).toEqual(expect.arrayContaining(['control','utility']));
+});
+
 // Hydrated representative reader roles supplement the exhaustive static-route
 // runtime checks above and the build's actual stylesheet reachability audit.
 const routes=[

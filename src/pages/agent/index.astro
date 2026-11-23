@@ -1,0 +1,107 @@
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+import "../../styles/research-article.css";
+import { readerIndex, readerPrompt } from "../../lib/agentReader";
+
+const count = readerIndex.routes.length;
+---
+<AppLayout title="给 Agent 读" description="BaseModel 的机器可读科研导航、研究证据边界和自愿复制的 Agent 上下文。" locale="zh">
+  <div class="editorial-page evo-approved-reader evo-reading-overview agent-reader" data-agent-reader>
+    <header class="evo-article__header">
+      <p class="section-kicker">BaseModel / Agent Reader</p>
+      <h1>让 Agent 先知道该读哪份研究证据。</h1>
+      <p class="lede">这里把网站现有的科研阅读合同整理为一张导航图。它能帮助你告诉 Agent：哪些研究正在讨论、入口在哪里、什么结论还不能成立。它不会绕过登录，也不把目录当作实验收据。</p>
+    </header>
+
+    <section class="agent-reader-action" aria-labelledby="agent-copy-heading">
+      <p class="section-kicker">01 · 直接使用</p>
+      <h2 id="agent-copy-heading">复制研究网站上下文</h2>
+      <p>这段内容来自已有的网页阅读合同，不从聊天中推测科研成功。你可以主动粘贴到信任的 Agent；对方没有网站访问权限时，也至少能知道阅读顺序和证据限制。</p>
+      <div class="agent-copy-controls">
+        <button id="copy-agent-research" type="button">复制站点上下文</button>
+        <span id="copy-agent-result" role="status" aria-live="polite"></span>
+      </div>
+      <details>
+        <summary>查看将要复制的全部内容</summary>
+        <label for="agent-research-text">只读目录快照，可以手动选择复制</label>
+        <textarea id="agent-research-text" spellcheck="false" readonly rows="12">{readerPrompt}</textarea>
+      </details>
+      <p class="agent-boundary">私人科研内容和实验室操作仍由原页面及项目权限控制。请在粘贴到第三方服务前确认隐私规则；不要提供 Cookie、Token 或登录凭据。</p>
+    </section>
+
+    <section class="agent-reader-discovery" aria-labelledby="agent-discovery-heading">
+      <p class="section-kicker">02 · 机器可读</p>
+      <h2 id="agent-discovery-heading">三个入口，一套现有来源</h2>
+      <ul>
+        <li><a href="/llms.txt"><strong>llms.txt</strong><span>快速阅读地图</span></a></li>
+        <li><a href="/agent/site.json"><strong>site.json</strong><span>{count} 条精选研究入口及证据边界</span></a></li>
+        <li><a href="/agent/SKILL.md"><strong>SKILL.md</strong><span>如何阅读、引用与保持未知项</span></a></li>
+      </ul>
+      <p>模型、论文及完整研究检索仍以 <a href="/search-index.json">现有搜索索引</a> 为准，不另建第二份数据副本。</p>
+    </section>
+
+    <section class="agent-reader-context" aria-labelledby="agent-context-heading">
+      <p class="section-kicker">03 · 研究路径</p>
+      <h2 id="agent-context-heading">从问题，到可核验结论</h2>
+      <ol>
+        <li><strong>先理解研究问题</strong><span>SEED 与 OpenEVO 是什么，怎样将任务反馈变成模型更新。</span></li>
+        <li><strong>再看真实实验</strong><span>到结果页核对运行条件、同口径评测与原始证据。</span></li>
+        <li><strong>保留未知</strong><span>论文值、本地复现、不同实验组、未完成验证都要分开。</span></li>
+      </ol>
+      <div class="agent-route-list">
+        {readerIndex.routes.map((entry) => (
+          <a href={entry.path} class="agent-route">
+            <strong>{entry.title}</strong>
+            <span>{entry.purpose}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+  <script>
+    const prompt=document.querySelector<HTMLTextAreaElement>("#agent-research-text");
+    const btn=document.querySelector<HTMLButtonElement>("#copy-agent-research");
+    const feedback=document.querySelector<HTMLElement>("#copy-agent-result");
+    if(prompt)prompt.value=prompt.value.replaceAll("{{SITE_ORIGIN}}",window.location.origin);
+    btn?.addEventListener("click", async () => {
+      if(!prompt||!feedback)return;
+      try{
+        await navigator.clipboard.writeText(prompt.value);
+        feedback.textContent="站点上下文已复制，可以粘贴给 Agent。";
+      }catch{
+        const details=prompt.closest("details");
+        if(details)details.open=true;
+        prompt.focus();
+        prompt.select();
+        feedback.textContent="自动复制未成功，已选中文本，请手动复制。";
+      }
+    });
+  </script>
+</AppLayout>
+<style>
+  .agent-reader{display:grid;gap:var(--space-7)}
+  .agent-reader > section{display:grid;gap:var(--space-4);border-top:1px solid var(--color-border);padding-top:var(--space-5)}
+  .agent-reader h2{margin:0}
+  .agent-reader .lede{color:var(--color-text-muted)}
+  .agent-copy-controls{display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap}
+  .agent-copy-controls button{min-height:44px;padding:var(--space-3) var(--space-5);background:var(--color-accent-fill);color:var(--color-accent-on-fill);border:1px solid var(--color-accent-fill);border-radius:var(--radius-control);font-weight:var(--type-weight-label)}
+  .agent-copy-controls button:hover{filter:brightness(.95)}
+  .agent-copy-controls button:focus-visible,.agent-reader a:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+  .agent-copy-controls span{font-size:var(--type-caption);color:var(--color-text-muted)}
+  .agent-reader details{border-top:1px solid var(--color-border);padding-top:var(--space-3)}
+  .agent-reader summary{cursor:pointer;color:var(--color-accent)}
+  .agent-reader label{display:block;font-size:var(--type-caption);margin:var(--space-3) 0 var(--space-2)}
+  .agent-reader textarea{box-sizing:border-box;max-width:100%;width:100%;background:var(--color-surface-muted);border:1px solid var(--color-border);border-radius:var(--radius-control);color:var(--color-text);font-size:var(--type-caption);line-height:var(--type-leading-body);padding:var(--space-4);resize:vertical}
+  .agent-boundary{font-size:var(--type-caption);color:var(--color-text-muted)}
+  .agent-reader-discovery ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-3)}
+  .agent-reader-discovery li a{display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-4);border:1px solid var(--color-border);border-radius:var(--radius-panel);height:100%;text-decoration:none}
+  .agent-reader-discovery li a:hover{border-color:var(--color-accent)}
+  .agent-reader-discovery li span{font-size:var(--type-caption);color:var(--color-text-muted)}
+  .agent-reader-context ol{display:grid;gap:var(--space-3);padding-left:var(--space-5)}
+  .agent-reader-context li span{display:block;color:var(--color-text-muted)}
+  .agent-route-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+  .agent-route{display:flex;flex-direction:column;gap:var(--space-2);border-bottom:1px solid var(--color-border);padding:var(--space-3);text-decoration:none}
+  .agent-route:hover{background:var(--color-surface-muted)}
+  .agent-route span{font-size:var(--type-caption);color:var(--color-text-muted)}
+  @media(max-width:640px){.agent-reader-discovery ul,.agent-route-list{grid-template-columns:1fr}}
+</style>

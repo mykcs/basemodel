@@ -29,6 +29,7 @@ export const TECHNICAL_ARTICLE_ROUTES = [
   "/research/seed-openevo/study/capability-exploration/text-memory/",
   "/research/seed-openevo/study/minimax-teacher/",
   "/research/seed-openevo/study/openevo-methods/",
+  "/research/seed-openevo/study/parameter-memory-report/",
   "/research/seed-openevo/study/parameter-memory-results/",
   "/research/seed-openevo/study/results/3b-minimax-analysis/",
   "/research/seed-openevo/study/results/3b-self-analysis/",
