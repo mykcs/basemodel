@@ -1,5 +1,6 @@
 export const bilingualStaticPaths = [
   '/',
+  '/agent/',
   '/models/',
   '/families/',
   '/compare/',

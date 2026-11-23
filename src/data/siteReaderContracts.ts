@@ -38,6 +38,7 @@ const c = (
 // Reading entries keep their existing task links plus one collapsed contents control.
 // Compact paper headers allow the first substantive chapter into view; do not restore blank-screen spacers.
 export const SITE_READER_CONTRACTS = [
+  c('agent-reader', '/agent/', '/agent/', 'reference', '让阅读 Agent 从现有科研目录定位问题、论文和实验，而不虚构结果', '先知道 Agent 只能得到导航摘要和证据边界，不能因为能复制目录就宣称读取了原始实验', '所有研究数字和状态仍由原页面及科研收据验证；网站登录、模型数据和执行授权互相独立', '复制已审核的科研入口并进入具体报告'),
   c('handbook', '/handbook/', '/handbook/', 'reference', '在 BaseModel 内找到可检索的操作文档', '保留全站研究导航，分清网站导航与手册目录，再选择 Harness 或 GPU 操作说明', '文档存在不代表实验已运行或已有 GPU 权限', '阅读操作说明或返回开发与研究页面', '.sl-markdown-content'),
   c('handbook-harness', '/handbook/agent-harness/', '/handbook/agent-harness/', 'operational', '核对从 Prompt 到实际执行的各层', '在共享网站导航下理解三项执行核验', '文档不能证明每次会话正确执行', '核对 GitHub 当前标准或返回手册', '.sl-markdown-content'),
   c('handbook-gpu', '/handbook/openevo-gpu/', '/handbook/openevo-gpu/', 'operational', '找到 GPU 调度的当前规则入口', '先知道调度需要适用权限，再阅读权威操作规则', '文档和排队均不授予执行或删除权限', '查看当前权威规则或返回手册', '.sl-markdown-content'),
