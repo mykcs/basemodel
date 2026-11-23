@@ -6,6 +6,7 @@ const root = '/research/seed-openevo/study/capability-exploration/';
 const titles: Record<string, string> = {
   home: 'BaseModel 研究首页',
   development: '网站开发与验收',
+  'agent-reader': '给 Agent 读',
   handbook: '技术手册',
   'handbook-harness': 'Agent Harness 操作说明',
   'handbook-gpu': 'GPU 操作规则',
