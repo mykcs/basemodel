@@ -30,6 +30,30 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
+  --space-half: calc(var(--space-1) / 2);
+  --space-12: calc(var(--space-8) + var(--space-6));
+  --space-16: calc(var(--space-8) * 2);
+  /* Finite layout roles. Relative rhythm preserves root-font accessibility. */
+  --space-relative: 1rem;
+  --space-em-factor: 1;
+  --space-prose: var(--space-4);
+  --space-list: var(--space-5);
+  --space-heading: var(--space-3);
+  --space-section: var(--space-7);
+  --space-panel: var(--space-5);
+  --space-stack: var(--space-4);
+  --space-inline: var(--space-2);
+  --space-control: var(--space-2);
+  --space-gutter: var(--space-5);
+  --rhythm-prose: var(--space-relative);
+  --rhythm-list: calc(var(--space-relative) * 1.5);
+  --rhythm-heading: calc(var(--space-relative) * .75);
+  --rhythm-section: calc(var(--space-relative) * 3);
+  --rhythm-panel: calc(var(--space-relative) * 1.5);
+  --rhythm-stack: var(--space-relative);
+  --rhythm-inline: calc(var(--space-relative) * .5);
+  --rhythm-control: calc(var(--space-relative) * .5);
+  --rhythm-gutter: calc(var(--space-relative) * 1.5);
 
   /* Only three ordinary radius levels. Pills remain a special control shape. */
   --radius-control: 6px;
@@ -39,7 +63,7 @@
   --radius-md: var(--radius-panel);
   --radius-lg: var(--radius-feature);
 
-  --reading-width: 720px;
+  --reading-width: 68ch;
   --editorial-max: 1120px;
   --workbench-max: 1440px;
   --content-max: 1180px; /* compatibility width for legacy shared shells */
@@ -83,7 +107,7 @@
   --type-leading-body: 1.7;
   --type-leading-heading: 1.3;
   --type-leading-caption: 1.6;
-  --type-reading-measure: 70ch;
+  --type-reading-measure: var(--reading-width);
 
   /* Compatibility aliases for the existing page styles. */
   --bg: var(--color-bg);

@@ -105,11 +105,13 @@ const navItems = [
   /* Keep keyboard-native Results chapter jumps immediate after focus scrolls;
      scoped to this route, matching the established WebShop chapter rule. */
   :global(html:has(.results-hero .paper-nav)) { scroll-behavior: auto; }
-  .results-hero{max-width:1160px;margin:0 auto;padding:36px 24px 12px;color:var(--color-text)}
+  /* The shared reading-overview article already owns the outer inset.
+     Keep this nested introduction on its reading column without a second gutter. */
+  .results-hero{max-width:1160px;margin:0 auto;padding:0 0 var(--space-heading);color:var(--color-text)}
   .results-first-screen{min-height:0}
   .results-hero h1{margin:0;max-width:940px;font-size:var(--article-title-size, clamp(2.35rem,5vw,4.35rem));line-height:var(--article-title-leading, 1.04);letter-spacing:var(--article-title-spacing, -.05em)}
-  .lede{max-width:800px;margin:22px 0 0;color:var(--color-text);font-size:var(--type-lead);line-height:var(--type-leading-body)}
-  .results-primary{max-width:820px;margin-top:24px;padding:18px 0;border-block:2px solid var(--color-text)}
+  .lede{max-width:800px;margin:var(--space-prose) 0 0;color:var(--color-text);font-size:var(--type-lead);line-height:var(--type-leading-body)}
+  .results-primary{max-width:820px;margin-top:var(--space-prose);padding:var(--space-heading) 0;border-block:2px solid var(--color-text)}
   .results-primary>strong{display:block;color:var(--color-accent);font-size:var(--type-meta);font-family:var(--font-interface);letter-spacing:normal}
   .results-primary p{max-width:76ch;margin:8px 0 0;line-height:var(--type-leading-body)}
   .primary-result{font-size:var(--type-body);color:var(--color-text)}
@@ -136,7 +138,7 @@ const navItems = [
   .paper-nav a{color:var(--color-text-muted);font-size:var(--type-meta);font-family:var(--font-interface);font-weight:var(--type-weight-label);text-decoration:none;text-underline-offset:.2em}
   .paper-nav a:hover,.paper-nav a:focus-visible{color:var(--color-text);text-decoration:underline}
   @media(max-width:720px){
-    .results-hero{padding:24px 18px 8px}
+    .results-hero{padding-block-end:var(--space-inline)}
     .abstract-row{grid-template-columns:1fr;gap:6px}
   }
 </style>

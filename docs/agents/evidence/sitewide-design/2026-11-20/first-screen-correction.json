@@ -1,0 +1,287 @@
+{
+  "status": "LOCAL_CORRECTION_VERIFIED_EXACT_HEAD_BROWSER_PENDING",
+  "parentCandidate": "d4d93442ac6ed279e96def75a345869f4576ad8b",
+  "sourceIdentity": "These local file hashes describe the correction delta, not a committed-head or rendered-browser receipt.",
+  "failedBrowserRun": "https://github.com/mykcs/basemodel/actions/runs/44622799986",
+  "failures": [
+    {
+      "route": "/research/seed-openevo/study/results/",
+      "viewport": [
+        1280,
+        633
+      ],
+      "observed": "Complete declared .results-primary exceeds first viewport. Original log did not emit its box.",
+      "correction": "Remove duplicate nested hero outer inset and use existing prose/heading internal spacing."
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/archive/",
+      "viewport": [
+        1280,
+        633
+      ],
+      "observed": {
+        "h1Top": 532.53125,
+        "maximum": 519.06
+      },
+      "correction": "Align the archive header grid at start; the title no longer follows the neighboring text bottom."
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/mechanism-1-0/",
+      "viewport": [
+        1280,
+        633
+      ],
+      "observed": {
+        "orientationBottom": 668.1875,
+        "maximum": 635,
+        "engines": [
+          "chromium",
+          "webkit"
+        ]
+      },
+      "correction": "Existing panel24 top inset and inline8 field vertical density above 900px; all five fields remain visible."
+    },
+    {
+      "route": "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/",
+      "viewport": [
+        390,
+        844
+      ],
+      "observed": {
+        "competingHeadings": 2,
+        "maximum": 1
+      },
+      "correction": "Use shared section48 chapter spacing between introduction and derivation; no artificial min-height."
+    }
+  ],
+  "files": {
+    "src/components/research/OpenEvoWebShopResultsHero.astro": {
+      "sha256": "935850b568d630fb8ca28dc1f6af66e57eabd48ae8ff7f8f53129013459e96b1",
+      "bytes": 13380
+    },
+    "src/components/research/OpenEvoExperimentArchive.astro": {
+      "sha256": "6afaba2dc42be7b244d0124b715dd4b512a8bc69c52325680b54e55b64edebde",
+      "bytes": 22124
+    },
+    "src/components/research/OpenEvoMechanismMap.astro": {
+      "sha256": "0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364",
+      "bytes": 29571
+    },
+    "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro": {
+      "sha256": "5071cb59cd58a3102c43bc0d371df09f603d7f4ba4da3b4dcb3ca80c4171c4ff",
+      "bytes": 33184
+    },
+    "scripts/lib/typography-intelligence-ui-delta.mjs": {
+      "sha256": "b7d6130c6868cb1f56c1b2674777b6ccc7c2eb1475878cc32da06d4afe355a73",
+      "bytes": 20546
+    },
+    "scripts/lib/typography-ledger-continuation.mjs": {
+      "sha256": "6f4268f4604644f571942caa4d8f22326c43bc47d13ad3839fa12743f47cc4bf",
+      "bytes": 26819
+    },
+    "scripts/lib/typography-ledger-continuation.test.mjs": {
+      "sha256": "b88b23f78ebaca6e4fe82df5de7b1ae0eee01e134a7e66d19cffc102e4989f8c",
+      "bytes": 22850
+    },
+    "tests/e2e/site-reader-contracts.spec.ts": {
+      "sha256": "4ad4ac2cee568be712213201e0341b40a8ff1778a200bb4388a7b3fbb14afcdb",
+      "bytes": 25161
+    },
+    "docs/agents/LATEST.md": {
+      "sha256": "9d177e7bd046fc055465347de0de90b7d6602ad48ffb19285a0c98fc25f3253a",
+      "bytes": 36315
+    },
+    "docs/plans/sitewide-design-contract-20261120.md": {
+      "sha256": "c81c283309a953b3d5a0e691d478a7e7eaf4d0c7469ed64f87ca836d74e85a5e",
+      "bytes": 4696
+    },
+    "docs/agents/evidence/sitewide-design/2026-11-20/README.md": {
+      "sha256": "ed66c300a32e9626bae11420a04b2a92d1e2fa307a7261179582494435da6126",
+      "bytes": 7303
+    },
+    "tests/e2e/design-contract-browser.ts": {
+      "sha256": "78dd61b3f0f06a6746b5c4a522f1130a6c4fd58015d5a6ae272ec2c4689d878d",
+      "bytes": 10066
+    },
+    "tests/e2e/sitewide-typography.spec.ts": {
+      "sha256": "fe4104e22993a1bec734de6dc2a8cd8be7f4d56baa26655020a2c76920d0ca05",
+      "bytes": 116205
+    },
+    "src/lib/typographyUiGateCoverage.test.ts": {
+      "sha256": "e35105ec643bc67034a9d34b79a4dbd540b1bdde94b6552958b193c9f2674d4b",
+      "bytes": 1927
+    }
+  },
+  "verification": {
+    "build": "PASS: npm run build, 272 HTML",
+    "designAudit": "PASS: every built route CSS graph",
+    "sourceContinuation": {
+      "tests": 21,
+      "failed": 0,
+      "exactPriorSourceReconstructed": 4
+    },
+    "readerUnit": {
+      "files": 5,
+      "tests": 40,
+      "failed": 0
+    },
+    "changedBrowserSpecTypecheck": "PASS: tsc checked site-reader-contracts, sitewide-typography, and design-contract-browser with ESNext,DOM,DOM.Iterable",
+    "browserCollection": {
+      "specs": [
+        "site-reader-contracts",
+        "openevo-two-map",
+        "sitewide-typography"
+      ],
+      "tests": 668,
+      "fullRouteBatches": 64,
+      "errors": 0,
+      "execution": "NOT_RUN_LOCAL"
+    },
+    "historicalLedger": {
+      "historical": 5491,
+      "current": 5528,
+      "pending": 0,
+      "rewritten": false
+    },
+    "priorFullDeterministicReceipt": "local-build.json; 22 constituents passed before this correction; not rerun as a current full-gate claim",
+    "requiredNext": "Current-head public-ci-gate + cloudflare-artifact-gate including original first-screen and complete all-route browser matrix",
+    "runtimeWiringUnit": {
+      "files": 2,
+      "tests": 7,
+      "failed": 0
+    }
+  },
+  "designSummary": {
+    "rendered_routes": 272,
+    "routes_with_shared_design": 272,
+    "explicit_redirects": 0,
+    "attached_css_documents": 572,
+    "attached_spacing_declarations": 8989,
+    "dynamic_spacing_sinks": 7,
+    "figures": 71,
+    "tables": 138,
+    "routes_with_figures": 25,
+    "routes_with_tables": 62,
+    "css_owners": 40,
+    "font_declarations": 672,
+    "font_size_literals_remaining": 78,
+    "invalid_inherited_font_shorthands": 0,
+    "major_legacy_css_owners": [
+      [
+        "src/styles/advisor-ten-approved-reader.css",
+        25
+      ],
+      [
+        "src/styles/openevo-research-blogs.css",
+        23
+      ],
+      [
+        "src/styles/research-article.css",
+        12
+      ],
+      [
+        "src/styles/research-booktabs.css",
+        9
+      ],
+      [
+        "src/styles/site.css",
+        3
+      ],
+      [
+        "src/styles/actionable-content.css",
+        1
+      ],
+      [
+        "src/styles/components/header.css",
+        1
+      ],
+      [
+        "src/styles/interactive-research-explainer-core.css",
+        1
+      ],
+      [
+        "src/styles/interactive-research-explainer-methods.css",
+        1
+      ],
+      [
+        "src/styles/starlight-handbook.css",
+        1
+      ]
+    ],
+    "exact_Q03_article_count": 1
+  },
+  "spacingSummary": {
+    "sourceDeclarations": 6291,
+    "sourceNormalized": 5217,
+    "sourceExceptions": 67,
+    "sourceReadingMeasures": 108,
+    "compilationRecords": 10169,
+    "compiledNormalizations": 4759,
+    "roles": {
+      "prose": 1354,
+      "list": 43,
+      "heading": 581,
+      "section": 348,
+      "panel": 350,
+      "stack": 6466,
+      "inline": 314,
+      "control": 382,
+      "gutter": 88
+    },
+    "exceptions": 153
+  },
+  "affectedBuiltRoutes": {
+    "/research/seed-openevo/study/results/": {
+      "sha256": "aa6b23d3e675a289e1b214ba4c7c3ccb79ff0c4c9cbc2e47ed7495eff0463736"
+    },
+    "/research/seed-openevo/study/capability-exploration/archive/": {
+      "sha256": "2a637770641df96f27a722cfa471d1c97ed641337199dc6a51d61d0406ee9a63"
+    },
+    "/research/seed-openevo/study/capability-exploration/mechanism-1-0/": {
+      "sha256": "1e3e3e9a17b60ad2513be330bac68e9f0b2186c2fbfdde99b3f3d30418d77671"
+    },
+    "/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/": {
+      "sha256": "915ddd6a26936fd29035ccfff1b0e6a5022784d13f8ccdc0e4f22139573882c6"
+    }
+  },
+  "preserved": [
+    "All visible research copy and numeric payloads",
+    "All font/type/leading values",
+    "All first-screen budgets and geometry thresholds",
+    "No blanket !important, hidden content, or artificial min-height",
+    "Historical ledger and previous source hashes remain preserved"
+  ],
+  "localBrowserLimitation": "Existing executor denies Unix sockets; no local browser retry or rendered pass claim.",
+  "executionCorrection": {
+    "observed": "The same previous candidate exceeded the unchanged 180000ms batch timeout in Chromium and WebKit, before the old end-only JSON receipt was saved.",
+    "failedJobs": [
+      135910434237,
+      135910434274,
+      135910434290,
+      135910434307,
+      135910434472,
+      135910434311,
+      135910434370
+    ],
+    "priorDocumentsPerBatch": 34,
+    "documentsPerBatch": 17,
+    "batchesPerViewport": 16,
+    "viewports": [
+      440,
+      1440
+    ],
+    "routeVisitsPerEngine": 544,
+    "timeoutPerBatchMs": 180000,
+    "aggregateBatchBudgetSecondsPerEngine": 5760,
+    "existingShardCounts": {
+      "chromium": 4,
+      "webkit": 8
+    },
+    "changes": [
+      "Reuse one no-JS page within each isolated batch context; every route still receives a real navigation and every existing assertion.",
+      "Avoid repeating identical token/property interventions on the same unchanged element; keep distinct properties, every present role and all two-frame restoration checks.",
+      "Synchronously checkpoint planned/completed/active routes, receipts, failure reasons, elapsed time and probe counts before and after each route. A timeout cannot erase prior coverage."
+    ],
+    "validation": "Wiring and route-sharding tests pass; current-head browser execution remains mandatory."
+  }
+}

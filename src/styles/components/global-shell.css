@@ -1,37 +1,31 @@
-/* Canonical owner for the shared page shell and footer geometry.
- * Values preserve the browser-accepted cascade while legacy copies retire.
- */
+/* One shell, with ordinary and compact viewport gutters on the shared scale. */
 
 .shell {
-  width: min(var(--content-max), calc(100% - 48px));
+  --page-gutter: var(--space-gutter);
+  width: min(var(--content-max), calc(100% - var(--page-gutter) * 2));
+  margin: 0 auto;
 }
 
 .footer-inner {
-  min-height: 64px;
+  min-height: var(--space-8);
   justify-content: flex-start;
 }
 
 @media (max-width: 760px) {
   .shell {
-    width: min(100% - 30px, var(--content-max));
-  }
-}
-
-@media (max-width: 720px) {
-  .shell {
-    width: min(var(--content-max), calc(100% - 28px));
+    --page-gutter: var(--space-4);
   }
 }
 
 @media (max-width: 560px) {
   .footer-inner {
     display: grid;
-    padding: 18px 0;
+    padding: var(--space-prose) 0;
   }
 }
 
 @media (max-width: 390px) {
   .shell {
-    width: calc(100% - 22px);
+    --page-gutter: var(--space-3);
   }
 }

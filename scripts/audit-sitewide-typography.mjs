@@ -10,6 +10,8 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { inventoryCSS, inventoryAstro, inventoryJavaScript } from './lib/typography-inventory.mjs';
+import { inspectRenderedDesignContract } from './lib/rendered-design-contract.mjs';
+import { inspectDynamicSpacing } from './lib/dynamic-spacing.mjs';
 
 const repo=resolve(new URL('../',import.meta.url).pathname);
 const dist=join(repo,'dist');
@@ -41,6 +43,7 @@ const cssFiles=filesUnder(sourceRoot,['.css']).sort();
 const declarations=[];
 const extendedDeclarations=[];
 const unresolvedSurfaces=[];
+const dynamicSpacing=[];
 for(const file of cssFiles) {
   extendedDeclarations.push(...inventoryCSS(readFileSync(file,'utf8'),relative(repo,file)));
   const content=readFileSync(file,'utf8').replace(/\/\*[\s\S]*?\*\//g,'');
@@ -52,9 +55,15 @@ for(const file of filesUnder(sourceRoot,['.astro'])) {
   const result=inventoryAstro(readFileSync(file,'utf8'),relative(repo,file));
   extendedDeclarations.push(...result.entries);
   unresolvedSurfaces.push(...result.unresolved);
+  const spacing=inspectDynamicSpacing(readFileSync(file,'utf8'),relative(repo,file));
+  dynamicSpacing.push(...spacing.entries);errors.push(...spacing.errors);
 }
 for(const file of filesUnder(sourceRoot,['.tsx','.ts','.jsx','.js'])) {
   unresolvedSurfaces.push(...inventoryJavaScript(readFileSync(file,'utf8'),relative(repo,file)));
+  if(!/\.(?:test|spec)\./.test(file)){
+    const spacing=inspectDynamicSpacing(readFileSync(file,'utf8'),relative(repo,file));
+    dynamicSpacing.push(...spacing.entries);errors.push(...spacing.errors);
+  }
 }
 const invalidInheritedFonts=extendedDeclarations.filter(d=>d.invalidInheritedFontShorthand);
 for(const declaration of invalidInheritedFonts)errors.push(
@@ -71,12 +80,19 @@ if(htmlFiles.length<260)errors.push('rendered HTML route inventory incomplete: '
 let routesWithTables=0,routesWithFigures=0,figureCount=0,tableCount=0;
 let q03=0;
 const routes=[];
+const designCache=new Map();
+let styledRoutes=0,redirectRoutes=0;
 for(const file of htmlFiles) {
   const page=readFileSync(file,'utf8');
+  const route='/'+relative(dist,file).replace(/index\.html$/,'');
+  const design=inspectRenderedDesignContract({html:page,file,dist,cache:designCache});
+  if(design.redirect)redirectRoutes++;else styledRoutes++;
+  for(const error of design.errors)errors.push(route+' '+error);
   const figs=[...page.matchAll(/<figure(?=[\s>])[^>]*>/gi)];
   const tables=[...page.matchAll(/<table(?=[\s>])[^>]*>/gi)];
-  routes.push({route:'/'+relative(dist,file).replace(/index\.html$/,''),
-    h1:[...page.matchAll(/<h1(?=[\s>])/gi)].length,figures:figs.length,tables:tables.length});
+  routes.push({route,
+    h1:[...page.matchAll(/<h1(?=[\s>])/gi)].length,figures:figs.length,tables:tables.length,
+    design:{stylesheets:design.stylesheets,consumers:design.consumers,redirect:design.redirect}});
   figureCount+=figs.length;tableCount+=tables.length;
   if(figs.length)routesWithFigures++;
   if(tables.length)routesWithTables++;
@@ -94,6 +110,11 @@ for(const file of htmlFiles) {
 if(q03!==1)errors.push('expected exactly one rendered Q03 article, got '+q03);
 const summary={
   rendered_routes:htmlFiles.length,
+  routes_with_shared_design:styledRoutes,
+  explicit_redirects:redirectRoutes,
+  attached_css_documents:designCache.size,
+  attached_spacing_declarations:[...designCache.values()].reduce((total,entry)=>total+entry.spacing.length,0),
+  dynamic_spacing_sinks:dynamicSpacing.length,
   figures:figureCount,
   tables:tableCount,
   routes_with_figures:routesWithFigures,
@@ -114,7 +135,7 @@ if(jsonIndex!==-1) {
     sha:execFileSync('git',['rev-parse','HEAD'],{cwd:repo,encoding:'utf8'}).trim(),
     dirtyTree:Boolean(execFileSync('git',['status','--porcelain'],{cwd:repo,encoding:'utf8'}).trim()),
     summary,routes:routes.sort((a,b)=>a.route.localeCompare(b.route)),
-    declarations:extendedDeclarations,unresolvedSurfaces,
+    declarations:extendedDeclarations,unresolvedSurfaces,dynamicSpacing,
     limitations:['CSS syntax parsed with locked Astro PostCSS toolchain',
       'Astro style blocks parsed; inline expressions and JS candidates explicitly unresolved',
       'Consumer, cascade and semantic role require browser and owner evidence; null decision is unclassified'],

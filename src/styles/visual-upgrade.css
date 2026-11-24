@@ -3,7 +3,6 @@
    responsive behavior, and collision handling across the site. */
 
 :root {
-  --reading-width: 72ch;
   --compare-tray-space: 88px;
 }
 

@@ -4,7 +4,7 @@ import { filterModels, parseOptionalBooleanParam, sortModels, type ModelFilters 
 import { architectureLabel, checkpointLabel, displayBoolean, parameterSummary, specializationLabel } from '../lib/format';
 import { baseUrl, getMessages, localePath, type Locale } from '../i18n';
 import type { AtlasModel } from '../lib/types';
-import { humanDateText, humanYearMonth } from '../lib/readableDate.js';
+import { humanDateText } from '../lib/readableDate.js';
 import type { AtlasPaper } from '../lib/schemas';
 import { hasMeaningfulResearchTask, researchTask } from '../stores/researchTask';
 import { candidateIds, addCandidate, removeCandidate } from '../stores/candidates';
@@ -277,5 +277,5 @@ function DataView({ models, paperModelIds, locale, m }: { models: AtlasModel[]; 
 }
 
 function TimelineView({ models, paperModelIds, locale, m }: { models: AtlasModel[]; paperModelIds: Set<string>; locale: Locale; m: ReturnType<typeof getMessages> }) {
-  return <ol className="model-timeline">{models.map((model) => <li key={model.id}><time dateTime={model.release_date}>{humanYearMonth(model.release_date.slice(0, 7), locale)}</time><div><a href={localePath(locale, `/models/${model.id}/`)}><strong>{model.name}</strong></a><span>{model.family} · {model.generation} · {checkpointLabel(model.checkpoint.type, locale)}</span>{paperModelIds.has(model.id) && <small>{m.explorer.hasPaper}</small>}</div></li>)}</ol>;
+  return <ol className="model-timeline">{models.map((model) => <li key={model.id}><time dateTime={model.release_date}>{humanDateText(model.release_date, locale)}</time><div><a href={localePath(locale, `/models/${model.id}/`)}><strong>{model.name}</strong></a><span>{model.family} · {model.generation} · {checkpointLabel(model.checkpoint.type, locale)}</span>{paperModelIds.has(model.id) && <small>{m.explorer.hasPaper}</small>}</div></li>)}</ol>;
 }
