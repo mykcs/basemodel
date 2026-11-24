@@ -243,6 +243,25 @@ test('clipped native chart toggle measures its visible label, never the hidden i
   expect(inlineSpacingViolations(disconnected.inlineSpacing)).toEqual(expect.arrayContaining([expect.objectContaining({property:'padding',value:'19px'})]));
 });
 
+test('fluid list rhythm keeps real shared bounds without accepting disconnected viewport spacing',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  await page.setContent(`<style>
+    :root{--font-interface:serif;--type-leading-body:1.7;--space-relative:1rem}
+    body{font-family:var(--font-interface);line-height:var(--type-leading-body)}
+    ol{display:grid;gap:clamp(2.4rem,4vw,4.9rem);margin:0;padding:0;list-style:none}
+  </style><main><h1>Research sequence</h1><ol><li>First</li><li>Second</li></ol></main>`);
+  const probe=()=>page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  const before=await page.locator('ol').evaluate(node=>getComputedStyle(node).rowGap);
+  expect((await probe()).missingRoleConsumers).toContain('list');
+  await page.locator('ol').evaluate(node=>node.style.setProperty('gap','clamp(calc(var(--space-relative) * 2),4vw,calc(var(--space-relative) * 4))'));
+  expect(await page.locator('ol').evaluate(node=>getComputedStyle(node).rowGap)).toBe(before);
+  const connected=await probe();
+  expect(connected.missingRoleConsumers).not.toContain('list');
+  expect(connected.spacingConsumers).toEqual(expect.arrayContaining([expect.objectContaining({role:'list',token:'--space-relative'})]));
+  expect(connected.restoreErrors).toEqual([]);
+  expect(await page.locator('ol').evaluate(node=>getComputedStyle(node).rowGap)).toBe(before);
+});
+
 // Hydrated representative reader roles supplement the exhaustive static-route
 // runtime checks above and the build's actual stylesheet reachability audit.
 const routes=[

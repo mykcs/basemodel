@@ -33,7 +33,10 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
     tokenProbes += 1;
     const previous = root.style.getPropertyValue(token), priority = root.style.getPropertyPriority(token);
     const before = measure();
-    root.style.setProperty(token, value);
+    // Keep the existing inline declaration's importance while probing.
+    // Changing both the value and priority makes the intervention ambiguous
+    // and can leave WebKit using the previous important custom property.
+    root.style.setProperty(token, value, priority);
     let after: T;
     // In a no-script document these reads synchronously flush style/layout.
     // Waiting for paint adds no cascade evidence and can stall indefinitely
