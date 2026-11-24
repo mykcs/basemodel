@@ -213,6 +213,36 @@ test('closed disclosure geometry cannot satisfy or fail a visible role; opening 
   expect(opened.missingRoleConsumers).toEqual(expect.arrayContaining(['control','utility']));
 });
 
+test('clipped native chart toggle measures its visible label, never the hidden input margin', async ({page}) => {
+  await page.setContent(`<style>
+    :root{--font-interface:serif;--type-leading-body:1.7;--space-relative:1rem;--space-2:8px}
+    body{font-family:var(--font-interface);line-height:var(--type-leading-body)}
+    h1{margin:var(--space-2)}
+    input{position:absolute;width:1px;height:1px;opacity:0;clip-path:inset(50%);margin:var(--space-2)}
+    label{display:inline-flex;gap:calc(var(--space-relative) * .5);padding:calc(var(--space-relative) * .25) calc(var(--space-relative) * .5)}
+  </style><main><h1>Chart</h1><input id="zoom" type="checkbox"><label for="zoom">Zoom chart</label></main>`);
+  const probe = () => page.evaluate(readRenderedDesign,{requiredTokens:[],staticDocument:true as const});
+  const connected = await probe();
+  expect(connected.roleCoverage.find(r=>r.role==='control')?.visibleCandidates).toBe(1);
+  expect(connected.spacingConsumers).toEqual(expect.arrayContaining([expect.objectContaining({role:'control',element:'label',token:'--space-relative'})]));
+  expect(connected.missingRoleConsumers).not.toContain('control');
+  expect(connected.restoreErrors).toEqual([]);
+  await page.locator('label').click();
+  await expect(page.locator('#zoom')).toBeChecked();
+  await page.locator('#zoom').focus();
+  await page.keyboard.press('Space');
+  await expect(page.locator('#zoom')).not.toBeChecked();
+  // A connected invisible input cannot make an unconnected painted label pass.
+  await page.locator('label').evaluate(node=>{
+    node.style.setProperty('padding','19px','important');
+    node.style.setProperty('gap','0','important');
+  });
+  const disconnected = await probe();
+  expect(disconnected.missingRoleConsumers).toContain('control');
+  expect(disconnected.restoreErrors).toEqual([]);
+  expect(inlineSpacingViolations(disconnected.inlineSpacing)).toEqual(expect.arrayContaining([expect.objectContaining({property:'padding',value:'19px'})]));
+});
+
 // Hydrated representative reader roles supplement the exhaustive static-route
 // runtime checks above and the build's actual stylesheet reachability audit.
 const routes=[

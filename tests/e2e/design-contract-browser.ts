@@ -134,7 +134,24 @@ export async function readRenderedDesign(input: string[] | { requiredTokens: str
   for (const [role, selector] of Object.entries(roleSelectors)) {
     // A correct header cannot hide an orphan article. Each available reading,
     // list, card, control and utility role supplies its own real token response.
-    const candidates = Array.from(main?.querySelectorAll<HTMLElement>(selector) ?? []).filter(isRendered);
+    const elements = Array.from(main?.querySelectorAll<HTMLElement>(selector) ?? []).filter(isRendered);
+    // A visually clipped, keyboard-focusable native checkbox/radio can expose
+    // its actual painted control via an associated label (e.g. chart zoom).
+    // Measure that visible surface, not the hidden input's UA margin. Keep
+    // native controls without a visible in-main label in the ordinary probe.
+    const candidates = [...new Set(elements.flatMap(element => {
+      if (role !== 'control' || !(element instanceof HTMLInputElement) ||
+          !['checkbox','radio'].includes(element.type)) return [element];
+      const style = getComputedStyle(element);
+      if (style.opacity !== '0' || style.clipPath === 'none' ||
+          !['absolute','fixed'].includes(style.position)) return [element];
+      const labels = Array.from(element.labels ?? []).filter(label =>
+        main?.contains(label) && isRendered(label) &&
+        getComputedStyle(label).opacity !== '0' &&
+        (typeof label.checkVisibility !== 'function' ||
+          label.checkVisibility({opacityProperty: true, visibilityProperty: true})));
+      return labels.length ? labels : [element];
+    }))];
     // Sample spaced candidates, not the first eight elements regardless of
     // spacing. A role with no visible nonzero spacing needs no witness.
     const spaced = candidates.filter(element => {
