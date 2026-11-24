@@ -82,3 +82,37 @@ export function humanYearMonth(value,lang='zh') {
   const year=Number(m[1]),month=Number(m[2]);
   return printableMonth(year,month,lang);
 }
+
+/** Source-backed freshness display. Never manufacture seconds or a timezone. */
+/** @param {unknown} value @param {string} [lang] */
+function exactFreshness(value, lang="zh") {
+  const missing=lang==="zh"?"时间未确认（秒级）":"Exact time unavailable";
+  if(typeof value!=="string"||!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:0\d|1[0-4]):[0-5]\d)$/.test(value))return missing;
+  const [y,m,d]=value.slice(0,10).split("-").map(Number);
+  const max=[31,y%4===0&&(y%100!==0||y%400===0)?29:28,31,30,31,30,31,31,30,31,30,31][m-1];
+  if(y<1||!max||d<1||d>max)return missing;
+  const date=new Date(value);
+  if(!Number.isFinite(date.getTime()))return missing;
+  /** @param {string} timeZone @param {string} label */
+  function zone(timeZone,label){
+    const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{
+      timeZone,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",
+      minute:"2-digit",second:"2-digit",hourCycle:"h23",timeZoneName:"shortOffset"
+    }).formatToParts(date).map(x=>[x.type,x.value]));
+    const day=lang==="zh"?p.year+"年"+Number(p.month)+"月"+Number(p.day)+"日":p.year+"-"+p.month+"-"+p.day;
+    return label+" "+day+" "+p.hour+":"+p.minute+":"+p.second+" ("+p.timeZoneName.replace("GMT","UTC")+")";
+  }
+  return zone("America/Los_Angeles","PT")+" · "+zone("Asia/Singapore","SGT");
+}
+
+/** Preserve recorded precision; dates and incomplete timestamps are not exact instants.
+ * @param {string | null | undefined} value
+ * @param {'zh' | 'en'} [lang]
+ */
+export function humanFreshnessText(value, lang='zh') {
+  const exact=exactFreshness(value,lang);
+  const missing=lang==='zh'?'时间未确认（秒级）':'Exact time unavailable';
+  if(exact!==missing)return exact;
+  if(!value||value==='—')return missing;
+  return humanDateText(value,lang)+(lang==='zh'?'（秒级时间未记录）':' (second-precision time not recorded)');
+}

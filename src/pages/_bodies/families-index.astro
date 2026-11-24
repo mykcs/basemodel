@@ -4,6 +4,7 @@ import FamilyTimeline from '../../components/FamilyTimeline';
 import CatalogFreshnessNotice from '../../components/catalog/CatalogFreshnessNotice.astro';
 import { getMessages, isLocale, type Locale } from '../../i18n';
 import familiesData from '../../content/coverage/families.json';
+import { humanFreshnessText } from '../../lib/readableDate.js';
 
 interface Props { locale?: Locale }
 const locale: Locale = Astro.props.locale ?? (isLocale(Astro.currentLocale) ? Astro.currentLocale : 'zh');
@@ -16,7 +17,7 @@ const familyChanges = familiesData.families
   .map((family) => ({
     name: family.name,
     generation: family.current_generation,
-    checkedAt: family.catalog_checked_at ?? family.as_of ?? '—',
+    checkedAt: humanFreshnessText(family.catalog_checked_at ?? family.as_of,locale),
     api: family.current_api_model_ids?.[0] ?? family.current_flagship_model_id,
     openWeight: family.current_open_weight_model_id,
   }));

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {humanDateText,rewriteVisibleHtmlDates} from './readable-date-format.mjs';
-import {humanYearMonth} from '../../src/lib/readableDate.js';
+import {humanYearMonth,humanFreshnessText} from '../../src/lib/readableDate.js';
 
 test('human dates are consistent in Chinese and English',()=>{
   assert.equal(humanDateText('十月十四日'),'10 月 14 日');
@@ -58,4 +58,12 @@ test('English routes normalize existing prose year-first without changing attrib
   assert.match(result.html,/<time datetime="2026-10-14">2026-10-14<\/time>/);
   assert.match(result.html,/<p>2026-10<\/p>/);
   assert.equal(rewriteVisibleHtmlDates(result.html).html,result.html);
+});
+
+test('freshness distinguishes exact instants and recorded scientific date precision',()=>{
+ assert.match(humanFreshnessText('2026-11-24T16:49:54Z'),/PT 2026年11月24日 08:49:54.*SGT 2026年11月25日 00:49:54/);
+ assert.match(humanFreshnessText('2026-06-07T01:30:42Z','en'),/PT 2026-06-06 18:30:42.*UTC-7.*SGT 2026-06-07 09:30:42/);
+ assert.equal(humanFreshnessText('2026-08-28','en'),'2026-08-28 (second-precision time not recorded)');
+ assert.match(humanFreshnessText('2026-08-31 20:34 JST'),/20:34 JST.*秒级时间未记录/);
+ assert.equal(humanFreshnessText(undefined),'时间未确认（秒级）');
 });

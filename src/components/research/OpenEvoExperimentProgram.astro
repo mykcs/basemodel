@@ -3,6 +3,7 @@ import ResearchPaperTable from './ResearchPaperTable.astro';
 import ExternalBrandMark from '../common/ExternalBrandMark';
 import type { Locale } from '../../i18n';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
+import { humanFreshnessText } from '../../lib/readableDate.js';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -48,11 +49,11 @@ const phaseG = [
 <section id="openevo-experiment-program" class="program" aria-labelledby="program-title" data-testid="openevo-experiment-program">
   <header class="program__header">
     <div>
-      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('已核验 main', 'checked main')} <time datetime={openEvoScientificState.checkedAt}>{openEvoScientificState.checkedAt}</time></p>
+      <p class="eyebrow">OpenEvo × WebShop <span aria-hidden="true">·</span> {t('已核验 main', 'checked main')} <time datetime={openEvoScientificState.checkedAt}>{humanFreshnessText(openEvoScientificState.checkedAt,locale)}</time></p>
       <h2 id="program-title">{t('现在这条实验线进行到哪里', 'Where this experiment line stands now')}</h2>
       <p class="lede">{t(
-        `截至 ${openEvoScientificState.checkedAt}，openevo-experiment/main 的实验总表（current-campaign）记录：Track B 已完成 Gen28，state-v28 已通过实验对账并被采纳；累计 ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} 个有效训练回合已计入固定预算。当前训练、GPU 和最终测试都没有授权。`,
-        `As of ${openEvoScientificState.checkedAt}, the experiment ledger (current-campaign) on openevo-experiment/main records Track B through Gen28 with state-v28 reconciled and adopted. ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} valid training episodes count toward the fixed budget. Training, GPU allocation, and final testing are not authorized now.`,
+        `截至 ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}，openevo-experiment/main 的实验总表（current-campaign）记录：Track B 已完成 Gen28，state-v28 已通过实验对账并被采纳；累计 ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} 个有效训练回合已计入固定预算。当前训练、GPU 和最终测试都没有授权。`,
+        `As of ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}, the experiment ledger (current-campaign) on openevo-experiment/main records Track B through Gen28 with state-v28 reconciled and adopted. ${snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / ${snapshot.targetTrainingEpisodes.toLocaleString('en-US')} valid training episodes count toward the fixed budget. Training, GPU allocation, and final testing are not authorized now.`,
       )}</p>
     </div>
     <aside class="program__status" aria-label={t('默认 main 的已核验状态', 'Checked default-main status')}>
@@ -98,7 +99,7 @@ const phaseG = [
   </section>
 
   <section class="program__section" aria-labelledby="snapshot-title">
-    <div class="section-heading"><span>04</span><div><small>{t(`最近核验的 main · ${openEvoScientificState.checkedAt}`, `Last checked main · ${openEvoScientificState.checkedAt}`)}</small><h3 id="snapshot-title">WB1 Track B · Gen{snapshot.latestCompletedGeneration} {t('已完成并采纳 state-v28', 'completed with state-v28 adopted')}</h3></div></div>
+    <div class="section-heading"><span>04</span><div><small>{t(`最近核验的 main · ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}`, `Last checked main · ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}`)}</small><h3 id="snapshot-title">WB1 Track B · Gen{snapshot.latestCompletedGeneration} {t('已完成并采纳 state-v28', 'completed with state-v28 adopted')}</h3></div></div>
     <div class="next-grid">
       <article><strong>{snapshot.validCompletedTrainingEpisodes.toLocaleString('en-US')} / {snapshot.targetTrainingEpisodes.toLocaleString('en-US')}</strong><span>{t('已计入的有效训练回合 / 固定预算（episode budget）', 'counted valid training episodes / fixed episode budget')}</span></article>
       <article><strong>Gen {snapshot.latestCompletedGeneration}</strong><span>{t('最近完成的一轮（generation）', 'latest completed generation')}</span></article>
