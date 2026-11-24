@@ -2,7 +2,8 @@
  * GitHub Actions artifact listings are eventually consistent. Immediately after
  * upload-artifact succeeds, download-artifact(artifact-ids) can still fail to
  * discover that exact ID. Wait for run-level listing visibility, then allow the
- * pinned download action and byte-for-byte verifier to do the real acceptance.
+ * pinned download action (explicit github-token, repository and run-id select
+ * the same REST lookup) and byte-for-byte verifier to do the real acceptance.
  *
  * No artifact bytes or GitHub credentials are logged.
  */
