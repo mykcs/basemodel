@@ -83,6 +83,11 @@ export const reviewedGlobalEmphasisTypography = {
 // review. Keep that earlier exact SHA intact; a subsequent content/layout
 // edit has its own source identity and browser-acceptance boundary.
 export const reviewedSourceContinuations = {
+  'src/components/research/SeedOpenEvoTrainingDesignOverview.astro': {
+    priorReviewedSourceSha256: 'b2e988db86c72d5399fa04b2c303c3dc21ddf68ccd185a02f061b3863325d993',
+    currentSourceSha256: '5470aa96916c5c1c5c053fc2a2a8fb6ef2800b81950426c02288f1f5fc3c132c',
+    reason: '2026-11-24 #1026: the exact-head Chromium/WebKit flow-hub list witness failed because the desktop comparison list used a literal clamp rather than shared spacing bounds. Bind its two bounds to the existing finite rem scale; actual isolated Chromium confirms the unchanged 57.6px default at 1440px and a real, restored token response. Only the one gap declaration changes; the scientific content, typography declarations, selectors, historical evidence and prior owner SHA remain intact. The existing two-engine exact-head browser and layout gates remain mandatory, not a claim of historical re-observation.',
+  },
   'src/components/research/SeedOpenEvoMissionHero.astro': {
     priorReviewedSourceSha256: 'ed53ab3bc49083fc41ec3c4bee432ab20ee335be4d9a0f54adcdbc1f74e7c1e6',
     currentSourceSha256: '3f349c7d458254d33cf1febf344aec839d5c5db1582928bea0b51238ebb69d11',
