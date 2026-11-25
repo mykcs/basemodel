@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 export const VERCEL_FINAL_GATE_REF = 'ci/vercel-gate-final';
 export const VERCEL_FINAL_BASE_REF = 'ci/vercel-gate-base';
-export const VERCEL_PUBLIC_REPOSITORY_REMOTE = 'https://github.com/mykcs/basemodel.git';
+export const VERCEL_PUBLIC_REPOSITORY_REMOTE = 'https://github.com/mykcs/openevo-website.git';
 
 function git(args) {
   return execFileSync('git', args, {
@@ -30,7 +30,7 @@ export function repositoryRemoteForVercel(env = process.env) {
   if (owner && owner !== 'mykcs') {
     throw new Error(`unexpected Vercel Git owner: ${owner}`);
   }
-  if (slug && slug !== 'basemodel') {
+  if (slug && !['openevo-website', 'basemodel'].includes(slug)) {
     throw new Error(`unexpected Vercel Git repository: ${slug}`);
   }
   return VERCEL_PUBLIC_REPOSITORY_REMOTE;

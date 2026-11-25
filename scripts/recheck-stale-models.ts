@@ -130,7 +130,7 @@ const probe = async (file: string, model: AtlasModel): Promise<ProbeResult> => {
         '-w',
         '\n__HTTP__%{http_code}__URL__%{url_effective}',
         '-A',
-        'basemodel-recheck/1.0 (+https://github.com/mykcs/basemodel)',
+        'basemodel-recheck/1.0 (+https://github.com/mykcs/openevo-website)',
         url,
       ],
       { encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 },

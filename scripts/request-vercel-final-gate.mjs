@@ -2,7 +2,7 @@
 import { execFileSync } from 'node:child_process';
 import { VERCEL_FINAL_BASE_REF, VERCEL_FINAL_GATE_REF } from './vercel-git-range.mjs';
 
-const REPO = 'mykcs/basemodel';
+const REPO = 'mykcs/openevo-website';
 const PUBLIC_CI_GATE_NAME = 'public-ci-gate';
 const GITHUB_ACTIONS_APP_ID = 15368;
 const prNumber = process.argv[2];

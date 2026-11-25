@@ -44,7 +44,7 @@ export async function verifyVercelDeployment({
   if (claimedShas.length === 0 || claimedShas.some((actual) => actual !== sha)) {
     throw new Error('FAIL CLOSED: Vercel has not proven the exact source Git SHA');
   }
-  if (candidate.meta?.githubRepo && candidate.meta.githubRepo !== 'basemodel') {
+  if (candidate.meta?.githubRepo && !['openevo-website', 'basemodel'].includes(candidate.meta.githubRepo)) {
     throw new Error('Vercel source repository mismatch');
   }
   if (candidate.meta?.githubOrg && candidate.meta.githubOrg !== 'mykcs') {

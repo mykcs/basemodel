@@ -25,7 +25,7 @@ export function classifyProductionMirror(mainSha, deployment, status, filesSince
 }
 
 export async function inspectProductionMirror({ repository, token, fetcher = fetch }) {
-  if (repository !== 'mykcs/basemodel' || !token) throw new Error('Exact repository and an existing read-only GitHub token are required');
+  if (!['mykcs/openevo-website', 'mykcs/basemodel'].includes(repository) || !token) throw new Error('Exact repository and an existing read-only GitHub token are required');
   const api = async path => {
     const response = await fetcher(`https://api.github.com/repos/${repository}/${path}`, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },

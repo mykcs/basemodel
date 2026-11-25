@@ -19,6 +19,17 @@ describe('read-only Production identity alarm', () => {
     const fetcher: typeof fetch = async () => new Response(JSON.stringify(replies.shift()), { status: 200 });
     expect((await inspectProductionMirror({ repository: 'mykcs/basemodel', token: 'test', fetcher })).deployment_id).toBe(1);
   });
+  it('accepts the confirmed renamed site repository and rejects the separate research repository', async () => {
+    const replies = [[deployment], [status], { object: { sha } }, { object: { sha } }];
+    const urls: string[] = [];
+    const fetcher: typeof fetch = async url => {
+      urls.push(String(url));
+      return new Response(JSON.stringify(replies.shift()), { status: 200 });
+    };
+    expect((await inspectProductionMirror({ repository: 'mykcs/openevo-website', token: 'test', fetcher })).result).toBe('MIRROR_MATCH');
+    expect(urls.every(url => url.startsWith('https://api.github.com/repos/mykcs/openevo-website/'))).toBe(true);
+    await expect(inspectProductionMirror({ repository: 'mykcs/OpenEvo', token: 'test', fetcher })).rejects.toThrow(/Exact repository/);
+  });
   it('runs only on Vercel Production or explicit request, never on ordinary Cloudflare main merges', () => {
     const workflow = parse(readFileSync(new URL('../../.github/workflows/production-identity.yml', import.meta.url), 'utf8'));
     expect(Object.keys(workflow.on).sort()).toEqual(['deployment_status', 'workflow_dispatch']);

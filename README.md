@@ -1,6 +1,6 @@
 # OpenEVO · Research Workbench
 
-**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. Current repository and hosting identifiers are retained until a verified compatible migration; the existing website URL remains valid and protected.
+**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. The owner selected `mykcs/openevo-website` for the website repository. Keep the legacy repository URL compatible through GitHub redirects; the existing protected hosting URLs remain in service until separately validated migration.
 
 ## Historical Codex dialogue archive
 

@@ -1434,7 +1434,17 @@ const currentFlowEvidenceWitness = (row: ScopedMigrationWitness): ScopedMigratio
     throw Error('Unexpected Flow metadata witness identity');
   return {...row, text:'按需核对固定模型设置 →'};
 };
-const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute).map(currentDevelopmentWitness).map(currentFlowEvidenceWitness),...currentFlowWitnesses,...currentContentWitnesses];
+// Product identity changed, not the historical evidence or measured typography.
+const currentWebsiteBrandWitness = (row: ScopedMigrationWitness): ScopedMigrationWitness => {
+  if (row.lineageId !== '318fa1a989845a1d046b') return row;
+  if (row.route !== '/research/seed-openevo/flow/server/' ||
+      row.file !== 'src/components/research/Lyg2171ServerOverview.astro' ||
+      row.selector !== '.operator-detail pre' ||
+      row.text !== '请按 BaseModel 的 docs/agents/current/server-storage-pressure-audit-')
+    throw Error('Unexpected historical website-brand witness identity');
+  return {...row, text:'请按 OpenEVO 网站仓库的 docs/agents/current/server-storage-pressure-audit-'};
+};
+const scopedMigrationWitnesses = [...historicalScopedMigrationWitnesses.filter(row=>!obsoleteFlowWitness(row)&&!obsoleteContentWitness(row)).map(currentWitnessRoute).map(currentDevelopmentWitness).map(currentFlowEvidenceWitness).map(currentWebsiteBrandWitness),...currentFlowWitnesses,...currentContentWitnesses];
 const acceptScopedRole=(size:number,minimum:number,label:string)=>expect(size,label).toBeGreaterThanOrEqual(minimum);
 type FaceOwner='interface'|'system-sans'|'paper-serif';
 const acceptOrdinaryFace=(font:string,label:string,owner:FaceOwner='interface')=>{

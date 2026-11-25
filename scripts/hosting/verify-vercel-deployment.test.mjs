@@ -23,6 +23,12 @@ test('requires exact Vercel project + READY production + source identity', async
   assert.deepEqual(await verifyVercelDeployment({ ...config, fetchImpl: read() }), { id: 'dpl_verified', sha });
   assert.deepEqual(await verifyVercelDeployment({ ...config, url: 'https://basemodel-preview.vercel.app/',
     expectedDeploymentId: 'dpl_verified', fetchImpl: read() }), { id: 'dpl_verified', sha });
+  assert.deepEqual(await verifyVercelDeployment({ ...config, fetchImpl: read({
+    ...deployment, meta: {...deployment.meta, githubRepo: 'openevo-website'},
+  }) }), { id: 'dpl_verified', sha });
+  await assert.rejects(() => verifyVercelDeployment({ ...config, fetchImpl: read({
+    ...deployment, meta: {...deployment.meta, githubRepo: 'OpenEvo'},
+  }) }), /repository mismatch/);
   await assert.rejects(() => verifyVercelDeployment({ ...config, fetchImpl: read(deployment, 403) }), /HTTP 403/);
   for (const bad of [
     { projectId: 'prj_wrong' }, { readyState: 'ERROR' }, { target: 'preview' },
