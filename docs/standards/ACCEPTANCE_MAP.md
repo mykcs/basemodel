@@ -19,3 +19,9 @@ This map points to existing checks; it does not create new CI or duplicate the c
 2. Run only relevant commands, then the final-stage exact-head checks. Documentation-only changes should not claim UI/browser acceptance they never exercised.
 3. **Do not copy thresholds here**; when code or owners move, update this link map. New tests belong to the true source/script/test owner.
 4. Report each status precisely: **PASSED**, **FAILED**, **NOT RUN**, **BLOCKED**, or **NEEDS HUMAN REVIEW**. A link to a test is not proof it ran.
+
+## Shared reader-first design adoption (v1.1)
+
+The shared design profile refines the existing role-based acceptance above; it does not replace the sealed BaseModel design specification, create a second token owner, or disclose any private cross-site information. Preserve the original approved design-spec bytes and historical typography proof. Use the existing Reader Contract, article and workbench owners.
+
+The first actual homepage comparison (1440×900 and 440×956, bilingual, light/dark) identified three redundant labels next to section titles and the extra desktop column allocated to them. The three scientific findings, four next-action links, reflection, provenance disclosure and real limitations must remain. The actual visual cleanup needs the project's approved exact-source continuation; it has not been implemented or accepted in this PR. Additional navigation/legacy component cleanup requires real use-site evidence. Preserve 1280×633 and 390×844 stress gates and use the shared canonical viewport as additional visual verification. A passing build does not constitute visual acceptance or provider publication.
