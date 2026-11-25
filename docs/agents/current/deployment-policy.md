@@ -32,7 +32,7 @@ final non-draft current-base candidate
 main
 -> Vercel Production
 -> static production build of the already-accepted merge tree
--> https://basemodel-preview.vercel.app
+-> https://openevo-website.vercel.app
 -> access-protected Production; verify through Vercel control plane and authenticated access
 
 manual recovery only
@@ -181,7 +181,7 @@ The accepted cloud browser design uses **independent shards with one Playwright 
 
 ### Vercel responsibilities
 
-Project `basemodel-preview` owns both deployment environments. Every deployable Preview/Production build uses:
+Project `openevo-website` owns both deployment environments. Every deployable Preview/Production build uses:
 
 `npm run build`
 
@@ -214,7 +214,7 @@ The Mac/OrbStack architecture was the accepted 2026-08-29 baseline and the 20–
 
 ### Read-only post-merge identity alarm
 
-`.github/workflows/production-identity.yml` runs after `main` changes and Production deployment-status events. `scripts/verify-production-identity.mjs` compares a stable live `main` with the latest successful Production deployment/status reported by the pinned Vercel bot identity for the basemodel-preview project. A different project or unrecognized deployment hostname fails closed. It needs only GitHub read permissions, polls existing records, and never creates a deployment, changes protection, or spends build compute. Non-Production deployment events use a distinct concurrency group, so a skipped Preview event cannot cancel a running main/Production alarm. A moved main is re-observed; missing/untrusted evidence fails closed. A proven docs-only difference is explicitly `INTENTIONAL_NON_DEPLOY_DIFF`, not an exact SHA match.
+`.github/workflows/production-identity.yml` runs after `main` changes and Production deployment-status events. `scripts/verify-production-identity.mjs` compares a stable live `main` with the latest successful Production deployment/status reported by the pinned Vercel bot identity for the openevo-website project. A different project or unrecognized deployment hostname fails closed. It needs only GitHub read permissions, polls existing records, and never creates a deployment, changes protection, or spends build compute. Non-Production deployment events use a distinct concurrency group, so a skipped Preview event cannot cancel a running main/Production alarm. A moved main is re-observed; missing/untrusted evidence fails closed. A proven docs-only difference is explicitly `INTENTIONAL_NON_DEPLOY_DIFF`, not an exact SHA match.
 
 `MIRROR_MATCH` proves only GitHub's Vercel mirror. Final release acceptance still reads the Vercel READY Production SHA and verifies that the canonical alias points to that same deployment, followed by protected real-page checks. `MIRROR_MISMATCH` / `UNKNOWN` produces a failed Action and a recovery instruction for #964; inspect existing queued/building deployments before using the already-approved exact-main recovery below. Do not promote Preview or create duplicate recovery jobs. The historical missing event remains unclassified while Vercel user-event access is denied; a green alarm does not prove that historical root cause was fixed.
 
@@ -337,7 +337,7 @@ After the accepted exact head is current with `main`:
 ```text
 merge to main
 -> Vercel Production build
--> https://basemodel-preview.vercel.app
+-> https://openevo-website.vercel.app
 -> verify indexability, canonical/hreflang, robots/sitemap, representative routes and interaction
 ```
 
@@ -352,7 +352,7 @@ One accepted release batch should normally create one Production build. Do not a
 
 If an exact-main Git-source Production fallback cannot be created or its Git identity cannot be proven, stop and report the release blocker. A source-upload deploy with ambiguous branch identity is not a substitute for the normal Production gate.
 
-When handing the owner a Production link after release, first verify that the live Vercel alias still resolves to the accepted Production deployment, then share the clean stable canonical URL (`https://basemodel-preview.vercel.app` plus the requested route path). Do not substitute a deployment-specific hostname, protected Preview/share URL, or append unsolicited analytics/tracking query parameters. Add a query string only when it is required for the product behavior the owner explicitly asked to inspect.
+When handing the owner a Production link after release, first verify that the live Vercel alias still resolves to the accepted Production deployment, then share the clean stable canonical URL (`https://openevo-website.vercel.app` plus the requested route path). Do not substitute a deployment-specific hostname, protected Preview/share URL, or append unsolicited analytics/tracking query parameters. Add a query string only when it is required for the product behavior the owner explicitly asked to inspect.
 
 ## Repository Gate
 

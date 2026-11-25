@@ -2,7 +2,7 @@
 
 Last reviewed: **2026-11-01**
 
-**Current user-selected publishing default:** Vercel Authentication-protected `https://basemodel-preview.vercel.app/` is the normal reader-facing Production release destination. Cloudflare Workers + Access at `https://basemodel-access-standby.gemini202405.workers.dev/` is a protected, independently maintained standby. Choosing which site to publish never implies a same-domain traffic switch, automatic content sync, a billing change, or opening either login gate.
+**Current user-selected publishing default:** Vercel Authentication-protected `https://openevo-website.vercel.app/` is the normal reader-facing Production release destination. Cloudflare Workers + Access at `https://basemodel-access-standby.gemini202405.workers.dev/` is a protected, independently maintained standby. Choosing which site to publish never implies a same-domain traffic switch, automatic content sync, a billing change, or opening either login gate.
 
 **One manual selector, no automatic provider deployments:** `.github/workflows/release-provider.yml` runs only from `main` and now preselects `provider=vercel`, `operation=plan`. Plan uses GitHub-hosted compute only; explicit `deploy` is needed to spend a provider's quota. Vercel's `vercel-protected` job stages Production without moving the canonical alias, checks exact Git SHA, READY project identity, Vercel Authentication and authorized routes, then promotes and rechecks the alias. Cloudflare selection delegates to the existing `cloudflare-standby.yml` protected Access workflow. Keep `vercel.json` `git.deploymentEnabled.main=false`: default provider does **not** mean automatic Vercel Git deployments.
 
@@ -44,7 +44,7 @@ manual CI recovery only
   -> Mac/OrbStack `basemodel-ci` fallback runner
 ```
 
-Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity remains `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
+Public PR CI owns required **repository/browser acceptance**, while Vercel owns required **provider build/deploy acceptance**. The live cutover was verified on 2026-09-21: exact-head Vercel provider time was **14.170 s** versus the **507.7 s** control, and Production was **16.608 s** versus **633.3 s**, with the build-machine tier unchanged. The stable Production identity at that cutover was `https://basemodel-preview.vercel.app`. CircleCI and the self-hosted Mac workflow remain explicit recovery paths and never own ordinary merge readiness.
 
 Performance implementation and qualification are recorded in [`docs/dev/CI/README.md`](../../dev/CI/README.md). Candidate mechanisms there are not effective until merged; executable workflows and live exact-head evidence determine acceptance.
 
@@ -69,10 +69,11 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 
 ## Vercel contract
 
-- project: `basemodel-preview`
+- project: `openevo-website`
 - production branch: `main`
 - build: `npm run build`
-- canonical project domain: `https://basemodel-preview.vercel.app`
+- canonical project domain: `https://openevo-website.vercel.app`
+- legacy compatibility alias: `https://basemodel-preview.vercel.app` (same protected project, retained; not a separate deployment)
 
 Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to both complete canonical engine populations. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 

@@ -86,7 +86,7 @@ jobs:
     timeout-minutes: 30
     environment: vercel-protected
     env:
-      VERCEL_PROTECTED_URL: https://basemodel-preview.vercel.app/
+      VERCEL_PROTECTED_URL: https://openevo-website.vercel.app/
       RELEASE_PROJECT_ID: ${{ vars.BASEMODEL_PROTECTED_VERCEL_PROJECT_ID }}
       RELEASE_TEAM_ID: ${{ vars.BASEMODEL_PROTECTED_VERCEL_TEAM_ID }}
       REVIEW_PROJECT_ID: ${{ vars.BASEMODEL_REVIEW_VERCEL_PROJECT_ID }}
@@ -132,7 +132,7 @@ jobs:
         run: |
           set -euo pipefail
           STAGED_URL="$(npx --yes vercel@59.17.0 deploy --prod --skip-domain --yes --no-color --archive=tgz --scope "$RELEASE_TEAM_ID")"
-          STAGED_URL="$STAGED_URL" node -e 'const u=new URL(process.env.STAGED_URL); if(u.protocol!=="https:" || !/^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(u.hostname) || u.pathname!=="/" || u.search || u.hash)process.exit(1)' \
+          STAGED_URL="$STAGED_URL" node -e 'const u=new URL(process.env.STAGED_URL); if(u.protocol!=="https:" || !/^openevo-website-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(u.hostname) || u.pathname!=="/" || u.search || u.hash)process.exit(1)' \
             || { echo '::error::Unexpected Vercel staged deployment URL; do not promote'; exit 1; }
           echo "url=$STAGED_URL" >> "$GITHUB_OUTPUT"
           echo "- Staged candidate: $STAGED_URL (not yet promoted)" >> "$GITHUB_STEP_SUMMARY"
@@ -173,7 +173,7 @@ jobs:
       - name: REQUIRE canonical alias points to the exact staged Git SHA
         env:
           VERCEL_TOKEN: ${{ secrets.BASEMODEL_PROTECTED_VERCEL_TOKEN }}
-          VERCEL_DEPLOYMENT_LOOKUP_URL: https://basemodel-preview.vercel.app/
+          VERCEL_DEPLOYMENT_LOOKUP_URL: https://openevo-website.vercel.app/
           EXPECTED_SHA: ${{ needs.vercel_plan.outputs.sha }}
           EXPECTED_DEPLOYMENT_ID: ${{ steps.stage_identity.outputs.id }}
         run: node scripts/hosting/verify-vercel-deployment.mjs
@@ -195,6 +195,6 @@ jobs:
           set -euo pipefail
           echo "## Vercel protected Production release" >> "$GITHUB_STEP_SUMMARY"
           echo "- Checked-out exact main: \`$EXPECTED_SHA\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Alias: https://basemodel-preview.vercel.app/" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Alias: https://openevo-website.vercel.app/" >> "$GITHUB_STEP_SUMMARY"
           echo "- Anonymous SSO challenge and authenticated four-route HTTP checks: PASS" >> "$GITHUB_STEP_SUMMARY"
           echo "- Complete logged-in desktop/iPhone visual QA and Vercel deployment metadata must still be checked before calling this accepted" >> "$GITHUB_STEP_SUMMARY"

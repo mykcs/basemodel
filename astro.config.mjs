@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { sitewideSpacing, spacingBuildEvidence } from './scripts/lib/sitewide-spacing.mjs';
 
-const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
+const VERCEL_PRODUCTION_URL = 'https://openevo-website.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
 const configuredSite = process.env.PUBLIC_SITE_URL;
 const site = configuredSite && configuredSite !== LEGACY_PAGES_URL

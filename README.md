@@ -1,6 +1,6 @@
 # OpenEVO · Research Workbench
 
-**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. The owner selected `mykcs/openevo-website` for the website repository. Keep the legacy repository URL compatible through GitHub redirects; the existing protected hosting URLs remain in service until separately validated migration.
+**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. The existing repository and Vercel project were renamed in place to `openevo-website`. The new protected domain is https://openevo-website.vercel.app/; the old https://basemodel-preview.vercel.app/ remains a protected compatibility alias. Both served the same existing READY Production at the migration check on 2026-11-25. A new source release is separate; do not equate naming changes with deploying a new commit.
 
 ## Historical Codex dialogue archive
 
@@ -11,7 +11,7 @@ requirements remain authoritative.
 
 面向 AI 研究者的基础模型选择与论文采用地图。它把模型供应层与论文采用层分开维护，用结构化数据回答模型家族、代际、架构、开放性、研究可用性、硬件门槛和论文角色关系。
 
-在线访问：<https://basemodel-preview.vercel.app/>
+在线访问：<https://openevo-website.vercel.app/>
 
 Agent 交接与历史研究工作台上下文：[`docs/agent-context/`](./docs/agent-context/)。当前执行规则仍以 [`AGENTS.md`](./AGENTS.md) 和 [`docs/agents/`](./docs/agents/) 为准。
 
@@ -27,7 +27,7 @@ operation=deploy         -> protected Vercel Production (default), or Cloudflare
 Production verification  -> deployed SHA + authentication denial + logged-in desktop/mobile QA
 ```
 
-这是截至 **2026-11-09** 核对的仓库发布合同，而非当前线上已同步 `main` 的声明。`vercel.json` 禁用普通 PR **及 `main`** 的自动 Vercel Git 部署。默认主站是受 Vercel Authentication 保护的 <https://basemodel-preview.vercel.app/>；受 Cloudflare Access 保护的备用站是 <https://basemodel-access-standby.gemini202405.workers.dev/>。`plan` 不发布，只有明确选择 `deploy` 才执行受保护的手动发布。
+这是截至 **2026-11-09** 核对的仓库发布合同，而非当前线上已同步 `main` 的声明。`vercel.json` 禁用普通 PR **及 `main`** 的自动 Vercel Git 部署。默认主站是受 Vercel Authentication 保护的 <https://openevo-website.vercel.app/>；受 Cloudflare Access 保护的备用站是 <https://basemodel-access-standby.gemini202405.workers.dev/>。`plan` 不发布，只有明确选择 `deploy` 才执行受保护的手动发布。
 
 两项必需检查必须在**同一精确 PR HEAD** 上通过，并证明当前 `main` 基线新鲜。`cloudflare-artifact-gate` 只执行无密钥的构建与 dry-run，**不是** Cloudflare 部署；PR 合并、CI 全绿和 Vercel `READY` 也都**不是**正式网站已更新的证据。每次发布都须读回目标环境实际 SHA、核对匿名访问受阻及授权会话的手机／桌面页面。两家服务商使用不同的受保护网址，不保证自动同步或无缝切换。
 

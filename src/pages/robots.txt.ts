@@ -16,7 +16,7 @@ export const GET: APIRoute = ({ site }) => {
     });
   }
 
-  const origin = (site ?? new URL('https://basemodel-preview.vercel.app')).href.replace(/\/$/, '');
+  const origin = (site ?? new URL('https://openevo-website.vercel.app')).href.replace(/\/$/, '');
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const sitemap = `${origin}${base}/sitemap.xml`;
 

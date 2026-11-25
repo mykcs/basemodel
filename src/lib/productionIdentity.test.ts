@@ -9,7 +9,9 @@ const status = { state: 'success', creator: { id: 35613825 }, environment_url: '
 describe('read-only Production identity alarm', () => {
   it('pins the project as well as the Vercel bot and Production environment', () => {
     expect(belongsToProductionProject({ environment_url: 'https://basemodel-preview-abc123def-example-team.vercel.app' })).toBe(true);
-    for (const environment_url of ['https://basemodel-ui-preview-abc123def-example-team.vercel.app', 'https://basemodel-preview.vercel.app.example.com', 'http://basemodel-preview.vercel.app', 'not a URL']) {
+    expect(belongsToProductionProject({ environment_url: 'https://openevo-website.vercel.app' })).toBe(true);
+    expect(belongsToProductionProject({ environment_url: 'https://openevo-website-abc123def-example-team.vercel.app' })).toBe(true);
+    for (const environment_url of ['https://openevo-website-review-abc123def-example-team.vercel.app', 'https://openevo-website.vercel.app.evil.test', 'https://basemodel-ui-preview-abc123def-example-team.vercel.app', 'https://basemodel-preview.vercel.app.example.com', 'http://basemodel-preview.vercel.app', 'not a URL']) {
       expect(classifyProductionMirror(sha, deployment, { ...status, environment_url })).toBe('UNKNOWN');
     }
   });

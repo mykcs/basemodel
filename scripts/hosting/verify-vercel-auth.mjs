@@ -1,8 +1,8 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const PROJECT_HOST = 'basemodel-preview.vercel.app';
-const STAGED_HOST = /^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/;
+const PROJECT_HOSTS = new Set(['openevo-website.vercel.app', 'basemodel-preview.vercel.app']);
+const STAGED_HOST = /^(?:openevo-website|basemodel-preview)-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/;
 export const checkedPaths = ['/', '/index.html', '/og-cover.svg', '/model-data/hosting-access-probe.json'];
 
 export function parseProtectedVercelUrl(input) {
@@ -10,7 +10,7 @@ export function parseProtectedVercelUrl(input) {
   const url = new URL(input);
   if (url.protocol !== 'https:' || url.username || url.password || url.port
     || url.pathname !== '/' || url.search || url.hash
-    || (url.hostname !== PROJECT_HOST && !STAGED_HOST.test(url.hostname))) {
+    || (!PROJECT_HOSTS.has(url.hostname) && !STAGED_HOST.test(url.hostname))) {
     throw new Error('Expected the approved HTTPS Vercel project origin, with no credentials, path or query');
   }
   return url;

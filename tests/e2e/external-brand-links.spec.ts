@@ -66,14 +66,14 @@ for (const theme of ['light', 'dark'] as const) {
         expect(await links.count()).toBeGreaterThan(0);
         await expect(links.first()).toHaveAccessibleName(/来源索引|source index/i);
         for (const href of await links.evaluateAll(elements => elements.map(element => element.getAttribute('href')!))) {
-          const id = new URL(href, 'https://basemodel-preview.vercel.app').hash.slice(1);
+          const id = new URL(href, 'https://openevo-website.vercel.app').hash.slice(1);
           expect(index.sources.some((source: { id: string }) => source.id === id), href).toBe(true);
         }
         await links.first().scrollIntoViewIfNeeded();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 2)).toBe(true);
         await testInfo.attach(`provenance-${route.split('/').filter(Boolean).at(-1)}-${width}-${theme}`, { body: await page.screenshot(), contentType: 'image/png' });
         const og = await page.locator('meta[property="og:image"]').getAttribute('content');
-        expect(og).toBe('https://basemodel-preview.vercel.app/og-cover.png');
+        expect(og).toBe('https://openevo-website.vercel.app/og-cover.png');
         expect(await page.locator('meta[name="twitter:image"]').getAttribute('content')).toBe(og);
       }
       await page.goto('/research/seed-openevo/study/run/', { waitUntil: 'domcontentloaded' });

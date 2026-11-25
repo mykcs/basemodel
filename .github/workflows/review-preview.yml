@@ -86,7 +86,7 @@ jobs:
       - name: Build fresh noindex static review artifact
         env:
           PUBLIC_SEARCH_INDEXING: disabled
-          PUBLIC_SITE_URL: https://basemodel-preview.vercel.app
+          PUBLIC_SITE_URL: https://openevo-website.vercel.app
         run: |
           set -euo pipefail
           npm run build

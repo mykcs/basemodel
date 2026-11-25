@@ -24,7 +24,7 @@ const staticHeaders = read('public/_headers');
 const architecture = read('docs/agents/current/hosting-architecture.md');
 const latest = read('docs/agents/LATEST.md');
 
-const productionUrl = 'https://basemodel-preview.vercel.app';
+const productionUrl = 'https://openevo-website.vercel.app';
 
 describe('hosting architecture ownership', () => {
   it('keeps Vercel manual-only on main while using Cloudflare exact-head acceptance and CircleCI manual-only', () => {
@@ -81,7 +81,7 @@ describe('hosting architecture ownership', () => {
   });
 
   it('keeps Vercel the manual default with a protected Cloudflare standby and no anonymous monitor', () => {
-    expect(architecture).toContain('Vercel Authentication-protected `https://basemodel-preview.vercel.app/` is the normal reader-facing Production release destination');
+    expect(architecture).toContain('Vercel Authentication-protected `https://openevo-website.vercel.app/` is the normal reader-facing Production release destination');
     expect(architecture).toContain('no anonymous Production monitor is active');
     expect(latest).not.toContain('production-smoke');
     expect(latest).toContain('Automatic PR evidence is **Public PR CI**');

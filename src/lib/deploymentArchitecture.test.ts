@@ -324,7 +324,7 @@ describe('Vercel production deployment architecture', () => {
       expect(deploy.needs).toBe('vercel_plan');
       expect(deploy.if).toContain("inputs.operation == 'deploy'");
       expect(deploy.if).toContain("github.ref == 'refs/heads/main'");
-      expect(deploy.env.VERCEL_PROTECTED_URL).toBe('https://basemodel-preview.vercel.app/');
+      expect(deploy.env.VERCEL_PROTECTED_URL).toBe('https://openevo-website.vercel.app/');
       const steps = deploy.steps as { name: string; run?: string; env?: Record<string, string>; uses?: string; with?: Record<string, unknown> }[];
       const index = (name: string) => steps.findIndex(step => step.name === name);
       const before = index('REQUIRE existing Vercel Authentication before publishing');
@@ -538,7 +538,7 @@ describe('Vercel production deployment architecture', () => {
   });
 
   it('uses the stable Vercel project domain as Production identity at the origin root', () => {
-    expect(astroConfig).toContain("'https://basemodel-preview.vercel.app'");
+    expect(astroConfig).toContain("'https://openevo-website.vercel.app'");
     expect(astroConfig).toMatch(/\bbase:\s*['"]\/['"]/);
     expect(appLayout).toContain("process.env.VERCEL_ENV === 'preview'");
     expect(playwright).toContain("process.env.PLAYWRIGHT_PORT ?? '4327'");
@@ -598,7 +598,7 @@ describe('Vercel production deployment architecture', () => {
   });
 
   it('keeps canonical branding on the Vercel Production identity', () => {
-    expect(ogCover).toContain('basemodel-preview.vercel.app');
+    expect(ogCover).toContain('openevo-website.vercel.app');
     expect(ogCover).not.toContain('basemodel.pages.dev');
   });
 });
