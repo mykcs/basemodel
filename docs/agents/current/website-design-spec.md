@@ -18,6 +18,26 @@ https://github.com/mykcs/.agents/blob/main/docs/agents/HUMAN_EXPRESSION_STANDARD
 
 https://github.com/mykcs/.agents/blob/main/docs/learning/legacy/basemodel-expression-spec/website-design-spec-2026-09-22.md
 
+## 共享设计 profile：研究阅读与工作台的适配（2026-11-25）
+
+按账户已有共享 Website Standard 的 W02/W03/W04/W08 继承 reader-first、role-aware 设计体系。本文件和现有 tokens.css、Reader Contract、科研表达及视觉测试继续拥有本站具体实现；不创建第二套样式变量、不依赖外站运行时、不披露内部跨项目映射。
+
+- 长文沿用已接受的技术文章阅读样板、真实问题/结果/边界、适度窄正文与一致章节编号；目录只为真实阅读任务服务。比较、目录和工作台保留实际决策控件、指标、单位、实验身份和证据，不强行套用文章模板。
+- 首页和研究入口采用任务优先、扁平列表与视觉主次；不要重复显示章节同义眉题、相同导航、只具装饰用途的卡片、无独立读者任务的面板。保留当前答案、下一步、真实限制和独立来源。移除旧层前须证明实际路由/功能归属、无失效链接和无证据丢失。
+- 优先按内容宽度展示短证据表，手机描述字段可重排；密集科学矩阵保留同一列关系和真实数值，必要时局部滚动。状态文案区分已验证、未验证、失败、代码集成、归档；不能把局部验证外推整体研究成功。
+- 普通界面以角色字号、间距、圆角、可读颜色和真实品牌标识保持一致，保留已批准的科研排印、数据可视化、公式与历史标识例外；不机械替换已有 650 字重或实验图色。新局部样式须走现有 token owner 和 typography ledger 的精确延续。
+- 现有 Reader Contract 的首屏预算保留其历史窄屏压力测试（1280×633 / 390×844），不得放宽来掩盖拥挤；普通视觉验收另外使用共享 1440×900 与 440×956 CSS px / DPR3 触控，按项目实际浏览器、两主题和科学边界执行。首屏冷读、自动检查和人类审美判断分开记录。
+
+### 第一批去冗余候选（源码已定位，尚未实施/视觉验收）
+
+| 观察 | 修改前验收目标 |
+| --- | --- |
+| `src/pages/_bodies/home-v2.astro` 的 `home-section__heading` 同时显示“目前答案 / 目前我们能说到哪里”“继续 / 现在想继续哪一步”“近期复盘 / 最近遇到的问题”。 | 对照真实首页后，优先保留完整标题和必要导语，去掉重复视觉层；保留三组科学回答、继续任务及复盘入口，核对现有精确 typography ledger。 |
+| `AppLayout.astro` 的 Header、research nav、PageOutline、ResearchContextBar、CompareTray、ActionableContentLayer 分别具有不同职责，但在部分路由可能形成多层导航竞争。 | 按实际 route/reader contract 审计可见内容与交互；只有证实重复或闲置才折叠/移除，不全局关闭工作台、目录和研究导航。 |
+| 当前普通科研页面、技术文章、工作台仍有历史布局差异。 | 先用已认可文章和现有 tokens/组件做逐类对照，优先减少旁路实现。保留已通过的 #1026 全站语义样式迁移及当前时间精度修复，不重复重建。 |
+
+本次先落地设计和清理的执行规则，不把源码发现冒充实际视觉修复。后续通过现有 `audit:reader-contracts`、`audit:typography`、`verify-typography-ledger.mjs` 与适用的浏览器 gate 验收每个独立候选。现有科研和访问边界、数据源与部署权威不变。
+
 ## 0. Authority 顺序
 
 遇到冲突时，默认顺序：
