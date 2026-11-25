@@ -7,24 +7,26 @@ import {
   verifyVercelAuthentication,
 } from './verify-vercel-auth.mjs';
 
-const canonical = 'https://basemodel-preview.vercel.app/';
-const staged = 'https://basemodel-preview-abcdef123-example-team.vercel.app/';
+const canonical = 'https://openevo-website.vercel.app/';
+const staged = 'https://openevo-website-abcdef123-example-team.vercel.app/';
 const challenge = (target) => `https://vercel.com/sso-api?url=${encodeURIComponent(target)}&nonce=testnonce123`;
 const response = (target, status = 302, location = challenge(target)) => ({
   status, headers: new Headers({ location }),
 });
 
 test('accepts only the protected production host or its exact staged hostname shape', () => {
-  assert.equal(parseProtectedVercelUrl(canonical).hostname, 'basemodel-preview.vercel.app');
-  assert.equal(parseProtectedVercelUrl(staged).hostname, 'basemodel-preview-abcdef123-example-team.vercel.app');
+  assert.equal(parseProtectedVercelUrl(canonical).hostname, 'openevo-website.vercel.app');
+  assert.equal(parseProtectedVercelUrl(staged).hostname, 'openevo-website-abcdef123-example-team.vercel.app');
+  assert.equal(parseProtectedVercelUrl('https://basemodel-preview.vercel.app/').hostname, 'basemodel-preview.vercel.app');
+  assert.equal(parseProtectedVercelUrl('https://basemodel-preview-abcdef123-example-team.vercel.app/').hostname, 'basemodel-preview-abcdef123-example-team.vercel.app');
   for (const bad of [
-    '', 'http://basemodel-preview.vercel.app/',
-    'https://other.vercel.app/', 'https://basemodel-preview.vercel.app.evil.test/',
-    'https://user:pass@basemodel-preview.vercel.app/',
-    'https://basemodel-preview.vercel.app:444/',
-    'https://basemodel-preview.vercel.app/secret',
-    'https://basemodel-preview.vercel.app/?secret=yes',
-    'https://basemodel-preview.vercel.app/#hash',
+    '', 'http://openevo-website.vercel.app/',
+    'https://other.vercel.app/', 'https://openevo-website-review-abcdef123-example-team.vercel.app/', 'https://openevo-website.vercel.app.evil.test/',
+    'https://user:pass@openevo-website.vercel.app/',
+    'https://openevo-website.vercel.app:444/',
+    'https://openevo-website.vercel.app/secret',
+    'https://openevo-website.vercel.app/?secret=yes',
+    'https://openevo-website.vercel.app/#hash',
   ]) assert.throws(() => parseProtectedVercelUrl(bad));
 });
 

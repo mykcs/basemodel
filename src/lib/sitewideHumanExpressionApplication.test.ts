@@ -61,6 +61,9 @@ describe('sitewide human-expression content application', () => {
     expect(loops).toContain('下一版本（successor revision）');
     expect(openevo).toContain('下一版本（successor revision）');
     expect(english).not.toContain('Agent Foundation Model Atlas');
+    expect(english).toContain("name: 'OpenEVO'");
+    expect(read('../i18n/zh.ts')).toContain("name: 'OpenEVO'");
+    expect(read('../components/Header.astro')).toContain('aria-hidden="true">OE</span>');
     expect(english).not.toContain("levelUnknown: 'Pending'");
     expect(english).not.toContain("unknown: 'Pending verification'");
   });
@@ -71,6 +74,6 @@ describe('sitewide human-expression content application', () => {
 
     expect(resultsQuestion).toContain('怎样才算和 SEED 公平比较');
     expect(og).not.toContain('Agent Foundation Model Atlas');
-    expect(og).toContain('Base Model · SEED × OpenEvo');
+    expect(og).toContain('OpenEVO · 研究工作台');
   });
 });

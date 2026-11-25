@@ -124,6 +124,11 @@ export const intelligenceTypographyDelta = {
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/Lyg2171ServerOverview.astro": {
+    "currentSourceSha256": "a8ea8c54f131e4fadb486a36dd45ac7eb59cb5730edb6440e74ed58fb44fbea1",
+    "priorSourceSha256": "57862a9badd1e5a6f45b1258b4a44b5c0ae97930201242754d45e17ee92745ef",
+    "reason": "2026-11-25 website product rename: only two Chinese prompt references replace the former website brand with OpenEVO website repository. All SOP paths, read-only and deletion/visibility restrictions, English content, DOM and typography are exactly preserved. Historical visual proof is not current evidence."
+  },
   "src/components/research/OpenEvoSuccessorExplorationMap.astro": {
     "currentSourceSha256": "2e119d53f2aa94e5c5d5b2c5458f8bf655f4f3c735c2e31dcca2304eac9518e2",
     "priorSourceSha256": "3734580d6d7e90bebaeee05f6cf4bc268b7c335544e073871366ed34179431eb",
@@ -170,9 +175,9 @@ export const contentReorganizationProofs = {
     "reason": "The earlier sealed typography owner predates the 2026-10-09 reader-path and subsequent editorial-article integration. The new version preserves factual copy and all inherited font declarations while adding native learning anchors and preserving the newer WebShop breadcrumb/reading owner. Prior rendered observations remain historical; exact-head browser evidence is pending."
   },
   "src/components/DevelopmentWorkflowPage.astro": {
-    "currentSourceSha256": "415e4a9b8817c4e0611fe916f5e488bba922a0615e9661f8af687d1b7aabf3ff",
+    "currentSourceSha256": "65f86f3141bd9abe86f93160d712f741c1913fccc50c65d789f873a73e7e468b",
     "priorSourceSha256": "63ded467e6c88a0b08479b47c55c6c6c681579e1e657d6442b76bb2610229b10",
-    "reason": "Owner selected Vercel as the default manual release destination with Cloudflare Access protected as standby. Bilingual reader copy was updated without changing typography CSS declarations; previous /development/ screenshots are not current visual evidence. Exact-head browser and authenticated Production inspection are required."
+    "reason": "Owner selected Vercel as the default manual release destination with Cloudflare Access protected as standby. Bilingual reader copy was updated without changing typography CSS declarations; previous /development/ screenshots are not current visual evidence. Exact-head browser and authenticated Production inspection are required. 2026-11-25 product rename: the immediately preceding exact source 415e4a9b8817c4e0611fe916f5e488bba922a0615e9661f8af687d1b7aabf3ff remains historical evidence. Only the six specified Chinese/English product-name substitutions changed the page; its style block, provider facts, route, and scientific boundaries are byte-identical outside those substitutions. Current source identity is a candidate, not a new visual observation. 2026-11-25 hosting rename: previous brand-only candidate dbd3b28769c4d5738636ec0850ec89b11e3a4a7fedcd99959f3bc537f3288aa3 remains the exact predecessor. Replace only the verified Production href with the new domain; both aliases serve the same protected project, original CSS/text and historical receipt remain unchanged. Current visual acceptance still requires exact-head browser evidence."
   },
   "src/pages/_bodies/home-v2.astro": {
     "currentSourceSha256": "6164770e676a543ae44ad96c138bed35018f9db4a3236ab79239874d4129fc9d",

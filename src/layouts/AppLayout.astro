@@ -23,7 +23,7 @@ const m = getMessages(locale);
 const { title, description = m.site.defaultDescription } = Astro.props;
 const base = baseUrl();
 const fullTitle = `${title} · ${m.site.titleSuffix}`;
-const siteOrigin = Astro.site ?? new URL('https://basemodel-preview.vercel.app');
+const siteOrigin = Astro.site ?? new URL('https://openevo-website.vercel.app');
 const isPrivateProduction = process.env.VERCEL_ENV === 'production';
 const isVercelPreview = process.env.VERCEL_ENV === 'preview';
 const isCloudflarePreview = process.env.CF_PAGES === '1' && Boolean(process.env.CF_PAGES_BRANCH) && process.env.CF_PAGES_BRANCH !== 'main';

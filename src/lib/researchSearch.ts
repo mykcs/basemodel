@@ -4,7 +4,7 @@ import { CAPABILITY_READER_ROUTES, CAPABILITY_ROUTE_ALIASES } from '../data/capa
 
 const root = '/research/seed-openevo/study/capability-exploration/';
 const titles: Record<string, string> = {
-  home: 'BaseModel 研究首页',
+  home: 'OpenEVO 研究首页',
   development: '网站开发与验收',
   'agent-reader': '给 Agent 读',
   handbook: '技术手册',

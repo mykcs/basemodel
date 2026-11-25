@@ -8,8 +8,8 @@ export function belongsToProductionProject(status) {
   try {
     const url = new URL(status?.environment_url);
     return url.protocol === 'https:' && !url.username && !url.password && !url.port
-      && (url.hostname === 'basemodel-preview.vercel.app'
-        || /^basemodel-preview-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
+      && (['openevo-website.vercel.app', 'basemodel-preview.vercel.app'].includes(url.hostname)
+        || /^(?:openevo-website|basemodel-preview)-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
   } catch { return false; }
 }
 
@@ -25,7 +25,7 @@ export function classifyProductionMirror(mainSha, deployment, status, filesSince
 }
 
 export async function inspectProductionMirror({ repository, token, fetcher = fetch }) {
-  if (repository !== 'mykcs/basemodel' || !token) throw new Error('Exact repository and an existing read-only GitHub token are required');
+  if (!['mykcs/openevo-website', 'mykcs/basemodel'].includes(repository) || !token) throw new Error('Exact repository and an existing read-only GitHub token are required');
   const api = async path => {
     const response = await fetcher(`https://api.github.com/repos/${repository}/${path}`, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' },

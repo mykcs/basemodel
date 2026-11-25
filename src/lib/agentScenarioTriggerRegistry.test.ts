@@ -338,7 +338,7 @@ describe('Agent scenario-trigger discovery', () => {
     expect(repositoryMap).toContain('GitHub working PR                       -> required Public PR CI; no ordinary Vercel deployment');
     expect(repositoryMap).toContain('GitHub ci/vercel-gate-final              -> exact-head Vercel provider acceptance Preview');
     expect(repositoryMap).toContain('GitHub main                              -> access-protected Vercel Production');
-    expect(repositoryMap).toContain('Production identity                     -> https://basemodel-preview.vercel.app');
+    expect(repositoryMap).toContain('Production identity                     -> https://openevo-website.vercel.app');
     expect(repositoryMap).toContain('CircleCI                                -> automatic PR/main disabled; explicit API fallback only');
     expect(repositoryMap).toContain('Production access                        -> Vercel Authentication; no unauthenticated external monitor');
     expect(repositoryMap).toContain('Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only');

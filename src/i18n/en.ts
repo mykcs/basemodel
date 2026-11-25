@@ -4,10 +4,10 @@ import type { Messages } from './zh';
 // 专业名词 / 模型名 / 论文标题 / benchmark 名保持原样, 不做改动。
 export const en: Messages = {
   site: {
-    name: 'Model Atlas',
-    fullName: 'Base Model Research Workbench',
-    tagline: 'An OpenEvo research workbench on SEED benchmarks',
-    titleSuffix: 'Base Model Research Workbench · SEED × OpenEvo',
+    name: 'OpenEVO',
+    fullName: 'OpenEVO Research Workbench',
+    tagline: 'Models, agent learning and experimental evidence',
+    titleSuffix: 'OpenEVO Research Workbench',
     defaultDescription: 'Understand base models, reproduce ALFWorld and WebShop experiments from SEED, evaluate OpenEvo, and turn trajectory, score, and failure evidence into improvements.',
     skipLink: 'Skip to main content',
     backHome: 'Back to home',
@@ -30,7 +30,7 @@ export const en: Messages = {
     guide: 'Guide',
     methodology: 'Methodology',
     search: 'Search',
-    searchTitle: 'Search the atlas',
+    searchTitle: 'Search OpenEVO',
     searchPlaceholder: 'Search models, aliases, vendors, families, or papers…',
     noSearchResults: 'No matching results.',
     searchModel: 'Model',
@@ -41,7 +41,7 @@ export const en: Messages = {
     commandHint: 'Esc to close · Cmd/Ctrl + K to open',
   },
   footer: {
-    identity: 'Base Model Research Workbench',
+    identity: 'OpenEVO Research Workbench',
     motto: 'Data first, evidence first.',
   },
   guide: {

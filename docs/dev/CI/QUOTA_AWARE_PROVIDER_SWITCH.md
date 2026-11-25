@@ -73,7 +73,7 @@ gh workflow run release-provider.yml -R mykcs/basemodel --ref main -f provider=v
 
 Cloudflare 选项**复用**现行 `cloudflare-standby.yml`（Access 前后拦截 + exact-main 成品验证），保留原来的 Cloudflare 独立按钮；切换器不复制第二套 Worker 发布逻辑。Vercel 选项使用 **先暂存、再推广**：先验证 Vercel Authentication 和当前 `main`，通过专用受保护环境建立未赋予正式域名的 Production 候选，读取 Vercel 官方 API 校验项目、READY 与 Git 提交 SHA，逐路径确认未登录用户被拦截、授权路由 HTTP 200，最后才 `vercel promote` 赋予原 Vercel 正式别名。上线后继续检查原域名的 SSO、精确 SHA 与授权路由；人类登录后的真实页面和 iPhone 18 Pro Max 视觉仍要另验。平台或身份检查失败应停在未推广的候选，不得绕过门锁直接上线。
 
-**Vercel 正式手动发布已跑通：** [2026-11-01 真实发布 #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) 在 [PR #980](https://github.com/mykcs/basemodel/pull/980) 修复身份响应字段后，全部 staged/project/SHA/SSO/authorized-route/promote 检查成功。以后凭据轮换或恢复时，必须在 GitHub 为本仓库保留 `vercel-protected` Environment，约束 `main` 发布分支、按已有安全审批要求配置保护；Environment 下设置独立 Production 专用 `BASEMODEL_PROTECTED_VERCEL_TOKEN` secret，以及 `BASEMODEL_PROTECTED_VERCEL_PROJECT_ID`、`BASEMODEL_PROTECTED_VERCEL_TEAM_ID` variables。值必须从实际已受 Vercel Authentication 保护的 `basemodel-preview` 项目和已授权管理端获得。切勿使用专供 Fast Review 的 `BASEMODEL_REVIEW_VERCEL_TOKEN`，也勿把项目 ID、Token 或账号详情写入公开源码。缺少任何值时 Vercel 发布拒绝执行；`plan` 不需要凭据。首次 `deploy` 只能在两道 GitHub CI 已通过且主分支最新、余额允许、旧站正常时进行单次验证。
+**Vercel 正式手动发布已跑通：** [2026-11-01 真实发布 #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) 在 [PR #980](https://github.com/mykcs/basemodel/pull/980) 修复身份响应字段后，全部 staged/project/SHA/SSO/authorized-route/promote 检查成功。以后凭据轮换或恢复时，必须在 GitHub 为本仓库保留 `vercel-protected` Environment，约束 `main` 发布分支、按已有安全审批要求配置保护；Environment 下设置独立 Production 专用 `BASEMODEL_PROTECTED_VERCEL_TOKEN` secret，以及 `BASEMODEL_PROTECTED_VERCEL_PROJECT_ID`、`BASEMODEL_PROTECTED_VERCEL_TEAM_ID` variables。值必须从实际已受 Vercel Authentication 保护的 `openevo-website` 项目和已授权管理端获得。切勿使用专供 Fast Review 的 `BASEMODEL_REVIEW_VERCEL_TOKEN`，也勿把项目 ID、Token 或账号详情写入公开源码。缺少任何值时 Vercel 发布拒绝执行；`plan` 不需要凭据。首次 `deploy` 只能在两道 GitHub CI 已通过且主分支最新、余额允许、旧站正常时进行单次验证。
 
 **省额度的最短路径：** 若目标服务商已经有满意的版本，**只改给授权读者发送的链接**，不需要跑 `deploy`；需要同步新版本时先核对其源 SHA，不相同才点 `deploy`。一个按钮只是选择哪家发布，不能自动把两个网址合成一个、偷用另一家的免费额度或关掉登录保护。Vercel Hobby 只能回滚到上一版 Production 的能力与历史部署保留限制须以当前官方套餐核对；切换前保留原版本信息。
 
@@ -102,7 +102,7 @@ gh workflow run cloudflare-standby.yml -R mykcs/basemodel --ref main -f operatio
 
 当前两条入口：
 
-- Vercel（默认）：<https://basemodel-preview.vercel.app/>（Vercel Authentication）
+- Vercel（默认）：<https://openevo-website.vercel.app/>（Vercel Authentication）
 - Cloudflare（备用）：<https://basemodel-access-standby.gemini202405.workers.dev/>（Access）
 
 **安全边界：** 公开 GitHub 源码并不由任何网站登录门保护；私人原始资料、密钥、身份名单不得进入公开仓库、PR 日志、构建产物或网站。发布证据只记录 SHA、检查 PASS、页面路由、时间、匿名拒绝结论，不记 Cookie、Token 或身份邮箱。保留 [完整可逆发布原 SOP](REVERSIBLE_HOSTING.md) 和 [当前活跃部署政策](../../agents/current/deployment-policy.md)。

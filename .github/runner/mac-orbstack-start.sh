@@ -14,7 +14,7 @@ backup_container=""
 runner_is_busy() {
   local name="$1"
   local busy
-  if ! busy="$(gh api repos/mykcs/basemodel/actions/runners \
+  if ! busy="$(gh api repos/mykcs/openevo-website/actions/runners \
     --jq ".runners[] | select(.name == \"$name\") | .busy" 2>/dev/null)"; then
     return 2
   fi
@@ -62,7 +62,7 @@ wait_runner_online() {
   local name="$1"
   local status
   for _ in $(seq 1 30); do
-    status="$(gh api repos/mykcs/basemodel/actions/runners \
+    status="$(gh api repos/mykcs/openevo-website/actions/runners \
       --jq ".runners[] | select(.name == \"$name\") | .status" 2>/dev/null || true)"
     if [[ "$status" == 'online' ]]; then
       return 0
@@ -182,9 +182,9 @@ fi
 docker start "$container" >/dev/null
 
 if ! docker exec "$container" test -f /home/runner/actions-runner/.runner; then
-  token="$(gh api --method POST repos/mykcs/basemodel/actions/runners/registration-token --jq .token)"
+  token="$(gh api --method POST repos/mykcs/openevo-website/actions/runners/registration-token --jq .token)"
   docker exec -e RUNNER_TOKEN="$token" "$container" bash -lc \
-    'cd /home/runner/actions-runner && ./config.sh --unattended --url https://github.com/mykcs/basemodel --token "$RUNNER_TOKEN" --name basemodel-macbook-container-v2 --labels basemodel-ci --work _work --replace'
+    'cd /home/runner/actions-runner && ./config.sh --unattended --url https://github.com/mykcs/openevo-website --token "$RUNNER_TOKEN" --name basemodel-macbook-container-v2 --labels basemodel-ci --work _work --replace'
   unset token
 fi
 

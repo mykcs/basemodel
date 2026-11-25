@@ -76,7 +76,7 @@ The historical-looking CSS filenames are **live migration debt**, not documentat
 GitHub working PR                       -> required Public PR CI; no ordinary Vercel deployment
 GitHub ci/vercel-gate-final              -> exact-head Vercel provider acceptance Preview
 GitHub main                              -> access-protected Vercel Production
-Production identity                     -> https://basemodel-preview.vercel.app
+Production identity                     -> https://openevo-website.vercel.app
 CircleCI                                -> automatic PR/main disabled; explicit API fallback only
 Production access                        -> Vercel Authentication; no unauthenticated external monitor
 Cloudflare Pages/Direct Upload/shadow     -> rollback or provider-specific fallback only

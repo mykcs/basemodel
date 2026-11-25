@@ -33,7 +33,7 @@ describe('human-facing development workflow', () => {
     expect(page).toContain('Vercel Authentication (default)');
     expect(page).toContain('Cloudflare Access (standby)');
     expect(page).toContain('basemodel-access-standby.gemini202405.workers.dev');
-    expect(page).toContain('basemodel-preview.vercel.app');
+    expect(page).toContain('openevo-website.vercel.app');
     expect(page).toContain('Mac/OrbStack remains manual recovery only');
     expect(page).not.toContain('Cloudflare is not part of ordinary BaseModel deployment');
     expect(page).not.toContain('heavy acceptance runs in CircleCI');

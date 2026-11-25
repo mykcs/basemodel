@@ -144,7 +144,7 @@ maybe_prune_build_cache() {
   [[ "$last_prune" =~ ^[0-9]+$ ]] || last_prune=0
   (( now - last_prune >= prune_interval )) || return 0
   for state in \
-    "$(runner_busy_state mykcs/basemodel basemodel-ci basemodel-ci-runner-v2)" \
+    "$(runner_busy_state mykcs/openevo-website basemodel-ci basemodel-ci-runner-v2)" \
     "$(runner_busy_state mykcs/openevo-experiment openevo-mac-ci openevo-ci-runner-v2)"; do
     [[ "$state" == idle ]] || { log "build-cache prune skipped because a Mac CI runner is $state"; return 0; }
   done

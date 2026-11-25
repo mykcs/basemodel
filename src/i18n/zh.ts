@@ -2,10 +2,10 @@
 // 模型名、论文标题、benchmark 名和必要技术缩写保留原样；通用界面词只输出中文。
 export const zh: Messages = {
   site: {
-    name: '模型图谱',
-    fullName: '智能体基础模型图谱',
-    tagline: 'SEED 基准上的 OpenEvo 研究工作台',
-    titleSuffix: '智能体基础模型图谱 · SEED × OpenEvo 研究工作台',
+    name: 'OpenEVO',
+    fullName: 'OpenEVO 研究工作台',
+    tagline: '模型、Agent 学习与实验证据',
+    titleSuffix: 'OpenEVO 研究工作台',
     defaultDescription: '在 SEED 的 ALFWorld 与 WebShop 基准上理解基础模型、复现实验、评估 OpenEvo，并用轨迹、分数和失败证据设计改进。',
     skipLink: '跳到主要内容',
     backHome: '返回首页',
@@ -39,7 +39,7 @@ export const zh: Messages = {
     commandHint: '按 Esc 关闭 · Cmd/Ctrl + K 打开',
   },
   footer: {
-    identity: '智能体基础模型图谱',
+    identity: 'OpenEVO 研究工作台',
     motto: '数据优先，证据先行。',
   },
   guide: {

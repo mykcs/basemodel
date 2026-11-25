@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const CURRENT_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
+const CURRENT_PRODUCTION_URL = 'https://openevo-website.vercel.app';
 const buildDir = resolve('dist');
 
 const fail = (message) => {

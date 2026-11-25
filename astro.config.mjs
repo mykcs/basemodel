@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { sitewideSpacing, spacingBuildEvidence } from './scripts/lib/sitewide-spacing.mjs';
 
-const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
+const VERCEL_PRODUCTION_URL = 'https://openevo-website.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
 const configuredSite = process.env.PUBLIC_SITE_URL;
 const site = configuredSite && configuredSite !== LEGACY_PAGES_URL
@@ -25,7 +25,7 @@ export default defineConfig({
   // sitemap integration so Starlight cannot add an unfiltered second sitemap.
   integrations: [react(), spacingBuildEvidence(), sitemap({ filter: () => false }), starlight({
     // Starlight parses its fallback title before inheriting Astro's zh locale.
-    title: { en: 'BaseModel · 技术手册', zh: 'BaseModel · 技术手册' },
+    title: { en: 'OpenEVO · 技术手册', zh: 'OpenEVO · 技术手册' },
     description: 'OpenEVO、Agent Harness 和科研资源的可检索操作文档',
     disable404Route: true,
     customCss: ['./src/styles/app.css', './src/styles/starlight-handbook.css'],

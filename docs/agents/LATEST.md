@@ -154,7 +154,7 @@ GitHub `mykcs/basemodel`          = public website source of truth
 ordinary working PR/ref           -> public-ci-gate + cloudflare-artifact-gate; no provider deployment
 final current-base PR candidate   -> both exact-head GitHub checks + strict current-base
 main                              -> protected Vercel Production on-demand release (default)
-Vercel site                      -> https://basemodel-preview.vercel.app/ (manual release)
+Vercel site                      -> https://openevo-website.vercel.app/ (manual release; legacy basemodel-preview.vercel.app remains protected)
 Cloudflare standby               -> https://basemodel-access-standby.gemini202405.workers.dev/ (Access-protected)
 
 mykcs/openevo-experiment         = scientific experiment/result authority

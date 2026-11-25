@@ -10,7 +10,7 @@ describe('persistent Vercel final-gate range', () => {
     expect(VERCEL_FINAL_GATE_REF).toBe('ci/vercel-gate-final');
     expect(VERCEL_FINAL_BASE_REF).toBe('ci/vercel-gate-base');
     const range = read('scripts/vercel-git-range.mjs');
-    expect(VERCEL_PUBLIC_REPOSITORY_REMOTE).toBe('https://github.com/mykcs/basemodel.git');
+    expect(VERCEL_PUBLIC_REPOSITORY_REMOTE).toBe('https://github.com/mykcs/openevo-website.git');
     expect(range).toContain("'ls-remote', repositoryRemote, ref");
     expect(range).not.toContain("'ls-remote', 'origin'");
     expect(range).toContain("const liveMainRef = 'refs/heads/main'");
@@ -27,6 +27,8 @@ describe('persistent Vercel final-gate range', () => {
   it('uses a credential-free canonical remote even when Vercel has no local origin', () => {
     expect(repositoryRemoteForVercel({})).toBe(VERCEL_PUBLIC_REPOSITORY_REMOTE);
     expect(repositoryRemoteForVercel({ VERCEL_GIT_REPO_OWNER: 'mykcs', VERCEL_GIT_REPO_SLUG: 'basemodel' })).toBe(VERCEL_PUBLIC_REPOSITORY_REMOTE);
+    expect(repositoryRemoteForVercel({ VERCEL_GIT_REPO_OWNER: 'mykcs', VERCEL_GIT_REPO_SLUG: 'openevo-website' })).toBe(VERCEL_PUBLIC_REPOSITORY_REMOTE);
+    expect(() => repositoryRemoteForVercel({ VERCEL_GIT_REPO_SLUG: 'OpenEvo' })).toThrow(/unexpected Vercel Git repository/);
     expect(() => repositoryRemoteForVercel({ VERCEL_GIT_REPO_OWNER: 'other' })).toThrow(/unexpected Vercel Git owner/);
     expect(() => repositoryRemoteForVercel({ VERCEL_GIT_REPO_SLUG: 'other' })).toThrow(/unexpected Vercel Git repository/);
   });

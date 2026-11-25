@@ -15,7 +15,7 @@ for index in 0 1; do
   if docker container inspect "$container" >/dev/null 2>&1 \
     && [[ "$(docker container inspect --format '{{.State.Running}}' "$container")" == 'true' ]]; then
     running_indexes+=("$index")
-    if ! busy="$(gh api repos/mykcs/basemodel/actions/runners \
+    if ! busy="$(gh api repos/mykcs/openevo-website/actions/runners \
       --jq ".runners[] | select(.name == \"$runner_name\") | .busy" 2>/dev/null)"; then
       echo 'Refusing to stop runners because GitHub availability could not be verified.' >&2
       exit 1
