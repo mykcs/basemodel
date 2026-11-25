@@ -9,7 +9,7 @@ export function belongsToProductionProject(status) {
     const url = new URL(status?.environment_url);
     return url.protocol === 'https:' && !url.username && !url.password && !url.port
       && (url.hostname === 'openevo-website.vercel.app'
-        || /^openevo-website-/[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
+        || /^openevo-website-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
   } catch { return false; }
 }
 

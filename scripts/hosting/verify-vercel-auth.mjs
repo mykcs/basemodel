@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PROJECT_HOSTS = new Set(['openevo-website.vercel.app']);
-const STAGED_HOST = /^openevo-website-/[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/;
+const STAGED_HOST = /^openevo-website-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/;
 export const checkedPaths = ['/', '/index.html', '/og-cover.svg', '/model-data/hosting-access-probe.json'];
 
 export function parseProtectedVercelUrl(input) {
