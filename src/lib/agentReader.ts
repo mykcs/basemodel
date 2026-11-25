@@ -24,7 +24,7 @@ const curated = featureIds.map((id) => {
 
 export const readerIndex = {
   schema: "basemodel/agent-reader/v1",
-  site: "BaseModel",
+  site: "OpenEVO",
   audience: "具有站点阅读权限的研究者；网站当前 Production 受登录保护",
   status: "依据当前网站阅读合同整理的导航快照，不是实时实验状态或正式科研结论",
   routes:curated,
@@ -44,10 +44,10 @@ export const readerIndex = {
 
 export const readerSkill = [
   "---",
-  "name: basemodel-reader",
-  "description: 用于在已有访问权限下检索和理解 BaseModel 的模型、论文、SEED/OpenEVO、WebShop 科研与证据边界。只负责阅读，不授权修改或运行。",
+  "name: openevo-reader",
+  "description: 用于在已有访问权限下检索和理解 OpenEVO 网站的模型、论文、SEED/OpenEVO、WebShop 科研与证据边界。只负责阅读，不授权修改或运行。",
   "---",
-  "# BaseModel · Agent 阅读指南",
+  "# OpenEVO · Agent 阅读指南",
   "",
   "先读 /llms.txt 与 /agent/site.json，按问题选择原始研究页面、证据和参考论文。",
   "此指南仅提供导航，真实科学事实仍由研究页和科研原件拥有。",
@@ -66,7 +66,7 @@ export const readerSkill = [
 ].join("\n")+"\n";
 
 export const readerPrompt = [
-  "请用以下 BaseModel 网站摘要理解科研方向、导航与证据限制。当前网站 Production 受 Vercel 登录保护。",
+  "请用以下 OpenEVO 网站摘要理解科研方向、导航与证据限制。当前网站 Production 受 Vercel 登录保护。",
   "只能使用已有授权阅读；没有权限时说明你只有用户主动提供的目录，不能假称已浏览网站正文。",
   "站点：{{SITE_ORIGIN}}",
   "",
@@ -81,7 +81,7 @@ export const readerPrompt = [
 
 export function llmsText(){
   return [
-    "# BaseModel",
+    "# OpenEVO",
     "",
     "> 模型、Agent 经验学习与 SEED / OpenEVO WebShop 的证据工作台。导航不等于科研成功或公开传播许可。",
     "",

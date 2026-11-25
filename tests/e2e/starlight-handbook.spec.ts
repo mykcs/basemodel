@@ -16,11 +16,11 @@ for (const width of [390, 1440]) for (const theme of ['light', 'dark'] as const)
     await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
     await page.goto('/handbook/',{waitUntil:'domcontentloaded'});
     await expect(page.locator('html')).toHaveAttribute('lang','zh');
-    await expect(page.locator('h1')).toHaveText('BaseModel 技术手册');
+    await expect(page.locator('h1')).toHaveText('OpenEVO 技术手册');
     await expect(page.locator('body')).toHaveAttribute('data-reader-contract-id','handbook');
     await expect(page.locator('body')).toHaveAttribute('data-reader-attention-mode','reference');
     await expect(page.locator('#main-content h1')).toBeVisible();
-    await expect(page).toHaveTitle('BaseModel 技术手册 | BaseModel · 技术手册');
+    await expect(page).toHaveTitle('OpenEVO 技术手册 | OpenEVO · 技术手册');
     await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
     expect(await sharedShell(page)).toBe(true);
     const selectedContrast=await page.locator('#starlight__sidebar a[aria-current="page"]').evaluate(node=>{
@@ -80,7 +80,7 @@ for (const width of [390,1440]) test('handbook content remains readable without 
   const context=await browser.newContext({javaScriptEnabled:false,viewport:{width,height:900}});
   try {
     const page=await context.newPage();
-    for(const [route,title] of [['/handbook/','BaseModel 技术手册'],['/handbook/agent-harness/','ChatGPT 网页端 Harness'],['/handbook/openevo-gpu/','OpenEVO GPU 调度']] as const){
+    for(const [route,title] of [['/handbook/','OpenEVO 技术手册'],['/handbook/agent-harness/','ChatGPT 网页端 Harness'],['/handbook/openevo-gpu/','OpenEVO GPU 调度']] as const){
       expect((await page.goto(route))?.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('data-theme','light');
       await expect(page.locator('h1')).toHaveText(title);
@@ -97,7 +97,7 @@ test('shared shell rejects the detached handbook header and restores exactly', a
   await page.goto('/handbook/');
   expect(await sharedShell(page)).toBe(true);
   const original = await page.locator('[data-site-header]').evaluate(node => node.outerHTML);
-  await page.locator('[data-site-header]').evaluate(node => { node.outerHTML='<header data-site-header><a href="/handbook/">BaseModel · 技术手册</a><button>搜索</button></header>'; });
+  await page.locator('[data-site-header]').evaluate(node => { node.outerHTML='<header data-site-header><a href="/handbook/">OpenEVO · 技术手册</a><button>搜索</button></header>'; });
   expect(await sharedShell(page)).toBe(false);
   await page.locator('[data-site-header]').evaluate((node,html) => {node.outerHTML=html;},original);
   expect(await sharedShell(page)).toBe(true);
@@ -150,7 +150,7 @@ test('existing BaseModel development page reaches installed Starlight docs',asyn
   await expect(link).toBeVisible();
   await link.click();
   await expect(page).toHaveURL(/\/handbook\/$/);
-  await expect(page.locator('h1')).toHaveText('BaseModel 技术手册');
+  await expect(page.locator('h1')).toHaveText('OpenEVO 技术手册');
 });
 
 for(const route of ['/papers/','/handbook/'])for(const width of [390,768,1080])for(const theme of ['light','dark'])test(`shared menu is opaque over ${route} at ${width} ${theme}`,async({page},testInfo)=>{

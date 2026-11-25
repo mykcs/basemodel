@@ -8,16 +8,16 @@ const t = (cn: string, en: string) => zh ? cn : en;
 ---
 
 <AppLayout
-  title={t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}
+  title={t('OpenEVO 网站的开发与上线', 'How the OpenEVO website is developed and shipped')}
   description={t(
-    'BaseModel 使用 GitHub Actions 做双重代码验收，默认手动发布到受 Vercel Authentication 保护的站点，Cloudflare Access 是备用入口。',
-    'BaseModel uses two GitHub Actions acceptance gates, publishes manually to the Vercel Authentication-protected site by default, and keeps Cloudflare Access as a protected fallback.',
+    'OpenEVO 网站使用 GitHub Actions 做双重代码验收，默认手动发布到受 Vercel Authentication 保护的站点，Cloudflare Access 是备用入口。',
+    'The OpenEVO website uses two GitHub Actions acceptance gates, publishes manually to the Vercel Authentication-protected site by default, and keeps Cloudflare Access as a protected fallback.',
   )}
   locale={locale}
 >
   <div class="shell development-page">
     <header class="development-hero page-header">
-      <h1>{t('BaseModel 的开发与上线', 'How BaseModel is developed and shipped')}</h1>
+      <h1>{t('OpenEVO 网站的开发与上线', 'How the OpenEVO website is developed and shipped')}</h1>
       <p class="lede">
         {t(
           '在 GitHub 保存源码和版本，GitHub Actions 自动做浏览器测试和 Cloudflare 构建检查。合并后按额度选择：默认手动发布到受 Vercel Authentication 保护的站点；Cloudflare Access 备用站继续保留，按额度或故障情况手动更新。',
@@ -28,7 +28,7 @@ const t = (cn: string, en: string) => zh ? cn : en;
 
     <section class="development-system" aria-labelledby="development-system-title">
       <h2 id="development-system-title">{t('一条主线', 'The main path')}</h2>
-      <ol class="development-flow" aria-label={t('BaseModel 开发与上线流程', 'BaseModel development and release flow')}>
+      <ol class="development-flow" aria-label={t('OpenEVO 网站开发与上线流程', 'OpenEVO website development and release flow')}>
         <li data-role="control"><span>01</span><div><strong>ChatGPT</strong><small>{t('说清目标、审阅结果', 'set the goal, review the result')}</small></div></li>
         <li data-role="source"><span>02</span><div><strong>GitHub</strong><small>{t('源码、分支、PR、main', 'source, branches, PRs, main')}</small></div></li>
         <li data-role="accept"><span>03</span><div><strong>GitHub Actions</strong><small>{t('代码 + 浏览器验收', 'repository + browser acceptance')}</small></div></li>

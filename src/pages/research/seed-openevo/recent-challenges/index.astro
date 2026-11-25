@@ -16,7 +16,7 @@ const longRunEvidence = 'https://github.com/mykcs/openevo-experiment/blob/04d6bd
 const states = { 'sealed-result': '已封存结果', 'diagnostic-only': '仅诊断', 'protocol-only': '仅方案', 'invalid': '无效／排除', 'superseded-protocol': '已被替代' };
 const counts = Object.entries(states).map(([id,label])=>({id,label,count:HISTORICAL_RESEARCH_RECORDS.filter(r=>r.status===id).length}));
 ---
-<AppLayout title="OpenEVO 科研汇报：证据、失败与下一阶段验收｜BaseModel" description="回应科研进度、独立研究判断与方向适配：64道冻结新题的配对改善、无效测量的止损、Q09诊断暂停，以及尚待完成的同起点方法对照。以可复核的科学证据决定后续实验。" locale="zh">
+<AppLayout title="OpenEVO 科研汇报：证据、失败与下一阶段验收" description="回应科研进度、独立研究判断与方向适配：64道冻结新题的配对改善、无效测量的止损、Q09诊断暂停，以及尚待完成的同起点方法对照。以可复核的科学证据决定后续实验。" locale="zh">
   <main class="reflection evo-approved-reader evo-article" data-reader-page="research-blog" data-copy-review data-research-retrospective>
     <header class="intro evo-article__header">
       <h1>OpenEVO：我能证明什么，还欠什么关键实验</h1>

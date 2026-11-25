@@ -1,4 +1,6 @@
-# Agent Foundation Model Atlas
+# OpenEVO · Research Workbench
+
+**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. Current repository and hosting identifiers are retained until a verified compatible migration; the existing website URL remains valid and protected.
 
 ## Historical Codex dialogue archive
 
@@ -43,7 +45,7 @@ Production verification  -> deployed SHA + authentication denial + logged-in des
 
 ## 人物称谓与隐私
 
-BaseModel 的公开科研沟通资料及可编辑仓库内容，只能用 **W 老师**、**L 学长** 指代对应的两位私人关系人物；其他具体个人不得直接写姓名、姓氏与头衔、可反查昵称或未获批准的个人识别信息。规则唯一权威为 [`人物称谓与姓名隐私规范`](./docs/agents/current/person-reference-privacy-standard.md)，从根 [`AGENTS.md`](./AGENTS.md) 和 Agent 导航均可找到。
+OpenEVO 网站的公开科研沟通资料及可编辑仓库内容，只能用 **W 老师**、**L 学长** 指代对应的两位私人关系人物；其他具体个人不得直接写姓名、姓氏与头衔、可反查昵称或未获批准的个人识别信息。规则唯一权威为 [`人物称谓与姓名隐私规范`](./docs/agents/current/person-reference-privacy-standard.md)，从根 [`AGENTS.md`](./AGENTS.md) 和 Agent 导航均可找到。
 
 `npm run audit:person-privacy` 对仓库文本执行自动检测，并已纳入 `npm run verify:deploy` 与 `npm run build`；仍需要对图片、科研账号与外部 RAW 链接进行人工隐私审查。封存的旧版排版测量和两份历史路由清单保留当时原始通用称谓，不能据此认为现行网页允许不规范称呼，更不能把历史证据改写成新的测量。
 

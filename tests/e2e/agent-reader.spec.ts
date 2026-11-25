@@ -20,11 +20,12 @@ for (const viewport of [
     expect(indexRes.status()).toBe(200);
     const index=await indexRes.json();
     expect(index.schema).toBe("basemodel/agent-reader/v1");
+    expect(index.site).toBe("OpenEVO");
     expect(index.routes.length).toBeGreaterThan(5);
     expect(value).toContain(index.routes[0].title);
     const skill=await request.get("/agent/SKILL.md");
     expect(skill.status()).toBe(200);
-    expect(await skill.text()).toContain("name: basemodel-reader");
+    expect(await skill.text()).toContain("name: openevo-reader");
     const llms=await request.get("/llms.txt");
     expect(llms.status()).toBe(200);
     expect(await llms.text()).toContain("/agent/site.json");

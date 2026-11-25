@@ -23,12 +23,12 @@ const routinePrompt = t(
 );
 
 const healthPrompt = t(
-  `请按 BaseModel 的 docs/agents/current/server-storage-pressure-audit-sop.md 做一次“服务器健康扫描”。\n\n只读检查持久文件系统 df / inode、当前活跃进程与容器引用、最近新增的大型科研产物和 Passport / lifecycle 覆盖变化。优先使用已知路径与浅层元数据；不要做全盘 checksum，不要跨用户绕权，不要移动或删除任何文件，不要 broad Docker prune。\n\n最后用 ELI5 中文告诉我：现在最占空间的是什么、哪些是活跃工作集、哪些只是待收尾资产、有没有立即需要处理的风险。`,
+  `请按 OpenEVO 网站仓库的 docs/agents/current/server-storage-pressure-audit-sop.md 做一次“服务器健康扫描”。\n\n只读检查持久文件系统 df / inode、当前活跃进程与容器引用、最近新增的大型科研产物和 Passport / lifecycle 覆盖变化。优先使用已知路径与浅层元数据；不要做全盘 checksum，不要跨用户绕权，不要移动或删除任何文件，不要 broad Docker prune。\n\n最后用 ELI5 中文告诉我：现在最占空间的是什么、哪些是活跃工作集、哪些只是待收尾资产、有没有立即需要处理的风险。`,
   `Run a read-only server health scan using docs/agents/current/server-storage-pressure-audit-sop.md. Check the persistent filesystem df/inodes, live process/container references, newly large research artifacts, and Passport/lifecycle coverage changes. Use bounded metadata first; do not run whole-tree checksums, cross user boundaries, move/delete files, or broad-prune Docker. End with a plain summary of the largest storage owners, hot working set, closeout debt, and immediate risk.`
 );
 
 const closeoutPrompt = t(
-  `请按 BaseModel 的 docs/agents/current/server-artifact-governance-and-reclaim-sop.md 做一次“实验收尾归档”。\n\n目标是把一个已完成或阶段性封存的实验变成可恢复的科研资产：补齐 Run / Artifact Passport，生成 member manifest，按语义发布或复用 GitHub / Hugging Face / GHCR 远端对象，并做 fresh read / download / reload / restore 验证。更新 P0/P1/P2/P3/X 生命周期状态。\n\n本任务不授权删除；最多生成 exact reclaim proposal。Hugging Face 私有空间不足时必须停止并告诉我，公开数据不是自动兜底方案，任何 public visibility 变化都要先让我决定。`,
+  `请按 OpenEVO 网站仓库的 docs/agents/current/server-artifact-governance-and-reclaim-sop.md 做一次“实验收尾归档”。\n\n目标是把一个已完成或阶段性封存的实验变成可恢复的科研资产：补齐 Run / Artifact Passport，生成 member manifest，按语义发布或复用 GitHub / Hugging Face / GHCR 远端对象，并做 fresh read / download / reload / restore 验证。更新 P0/P1/P2/P3/X 生命周期状态。\n\n本任务不授权删除；最多生成 exact reclaim proposal。Hugging Face 私有空间不足时必须停止并告诉我，公开数据不是自动兜底方案，任何 public visibility 变化都要先让我决定。`,
   `Run campaign closeout using docs/agents/current/server-artifact-governance-and-reclaim-sop.md. Turn a sealed experiment into recoverable research assets: complete Run/Artifact Passports, build member manifests, publish or reuse GitHub/Hugging Face/GHCR objects by semantic role, and perform fresh read/download/reload/restore verification. Refresh P0/P1/P2/P3/X lifecycle state. This does not authorize deletion; stop at an exact reclaim proposal. If private Hugging Face capacity is insufficient, stop and ask before any visibility change.`
 );
 
