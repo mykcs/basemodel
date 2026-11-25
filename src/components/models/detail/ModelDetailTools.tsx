@@ -26,7 +26,7 @@ export default function ModelDetailTools({ model, locale }: { model: AtlasModel;
       '',
       zh ? '请说明需要核对的字段、当前值、期望值以及新的证据来源。' : 'Please describe the field, current value, expected value, and the evidence that should be checked.',
     ].join('\n');
-    const issueUrl = new URL('https://github.com/mykcs/basemodel/issues/new');
+    const issueUrl = new URL('https://github.com/mykcs/openevo-website/issues/new');
     issueUrl.searchParams.set('title', `[data] ${model.id}: `);
     issueUrl.searchParams.set('body', body);
     window.open(issueUrl.toString(), '_blank', 'noopener,noreferrer');

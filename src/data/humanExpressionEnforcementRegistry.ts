@@ -20,7 +20,7 @@ export const HUMAN_EXPRESSION_ENFORCEMENT_REGISTRY: HumanExpressionEnforcementRe
   ]},
   { family: 'tool-validation-substituted-for-product-acceptance', guards: [
     { kind: 'policy-test', path: 'src/lib/humanThinkingWebExpressionContract.test.ts', note: 'requires rendered topology acceptance in addition to authored diagram semantics' },
-    { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'proves the final BaseModel render preserves routed topology across responsive layouts' },
+    { kind: 'browser-gate', path: 'tests/e2e/vanilla-sd-lora-mechanism.spec.ts', note: 'proves the final OpenEVO render preserves routed topology across responsive layouts' },
   ]},
   { family: 'anticipatory-rebuttal', guards: [
     { kind: 'rendered-audit', path: 'scripts/audit-rendered-human-expression.mjs', note: 'blocks defensive/negation-first section openings' },
