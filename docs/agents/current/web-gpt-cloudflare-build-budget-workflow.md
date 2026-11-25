@@ -7,7 +7,7 @@ Status: **Cloudflare Pages Build is removed from the normal Preview and Producti
 
 ```text
 non-main -> Vercel Preview
-main     -> Vercel Production -> https://basemodel-preview.vercel.app
+main     -> Vercel Production -> https://openevo-website.vercel.app
 Cloudflare Pages -> frozen legacy rollback
 Cloudflare Pages Build -> 0 for normal work/releases
 Direct Upload / Workers helpers -> Cloudflare-specific fallback only

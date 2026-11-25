@@ -2,9 +2,9 @@
 
 **CI mode: `SPECIALIZED_CI`.**
 
-BaseModel develops a research website that helps readers understand models, methods, experiments, evidence boundaries, and reproducible next steps. The [current Wish](../wish/LATEST.md) owns product intent; research and experiment authorities own scientific claims.
+OpenEVO develops a research website that helps readers understand models, methods, experiments, evidence boundaries, and reproducible next steps. The [current Wish](../wish/LATEST.md) owns product intent; research and experiment authorities own scientific claims.
 
-**当前工程选择（用户 2026-10-30 确认）：保持 `mykcs/basemodel` GitHub 源码仓库公开**，使用公开仓库的 **标准 GitHub-hosted Actions** 进行免费独立 CI（有并发、运行时间、滥用政策及特定服务费用边界，**不是无限算力**）。将 CI 与网页部署解耦。现在必须在准确、与 `main` 同步的 PR HEAD 上同时通过 `public-ci-gate`（代码与真实浏览器）和 `cloudflare-artifact-gate`（无密钥 Worker 构建与 dry-run）；两项均由 GitHub Actions 提供，不消耗 Vercel/Cloudflare 发布额度。只有指定读者才应能访问当下受保护的网页入口；**网页登录保护不等于公开 GitHub 源码、Git 历史或以前的镜像受保护**。详见 [DESIGN.md](DESIGN.md)。
+**当前工程选择（用户 2026-10-30 确认）：保持原网站 GitHub 源码仓库公开（现名 `mykcs/openevo-website`）**，使用公开仓库的 **标准 GitHub-hosted Actions** 进行免费独立 CI（有并发、运行时间、滥用政策及特定服务费用边界，**不是无限算力**）。将 CI 与网页部署解耦。现在必须在准确、与 `main` 同步的 PR HEAD 上同时通过 `public-ci-gate`（代码与真实浏览器）和 `cloudflare-artifact-gate`（无密钥 Worker 构建与 dry-run）；两项均由 GitHub Actions 提供，不消耗 Vercel/Cloudflare 发布额度。只有指定读者才应能访问当下受保护的网页入口；**网页登录保护不等于公开 GitHub 源码、Git 历史或以前的镜像受保护**。详见 [DESIGN.md](DESIGN.md)。
 
 当前发布分工（用户 2026-11-01 更新）：GitHub Actions 做两道 PR 门禁；**Vercel Authentication 保护的 Production 是默认受保护的手动发布端**（只从已合并的 `main` 显式发布，先暂存核验再推广）；**Cloudflare Workers + Access 是按额度与健康状况手动使用的备用站**。普通 PR 和 `main` 不再自动触发 Vercel 部署。CircleCI 和 Mac runner 只保留故障恢复用途；不让本地 Mac 或科研 GPU 承担日常 CI。没有为普通 PR 自动打开额外 Cloudflare/Vercel 构建。
 

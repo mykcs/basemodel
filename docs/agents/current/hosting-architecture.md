@@ -73,7 +73,7 @@ Persistent final-gate identity is anchored to live `main`, not to the previous g
 - production branch: `main`
 - build: `npm run build`
 - canonical project domain: `https://openevo-website.vercel.app`
-- legacy compatibility alias: `https://basemodel-preview.vercel.app` (same protected project, retained; not a separate deployment)
+- retired-name migration: the owner requested removal of `basemodel-preview.vercel.app`; it is not a current entrypoint. Verify actual removal at the provider. Preserve historical deployment receipts and the existing SSO policy.
 
 Public GHA `ci-ui-gate.mjs` and the retained manual fallback paths share `scripts/vercel-ui-plan.ts`; skip/focused/full classification therefore has one owner. Shared/global/unknown changes fail closed to both complete canonical engine populations. Route-owned/content changes may use focused mapped coverage. Lab/server-relevant changes run the dedicated 6-case active-Lab gate in Public PR CI. `vercel-ui-gate.mjs` remains available as fallback/history-compatible tooling but is not part of the ordinary Vercel build command.
 

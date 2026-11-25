@@ -1,6 +1,6 @@
 # OpenEVO · Research Workbench
 
-**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. The existing repository and Vercel project were renamed in place to `openevo-website`. The new protected domain is https://openevo-website.vercel.app/; the old https://basemodel-preview.vercel.app/ remains a protected compatibility alias. Both served the same existing READY Production at the migration check on 2026-11-25. A new source release is separate; do not equate naming changes with deploying a new commit.
+**Product identity:** OpenEVO is the research website and workbench name. “Base Model” remains the scientific term for the foundation model. The existing repository and Vercel project were renamed in place to `openevo-website`. The new protected domain is https://openevo-website.vercel.app/; the owner requested retirement of the old `basemodel-preview.vercel.app` alias. Use only the new canonical domain for current links; verify actual provider removal separately. Both domains served the same READY Production at the initial migration check on 2026-11-25. A new source release is separate; do not equate naming changes with deploying a new commit.
 
 ## Historical Codex dialogue archive
 
