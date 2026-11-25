@@ -110,6 +110,7 @@ const compareTrayLabels = {
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f4ef" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16130e" />
     <link rel="icon" href={`${base}favicon.svg`} />
+    <link rel="help" type="text/markdown" href={`${base}agent/SKILL.md`} title="Agent 阅读指南" />
     <link rel="canonical" href={canonicalUrl} />
     {!shouldNoIndex && <link rel="sitemap" href={`${base}sitemap.xml`} />}
     {alternateUrls.map((alt) => <link rel="alternate" hreflang={alt.loc === 'zh' ? 'zh-CN' : 'en'} href={alt.href} />)}

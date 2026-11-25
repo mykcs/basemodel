@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { sitewideSpacing, spacingBuildEvidence } from './scripts/lib/sitewide-spacing.mjs';
 
 const VERCEL_PRODUCTION_URL = 'https://basemodel-preview.vercel.app';
 const LEGACY_PAGES_URL = 'https://basemodel.pages.dev';
@@ -19,10 +20,10 @@ export default defineConfig({
   // meaningful spaces between adjacent inline elements. Preserve the Astro 6
   // HTML-aware behavior so the framework upgrade does not change rendered copy.
   compressHTML: true,
-  vite: { plugins: [tailwindcss()] },
+  vite: { plugins: [tailwindcss()], css: { postcss: { plugins: [sitewideSpacing()] } } },
   // The native /sitemap.xml owns indexing policy. Explicitly configure the
   // sitemap integration so Starlight cannot add an unfiltered second sitemap.
-  integrations: [react(), sitemap({ filter: () => false }), starlight({
+  integrations: [react(), spacingBuildEvidence(), sitemap({ filter: () => false }), starlight({
     // Starlight parses its fallback title before inheriting Astro's zh locale.
     title: { en: 'BaseModel · 技术手册', zh: 'BaseModel · 技术手册' },
     description: 'OpenEVO、Agent Harness 和科研资源的可检索操作文档',

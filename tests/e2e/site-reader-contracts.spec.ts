@@ -19,8 +19,41 @@ const defaultBudgets: Record<ReaderAttentionMode, { maxInteractive: number; maxH
   comparison: { maxInteractive: 16, maxHeadings: 5, maxTextChars: 1_700 },
 };
 
+for (const theme of ['light','dark'] as const) {
+  test(`exploration keeps all five orientation answers in the short desktop screen: ${theme}`,async({page},info)=>{
+    await page.setViewportSize({width:1280,height:633});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/openevo-2-0/exploration/',{waitUntil:'domcontentloaded'});
+    await page.evaluate(()=>document.fonts.ready);
+    const orientation=page.locator('[data-research-orientation]');
+    const answers=orientation.locator('[data-orientation-field] dd');
+    await expect(answers).toHaveCount(5);
+    for(const answer of await answers.all()){
+      await expect(answer).toBeVisible();
+      const box=await answer.boundingBox();
+      expect(box!.y+box!.height).toBeLessThanOrEqual(635);
+      expect(await answer.evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeGreaterThanOrEqual(14);
+    }
+    const box=await orientation.boundingBox();
+    expect(box!.y+box!.height).toBeLessThanOrEqual(635);
+    await page.screenshot({path:info.outputPath('exploration-first-screen.png'),animations:'disabled'});
+  });
+  test(`Gated Delta phone continuation is usable without competing with the introduction: ${theme}`,async({page},info)=>{
+    await page.setViewportSize({width:390,height:844});
+    await page.addInitScript(value=>localStorage.setItem('atlas-theme',value),theme);
+    await page.goto('/research/seed-openevo/study/capability-exploration/gated-delta-sd-lora/',{waitUntil:'domcontentloaded'});
+    await page.evaluate(()=>document.fonts.ready);
+    const continuation=page.locator('.gds-hero__history a');
+    await expect(continuation).toBeVisible();
+    expect((await continuation.boundingBox())!.height,'history continuation touch target').toBeGreaterThanOrEqual(44);
+    const chapter=await page.locator('#recurrence-title').boundingBox();
+    expect(chapter!.y,'derivation follows the phone introduction').toBeGreaterThanOrEqual(844*.8);
+    await page.screenshot({path:info.outputPath('gated-delta-first-screen.png'),animations:'disabled'});
+  });
+}
+
 for (const viewport of viewports) {
-  test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }) => {
+  test(`site reader contracts stay visible in the ${viewport.name} first screen`, async ({ page }, info) => {
     // This case visits all 71 route contracts, including hydration settlement.
     // Allow the complete walk on cloud WebKit; reader budgets below stay fixed.
     test.setTimeout(600_000);
@@ -28,6 +61,7 @@ for (const viewport of viewports) {
     const failures: string[] = [];
 
     for (const contract of SITE_READER_CONTRACTS) {
+      const previousFailures = failures.length;
       const response = await page.goto(contract.samplePath, { waitUntil: 'domcontentloaded' });
       if (!response) {
         failures.push(`${contract.id}: no response for ${contract.samplePath}`);
@@ -90,7 +124,7 @@ for (const viewport of viewports) {
           failures.push(`${contract.id}: declared first-viewport message is not visible`);
         } else {
           const box = await primary.boundingBox();
-          if (!firstViewportMessageFits(box, viewport.height)) failures.push(`${contract.id}: declared first-viewport message falls below the first screen`);
+          if (!firstViewportMessageFits(box, viewport.height)) failures.push(`${contract.id}: declared first-viewport message falls below the first screen; geometry=${JSON.stringify(box)}`);
         }
       }
 
@@ -127,7 +161,7 @@ for (const viewport of viewports) {
           }));
           const primaryHeading = root.querySelector('h1');
           const primaryHeadingSize = primaryHeading ? Number.parseFloat(getComputedStyle(primaryHeading).fontSize) : 0;
-          const headings = [...root.querySelectorAll('h1,h2,h3')].filter((el) => {
+          const headingElements = [...root.querySelectorAll('h1,h2,h3')].filter((el) => {
             if (!inFirstScreen(el)) return false;
             if (el.tagName === 'H1') return true;
             const rect = el.getBoundingClientRect();
@@ -137,7 +171,13 @@ for (const viewport of viewports) {
             // before the final fifth or carries equal/greater visual weight than H1.
             // This preserves the attention budget without incentivizing fake spacer/min-height hacks.
             return rect.top < innerHeight * 0.8 || fontSize >= primaryHeadingSize;
-          }).length;
+          });
+          const headings = headingElements.length;
+          const headingTargets = headingElements.map(el => ({
+            text: el.textContent?.trim().slice(0, 80),
+            y: el.getBoundingClientRect().top,
+            size: getComputedStyle(el).fontSize,
+          }));
           const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
           let textChars = 0;
           while (walker.nextNode()) {
@@ -151,17 +191,20 @@ for (const viewport of viewports) {
             const rect = range.getBoundingClientRect();
             if (rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < innerHeight) textChars += text.length;
           }
-          return { interactive, headings, textChars, interactiveTargets };
+          return { interactive, headings, textChars, interactiveTargets, headingTargets };
         });
 
         const budget = contract.firstViewportBudget ?? defaultBudgets[contract.attentionMode];
         if (metrics.interactive > budget.maxInteractive) failures.push(`${contract.id}: ${metrics.interactive} first-screen interactive targets exceed budget ${budget.maxInteractive}; visible=${JSON.stringify(metrics.interactiveTargets)}`);
-        if (metrics.headings > budget.maxHeadings) failures.push(`${contract.id}: ${metrics.headings} first-screen headings exceed budget ${budget.maxHeadings}`);
+        if (metrics.headings > budget.maxHeadings) failures.push(`${contract.id}: ${metrics.headings} first-screen headings exceed budget ${budget.maxHeadings}; visible=${JSON.stringify(metrics.headingTargets)}`);
         if (metrics.textChars > budget.maxTextChars) failures.push(`${contract.id}: ${metrics.textChars} first-screen text characters exceed budget ${budget.maxTextChars}`);
       }
 
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2);
       if (overflow) failures.push(`${contract.id}: page-level horizontal overflow`);
+      if (failures.length > previousFailures) {
+        await page.screenshot({ path: info.outputPath(`${contract.id}-${viewport.name}-first-screen.png`), animations: 'disabled' });
+      }
     }
 
     expect(failures).toEqual([]);

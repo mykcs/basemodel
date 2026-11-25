@@ -490,6 +490,12 @@ jobs:
         if: needs.plan.outputs.mode == 'full'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
+          # The index probe above uses GitHub's REST API. Select that same
+          # authenticated run lookup instead of the independent internal
+          # artifact list, which can lag after a successful upload.
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
           artifact-ids: ${{ steps.evidence.outputs.artifact-id }}
           path: artifact-roundtrip
 

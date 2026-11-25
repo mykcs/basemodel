@@ -1,5 +1,24 @@
 # Latest Agent handoff
 
+## 2026-11-20 #1026 exact-head失败跟进 · 隔离克隆未提交
+
+当前基线仍为 `fix/sitewide-design-contract-20261120@de3f66e86562ac3819c37c7fb50083b54febf7b8`；[44627761650](https://github.com/mykcs/basemodel/actions/runs/44627761650)失败，下面旧候选的本地通过不构成浏览器PASS。完整job日志确认导读溢出发生在 `openevo-2-0/exploration/`（Chromium662.78125、WebKit687.96875 >635），手机Gated Delta第二标题y671.296875；17页token批次仍180秒超时。
+
+当前工作区候选：探索页复用现有双列intro与panel/inline衬距；Gated Delta历史链接使用真实44px触控目标。科学文案/HTML、字体及预算不变。静态全路由逐次同步测量token响应与恢复，代表路由仍等待两帧；路由阶段/耗时与超时失败被保留，CI矩阵和180秒上限未改。
+
+本地272页构建、16个确定性constituent（tsx同loader回退）、942 structural +39 behavior、23 continuation及严格spec类型检查PASS。真实浏览器未执行：sandbox拒绝localhost socket，浏览器版本不匹配。**未commit/push/merge/deploy/换分支**；唯一写入者为本隔离克隆任务，由用户审阅后集成。下一步是集成候选后取得同一head完整双引擎CI证据；具体候选与失败来源见[现有证据页](evidence/sitewide-design/2026-11-20/README.md#de3f66e8-failed-ci-follow-up-uncommitted)。
+
+
+## 2026-11-20 全站排版、间距与日期 · #1026早期候选记录
+
+[PR #1026](https://github.com/mykcs/basemodel/pull/1026) 的实现已在任务分支本地完成；272个页面的实际CSS依赖、有限间距/阅读宽度执行层、内联和动态出口、年月日显示与历史ledger检查通过。`verify:deploy`的22条命令全部通过（本执行器只把需要Unix IPC的tsx启动器换为同一loader）；历史字体ledger未刷新。详细数字和源码/HTML哈希在[本地收据](evidence/sitewide-design/2026-11-20/README.md)，标准继续由现有[全站排版owner](current/sitewide-typography-standard.md)与[日期owner](current/website-engineering-standard.md#11-全站可读日期的统一显示)持有。
+
+**正式CI反馈：** 初始候选 `d4d93442` 的 [Public PR CI 44622799986](https://github.com/mykcs/basemodel/actions/runs/44622799986) 在4个页面首屏契约处失败。现有4个布局owner已完成定点间距/对齐修复，文案、字体、科研值及所有UX阈值保留；新构建272页、21个精确continuation测试和40个读者测试通过。详细失败坐标和新文件身份见[修复收据](evidence/sitewide-design/2026-11-20/first-screen-correction.json)。旧候选的34页设计批次还触发180秒超时，执行层已拆为17页批次、复用导航页并保留逐页partial证据；全部272路由、角色和原断言不变。修复后仍需新head的完整双引擎验收，初始候选不具备合并条件。
+
+**作用域修正：** 后继候选9631bf67被既有机制图局部scope规则拦截，未进入浏览器。间距现通过共享导读owner的继承变量传递；scope规则不变。完整147文件941个structural测试、22个continuation和272页重建通过，见[新源码收据](evidence/sitewide-design/2026-11-20/scope-owner-correction.json)。
+
+**仍待正式验收：** 本地浏览器被执行器能力阻挡，不能声称computed或截图PASS。全272页的440×956/1440×1000、Chromium/WebKit实际消费检查已接入现有完整CI分片；新probe对变更和恢复都等待两帧。当前候选仍需同一head的`public-ci-gate`、`cloudflare-artifact-gate`、受保护合并和部署身份/真实页面验收。下面发布拓扑保持不变，旧候选绿灯不转移到本PR。
+
 ## 2026-11-01 Vercel default / Cloudflare protected standby — current user decision
 
 **Release preference now: Vercel Authentication Production by default, Cloudflare Workers + Access as the protected standby.** The single main-only GitHub Actions selector in [PR #979](https://github.com/mykcs/basemodel/pull/979) preselects `provider=vercel`, with no-spend `operation=plan`; only explicit `deploy` publishes. [PR #980](https://github.com/mykcs/basemodel/pull/980) fixed the Vercel API identity check, and [run #41287762998](https://github.com/mykcs/basemodel/actions/runs/41287762998) successfully staged/promoted exact `main@7cf12902` under Vercel Authentication, with SHA/SSO/route checks. Cloudflare keeps its existing Access-protected last-good SHA and can be selected any time without editing CI. There is no shared domain or automatic traffic switching; authenticated desktop/mobile visual QA remains a separate release requirement.

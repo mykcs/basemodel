@@ -41,6 +41,16 @@ const assertCloudFigureSafety = (source: string) => {
   expect(indexStep.env).toEqual({ GH_TOKEN: '${{ github.token }}', FIGURE_ACCEPTED_ARTIFACT_ID: '${{ steps.evidence.outputs.artifact-id }}' });
   expect(indexStep.run).toBe('node scripts/wait-for-cloud-figure-artifact.mjs');
   expect(aggregate.steps.indexOf(indexStep) + 1).toBe(aggregate.steps.indexOf(downloadStep));
+  // The pinned download action selects its public REST lookup only when a
+  // github-token is provided. Keep index wait and actual download on that
+  // same run/ID/credential path; a stale internal list cannot attest absence.
+  expect(downloadStep.with).toEqual({
+    'github-token': '${{ github.token }}',
+    repository: '${{ github.repository }}',
+    'run-id': '${{ github.run_id }}',
+    'artifact-ids': '${{ steps.evidence.outputs.artifact-id }}',
+    path: 'artifact-roundtrip',
+  });
   for (const [laneName, lane] of Object.entries(workflow.jobs) as [string, typeof job][]) {
     expect(lane['runs-on']).toBe('ubuntu-24.04');
     const permissions = laneName === 'cloud-figure-evidence' ? { actions: 'read', contents: 'read' }

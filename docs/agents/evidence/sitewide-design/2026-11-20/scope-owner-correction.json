@@ -1,0 +1,159 @@
+{
+  "status": "LOCAL_SCOPE_CORRECTION_VERIFIED_EXACT_HEAD_BROWSER_PENDING",
+  "parentCandidate": "9631bf676122a710ec89d44c8cf6667e3c8cbdf6",
+  "failedRuns": [
+    "https://github.com/mykcs/basemodel/actions/runs/44626431427",
+    "https://github.com/mykcs/basemodel/actions/runs/44626431395"
+  ],
+  "failure": "The existing Vercel hosted UI gate planner forbids :global selectors in the locally owned mechanism-map component. The first-screen correction introduced one such descendant selector. Deterministic CI failed before browser allocation.",
+  "correction": "The map now sets --article-orientation-field-padding only on its own desktop article. ResearchOrientation retains its existing fields selector and reads this inherited property with the exact former .72rem .8rem fallback. The intended mechanism density stays at the existing inline8/heading12 roles without cross-component selector ownership.",
+  "files": {
+    "src/components/research/OpenEvoMechanismMap.astro": {
+      "sha256": "56586ca814ede71c2610f3803f3007952201b8020e8c585f0973223b52aa94c0",
+      "bytes": 29552
+    },
+    "src/components/research/ResearchOrientation.astro": {
+      "sha256": "1bef6d9663f0bb2328951d4f240f9f7298d2717b9ecaa5e18955e816b4db0d2d",
+      "bytes": 11288
+    },
+    "scripts/lib/typography-intelligence-ui-delta.mjs": {
+      "sha256": "0ff6572124cb33c2e6dc3a3df06adf3215bf3d8ade154c398eb0e82e3b5596f2",
+      "bytes": 21765
+    },
+    "scripts/lib/typography-ledger-continuation.test.mjs": {
+      "sha256": "2d844a9a073c37347a64fe0b0f29c1ae45926aae7e4e763a25983f947acbd75e",
+      "bytes": 23012
+    },
+    "docs/agents/LATEST.md": {
+      "sha256": "7ba3f475fff732edf0e73228cf7f047408683167668c4bf880faaed0cf4eda62",
+      "bytes": 36670
+    },
+    "docs/plans/sitewide-design-contract-20261120.md": {
+      "sha256": "68b2471c675271a3a20f45591a0e1db9158df402f232543c50a38bbd6a25c38a",
+      "bytes": 4992
+    },
+    "docs/agents/evidence/sitewide-design/2026-11-20/README.md": {
+      "sha256": "e5779dedfc743254f49fa2e0140d097af553aaadb4d69dd34cea345244e314e4",
+      "bytes": 8477
+    }
+  },
+  "verification": {
+    "structural": {
+      "command": "npm run test:structural",
+      "files": 147,
+      "tests": 941,
+      "failed": 0,
+      "includesFormerFailingPlanner": true
+    },
+    "sourceContinuations": {
+      "tests": 22,
+      "failed": 0,
+      "priorSourcePreserved": true
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "PASS",
+      "routes": 272
+    },
+    "builtDesign": {
+      "command": "node scripts/audit-sitewide-typography.mjs --json reports/sitewide-design/route-design.json",
+      "status": "PASS"
+    },
+    "typographyLedger": {
+      "historical": 5491,
+      "current": 5528,
+      "pending": 0,
+      "rewritten": false,
+      "currentSourceFingerprint": "52b7158347327ac310239989a997d7a873a123236ebaec9f7eb6f1fd7e542181"
+    },
+    "browser": "Not run locally. Existing complete two-engine CI and original first-screen UX assertions remain mandatory; no rendering pass claimed."
+  },
+  "designSummary": {
+    "rendered_routes": 272,
+    "routes_with_shared_design": 272,
+    "explicit_redirects": 0,
+    "attached_css_documents": 572,
+    "attached_spacing_declarations": 8988,
+    "dynamic_spacing_sinks": 7,
+    "figures": 71,
+    "tables": 138,
+    "routes_with_figures": 25,
+    "routes_with_tables": 62,
+    "css_owners": 40,
+    "font_declarations": 672,
+    "font_size_literals_remaining": 78,
+    "invalid_inherited_font_shorthands": 0,
+    "major_legacy_css_owners": [
+      [
+        "src/styles/advisor-ten-approved-reader.css",
+        25
+      ],
+      [
+        "src/styles/openevo-research-blogs.css",
+        23
+      ],
+      [
+        "src/styles/research-article.css",
+        12
+      ],
+      [
+        "src/styles/research-booktabs.css",
+        9
+      ],
+      [
+        "src/styles/site.css",
+        3
+      ],
+      [
+        "src/styles/actionable-content.css",
+        1
+      ],
+      [
+        "src/styles/components/header.css",
+        1
+      ],
+      [
+        "src/styles/interactive-research-explainer-core.css",
+        1
+      ],
+      [
+        "src/styles/interactive-research-explainer-methods.css",
+        1
+      ],
+      [
+        "src/styles/starlight-handbook.css",
+        1
+      ]
+    ],
+    "exact_Q03_article_count": 1
+  },
+  "spacingSummary": {
+    "sourceDeclarations": 6290,
+    "sourceNormalized": 5217,
+    "sourceExceptions": 67,
+    "sourceReadingMeasures": 108,
+    "compilationRecords": 10167,
+    "compiledNormalizations": 4759,
+    "roles": {
+      "prose": 1354,
+      "list": 43,
+      "heading": 581,
+      "section": 348,
+      "panel": 350,
+      "stack": 6464,
+      "inline": 314,
+      "control": 382,
+      "gutter": 88
+    },
+    "exceptions": 153
+  },
+  "unchanged": [
+    "The planner scope restriction",
+    "All first-screen product thresholds",
+    "All visible copy and scientific data",
+    "All typography declarations",
+    "The complete 272 routes x 2 viewports x 2 engines browser matrix",
+    "The 16 batches per viewport and partial evidence behavior published in parent candidate"
+  ],
+  "sourceIdentity": "These local hashes are the new correction delta only; previous browser and source receipts remain historical."
+}

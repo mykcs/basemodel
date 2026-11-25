@@ -1,5 +1,6 @@
 export const bilingualStaticPaths = [
   '/',
+  '/agent/',
   '/models/',
   '/families/',
   '/compare/',
@@ -64,6 +65,7 @@ export const zhOnlyCompatibilityPaths = [
 ] as const;
 
 export const zhOnlyStaticPaths = [
+  '/research/seed-openevo/study/parameter-memory-report/',
   '/guide/today/',
   '/research/seed-openevo/study/results/why-it-kept-failing/',
   '/research/seed-openevo/study/results/first-positive-transfer/',

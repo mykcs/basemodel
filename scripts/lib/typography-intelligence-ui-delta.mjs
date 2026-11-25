@@ -120,10 +120,50 @@ export const intelligenceTypographyDelta = {
   ],
 };
 
-/** Exact content-only source changes; historical observations stay historical.
+/** Exact content or value-preserving source changes; historical observations stay historical.
  * All typography declarations remain reconciled against the sealed inventory.
  * Changed rendered surfaces require their separate cloud browser receipts. */
 export const contentReorganizationProofs = {
+  "src/components/research/OpenEvoSuccessorExplorationMap.astro": {
+    "currentSourceSha256": "2e119d53f2aa94e5c5d5b2c5458f8bf655f4f3c735c2e31dcca2304eac9518e2",
+    "priorSourceSha256": "3734580d6d7e90bebaeee05f6cf4bc268b7c335544e073871366ed34179431eb",
+    "reason": "2026-11-20 #1026 follow-up to FAILED exact-head de3f66e8 / Public PR CI 44627761650: full Chromium and WebKit job logs identify exploration orientation bottoms 662.78125 and 687.96875 at 1280x633, above the unchanged 635px maximum. Keep the five fields, all HTML/copy, and every font declaration byte-identical. At desktop widths restore the existing two-column title/lede composition and use shared panel/inline spacing via existing ResearchOrientation variables. No hiding, spacer or new type scale. Source reconstruction is deterministic evidence only; fresh exact-head browser geometry remains PENDING."
+  },
+  "src/components/research/ResearchOrientation.astro": {
+      "currentSourceSha256": "1bef6d9663f0bb2328951d4f240f9f7298d2717b9ecaa5e18955e816b4db0d2d",
+      "priorSourceSha256": "7b94cfba4517250cc796f295f1d1326816666aa85b639b074b2e37efb907c5c9",
+      "reason": "2026-11-20 #1026 scope correction: candidate 9631bf67 was rejected by the existing mechanism-map isolation planner because the map used a :global descendant selector. Keep the planner restriction unchanged. The shared ResearchOrientation field owner now reads one inherited article-orientation-field-padding custom property with its exact former .72rem .8rem fallback. Only the mechanism map sets this local density to existing inline/heading rhythm roles. All other routes, source text and font declarations retain their prior inputs. Exact reversal reconstructs the former owner source; current-head full UI acceptance remains required."
+  },
+  "src/components/research/OpenEvoExperimentArchive.astro": {
+      "currentSourceSha256": "6afaba2dc42be7b244d0124b715dd4b512a8bc69c52325680b54e55b64edebde",
+      "priorSourceSha256": "6b6255604f778b9e8be82855e157b50f9295123d95854e21043426f9022027a7",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the archive h1 at y=532.53125 in a 1280x633 viewport. Align its existing grid cells at the start so the primary title is not pushed down by the longer adjacent explanation. No source text, font, data, or heading budget changes. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+  },
+  "src/components/research/OpenEvoMechanismMap.astro": {
+      "currentSourceSha256": "56586ca814ede71c2610f3803f3007952201b8020e8c585f0973223b52aa94c0",
+      "priorSourceSha256": "4a40f9b7bb8f7448b855d911855142621af9497ec95239f1d380a41400bafc57",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 measured the five-field orientation bottom at 668.1875 in a 1280x633 viewport in both Chromium and WebKit. Use the existing panel inset and inline field density at desktop widths; keep every visible field, existing typography and scientific boundary. The intermediate source 0505b2dd0158df55324eca5fbf169f9f90b404e4f9012016cac2e519f068d364 at candidate 9631bf67 failed the existing local-scope planner due to :global. The same field density now passes by inherited custom property to its shared ResearchOrientation owner; the local-scope gate remains intact. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions."
+  },
+  "src/components/research/OpenEvoGatedDeltaSdLoraExplainer.astro": {
+      "currentSourceSha256": "75d1e82677781970178d8d4baee3601a703bee4693a1286260c3dba2f944cc95",
+      "priorSourceSha256": "cb1a6e04c0bcd3e091be60090d7d1ee27259f607f174e43a98eefcab361cd5b7",
+      "reason": "2026-11-20 #1026 first-screen correction: Public PR CI 44622799986 at candidate d4d93442 detected two competing phone first-screen headings against the unchanged budget of one. Use the shared section spacing for the derivation chapter following the introduction. This is a normal chapter boundary, with no artificial height, hidden content, or changed heading/font size. Exact reversal tests preserve the preceding source bytes. Historical observations remain invalidated; the new candidate requires full Chromium/WebKit and the unchanged UX assertions. Follow-up: this spacing-only candidate still FAILED in exact-head run 44627761650 (h2 y671.296875 at 390x844). The current candidate adds a genuine 44px history-link touch target without changing text, fonts or attention budgets; its browser result is still PENDING."
+  },
+  "src/styles/tokens.css": {
+    "currentSourceSha256": "7e77b75eae21c33e0648f8dceeef449244bbc832e930957eccb0ba1403c78b73",
+    "priorSourceSha256": "7ac2f8ef309ea4aa49e5491eb96bcc25b54c42251f6f6feacdcb62818ab60e88",
+    "reason": "2026-11-20 #1026: add finite spacing aliases/relative rhythm consumed by every compiled CSS entry. Preserve every existing font, type-size, weight, leading and color value. Link the legacy type-reading-measure alias to the same reading width. The previously winning 68ch reading measure moves here from design-refinement.css; retire the stale 720px/72ch override chain. Source reconstruction tests retain the prior sealed bytes. Historical observations remain invalidated and fresh all-route Chromium/WebKit evidence is required."
+  },
+  "src/styles/visual-upgrade.css": {
+    "currentSourceSha256": "97ad749c43b307aa98700074f0b59052a6a533cd61efddbb3d4047cd37e59329",
+    "priorSourceSha256": "9296c259dc03812e084d9cb85637a9a457d0ffab4fdc7394c3c085d15ec77bd0",
+    "reason": "2026-11-20 #1026: remove only the superseded 72ch reading-width declaration. tokens.css now owns the prior final 68ch measure. All remaining source bytes, scientific values and typography declarations are unchanged; retain the original proof and require current browser acceptance."
+  },
+  "src/styles/site.css": {
+    "currentSourceSha256": "d3a6c68e2218ae6962232af5668e322fbd5f7a9840fb371e691033a0e1e65c08",
+    "priorSourceSha256": "b87de801460715bfce262ddadef3ae65c09c47c957d48b4f59227d5f87b6d440",
+    "reason": "2026-11-20 #1026: 87 existing margin/padding/gap declarations consume existing shared spacing tokens (91 references); add paragraph/list rhythm and reading measure, retire two shadowed shell widths, and bind ordinary strong/b to its existing weight token via one separately classified declaration. Reversing these exact changes reconstructs the sealed prior CSS byte for byte. The compiler separately normalizes ordinary spacing and reading measures; historical fonts and scientific declarations are not relabelled as new evidence. Current built-route CSS reachability and separate 440x956/1440x1000 Chromium/WebKit runtime evidence are required; historical screenshots are not reused."
+  },
   "src/components/research/SeedOpenEvoResearchDetail.astro": {
     "currentSourceSha256": "c70c5287fda5be80b4e5ffd8e431721691e6f730a3021751e5e65d863cbf820e",
     "priorSourceSha256": "4229fbbf7a71bf9c8a603afea471628b8ca02bfb2bd57e2deb734bdbb7e9a67c",
@@ -145,9 +185,9 @@ export const contentReorganizationProofs = {
     "reason": "Content directories reorganized and duplicate summaries removed; all classified typography declarations retained. Historical rendered text/geometry is invalidated; current cloud browser evidence is required."
   },
   "src/components/research/OpenEvoExperimentIndex.astro": {
-    "currentSourceSha256": "691b2de22b0b452b0ee85bcd263aad8e0e331e06216ccf9d04f1fa5f2cb46d17",
+    "currentSourceSha256": "932f10b60cf92d534034feb198a65502384c2ad2cbf77897839214f7b96d98d7",
     "priorSourceSha256": "551d54025dc98b4dce4ffc89acb2ac5e30150d68e84837b7e56dd76d18f927da",
-    "reason": "2026-11-02 owner privacy correction: remove the public URL to a private meeting RAW and replace it with a non-link disclosure. One markup line only; no CSS/typography declaration changed. Earlier observations remain historical; exact-head browser checks must verify the new rendered scientific source section."
+    "reason": "2026-11-02 owner privacy correction: remove the public URL to a private meeting RAW and replace it with a non-link disclosure. One markup line only; no CSS/typography declaration changed. 2026-11-20: the owner-approved OpenEVO stage report is linked from the study index with Chinese-only routing and a bilingual pointer; no original study content, experiment data, source privacy or typography declarations changed. Previous source identities and rendered observations remain historical; new exact-head desktop and phone browser checks are required."
   },
   "src/components/research/SeedOpenEvoResearchNav.astro": {
     "currentSourceSha256": "20083c9a182beaa07fc8cab0391e030a40ee6f82ef9a9578cccf72592e0f3c21",
