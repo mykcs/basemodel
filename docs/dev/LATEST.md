@@ -15,3 +15,5 @@ BaseModel develops a research website that helps readers understand models, meth
 **已取代的旧设想：** 2026-10-29 提出的“低频时将仓库改为私有”仅保留在 [`CI/PRIVATE_REPOSITORY_STRATEGY.md`](CI/PRIVATE_REPOSITORY_STRATEGY.md) 作为历史比较；**当前不执行私有化**。若未来出现必须隐藏源码的真实需求，重新评估源代码公开风险、私有 CI 额度和等价验收，再另行决策。现有站点对外链接和访问策略由 [`CI/REVERSIBLE_HOSTING.md`](CI/REVERSIBLE_HOSTING.md) 指引；没有自有域名时只能**切换不同受保护网址**，无法把 `.vercel.app` 变成 `.workers.dev`。
 
 [DESIGN.md](DESIGN.md) explains the choice. [The current hosting contract](../agents/current/hosting-architecture.md), [release policy](../agents/current/deployment-policy.md), workflow files, branch rules, and live provider state own the mutable details and required evidence.
+
+Feature goals and current/better design: [Feature Design](../design/features/README.md). This is part of Design, not a separate governance owner.
