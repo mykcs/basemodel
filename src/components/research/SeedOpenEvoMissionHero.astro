@@ -1,6 +1,7 @@
 ---
 import { localePath, type Locale } from '../../i18n';
 import { openEvoScientificState } from '../../lib/openEvoScientificState';
+import { humanFreshnessText } from '../../lib/readableDate.js';
 interface Props { locale: Locale; compact?: boolean }
 const { locale, compact = false } = Astro.props;
 const zh = locale === 'zh';
@@ -30,7 +31,7 @@ const chain = [
     <summary>{t('实验状态与来源', 'Experiment state and sources')}</summary>
     <dl class="mission-status">
       <div><dt>{t('科学事实的总账（source of truth）','Scientific source of truth')}</dt><dd>openevo-experiment</dd></div>
-      <div><dt>{t('最近核验的默认分支（main snapshot）','Last checked default branch (main snapshot)')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {openEvoScientificState.checkedAt}</dd></div>
+      <div><dt>{t('最近核验的默认分支（main snapshot）','Last checked default branch (main snapshot)')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.phase} · {humanFreshnessText(openEvoScientificState.checkedAt,locale)}</dd></div>
       <div><dt>{t('当前实验状态（live state）','Live experiment state')}</dt><dd>{t('工作分支 → 实验总表（campaign）→ 实验对账（reconciliation）','working branch → experiment ledger (campaign) → reconciliation')}</dd></div>
       <div><dt>{t('当前默认 main 的 GPU 权限','GPU permission on checked main')}</dt><dd>{openEvoScientificState.defaultBranchSnapshot.gpuAllocationAllowed ? t('已授权；启动前仍要现场核验','Authorized; live checks are still required before launch') : t('未授权；恢复训练需要新的执行许可','Not authorized; training resumption needs new execution approval')}</dd></div>
     </dl>
@@ -38,7 +39,7 @@ const chain = [
     <figure class="mission-chain" aria-labelledby="mission-chain-caption">
       <figcaption id="mission-chain-caption"><span>{t('研究里的四种东西','Four things in the study')}</span><strong>{t('模型、学习方法、任务环境和实验记录是四个不同变量。把它们混在一起，就会把“模型变了”“任务变了”和“测量方式变了”误当成同一种变化。','Model, learning method, task environment, and experiment record are different variables. Mixing them can make a model change, a task change, and a measurement change look like the same thing.')}</strong><span class="mission-chain__swipe-hint">{t('横向滑动查看完整实验步骤','Swipe horizontally to inspect all experiment steps')}</span></figcaption>
       <ol>{chain.map((node,index)=><li><a href={node.href}><span>{String(index+1).padStart(2,'0')}</span><small>{node.eyebrow}</small><strong>{node.title}</strong><p>{node.body}</p></a></li>)}</ol>
-      <p class="mission-history">{t(`seed3090 与 openevo-webshop 保存历史证据；当前实验总账是 openevo-experiment。本站最近一次核验默认 main 的日期是 ${openEvoScientificState.checkedAt}。如果实际工作分支比 main 更靠前，当前阶段必须从那个分支的实验总表（campaign）和实验对账（reconciliation）重新读取。`,`seed3090 and openevo-webshop preserve historical evidence; openevo-experiment is the current experiment source of truth. This site last checked default main on ${openEvoScientificState.checkedAt}. If the working branch is ahead of main, resolve the current phase again from that branch's experiment ledger (campaign) and reconciliation.`)}</p>
+      <p class="mission-history">{t(`seed3090 与 openevo-webshop 保存历史证据；当前实验总账是 openevo-experiment。本站最近一次核验默认 main 的日期是 ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}。如果实际工作分支比 main 更靠前，当前阶段必须从那个分支的实验总表（campaign）和实验对账（reconciliation）重新读取。`,`seed3090 and openevo-webshop preserve historical evidence; openevo-experiment is the current experiment source of truth. This site last checked default main on ${humanFreshnessText(openEvoScientificState.checkedAt,locale)}. If the working branch is ahead of main, resolve the current phase again from that branch's experiment ledger (campaign) and reconciliation.`)}</p>
     </figure>
   </details>}
 </section>
