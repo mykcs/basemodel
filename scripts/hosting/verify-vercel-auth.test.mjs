@@ -17,10 +17,9 @@ const response = (target, status = 302, location = challenge(target)) => ({
 test('accepts only the protected production host or its exact staged hostname shape', () => {
   assert.equal(parseProtectedVercelUrl(canonical).hostname, 'openevo-website.vercel.app');
   assert.equal(parseProtectedVercelUrl(staged).hostname, 'openevo-website-abcdef123-example-team.vercel.app');
-  assert.equal(parseProtectedVercelUrl('https://basemodel-preview.vercel.app/').hostname, 'basemodel-preview.vercel.app');
-  assert.equal(parseProtectedVercelUrl('https://basemodel-preview-abcdef123-example-team.vercel.app/').hostname, 'basemodel-preview-abcdef123-example-team.vercel.app');
   for (const bad of [
     '', 'http://openevo-website.vercel.app/',
+    'https://basemodel-preview.vercel.app/', 'https://basemodel-preview-abcdef123-example-team.vercel.app/',
     'https://other.vercel.app/', 'https://openevo-website-review-abcdef123-example-team.vercel.app/', 'https://openevo-website.vercel.app.evil.test/',
     'https://user:pass@openevo-website.vercel.app/',
     'https://openevo-website.vercel.app:444/',

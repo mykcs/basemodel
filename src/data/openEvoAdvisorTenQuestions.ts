@@ -54,7 +54,7 @@ export const ADVISOR_QUESTIONS = [
     evidence: [
       { label: 'Q02 · 当前匹配训练工作包与剩余单元', href: 'https://github.com/mykcs/openevo-experiment/pull/629' },
       { label: 'Q02 · 六次训练全部 PASS 的 10 月 4 日核账', href: 'https://github.com/mykcs/openevo-experiment/pull/629#issuecomment-5976961612' },
-      { label: '早期目标消融网页', href: 'https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoStage1LearningObjectives.astro' },
+      { label: '早期目标消融网页', href: 'https://github.com/mykcs/openevo-website/blob/main/src/components/research/OpenEvoStage1LearningObjectives.astro' },
     ],
     evidenceState: 'partial',
   },
@@ -103,7 +103,7 @@ export const ADVISOR_QUESTIONS = [
     unknown: '新的简单 β 的完整多单元训练、原计划 1,280 次同题评估与最终配对统计仍未封存；独立的 512 次短程敏感性评测不能直接顶替原合同。仍需在相同起点和题目条件下分别确认写入大小、方向与旧知识保持的实际作用。',
     evidence: [
       { label: 'Q05 · 简单 β 训练进度与方向收据', href: 'https://github.com/mykcs/openevo-experiment/pull/632' },
-      { label: '已有三路线冻结终评', href: 'https://github.com/mykcs/basemodel/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro' },
+      { label: '已有三路线冻结终评', href: 'https://github.com/mykcs/openevo-website/blob/main/src/components/research/OpenEvoEffectiveStateGdrLoraStudy.astro' },
     ],
     evidenceState: 'partial',
   },
@@ -157,7 +157,7 @@ export const ADVISOR_QUESTIONS = [
     unknown: '完整消融还没有完成：三种文字载体分别关闭权限、其他因素保持一致的能力对照还缺正式封存。第一条流120个文字更新阶段中7次有效但无新内容，113次在修复后仍未通过检查，须区分政策结果与工程错误；第二条流须先完成同一合同下的健康失败诊断，不得自动重启或为制造差异强迫改写。结果页顺序反转引起的成绩下降属于界面排列敏感性，不能算作文字记忆收益。后续还需研究文字状态与参数更新之间是否存在可重复的互补作用。',
     evidence: [
       { label: 'Q09 · 关闭文字载体的因果对照计划（尚未执行完整关闭）', href: 'https://github.com/mykcs/openevo-experiment/pull/636' },
-      { label: 'Q09 · 第二条流第145轮后暂停与逐轮训练核验', href: 'https://basemodel-preview.vercel.app/research/seed-openevo/evidence/q09-s2-final-progress-20261028.json' },
+      { label: 'Q09 · 第二条流第145轮后暂停与逐轮训练核验', href: 'https://openevo-website.vercel.app/research/seed-openevo/evidence/q09-s2-final-progress-20261028.json' },
       { label: 'Q09 · 后续分支独立新题对照及逐条配对', href: 'https://github.com/mykcs/openevo-experiment/blob/ac12e471367469d734f4af376ba34ae342e54180/docs/evidence/advisor-report-20261028/fresh-pair-results-20261028/README.md' },
       { label: 'Q09 · 2026-10-15 已完成的文字指导中和测试', href: 'https://github.com/mykcs/basemodel/blob/f6c857cccbb11183d5d98ca31ce861f4c4311729/public/research/seed-openevo/evidence/q17-checkpoint-diagnostics-20261015.json' },
     ],

@@ -8,8 +8,8 @@ export function belongsToProductionProject(status) {
   try {
     const url = new URL(status?.environment_url);
     return url.protocol === 'https:' && !url.username && !url.password && !url.port
-      && (['openevo-website.vercel.app', 'basemodel-preview.vercel.app'].includes(url.hostname)
-        || /^(?:openevo-website|basemodel-preview)-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
+      && (url.hostname === 'openevo-website.vercel.app'
+        || /^openevo-website-[a-z0-9]{9}-[a-z0-9-]+\.vercel\.app$/.test(url.hostname));
   } catch { return false; }
 }
 

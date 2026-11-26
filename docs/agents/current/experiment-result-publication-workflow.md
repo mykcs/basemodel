@@ -27,7 +27,7 @@ mykcs/openevo-experiment
   -> explicit claim boundary
   -> publication-ready evidence
 
-mykcs/basemodel
+mykcs/openevo-website
   resolve exact upstream state
   -> translate claim for the reader
   -> attach pinned evidence
@@ -430,7 +430,7 @@ A compile pass is not page acceptance. A previously red test turning green is no
 
 ### 7. Merge once, then verify Production separately
 
-After exact-head acceptance, merge the coherent release once and verify `https://basemodel-preview.vercel.app` independently. Production success proves release/rendering; it does not alter the scientific classification inherited from `openevo-experiment`.
+After exact-head acceptance, merge the coherent release once and verify `https://openevo-website.vercel.app` independently. Production success proves release/rendering; it does not alter the scientific classification inherited from `openevo-experiment`.
 
 If `main` moves during acceptance, verify ancestry and the provider commit metadata. A deployment-specific Vercel hostname is immutable and cannot be treated as a moving alias for newest `main`.
 

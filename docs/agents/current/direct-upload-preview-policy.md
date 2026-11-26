@@ -7,7 +7,7 @@ Status: **Supported fallback only. Vercel owns ordinary Preview and Production.*
 
 ```text
 non-main -> Vercel Preview
-main     -> Vercel Production -> https://basemodel-preview.vercel.app
+main     -> Vercel Production -> https://openevo-website.vercel.app
 Cloudflare Pages -> frozen legacy rollback
 Cloudflare Direct Upload -> fallback / Cloudflare-specific Preview
 ```

@@ -8,7 +8,7 @@ Status: **legacy/frozen. Vercel owns Preview and Production. Cloudflare Pages is
 
 ```text
 Vercel Preview + Production = active deployment system
-https://basemodel-preview.vercel.app = current canonical target
+https://openevo-website.vercel.app = current canonical target
 https://basemodel.pages.dev = legacy snapshot / rollback evidence
 Cloudflare Pages Build = 0 for normal work/releases
 ```

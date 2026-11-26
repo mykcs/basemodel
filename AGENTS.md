@@ -32,7 +32,7 @@ For implementation, read [`docs/dev/LATEST.md`](docs/dev/LATEST.md). For CI, hos
 
 ## Quality standards acceptance index
 
-For project quality targets and evidence routing, use [BaseModel Standards](docs/standards/README.md) and [its acceptance map](docs/standards/ACCEPTANCE_MAP.md). **Navigation only:** current rules remain under `docs/agents/current/`, Wish owns intent, Dev owns implementation direction, and code/tests plus live provider/experiment state remain the truth. Read this index when planning or reviewing quality; do not load it for every unrelated task or duplicate active Design/Starlight PR work.
+For project quality targets and evidence routing, use [OpenEVO Standards](docs/standards/README.md) and [its acceptance map](docs/standards/ACCEPTANCE_MAP.md). **Navigation only:** current rules remain under `docs/agents/current/`, Wish owns intent, Dev owns implementation direction, and code/tests plus live provider/experiment state remain the truth. Read this index when planning or reviewing quality; do not load it for every unrelated task or duplicate active Design/Starlight PR work.
 
 ## Central website learning
 
@@ -64,7 +64,7 @@ Current owner instruction > live provider state for provider claims > executable
 
 ## Current product mission and deployment
 
-BaseModel is a research decision system connecting Base Model → SEED/OpenEvo ‒ ALFWorld/WebShop → trajectories, scores, failures and defensible improvements. Preserve Learn / Run / Compare as distinct modes and keep each benchmark's metric semantics separate.
+OpenEVO is a research decision system connecting Base Model → SEED/OpenEvo ‒ ALFWorld/WebShop → trajectories, scores, failures and defensible improvements. Preserve Learn / Run / Compare as distinct modes and keep each benchmark's metric semantics separate.
 
 ```text
 ordinary PR
@@ -75,7 +75,7 @@ final current-base candidate
   -> both required GitHub Actions checks green on the same head with strict base freshness
 
 main
-  -> on-demand protected Vercel Production release (default): https://basemodel-preview.vercel.app/
+  -> on-demand protected Vercel Production release (default): https://openevo-website.vercel.app/
   -> on-demand protected Cloudflare standby: https://basemodel-access-standby.gemini202405.workers.dev/
 ```
 
