@@ -221,5 +221,3 @@ GitHub、Hugging Face 等品牌外链继续使用第一方官方 mark，并由 B
 用户随后要求“尽可能把更多网页也按照我们这种风格去做”，并明确纠正：“一个大标题前面的序号‘4’，你把它放在标题上面，并且特别小。我不喜欢这样，你就直接把它放到标题左边就行。”章节编号因此放在原标题内，使用继承标题字号的左侧数字，与标题同一行自然换行，不能另起一行做小号眉题。共享 owner 为 research-article.css 的 evo-article__heading-number。
 
 研究入口、档案、指南和论文详情也沿用纸面、明暗配色、正文字体与标题层级；有导航、选择器或复杂图形的入口允许使用 960px 阅读框。清单继续由 technicalArticleRoutes.ts 维护，功能入口与来源关系必须保留。OpenClaude 细节参考核实的 [open-claude-ui](https://github.com/Caho1/open-claude-ui)：采用中性表面、克制边界、系统中文字体和清晰层级，不引入其聊天产品结构、品牌字体或运行依赖。
-
-Feature goals and current/better design: [Feature Design](../../design/features/README.md). This is part of Design, not a separate governance owner.
